@@ -540,7 +540,7 @@
             db.ref(`serials/${key}`).update({ onBreak: true, breakUsedToday: true, breakStartTime: Date.now() });
         }
 
-        // নিজের সিরিয়াল তাৎক্ষণিকভাবে কেটে দেওয়া
+        // নিজের সিরিয়াল নিজে তাৎক্ষণিকভাবে কেটে দেওয়া
         function removeMySerial(key) {
             if (confirm("আপনি কি নিশ্চিতভাবে নিজের সিরিয়ালটি কাটতে চান?")) {
                 const targetItem = serialList[key];
@@ -557,8 +557,8 @@
             }
         }
 
-        // যে কেউ (নির্ধারিত সীমানার মধ্যে থেকে) অন্য যেকোনো রাইদারের সিরিয়াল কেটে দিতে পারবে
-        function cancelOtherSerial(key) {
+        // অন্য কেউ সিরিয়াল কাটলে ১০ মিনিটের কাউন্টডাউন শুরু করা (সীমানার মধ্যে থেকে)
+        function initiateCancelOtherSerial(key) {
             if (!myRiderId || !myRiderData) {
                 alert("সিরিয়াল কাটতে হলে আগে রেজিস্ট্রেশন করতে হবে!");
                 return;
@@ -570,19 +570,23 @@
                 return; 
             }
 
-            if (confirm("আপনি কি নিশ্চিতভাবে এই সিরিয়ালটি কেটে দিতে চান?")) {
-                const targetItem = serialList[key];
-                
-                // কে কার সিরিয়াল কাটল তা লগ এন্ট্রি করা
-                db.ref('cancelLogs').push({
-                    victimName: targetItem.name,
-                    cancellerName: myRiderData.name,
-                    timestamp: Date.now()
+            if (confirm("আপনি কি এই রাইডারের বিরুদ্ধে সিরিয়াল কাটার জন্য ১০ মিনিটের কাউন্টডাউন শুরু করতে চান?")) {
+                db.ref(`serials/${key}`).update({
+                    cancelling: true,
+                    cancelStartTime: Date.now(),
+                    cancelledBy: myRiderData.name
                 });
-
-                db.ref(`serials/${key}`).remove();
-                alert("সিরিয়াল সফলভাবে কেটে দেওয়া হয়েছে!");
             }
+        }
+
+        // ১০ মিনিটের মধ্যে রাইডার টাচ করে সিরিয়াল টিকিয়ে রাখা
+        function keepMySerial(key) {
+            db.ref(`serials/${key}`).update({
+                cancelling: false,
+                cancelStartTime: null,
+                cancelledBy: null
+            });
+            alert("আপনার সিরিয়াল সফলভাবে বহাল রাখা হয়েছে!");
         }
 
         function renderSerialList() {
@@ -610,6 +614,32 @@
                     else breakBadge = `<span class="bg-amber-100 text-amber-800 text-[10px] font-bold px-2 py-0.5 rounded-full animate-pulse">বিরতি বাকি: ${Math.floor(remSec/60)}মি ${remSec%60}সে</span>`;
                 }
 
+                // 10-Minute Countdown Logic for Cancellation
+                let cancelBadge = "";
+                if (item.cancelling && item.cancelStartTime) {
+                    const maxCancelMins = riderProfile.customCancelMins || 10;
+                    const remCancelSec = maxCancelMins * 60 - Math.floor((now - item.cancelStartTime) / 1000);
+
+                    if (remCancelSec <= 0) {
+                        // Time over -> Auto Remove Serial and Log
+                        const targetItem = serialList[key];
+                        db.ref('cancelLogs').push({
+                            victimName: targetItem.name,
+                            cancellerName: item.cancelledBy || 'অন্য রাইডার',
+                            timestamp: Date.now()
+                        });
+                        db.ref(`serials/${key}`).remove();
+                        return;
+                    } else {
+                        const cMin = Math.floor(remCancelSec / 60);
+                        const cSec = remCancelSec % 60;
+                        cancelBadge = `<div class="mt-1 text-[10px] bg-red-100 text-red-700 font-bold px-2.5 py-1 rounded-xl border border-red-200 animate-pulse flex items-center justify-between">
+                            <span>কাটার সময় বাকি: ${cMin}:${String(cSec).padStart(2,'0')}</span>
+                            ${(myRiderId && (item.riderId === myRiderId || item.ownerRiderId === myRiderId)) ? `<button onclick="keepMySerial('${key}')" class="bg-emerald-600 hover:bg-emerald-700 text-white px-2 py-0.5 rounded-lg text-[9px] font-bold ml-1">সিরিয়াল রাখুন</button>` : ''}
+                        </div>`;
+                    }
+                }
+
                 const isMySerial = myRiderId && (item.riderId === myRiderId || item.ownerRiderId === myRiderId);
 
                 let actionButtons = "";
@@ -622,27 +652,31 @@
                     if (!item.onBreak) {
                         actionButtons += `<button onclick="startBreak('${key}')" class="bg-amber-500 hover:bg-amber-600 text-white text-[10px] font-bold px-2.5 py-1 rounded-xl shadow-sm">বিরতি</button>`;
                     }
-                    // যে কেউ সীমানার মধ্যে থেকে অন্যের সিরিয়াল কাটার জন্য এই বাটন পাবে
-                    actionButtons += `<button onclick="cancelOtherSerial('${key}')" class="bg-rose-600 hover:bg-rose-700 text-white text-[10px] font-bold px-2.5 py-1 rounded-xl shadow-sm">বাতিল করুন</button>`;
+                    if (!item.cancelling) {
+                        actionButtons += `<button onclick="initiateCancelOtherSerial('${key}')" class="bg-rose-600 hover:bg-rose-700 text-white text-[10px] font-bold px-2.5 py-1 rounded-xl shadow-sm">বাতিল করুন</button>`;
+                    }
                 }
 
                 html += `
-                <div class="bg-white/80 border border-slate-200/80 rounded-2xl p-2.5 shadow-sm flex items-center justify-between gap-2">
-                    <div class="flex items-center gap-2.5 overflow-hidden">
-                        <div class="w-8 h-8 rounded-xl bg-slate-900 text-amber-400 font-bold text-sm flex items-center justify-center shrink-0 shadow-sm">${serialNum}</div>
-                        <img src="${item.photo}" class="w-10 h-10 rounded-full object-cover border-2 border-white shadow-sm shrink-0">
-                        <div class="truncate">
-                            <div class="flex items-center gap-1">
-                                <h4 class="text-xs font-bold text-slate-800 truncate">${item.name}</h4>
-                                <span class="text-[9px] font-bold px-1.5 py-0.5 rounded ${item.type==='auto'?'bg-blue-100 text-blue-700':'bg-emerald-100 text-emerald-700'}">${item.type==='auto'?'অটো':'ম্যানুয়াল'}</span>
+                <div class="bg-white/80 border border-slate-200/80 rounded-2xl p-2.5 shadow-sm">
+                    <div class="flex items-center justify-between gap-2">
+                        <div class="flex items-center gap-2.5 overflow-hidden">
+                            <div class="w-8 h-8 rounded-xl bg-slate-900 text-amber-400 font-bold text-sm flex items-center justify-center shrink-0 shadow-sm">${serialNum}</div>
+                            <img src="${item.photo}" class="w-10 h-10 rounded-full object-cover border-2 border-white shadow-sm shrink-0">
+                            <div class="truncate">
+                                <div class="flex items-center gap-1">
+                                    <h4 class="text-xs font-bold text-slate-800 truncate">${item.name}</h4>
+                                    <span class="text-[9px] font-bold px-1.5 py-0.5 rounded ${item.type==='auto'?'bg-blue-100 text-blue-700':'bg-emerald-100 text-emerald-700'}">${item.type==='auto'?'অটো':'ম্যানুয়াল'}</span>
+                                </div>
+                                <p class="text-[11px] font-mono text-slate-600 mt-0.5">অপেক্ষা: <span class="font-bold text-slate-900">${hrs}:${mins}:${secs}</span></p>
+                                ${breakBadge}
                             </div>
-                            <p class="text-[11px] font-mono text-slate-600 mt-0.5">অপেক্ষা: <span class="font-bold text-slate-900">${hrs}:${mins}:${secs}</span></p>
-                            ${breakBadge}
+                        </div>
+                        <div class="flex flex-col gap-1 shrink-0">
+                            ${actionButtons}
                         </div>
                     </div>
-                    <div class="flex flex-col gap-1 shrink-0">
-                        ${actionButtons}
-                    </div>
+                    ${cancelBadge}
                 </div>`;
             });
             container.innerHTML = html;
