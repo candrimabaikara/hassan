@@ -54,7 +54,6 @@
         .bg-green-base { background-color: #22c55e; }
         .bg-yellow-base { background-color: #eab308; }
         .bg-blue-base { background-color: #3b82f6; }
-        .token { width: 12px; height: 12px; border-radius: 50%; border: 2px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.4); z-index: 10; }
         
         /* Custom Scrollbar */
         ::-webkit-scrollbar { width: 5px; }
@@ -164,7 +163,7 @@
                     <h2 class="text-xs font-bold text-emerald-900 mb-2.5 flex items-center gap-1">
                         <i class="fas fa-edit text-emerald-600"></i> ম্যানুয়াল সিরিয়াল
                     </h2>
-                    <p class="text-[10px] text-slate-500 mb-2.5">সীমানার মধ্যে থেকে নাম লিখে এন্ট্রি দিন।</p>
+                    <p class="text-[10px] text-slate-500 mb-2.5">সীমার মধ্যে থেকে শুধু নাম দিয়ে এন্ট্রি দিন।</p>
                     <input type="text" id="manualRiderName" placeholder="রাইডারের নাম লিখুন" class="w-full text-xs p-2.5 border border-slate-300 rounded-xl focus:outline-none focus:border-emerald-500 bg-slate-50 mb-2">
                 </div>
                 <button onclick="addManualSerial()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold py-2 rounded-xl shadow transition flex items-center justify-center gap-1">
@@ -247,7 +246,6 @@
                     <i class="fas fa-map-marker-alt mr-1"></i> বর্তমান GPS লোকেশনকে স্ট্যান্ড হিসেবে সেট করুন
                 </button>
                 <p id="currentStandCoords" class="text-[10px] text-slate-600 text-center font-mono">লোকেশন লোড হচ্ছে...</p>
-                <p class="text-[10px] text-slate-500 italic text-center">*(ভুলবশত টাচ লেগে পরিবর্তন রোধ করতে ওপরের লক অন রাখুন)*</p>
             </div>
 
             <!-- B. Leaders Management -->
@@ -274,10 +272,10 @@
                 </div>
             </div>
 
-            <!-- D. Registered Riders List & Special Per-Rider Controls -->
+            <!-- D. Registered Riders List -->
             <div class="bg-slate-50 p-3.5 rounded-2xl space-y-2.5 border border-slate-200">
                 <div class="flex justify-between items-center">
-                    <h3 class="text-xs font-bold text-slate-900">৪. রাইডারদের লাইভ লোকেশন ও স্পেশাল কন্ট্রোল</h3>
+                    <h3 class="text-xs font-bold text-slate-900">৪. রাইডারদের লাইভ লোকেশন ও কন্ট্রোল</h3>
                     <span id="adminTotalRiders" class="bg-slate-800 text-white text-[10px] px-2 py-0.5 rounded-full font-bold">মোট: ০</span>
                 </div>
                 <div id="adminRidersList" class="space-y-3 max-h-72 overflow-y-auto pr-1"></div>
@@ -327,7 +325,7 @@
                 <div>
                     <h4 class="text-xs font-bold text-slate-700 mb-2">চলমান গেম রুমসমূহ:</h4>
                     <div id="ludoRoomsList" class="space-y-2 max-h-44 overflow-y-auto pr-1">
-                        <p class="text-xs text-slate-400 text-center py-4">কোনো রুম নেই।</p>
+                        <p class="text-xs text-slate-400 text-center py-2">কোনো রুম নেই।</p>
                     </div>
                 </div>
             </div>
@@ -387,6 +385,11 @@
         }
         setInterval(updateWallClock, 1000);
 
+        // 1-second interval to update countdowns in real-time
+        setInterval(() => {
+            renderSerialList();
+        }, 1000);
+
         function calculateDistance(lat1, lon1, lat2, lon2) {
             const R = 6371e3;
             const φ1 = lat1 * Math.PI/180, φ2 = lat2 * Math.PI/180;
@@ -435,8 +438,17 @@
             const existingEntry = Object.entries(serialList).find(([k, v]) => v.riderId === myRiderId);
             if (!existingEntry) {
                 db.ref('serials').push({
-                    riderId: myRiderId, ownerRiderId: myRiderId, name: myRiderData.name, photo: myRiderData.photo,
-                    type: 'auto', entryTime: Date.now(), onBreak: false, breakStartTime: null, cancelling: false, cancelStartTime: null
+                    riderId: myRiderId, 
+                    ownerRiderId: myRiderId, 
+                    name: myRiderData.name, 
+                    photo: myRiderData.photo,
+                    phone: myRiderData.phone,
+                    type: 'auto', 
+                    entryTime: Date.now(), 
+                    onBreak: false, 
+                    breakStartTime: null, 
+                    cancelling: false, 
+                    cancelStartTime: null
                 });
             } else {
                 const [key, item] = existingEntry;
@@ -453,19 +465,25 @@
         function compressImage(file, maxWidth = 300) {
             return new Promise((resolve) => {
                 const reader = new FileReader();
-                reader.readAsDataURL(file);
                 reader.onload = (e) => {
                     const img = new Image();
-                    img.src = e.target.result;
                     img.onload = () => {
                         const canvas = document.createElement('canvas');
-                        const scale = maxWidth / img.width;
-                        canvas.width = maxWidth;
-                        canvas.height = img.height * scale;
-                        canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+                        let width = img.width;
+                        let height = img.height;
+                        if (width > maxWidth) {
+                            height = Math.round((height * maxWidth) / width);
+                            width = maxWidth;
+                        }
+                        canvas.width = width;
+                        canvas.height = height;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, width, height);
                         resolve(canvas.toDataURL('image/jpeg', 0.7));
                     };
+                    img.src = e.target.result;
                 };
+                reader.readAsDataURL(file);
             });
         }
 
@@ -473,412 +491,647 @@
             const name = document.getElementById('regName').value.trim();
             const phone = document.getElementById('regPhone').value.trim();
             const photoFile = document.getElementById('regPhoto').files[0];
-            if (!name || !phone || !photoFile) { alert("সব তথ্য এবং ছবি দিন!"); return; }
 
-            const photoBase64 = await compressImage(photoFile, 250);
-            const newRef = db.ref('riders').push();
-            await newRef.set({ name, phone, photo: photoBase64, suspended: false, customBreakMins: 30, customRadius: 200, customCancelMins: 10, lastBreakDate: "", createdAt: Date.now() });
-            localStorage.setItem('biker_rider_id', newRef.key);
-            myRiderId = newRef.key;
-            alert("রেজিস্ট্রেশন সফল হয়েছে!");
-            loadMyProfile();
-        }
-
-        function loadMyProfile() {
-            if (!myRiderId) return;
-            db.ref(`riders/${myRiderId}`).on('value', (snap) => {
-                if (snap.exists()) {
-                    myRiderData = snap.val();
-                    document.getElementById('regFormContainer').classList.add('hidden');
-                    document.getElementById('regSubmitBtn').classList.add('hidden');
-                    document.getElementById('regProfileContainer').classList.remove('hidden');
-                    document.getElementById('myProfileImg').src = myRiderData.photo;
-                    document.getElementById('myProfileName').innerText = myRiderData.name;
-                    document.getElementById('myProfilePhone').innerText = myRiderData.phone;
-                    const statusEl = document.getElementById('myAccountStatus');
-                    statusEl.className = `inline-block text-[10px] px-2 py-0.5 rounded-full font-bold ${myRiderData.suspended ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'}`;
-                    statusEl.innerText = myRiderData.suspended ? "সাসপেন্ডেড" : "অ্যাক্টিভ রাইডার";
-                }
-            });
-        }
-
-        function addManualSerial() {
-            const name = document.getElementById('manualRiderName').value.trim();
-            if (!name) { alert("নাম লিখুন!"); return; }
-            
-            const allowedRadius = (myRiderData && myRiderData.customRadius) ? Number(myRiderData.customRadius) : standSettings.defaultRadius;
-            if (currentDistance > allowedRadius) { 
-                alert(`স্ট্যান্ডের নির্ধারিত সীমানার বাইরে আছেন (${currentDistance} মি.)। সীমানার মধ্যে এসে সিরিয়াল দিন।`); 
-                return; 
+            if (!name || !phone) {
+                alert('দয়া করে নাম এবং ফোন নম্বর দিন।');
+                return;
             }
 
-            db.ref('serials').push({
-                riderId: 'manual_' + Date.now(),
-                ownerRiderId: myRiderId || 'guest',
+            const allowedRadius = standSettings.defaultRadius;
+            if (currentDistance > allowedRadius) {
+                alert(`আপনি স্ট্যান্ডের সীমানার বাইরে (${currentDistance} মি.) আছেন। স্ট্যান্ডের ${allowedRadius} মিটারের মধ্যে থেকে রেজিস্ট্রেশন করতে হবে।`);
+                return;
+            }
+
+            let photoUrl = "https://via.placeholder.com/100?text=Rider";
+            if (photoFile) {
+                photoUrl = await compressImage(photoFile, 200);
+            }
+
+            const btn = document.getElementById('regSubmitBtn');
+            btn.innerText = "রেজিস্ট্রেশন হচ্ছে...";
+            btn.disabled = true;
+
+            const newRef = db.ref('riders').push();
+            myRiderId = newRef.key;
+            localStorage.setItem('biker_rider_id', myRiderId);
+
+            myRiderData = {
+                id: myRiderId,
                 name: name,
-                photo: myRiderData ? myRiderData.photo : 'https://via.placeholder.com/80?text=Manual',
+                phone: phone,
+                photo: photoUrl,
+                suspended: false,
+                customRadius: standSettings.defaultRadius,
+                currentLat: currentUserPos ? currentUserPos.lat : 0,
+                currentLng: currentUserPos ? currentUserPos.lng : 0,
+                currentDistance: currentDistance,
+                registeredAt: Date.now()
+            };
+
+            await newRef.set(myRiderData);
+            btn.innerText = "রেজিস্ট্রেশন করুন";
+            btn.disabled = false;
+            checkMyRegistration();
+            alert('সফলভাবে রেজিস্ট্রেশন সম্পন্ন হয়েছে!');
+        }
+
+        function checkMyRegistration() {
+            const formContainer = document.getElementById('regFormContainer');
+            const submitBtn = document.getElementById('regSubmitBtn');
+            const profileContainer = document.getElementById('regProfileContainer');
+
+            if (myRiderId && allRiders[myRiderId]) {
+                myRiderData = allRiders[myRiderId];
+                if(formContainer) formContainer.classList.add('hidden');
+                if(submitBtn) submitBtn.classList.add('hidden');
+                if(profileContainer) profileContainer.classList.remove('hidden');
+
+                document.getElementById('myProfileImg').src = myRiderData.photo || "https://via.placeholder.com/100";
+                document.getElementById('myProfileName').innerText = myRiderData.name;
+                document.getElementById('myProfilePhone').innerText = myRiderData.phone;
+                
+                const statusBadge = document.getElementById('myAccountStatus');
+                if (myRiderData.suspended) {
+                    statusBadge.className = "inline-block text-[10px] px-2 py-0.5 rounded-full bg-rose-100 text-rose-700 font-bold";
+                    statusBadge.innerText = "অ্যাকাউন্ট معطل (Suspended)";
+                } else {
+                    statusBadge.className = "inline-block text-[10px] px-2 py-0.5 rounded-full bg-green-100 text-green-700 font-bold";
+                    statusBadge.innerText = "অ্যাক্টিভ রাইডার";
+                }
+            } else {
+                if(formContainer) formContainer.classList.remove('hidden');
+                if(submitBtn) submitBtn.classList.remove('hidden');
+                if(profileContainer) profileContainer.classList.add('hidden');
+            }
+        }
+
+        // Manual Serial Entry with Geofence Check
+        async function addManualSerial() {
+            const nameInput = document.getElementById('manualRiderName');
+            const name = nameInput.value.trim();
+            if (!name) {
+                alert('দয়া করে রাইডারের নাম লিখুন।');
+                return;
+            }
+
+            const allowedRadius = standSettings.defaultRadius;
+            if (currentDistance > allowedRadius) {
+                alert(`আপনি স্ট্যান্ডের সীমানার বাইরে (${currentDistance} মি.) আছেন। স্ট্যান্ডের ${allowedRadius} মিটারের মধ্যে থেকে ম্যানুয়াল সিরিয়াল এন্ট্রি দিতে হবে।`);
+                return;
+            }
+
+            await db.ref('serials').push({
+                riderId: 'manual_' + Date.now(),
+                ownerRiderId: null,
+                name: name,
+                photo: 'https://via.placeholder.com/100?text=Manual',
+                phone: 'ম্যানুয়াল এন্ট্রি',
                 type: 'manual',
                 entryTime: Date.now(),
                 onBreak: false,
-                breakUsedToday: false,
                 breakStartTime: null,
                 cancelling: false,
                 cancelStartTime: null
             });
-            document.getElementById('manualRiderName').value = "";
+
+            nameInput.value = '';
+            alert('ম্যানুয়াল সিরিয়াল সফলভাবে যুক্ত হয়েছে!');
         }
 
-        function startBreak(key) {
-            const item = serialList[key];
-            if (!item) return;
-            const todayStr = new Date().toDateString();
-            if (item.type === 'auto') {
-                if (!myRiderId || item.riderId !== myRiderId) { alert("নিজের বিরতি নিজে নিন!"); return; }
-                if (myRiderData.lastBreakDate === todayStr) { alert("আজকে একবার বিরতি নিয়েছেন!"); return; }
-                db.ref(`riders/${myRiderId}`).update({ lastBreakDate: todayStr });
-            } else if (item.breakUsedToday) { alert("এই সিরিয়ালে বিরতি শেষ!"); return; }
-            db.ref(`serials/${key}`).update({ onBreak: true, breakUsedToday: true, breakStartTime: Date.now() });
-        }
-
-        // নিজের সিরিয়াল তাৎক্ষণিকভাবে কেটে দেওয়া
-        function removeMySerial(key) {
-            if (confirm("আপনি কি নিশ্চিতভাবে নিজের সিরিয়ালটি কাটতে চান?")) {
-                const targetItem = serialList[key];
-                const cancellerName = myRiderData ? myRiderData.name : 'নিজেই';
-                
-                db.ref('cancelLogs').push({
-                    victimName: targetItem.name,
-                    cancellerName: cancellerName,
-                    timestamp: Date.now()
-                });
-
-                db.ref(`serials/${key}`).remove();
-                alert("আপনার সিরিয়াল সফলভাবে কেটে দেওয়া হয়েছে।");
+        // Firebase Listeners
+        db.ref('settings').on('value', (snap) => {
+            const val = snap.val();
+            if (val) {
+                if (val.standLat) standSettings.lat = val.standLat;
+                if (val.standLng) standSettings.lng = val.standLng;
+                if (val.defaultRadius) standSettings.defaultRadius = val.defaultRadius;
+                if (val.standLocked !== undefined) {
+                    standLocationLocked = val.standLocked;
+                    const toggle = document.getElementById('standLockToggle');
+                    if(toggle) toggle.checked = standLocationLocked;
+                }
+                const coordsEl = document.getElementById('currentStandCoords');
+                if(coordsEl) coordsEl.innerText = `স্ট্যান্ড কোঅর্ডিনেট: ${standSettings.lat.toFixed(4)}, ${standSettings.lng.toFixed(4)} (ব্যাসার্ধ: ${standSettings.defaultRadius} মি.)`;
             }
-        }
+        });
 
-        // অন্য কেউ সিরিয়াল কাটলে ১০ মিনিটের কাউন্টডাউন শুরু করা (সীমানার মধ্যে থেকে)
-        function initiateCancelOtherSerial(key) {
-            if (!myRiderId || !myRiderData) {
-                alert("সিরিয়াল কাটতে হলে আগে রেজিস্ট্রেশন করতে হবে!");
-                return;
+        db.ref('leaders').on('value', (snap) => {
+            const l = snap.val() || {};
+            if (l.president) {
+                document.getElementById('imgPresident').src = l.president.photo || "https://via.placeholder.com/100";
+                document.getElementById('namePresident').innerText = l.president.name || "সভাপতি";
             }
-
-            const allowedRadius = myRiderData.customRadius ? Number(myRiderData.customRadius) : standSettings.defaultRadius;
-            if (currentDistance > allowedRadius) { 
-                alert(`সিরিয়াল কাটতে হলে স্ট্যান্ডের নির্ধারিত সীমানার মধ্যে থাকতে হবে! (বর্তমান দূরত্ব: ${currentDistance} মি.)`); 
-                return; 
+            if (l.vp) {
+                document.getElementById('imgVP').src = l.vp.photo || "https://via.placeholder.com/100";
+                document.getElementById('nameVP').innerText = l.vp.name || "সহ-সভাপতি";
             }
-
-            if (confirm("আপনি কি এই সিরিয়ালটি কাটার জন্য ১০ মিনিটের কাউন্টডাউন শুরু করতে চান?")) {
-                db.ref(`serials/${key}`).update({
-                    cancelling: true,
-                    cancelStartTime: Date.now(),
-                    cancelledBy: myRiderData.name
-                });
+            if (l.org) {
+                document.getElementById('imgOrg').src = l.org.photo || "https://via.placeholder.com/100";
+                document.getElementById('nameOrg').innerText = l.org.name || "সাংগঠনিক";
             }
-        }
+        });
 
-        // ১০ মিনিটের মধ্যে সিরিয়াল আবার ফিরিয়ে আনা (টিকিয়ে রাখা)
-        function keepMySerial(key) {
-            db.ref(`serials/${key}`).update({
-                cancelling: false,
-                cancelStartTime: null,
-                cancelledBy: null
-            });
-            alert("আপনার সিরিয়াল সফলভাবে বহাল রাখা হয়েছে!");
-        }
+        db.ref('notice').on('value', (snap) => {
+            const n = snap.val();
+            const textEl = document.getElementById('noticeText');
+            const imgEl = document.getElementById('noticeImage');
+            if (n) {
+                textEl.innerText = n.text || "";
+                if (n.photo) {
+                    imgEl.src = n.photo;
+                    imgEl.classList.remove('hidden');
+                } else {
+                    imgEl.classList.add('hidden');
+                }
+            }
+        });
+
+        db.ref('riders').on('value', (snap) => {
+            allRiders = snap.val() || {};
+            checkMyRegistration();
+            renderAdminRidersList();
+        });
+
+        db.ref('serials').on('value', (snap) => {
+            serialList = snap.val() || {};
+            renderSerialList();
+        });
 
         function renderSerialList() {
             const container = document.getElementById('serialListContainer');
-            const keys = Object.keys(serialList);
-            document.getElementById('totalSerialCount').innerText = `মোট: ${keys.length} জন`;
-            if (keys.length === 0) { container.innerHTML = `<p class="text-center text-xs text-slate-400 py-6">বর্তমানে সিরিয়ালে কেউ নেই...</p>`; return; }
+            const countEl = document.getElementById('totalSerialCount');
+            const entries = Object.entries(serialList);
 
-            let html = "";
+            countEl.innerText = `মোট: ${entries.length} জন`;
+            if (entries.length === 0) {
+                container.innerHTML = `<p class="text-center text-xs text-slate-400 py-6">বর্তমানে সিরিয়ালে কেউ নেই...</p>`;
+                return;
+            }
+
+            let html = '';
             const now = Date.now();
-            keys.forEach((key, idx) => {
-                const item = serialList[key];
-                const serialNum = idx + 1;
-                const riderProfile = allRiders[item.riderId] || {};
-                const diffSec = Math.max(0, Math.floor((now - item.entryTime) / 1000));
-                const hrs = String(Math.floor(diffSec / 3600)).padStart(2, '0');
-                const mins = String(Math.floor((diffSec % 3600) / 60)).padStart(2, '0');
-                const secs = String(diffSec % 60).padStart(2, '0');
+            const tenMinutes = 10 * 60 * 1000;
 
-                let breakBadge = "";
-                if (item.onBreak && item.breakStartTime) {
-                    const maxBreakMins = riderProfile.customBreakMins || 30;
-                    const remSec = maxBreakMins * 60 - Math.floor((now - item.breakStartTime) / 1000);
-                    if (remSec <= 0) db.ref(`serials/${key}`).remove();
-                    else breakBadge = `<span class="bg-amber-100 text-amber-800 text-[10px] font-bold px-2 py-0.5 rounded-full animate-pulse">বিরতি বাকি: ${Math.floor(remSec/60)}মি ${remSec%60}সে</span>`;
-                }
-
-                // 10-Minute Countdown Logic
-                let cancelBadge = "";
+            entries.forEach(([key, item], index) => {
+                const isMyEntry = (myRiderId && item.riderId === myRiderId) || item.type === 'manual';
+                const badgeBg = index === 0 ? 'bg-amber-500 text-white font-bold shadow' : 'bg-slate-100 text-slate-700 font-semibold';
+                
+                // Check 10-minute cancellation countdown logic
                 if (item.cancelling && item.cancelStartTime) {
-                    const maxCancelMins = riderProfile.customCancelMins || 10;
-                    const remCancelSec = maxCancelMins * 60 - Math.floor((now - item.cancelStartTime) / 1000);
+                    const elapsed = now - item.cancelStartTime;
+                    const remaining = tenMinutes - elapsed;
 
-                    if (remCancelSec <= 0) {
-                        // Time over -> Auto Remove Serial and Log
-                        const targetItem = serialList[key];
+                    if (remaining <= 0) {
+                        // Time expired: Automatically remove from serial list and log to cancelLogs
                         db.ref('cancelLogs').push({
-                            victimName: targetItem.name,
-                            cancellerName: item.cancelledBy || 'অন্য রাইডার',
-                            timestamp: Date.now()
+                            name: item.name,
+                            phone: item.phone || 'N/A',
+                            cancelledAt: Date.now()
                         });
                         db.ref(`serials/${key}`).remove();
                         return;
-                    } else {
-                        const cMin = Math.floor(remCancelSec / 60);
-                        const cSec = remCancelSec % 60;
-                        cancelBadge = `<div class="mt-1.5 text-[10px] bg-red-100 text-red-700 font-bold px-2.5 py-1.5 rounded-xl border border-red-200 animate-pulse flex items-center justify-between">
-                            <span>কাটার টাইম বাকি: ${cMin}:${String(cSec).padStart(2,'0')}</span>
-                            <button onclick="keepMySerial('${key}')" class="bg-emerald-600 hover:bg-emerald-700 text-white px-2.5 py-1 rounded-lg text-[10px] font-bold shadow-sm">সিরিয়াল রাখুন</button>
-                        </div>`;
                     }
                 }
 
-                const isMySerial = myRiderId && (item.riderId === myRiderId || item.ownerRiderId === myRiderId);
+                let actionArea = '';
+                if (isMyEntry) {
+                    if (item.cancelling) {
+                        const remaining = tenMinutes - (now - item.cancelStartTime);
+                        const mins = Math.floor(remaining / 60000);
+                        const secs = Math.floor((remaining % 60000) / 1000);
+                        const timeStr = `${mins}:${secs < 10 ? '0' : ''}${secs}`;
 
-                let actionButtons = "";
-                if (isMySerial) {
-                    if (!item.onBreak) {
-                        actionButtons += `<button onclick="startBreak('${key}')" class="bg-amber-500 hover:bg-amber-600 text-white text-[10px] font-bold px-2.5 py-1 rounded-xl shadow-sm">বিরতি</button>`;
-                    }
-                    actionButtons += `<button onclick="removeMySerial('${key}')" class="bg-red-600 hover:bg-red-700 text-white text-[10px] font-bold px-2.5 py-1 rounded-xl shadow-sm">সিরিয়াল কাটুন</button>`;
-                } else {
-                    if (!item.onBreak) {
-                        actionButtons += `<button onclick="startBreak('${key}')" class="bg-amber-500 hover:bg-amber-600 text-white text-[10px] font-bold px-2.5 py-1 rounded-xl shadow-sm">বিরতি</button>`;
-                    }
-                    if (!item.cancelling) {
-                        actionButtons += `<button onclick="initiateCancelOtherSerial('${key}')" class="bg-rose-600 hover:bg-rose-700 text-white text-[10px] font-bold px-2.5 py-1 rounded-xl shadow-sm">বাতিল করুন</button>`;
+                        actionArea = `
+                            <div class="flex items-center gap-1.5 bg-rose-50 p-1.5 rounded-xl border border-rose-200">
+                                <span class="text-[10px] text-rose-700 font-bold animate-pulse">বাতিল হচ্ছে: ${timeStr}</span>
+                                <button onclick="restoreSerial('${key}')" class="text-[10px] px-2 py-1 rounded-lg font-bold bg-emerald-600 text-white shadow">
+                                    ফিরিয়ে আনুন
+                                </button>
+                            </div>
+                        `;
+                    } else {
+                        actionArea = `
+                            <button onclick="toggleBreak('${key}', ${!item.onBreak})" class="text-[10px] px-2.5 py-1 rounded-xl font-bold ${item.onBreak ? 'bg-emerald-600 text-white' : 'bg-amber-500 text-white'} shadow">
+                                ${item.onBreak ? 'ব্রেক শেষ' : 'ব্রেক'}
+                            </button>
+                            <button onclick="requestCancelSerial('${key}')" class="text-[10px] px-2.5 py-1 rounded-xl font-bold bg-rose-600 text-white shadow">
+                                সিরিয়াল কাটুন
+                            </button>
+                        `;
                     }
                 }
 
                 html += `
-                <div class="bg-white/80 border border-slate-200/80 rounded-2xl p-2.5 shadow-sm">
-                    <div class="flex items-center justify-between gap-2">
-                        <div class="flex items-center gap-2.5 overflow-hidden">
-                            <div class="w-8 h-8 rounded-xl bg-slate-900 text-amber-400 font-bold text-sm flex items-center justify-center shrink-0 shadow-sm">${serialNum}</div>
-                            <img src="${item.photo}" class="w-10 h-10 rounded-full object-cover border-2 border-white shadow-sm shrink-0">
-                            <div class="truncate">
-                                <div class="flex items-center gap-1">
-                                    <h4 class="text-xs font-bold text-slate-800 truncate">${item.name}</h4>
-                                    <span class="text-[9px] font-bold px-1.5 py-0.5 rounded ${item.type==='auto'?'bg-blue-100 text-blue-700':'bg-emerald-100 text-emerald-700'}">${item.type==='auto'?'অটো':'ম্যানুয়াল'}</span>
-                                </div>
-                                <p class="text-[11px] font-mono text-slate-600 mt-0.5">অপেক্ষা: <span class="font-bold text-slate-900">${hrs}:${mins}:${secs}</span></p>
-                                ${breakBadge}
+                    <div class="flex items-center justify-between p-2.5 rounded-2xl border border-slate-200 bg-white shadow-sm hover:border-blue-300 transition">
+                        <div class="flex items-center gap-3">
+                            <span class="w-7 h-7 flex items-center justify-center rounded-xl text-xs ${badgeBg}">${index + 1}</span>
+                            <img src="${item.photo || 'https://via.placeholder.com/100'}" class="w-10 h-10 rounded-full object-cover border border-slate-300 shadow-sm">
+                            <div>
+                                <h4 class="text-xs font-bold text-slate-800 flex items-center gap-1.5">
+                                    ${item.name} ${isMyEntry ? '<span class="text-[9px] bg-blue-100 text-blue-700 px-1.5 py-0.5 rounded-full">আপনার</span>' : ''}
+                                </h4>
+                                <p class="text-[10px] text-slate-500">ফোন: ${item.phone || 'নেই'} • এন্ট্রি: ${new Date(item.entryTime).toLocaleTimeString('bn-BD', {hour: '2-digit', minute:'2-digit'})}</p>
                             </div>
                         </div>
-                        <div class="flex flex-col gap-1 shrink-0">
-                            ${actionButtons}
+                        <div class="flex items-center gap-1.5">
+                            ${actionArea}
                         </div>
                     </div>
-                    ${cancelBadge}
-                </div>`;
+                `;
             });
             container.innerHTML = html;
         }
-        setInterval(renderSerialList, 1000);
 
-        db.ref('settings').on('value', (snap) => { if (snap.exists()) { standSettings = { ...standSettings, ...snap.val() }; document.getElementById('currentStandCoords').innerText = `Lat: ${standSettings.lat.toFixed(5)}, Lng: ${standSettings.lng.toFixed(5)}`; } });
-        db.ref('leaders').on('value', (snap) => {
-            const data = snap.val() || {};
-            if (data.president) { document.getElementById('namePresident').innerText = data.president.name; if (data.president.photo) document.getElementById('imgPresident').src = data.president.photo; }
-            if (data.vp) { document.getElementById('nameVP').innerText = data.vp.name; if (data.vp.photo) document.getElementById('imgVP').src = data.vp.photo; }
-            if (data.org) { document.getElementById('nameOrg').innerText = data.org.name; if (data.org.photo) document.getElementById('imgOrg').src = data.org.photo; }
-        });
-        db.ref('notice').on('value', (snap) => {
-            const data = snap.val();
-            if (data) {
-                document.getElementById('noticeText').innerText = data.text || "";
-                const imgEl = document.getElementById('noticeImage');
-                if (data.photo) { imgEl.src = data.photo; imgEl.classList.remove('hidden'); } else { imgEl.classList.add('hidden'); }
-            }
-        });
-        db.ref('serials').on('value', (snap) => { serialList = snap.val() || {}; renderSerialList(); });
-        db.ref('riders').on('value', (snap) => { allRiders = snap.val() || {}; renderAdminRidersList(); });
-
-        function openCancelLogModal() {
-            document.getElementById('cancelLogModal').style.display = 'flex';
-            db.ref('cancelLogs').once('value', (snap) => {
-                const logs = snap.val() || {};
-                const listEl = document.getElementById('cancelLogList');
-                const now = Date.now();
-                let html = "";
-                Object.entries(logs).reverse().forEach(([k, log]) => {
-                    if (now - log.timestamp > 86400000) db.ref(`cancelLogs/${k}`).remove();
-                    else {
-                        html += `<div class="bg-rose-50/70 border border-rose-200 p-2.5 rounded-2xl"><p class="font-bold text-slate-800">কাটা হয়েছে: <span class="text-rose-700">${log.victimName}</span></p><p class="text-slate-600 mt-0.5">কেটেছেন: <span class="font-bold text-blue-800">${log.cancellerName}</span></p><p class="text-[10px] text-slate-400 mt-0.5">সময়: ${new Date(log.timestamp).toLocaleTimeString('bn-BD')}</p></div>`;
-                    }
-                });
-                listEl.innerHTML = html || `<p class="text-center text-slate-400 py-4">কোনো লগ নেই।</p>`;
+        async function toggleBreak(key, status) {
+            await db.ref(`serials/${key}`).update({
+                onBreak: status,
+                breakStartTime: status ? Date.now() : null
             });
         }
 
-        function openAdminLogin() { document.getElementById('adminPassInput').value = ""; document.getElementById('adminLoginModal').style.display = 'flex'; }
-        function verifyAdmin() {
-            if (document.getElementById('adminPassInput').value === "692372") { closeModal('adminLoginModal'); document.getElementById('adminDashboardModal').style.display = 'block'; }
-            else alert("ভুল পাসওয়ার্ড!");
-        }
-
-        function toggleStandLock() {
-            standLocationLocked = document.getElementById('standLockToggle').checked;
-        }
-
-        function setStandLocationFromGPS() {
-            if (standLocationLocked) {
-                alert("⚠️ স্ট্যান্ড লোকেশন লক করা আছে! লোকেশন পরিবর্তন করতে চাইলে ওপরের 'লোকেশন লক অন' টিকমার্ক তুলে আনলক করুন।");
+        // Request Cancel with Geofence Check (200m) & 10 min countdown trigger
+        async function requestCancelSerial(key) {
+            const allowedRadius = (myRiderData && myRiderData.customRadius) ? Number(myRiderData.customRadius) : standSettings.defaultRadius;
+            if (currentDistance > allowedRadius) {
+                alert(`আপনি স্ট্যান্ডের সীমানার বাইরে (${currentDistance} মি.) আছেন। স্ট্যান্ডের ${allowedRadius} মিটারের মধ্যে থেকে সিরিয়াল কাটতে হবে।`);
                 return;
             }
-            if (!currentUserPos) { alert("জিপিএস লোকেশন পাওয়া যায়নি।"); return; }
-            db.ref('settings').update({ lat: currentUserPos.lat, lng: currentUserPos.lng });
-            alert("স্ট্যান্ডের নতুন জিপিএস লোকেশন সফলভাবে সেট হয়েছে!");
+
+            if (confirm('আপনি কি সিরিয়াল কাটতে চান? ১০ মিনিট সময় দেওয়া হবে, এর মধ্যে ফিরিয়ে না আনলে সিরিয়াল থেকে নাম কেটে যাবে।')) {
+                await db.ref(`serials/${key}`).update({
+                    cancelling: true,
+                    cancelStartTime: Date.now()
+                });
+            }
+        }
+
+        // Restore Serial before 10 minutes expire
+        async function restoreSerial(key) {
+            await db.ref(`serials/${key}`).update({
+                cancelling: false,
+                cancelStartTime: null
+            });
+            alert('আপনার সিরিয়াল সফলভাবে ফিরিয়ে আনা হয়েছে!');
+        }
+
+        // Cancel Log Viewer
+        async function openCancelLogModal() {
+            const modal = document.getElementById('cancelLogModal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+
+            const logContainer = document.getElementById('cancelLogList');
+            logContainer.innerHTML = `<p class="text-center text-slate-400 py-4">লোড হচ্ছে...</p>`;
+
+            db.ref('cancelLogs').once('value', (snap) => {
+                const logs = snap.val() || {};
+                const now = Date.now();
+                const twentyFourHours = 24 * 60 * 60 * 1000;
+                let html = '';
+                let count = 0;
+
+                Object.entries(logs).forEach(([k, log]) => {
+                    if (now - log.cancelledAt <= twentyFourHours) {
+                        count++;
+                        const timeStr = new Date(log.cancelledAt).toLocaleString('bn-BD', {hour: '2-digit', minute:'2-digit', day:'numeric', month:'short'});
+                        html += `
+                            <div class="p-2.5 bg-slate-50 rounded-xl border border-slate-200 flex justify-between items-center">
+                                <div>
+                                    <p class="font-bold text-slate-800">${log.name} <span class="text-[10px] text-slate-500 font-normal">(${log.phone})</span></p>
+                                    <p class="text-[10px] text-rose-600">কাটার সময়: ${timeStr}</p>
+                                </div>
+                            </div>
+                        `;
+                    } else {
+                        db.ref(`cancelLogs/${k}`).remove();
+                    }
+                });
+
+                if (count === 0) {
+                    logContainer.innerHTML = `<p class="text-center text-slate-400 py-4">গত ২৪ ঘণ্টায় কোনো সিরিয়াল কাটার রেকর্ড নেই।</p>`;
+                } else {
+                    logContainer.innerHTML = html;
+                }
+            });
+        }
+
+        // Admin Functions
+        function openAdminLogin() {
+            const modal = document.getElementById('adminLoginModal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function verifyAdmin() {
+            const pass = document.getElementById('adminPassInput').value;
+            if (pass === '123456' || pass === 'admin123') {
+                closeModal('adminLoginModal');
+                document.getElementById('adminPassInput').value = '';
+                const dashboard = document.getElementById('adminDashboardModal');
+                dashboard.classList.remove('hidden');
+            } else {
+                alert('ভুল পাসওয়ার্ড! সঠিক পাসওয়ার্ড দিন।');
+            }
+        }
+
+        function closeModal(modalId) {
+            const modal = document.getElementById(modalId);
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        async function setStandLocationFromGPS() {
+            if (standLocationLocked) {
+                alert('স্ট্যান্ড লোকেশন লক করা আছে! পরিবর্তন করতে ওপরের "লোকেশন লক অন" টিক চিহ্ন তুলে দিন।');
+                return;
+            }
+            if (!currentUserPos) {
+                alert('আপনার বর্তমান GPS লোকেশন পাওয়া যায়নি। কিছুক্ষণ অপেক্ষা করুন।');
+                return;
+            }
+            await db.ref('settings').update({
+                standLat: currentUserPos.lat,
+                standLng: currentUserPos.lng
+            });
+            alert('বর্তমান GPS লোকেশন সফলভাবে স্ট্যান্ড হিসেবে সেট হয়েছে!');
+        }
+
+        async function toggleStandLock() {
+            standLocationLocked = document.getElementById('standLockToggle').checked;
+            await db.ref('settings').update({ standLocked: standLocationLocked });
         }
 
         async function updateLeaderInfo() {
             const role = document.getElementById('leaderRoleSelect').value;
             const name = document.getElementById('leaderNameInput').value.trim();
-            const file = document.getElementById('leaderPhotoInput').files[0];
-            const updates = {};
-            if (name) updates.name = name;
-            if (file) updates.photo = await compressImage(file, 200);
-            if (Object.keys(updates).length) { await db.ref(`leaders/${role}`).update(updates); alert("নেতার তথ্য আপডেট হয়েছে!"); }
+            const photoFile = document.getElementById('leaderPhotoInput').files[0];
+
+            if (!name && !photoFile) {
+                alert('নাম অথবা ছবি প্রদান করুন।');
+                return;
+            }
+
+            let photoUrl = null;
+            if (photoFile) {
+                photoUrl = await compressImage(photoFile, 200);
+            }
+
+            db.ref(`leaders/${role}`).once('value', async (snap) => {
+                const current = snap.val() || {};
+                await db.ref(`leaders/${role}`).set({
+                    name: name || current.name || '',
+                    photo: photoUrl || current.photo || 'https://via.placeholder.com/100'
+                });
+                document.getElementById('leaderNameInput').value = '';
+                alert('নেতার তথ্য সফলভাবে আপডেট হয়েছে!');
+            });
         }
 
-        async function updateNoticeBoard(removePhoto) {
+        async function updateNoticeBoard(clearPhoto = false) {
             const text = document.getElementById('adminNoticeText').value.trim();
-            const file = document.getElementById('adminNoticePhoto').files[0];
-            const updates = {};
-            if (text) updates.text = text;
-            if (removePhoto) updates.photo = "";
-            else if (file) updates.photo = await compressImage(file, 450);
-            await db.ref('notice').update(updates);
-            alert("নোটিশ আপডেট হয়েছে!");
+            const photoFile = document.getElementById('adminNoticePhoto').files[0];
+
+            let photoUrl = null;
+            if (photoFile) {
+                photoUrl = await compressImage(photoFile, 600);
+            }
+
+            db.ref('notice').once('value', async (snap) => {
+                const current = snap.val() || {};
+                await db.ref('notice').set({
+                    text: text || current.text || '',
+                    photo: clearPhoto ? null : (photoUrl || current.photo || null)
+                });
+                document.getElementById('adminNoticeText').value = '';
+                alert('নোটিশ বোর্ড আপডেট করা হয়েছে!');
+            });
         }
 
         function renderAdminRidersList() {
             const container = document.getElementById('adminRidersList');
-            const keys = Object.keys(allRiders);
-            document.getElementById('adminTotalRiders').innerText = `মোট: ${keys.length}`;
-            let html = "";
-            keys.forEach(k => {
-                const r = allRiders[k];
-                const isSuspended = r.suspended || false;
-                const activeSerialKey = Object.keys(serialList).find(sk => serialList[sk].riderId === k);
-                
-                let liveDistText = "লোকেশন অফ / অজানা";
-                if (r.currentLat && r.currentLng) {
-                    const dist = calculateDistance(r.currentLat, r.currentLng, standSettings.lat, standSettings.lng);
-                    liveDistText = `স্ট্যান্ড থেকে দূরত্ব: ${dist} মিটার (Lat: ${r.currentLat.toFixed(4)}, Lng: ${r.currentLng.toFixed(4)})`;
-                }
+            const totalRidersEl = document.getElementById('adminTotalRiders');
+            const entries = Object.entries(allRiders);
 
+            totalRidersEl.innerText = `মোট: ${entries.length}`;
+            if (entries.length === 0) {
+                container.innerHTML = `<p class="text-center text-xs text-slate-400 py-3">কোনো রাইডার নিবন্ধিত নেই।</p>`;
+                return;
+            }
+
+            let html = '';
+            entries.forEach(([id, rider]) => {
                 html += `
-                <div class="bg-white p-3 rounded-2xl border border-slate-200 shadow-sm space-y-2.5">
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center gap-2">
-                            <img src="${r.photo}" class="w-10 h-10 rounded-full object-cover border">
-                            <div>
-                                <p class="text-xs font-bold text-slate-800">${r.name}</p>
-                                <p class="text-[10px] text-slate-500">${r.phone}</p>
+                    <div class="bg-white p-3 rounded-2xl border border-slate-200 shadow-sm space-y-2">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-2.5">
+                                <img src="${rider.photo || 'https://via.placeholder.com/100'}" class="w-10 h-10 rounded-full object-cover border">
+                                <div>
+                                    <h4 class="text-xs font-bold text-slate-800">${rider.name}</h4>
+                                    <p class="text-[10px] text-slate-500">${rider.phone} • দূরত্ব: ${rider.currentDistance !== undefined ? rider.currentDistance + 'মি.' : 'অজানা'}</p>
+                                </div>
                             </div>
+                            <span class="text-[10px] px-2 py-0.5 rounded-full font-bold ${rider.suspended ? 'bg-rose-100 text-rose-700' : 'bg-emerald-100 text-emerald-700'}">
+                                ${rider.suspended ? 'معطل' : 'অ্যাক্টিভ'}
+                            </span>
                         </div>
-                        <div class="flex items-center gap-1">
-                            <button onclick="db.ref('riders/${k}').update({suspended: ${!isSuspended}})" class="px-2.5 py-1 rounded-xl text-[10px] font-bold ${isSuspended?'bg-red-600 text-white':'bg-emerald-600 text-white'}">${isSuspended?'সাসপেন্ডেড':'অ্যাক্টিভ'}</button>
-                            ${activeSerialKey?`<button onclick="adminInstantCut('${activeSerialKey}')" class="bg-rose-700 hover:bg-rose-800 text-white px-2.5 py-1 rounded-xl text-[10px] font-bold shadow-sm">ইনস্ট্যান্ট কাটুন</button>`:''}
-                        </div>
-                    </div>
-
-                    <div class="text-[10px] bg-slate-100 p-1.5 rounded-lg text-slate-700 font-mono">
-                        📍 <span class="font-semibold">${liveDistText}</span>
-                    </div>
-
-                    <div class="grid grid-cols-3 gap-1.5 text-[10px] pt-1 border-t">
-                        <div>
-                            <label class="text-slate-500 font-bold">বিরতি (মি.):</label>
-                            <input type="number" id="brk_${k}" value="${r.customBreakMins || 30}" class="w-full border rounded p-1 bg-slate-50 font-mono">
-                        </div>
-                        <div>
-                            <label class="text-slate-500 font-bold">দূরত্ব (মি.):</label>
-                            <input type="number" id="rad_${k}" value="${r.customRadius || 200}" class="w-full border rounded p-1 bg-slate-50 font-mono">
-                        </div>
-                        <div>
-                            <label class="text-slate-500 font-bold">কাটার টাইম:</label>
-                            <input type="number" id="can_${k}" value="${r.customCancelMins || 10}" class="w-full border rounded p-1 bg-slate-50 font-mono">
+                        <div class="flex items-center gap-2 pt-1 border-t border-slate-100">
+                            <div class="flex-1 flex items-center gap-1">
+                                <span class="text-[10px] text-slate-500">ব্যাসার্ধ:</span>
+                                <input type="number" id="rad_${id}" value="${rider.customRadius || standSettings.defaultRadius}" class="w-16 text-[10px] p-1 border rounded-lg text-center">
+                                <button onclick="updateRiderRadius('${id}')" class="bg-blue-600 text-white text-[10px] px-2 py-1 rounded-lg font-bold">সেভ</button>
+                            </div>
+                            <button onclick="toggleSuspendRider('${id}', ${!rider.suspended})" class="text-[10px] px-2.5 py-1 rounded-lg font-bold ${rider.suspended ? 'bg-emerald-600 text-white' : 'bg-amber-500 text-white'}">
+                                ${rider.suspended ? 'অনুমতি দিন' : 'ব্লক/সাময়িক'}
+                            </button>
+                            <button onclick="deleteRider('${id}')" class="text-[10px] px-2 py-1 rounded-lg font-bold bg-rose-600 text-white">মুছুন</button>
                         </div>
                     </div>
-                    <button onclick="saveRiderSpecialSettings('${k}')" class="w-full bg-blue-600 hover:bg-blue-700 text-white text-[10px] py-1.5 rounded-xl font-bold shadow-sm">
-                        এই রাইডারের স্পেশাল সেটিংস সেভ করুন
-                    </button>
-                </div>`;
+                `;
             });
             container.innerHTML = html;
         }
 
-        function adminInstantCut(serialKey) {
-            db.ref(`serials/${serialKey}`).remove();
-            alert("অ্যাডমিন পাওয়ারে সিরিয়াল তাৎক্ষণিকভাবে কেটে দেওয়া হয়েছে!");
+        async function updateRiderRadius(id) {
+            const val = document.getElementById(`rad_${id}`).value;
+            await db.ref(`riders/${id}`).update({ customRadius: Number(val) });
+            alert('রাইডারের ব্যক্তিগত ব্যাসার্ধ আপডেট করা হয়েছে!');
         }
 
-        function saveRiderSpecialSettings(k) {
-            const brk = Number(document.getElementById(`brk_${k}`).value) || 30;
-            const rad = Number(document.getElementById(`rad_${k}`).value) || 200;
-            const can = Number(document.getElementById(`can_${k}`).value) || 10;
-            db.ref(`riders/${k}`).update({
-                customBreakMins: brk,
-                customRadius: rad,
-                customCancelMins: can
-            });
-            alert("উক্ত রাইডারের জন্য ব্যক্তিগত স্পেশাল সময় ও দূরত্ব সফলভাবে সেভ হয়েছে!");
+        async function toggleSuspendRider(id, status) {
+            await db.ref(`riders/${id}`).update({ suspended: status });
         }
 
-        // Ludo functions
+        async function deleteRider(id) {
+            if (confirm('আপনি কি এই রাইডারকে সম্পূর্ণ ডিলিট করতে চান?')) {
+                await db.ref(`riders/${id}`).remove();
+                alert('রাইডার মুছে ফেলা হয়েছে।');
+            }
+        }
+
+        // Online Ludo Game Logic
         function openLudoModal() {
-            if (!myRiderId) { alert("লুডু খেলতে হলে আগে রেজিস্ট্রেশন করুন!"); return; }
-            document.getElementById('ludoModal').style.display = 'block';
+            const modal = document.getElementById('ludoModal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            loadLudoRooms();
+        }
+
+        function loadLudoRooms() {
             db.ref('ludoRooms').on('value', (snap) => {
                 const rooms = snap.val() || {};
-                let html = "";
-                Object.entries(rooms).forEach(([id, r]) => {
-                    html += `<div class="flex justify-between items-center bg-slate-50 p-2.5 rounded-2xl text-xs border"><span><b>${r.hostName}</b></span><button onclick="joinLudoRoom('${id}')" class="bg-indigo-600 text-white px-3 py-1 rounded-xl font-bold">খেলুন</button></div>`;
+                const listEl = document.getElementById('ludoRoomsList');
+                let html = '';
+                let count = 0;
+
+                Object.entries(rooms).forEach(([roomId, room]) => {
+                    count++;
+                    html += `
+                        <div class="bg-indigo-50/50 p-2.5 rounded-2xl border border-indigo-100 flex justify-between items-center text-xs">
+                            <div>
+                                <p class="font-bold text-indigo-900">রুম আইডি: ${roomId.slice(-4)}</p>
+                                <p class="text-[10px] text-slate-500">প্লেয়ার: ${Object.keys(room.players || {}).length} / ${room.maxPlayers}</p>
+                            </div>
+                            <button onclick="joinLudoRoom('${roomId}')" class="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-1.5 rounded-xl font-bold shadow">যুক্ত হোন</button>
+                        </div>
+                    `;
                 });
-                document.getElementById('ludoRoomsList').innerHTML = html || `<p class="text-xs text-slate-400 text-center py-2">কোনো রুম নেই।</p>`;
+
+                if (count === 0) {
+                    listEl.innerHTML = `<p class="text-xs text-slate-400 text-center py-2">কোনো রুম নেই। নতুন রুম তৈরি করুন।</p>`;
+                } else {
+                    listEl.innerHTML = html;
+                }
             });
         }
-        function createLudoRoom() {
-            const roomRef = db.ref('ludoRooms').push();
-            roomRef.set({ hostName: myRiderData.name, maxPlayers: 2, turnIndex: 0, lastDice: 0, players: { [myRiderId]: { name: myRiderData.name, color: 'red', pos: 0 } } });
-            joinLudoRoom(roomRef.key);
+
+        async function createLudoRoom() {
+            const maxPlayers = document.getElementById('ludoPlayerCount').value;
+            const playerName = (myRiderData && myRiderData.name) ? myRiderData.name : ('বাইকার_' + Math.floor(Math.random() * 1000));
+            const playerId = myRiderId || ('guest_' + Date.now());
+
+            const newRoomRef = db.ref('ludoRooms').push();
+            currentLudoRoomId = newRoomRef.key;
+
+            const initialRoomData = {
+                maxPlayers: Number(maxPlayers),
+                host: playerId,
+                turnIndex: 0,
+                status: 'waiting',
+                players: {
+                    [playerId]: { name: playerName, color: 'red', position: 0 }
+                }
+            };
+
+            await newRoomRef.set(initialRoomData);
+            enterLudoGameUI(currentLudoRoomId);
         }
-        function joinLudoRoom(roomId) {
+
+        async function joinLudoRoom(roomId) {
             currentLudoRoomId = roomId;
+            const playerName = (myRiderData && myRiderData.name) ? myRiderData.name : ('বাইকার_' + Math.floor(Math.random() * 1000));
+            const playerId = myRiderId || ('guest_' + Date.now());
+
+            db.ref(`ludoRooms/${roomId}`).once('value', async (snap) => {
+                const room = snap.val();
+                if (room && room.players) {
+                    const colors = ['red', 'green', 'yellow', 'blue'];
+                    const existingCount = Object.keys(room.players).length;
+                    if (existingCount >= room.maxPlayers) {
+                        alert('রুমটি পূর্ণ!');
+                        return;
+                    }
+                    const assignedColor = colors[existingCount % colors.length];
+                    await db.ref(`ludoRooms/${roomId}/players/${playerId}`).set({
+                        name: playerName,
+                        color: assignedColor,
+                        position: 0
+                    });
+                    enterLudoGameUI(roomId);
+                }
+            });
+        }
+
+        function enterLudoGameUI(roomId) {
             document.getElementById('ludoLobby').classList.add('hidden');
             document.getElementById('ludoGameArea').classList.remove('hidden');
+            initLudoBoardGrid();
+            listenLudoRoomState(roomId);
+        }
+
+        function leaveLudoRoom() {
+            if (currentLudoRoomId) {
+                const playerId = myRiderId || 'guest';
+                db.ref(`ludoRooms/${currentLudoRoomId}/players/${playerId}`).remove();
+            }
+            currentLudoRoomId = null;
+            document.getElementById('ludoGameArea').classList.add('hidden');
+            document.getElementById('ludoLobby').classList.remove('hidden');
+        }
+
+        function initLudoBoardGrid() {
+            const board = document.getElementById('ludoBoardContainer');
+            let html = '';
+            for (let r = 0; r < 15; r++) {
+                for (let c = 0; c < 15; c++) {
+                    let bg = '';
+                    if (r < 6 && c < 6) bg = 'bg-red-base';
+                    else if (r < 6 && c > 8) bg = 'bg-green-base';
+                    else if (r > 8 && c < 6) bg = 'bg-yellow-base';
+                    else if (r > 8 && c > 8) bg = 'bg-blue-base';
+                    html += `<div class="ludo-cell ${bg}" id="cell_${r}_${c}"></div>`;
+                }
+            }
+            board.innerHTML = html;
+        }
+
+        function listenLudoRoomState(roomId) {
             db.ref(`ludoRooms/${roomId}`).on('value', (snap) => {
                 const room = snap.val();
                 if (!room) return;
-                document.getElementById('ludoTurnInfo').innerText = `চলমান রুম`;
-                let cells = "";
-                for (let r=0; r<15; r++) {
-                    for (let c=0; c<15; c++) {
-                        let bg = (r<6 && c<6) ? "bg-red-base" : (r<6 && c>8) ? "bg-green-base" : (r>8 && c<6) ? "bg-blue-base" : (r>8 && c>8) ? "bg-yellow-base" : "bg-white";
-                        cells += `<div class="ludo-cell ${bg}"></div>`;
-                    }
-                }
-                document.getElementById('ludoBoardContainer').innerHTML = cells;
+
+                const players = room.players || {};
+                let statusHtml = '';
+                const playerId = myRiderId || 'guest';
+                const isMyTurn = Object.keys(players)[room.turnIndex % Object.keys(players).length] === playerId;
+
+                document.getElementById('ludoTurnInfo').innerText = isMyTurn ? 'আপনার চাল!' : 'প্রতিপক্ষের চাল...';
+                document.getElementById('rollDiceBtn').disabled = !isMyTurn;
+
+                Object.entries(players).forEach(([pId, p]) => {
+                    statusHtml += `<div class="p-1.5 rounded-xl bg-white border flex justify-between items-center"><span class="font-bold text-${p.color}-600">${p.name}</span><span>ঘর: ${p.position}</span></div>`;
+                });
+                document.getElementById('ludoPlayersStatus').innerHTML = statusHtml;
             });
         }
-        function rollLudoDice() {
+
+        async function rollLudoDice() {
             if (!currentLudoRoomId) return;
             const dice = Math.floor(Math.random() * 6) + 1;
-            db.ref(`ludoRooms/${currentLudoRoomId}`).update({ lastDice: dice });
-        }
-        function leaveLudoRoom() { currentLudoRoomId = null; document.getElementById('ludoGameArea').classList.add('hidden'); document.getElementById('ludoLobby').classList.remove('hidden'); }
-        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+            document.getElementById('ludoDiceResult').innerText = `ছক্কা: ${dice}`;
 
-        window.onload = () => { updateWallClock(); loadMyProfile(); startGPSTracking(); };
+            db.ref(`ludoRooms/${currentLudoRoomId}`).once('value', async (snap) => {
+                const room = snap.val();
+                if (!room) return;
+                const players = room.players || {};
+                const playerIds = Object.keys(players);
+                const myTurnPlayerId = playerIds[room.turnIndex % playerIds.length];
+
+                const playerId = myRiderId || 'guest';
+                if (myTurnPlayerId === playerId) {
+                    let newPos = players[playerId].position + dice;
+                    if (newPos > 56) newPos = 56;
+                    await db.ref(`ludoRooms/${currentLudoRoomId}/players/${playerId}`).update({ position: newPos });
+                    await db.ref(`ludoRooms/${currentLudoRoomId}`).update({ turnIndex: room.turnIndex + 1 });
+                }
+            });
+        }
+
+        // Initialize GPS & Wall Clock on Load
+        window.onload = () => {
+            updateWallClock();
+            startGPSTracking();
+        };
     </script>
 </body>
 </html>
