@@ -25,7 +25,291 @@
             background-color: #ddd;
             margin: 0 auto 15px;
             border-radius: 50%;
-            display: flex;
+            display: flex;<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>চন্দ্রিমা বাইকার একতা - ডিজিটাল স্ট্যান্ড ম্যানেজমেন্ট</title>
+    <style>
+        * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { margin: 0; padding: 12px; background-color: #f0f2f5; color: #1c1e21; }
+        .header { background: linear-gradient(135deg, #006a4e, #004d38); color: white; padding: 16px; border-radius: 12px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .header h2 { margin: 0; font-size: 20px; }
+        .header p { margin: 4px 0 0; font-size: 13px; opacity: 0.9; }
+
+        .card { background: white; border-radius: 12px; padding: 14px; margin-top: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.06); }
+        .section-title { font-size: 15px; font-weight: bold; color: #006a4e; border-bottom: 2px solid #e4e6eb; padding-bottom: 6px; margin-bottom: 12px; }
+
+        /* কমিটি সেকশন */
+        .committee-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; text-align: center; }
+        .member-box { background: #f8f9fa; padding: 8px; border-radius: 10px; border: 1px solid #e0e0e0; }
+        .member-img { width: 65px; height: 65px; border-radius: 50%; object-fit: cover; border: 2px solid #006a4e; background: #ddd; cursor: pointer; }
+        .member-role { font-size: 12px; font-weight: bold; margin-top: 6px; color: #333; }
+        .upload-hint { font-size: 10px; color: #006a4e; display: block; margin-top: 2px; cursor: pointer; }
+
+        /* রেজিস্ট্রেশন ও প্রোফাইল */
+        .input-group { margin-bottom: 10px; }
+        .input-group label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 4px; }
+        .input-group input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 8px; font-size: 14px; }
+        .btn { width: 100%; padding: 12px; background: #006a4e; color: white; border: none; border-radius: 8px; font-size: 15px; font-weight: bold; cursor: pointer; }
+        .btn:disabled { background: #999; }
+
+        /* লক করা স্থায়ী প্রোফাইল */
+        .locked-profile { display: flex; align-items: center; gap: 12px; background: #e8f5e9; padding: 12px; border-radius: 10px; border: 1px solid #a5d6a7; }
+        .locked-profile img { width: 65px; height: 65px; border-radius: 50%; object-fit: cover; border: 2px solid #006a4e; }
+        .locked-badge { display: inline-block; background: #006a4e; color: white; font-size: 10px; padding: 2px 6px; border-radius: 4px; margin-top: 4px; }
+
+        /* জিপিএস স্ট্যাটাস বক্স */
+        .gps-status { padding: 10px; border-radius: 8px; font-size: 13px; font-weight: bold; text-align: center; margin-top: 10px; }
+        .status-in { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .status-out { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+
+        /* লাইভ সিরিয়াল লিস্ট (১০টি স্লট) */
+        .serial-item { display: flex; align-items: center; justify-content: space-between; padding: 10px; border-bottom: 1px solid #eee; }
+        .serial-item:last-child { border-bottom: none; }
+        .serial-left { display: flex; align-items: center; gap: 10px; }
+        .serial-num { width: 28px; height: 28px; background: #006a4e; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px; }
+        .serial-avatar { width: 42px; height: 42px; border-radius: 50%; object-fit: cover; border: 1px solid #ccc; }
+        .empty-slot { color: #999; font-size: 13px; font-style: italic; }
+        .active-tag { background: #28a745; color: white; font-size: 11px; padding: 3px 8px; border-radius: 12px; }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h2>চন্দ্রিমা বাইকার একতা</h2>
+        <p>ডিজিটাল অটোমেটিক স্ট্যান্ড ম্যানেজমেন্ট (১০০ মিটার জোন)</p>
+    </div>
+
+    <!-- ১. স্ট্যান্ডের পরিচালনা কমিটি (৩টি ছবি) -->
+    <div class="card">
+        <div class="section-title">স্ট্যান্ডের পরিচালনা কমিটি</div>
+        <div class="committee-grid">
+            <div class="member-box" onclick="document.getElementById('file-pres').click()">
+                <img id="img-pres" class="member-img" src="https://via.placeholder.com/70?text=ছবি" alt="সভাপতি">
+                <div class="member-role">সভাপতি</div>
+                <span class="upload-hint">ছবি পরিবর্তন</span>
+                <input type="file" id="file-pres" accept="image/*" style="display:none" onchange="saveCommitteePhoto('pres', this)">
+            </div>
+            <div class="member-box" onclick="document.getElementById('file-vp').click()">
+                <img id="img-vp" class="member-img" src="https://via.placeholder.com/70?text=ছবি" alt="সহ-সভাপতি">
+                <div class="member-role">সহ-সভাপতি</div>
+                <span class="upload-hint">ছবি পরিবর্তন</span>
+                <input type="file" id="file-vp" accept="image/*" style="display:none" onchange="saveCommitteePhoto('vp', this)">
+            </div>
+            <div class="member-box" onclick="document.getElementById('file-sec').click()">
+                <img id="img-sec" class="member-img" src="https://via.placeholder.com/70?text=ছবি" alt="সাংগঠনিক সম্পাদক">
+                <div class="member-role">সাংগঠনিক সম্পাদক</div>
+                <span class="upload-hint">ছবি পরিবর্তন</span>
+                <input type="file" id="file-sec" accept="image/*" style="display:none" onchange="saveCommitteePhoto('sec', this)">
+            </div>
+        </div>
+    </div>
+
+    <!-- ২. রাইডার স্থায়ী রেজিস্ট্রেশন / প্রোফাইল -->
+    <div class="card">
+        <div class="section-title">রাইডার রেজিস্ট্রেশন ও প্রোফাইল</div>
+        
+        <!-- রেজিস্ট্রেশন ফর্ম (শুধুমাত্র একবার পূরণ করা যাবে) -->
+        <form id="reg-form" onsubmit="registerRider(event)">
+            <div class="input-group">
+                <label>রাইডারের পূর্ণ নাম *</label>
+                <input type="text" id="rider-name" placeholder="আপনার নাম লিখুন" required>
+            </div>
+            <div class="input-group">
+                <label>মোবাইল নম্বর *</label>
+                <input type="tel" id="rider-phone" placeholder="01XXXXXXXXX" required>
+            </div>
+            <div class="input-group">
+                <label>রাইডারের স্পষ্ট ছবি (বাধ্যতামূলক) *</label>
+                <input type="file" id="rider-photo" accept="image/*" required>
+            </div>
+            <button type="submit" class="btn">স্থায়ীভাবে রেজিস্ট্রেশন সম্পন্ন করুন</button>
+        </form>
+
+        <!-- রেজিস্ট্রেশন সম্পন্ন হলে স্থায়ী প্রোফাইল দেখাবে (ডিলিট বাটন নেই) -->
+        <div id="profile-view" style="display:none;">
+            <div class="locked-profile">
+                <img id="saved-photo" src="" alt="Rider">
+                <div>
+                    <div style="font-weight:bold; font-size:16px;" id="saved-name"></div>
+                    <div style="font-size:13px; color:#444;" id="saved-phone"></div>
+                    <span class="locked-badge">🔒 স্থায়ীভাবে নিবন্ধিত (অপরিবর্তনযোগ্য)</span>
+                </div>
+            </div>
+            <div id="gps-box" class="gps-status status-out">জিপিএস লোকেশন যাচাই করা হচ্ছে...</div>
+        </div>
+    </div>
+
+    <!-- ৩. লাইভ সিরিয়াল (১০টি অপশন) -->
+    <div class="card">
+        <div class="section-title">লাইভ সিরিয়াল তালিকা (সর্বোচ্চ ১০ জন)</div>
+        <div id="serial-list"></div>
+    </div>
+
+    <script>
+        // ==========================================
+        // এখানে আপনার স্ট্যান্ডের সঠিক লোকেশন বসান
+        // ==========================================
+        const STAND_LAT = 23.756639; // আপনার স্ট্যান্ডের Latitude দিন
+        const STAND_LNG = 90.358412; // আপনার স্ট্যান্ডের Longitude দিন
+        const MAX_RADIUS_METERS = 100; // ১০০ মিটার সীমানা
+        const MAX_SLOTS = 10; // ১০টি সিরিয়াল অপশন
+
+        // পেজ লোড হলে সংরক্ষিত তথ্য লোড করা
+        window.onload = function() {
+            loadCommitteePhotos();
+            checkRegistration();
+            renderSerialList([]);
+        };
+
+        // কমিটির ছবি সেভ ও লোড
+        function saveCommitteePhoto(role, input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    localStorage.setItem('committee_' + role, e.target.result);
+                    document.getElementById('img-' + role).src = e.target.result;
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function loadCommitteePhotos() {
+            ['pres', 'vp', 'sec'].forEach(role => {
+                const saved = localStorage.getItem('committee_' + role);
+                if (saved) document.getElementById('img-' + role).src = saved;
+            });
+        }
+
+        // রাইডার রেজিস্ট্রেশন (একবার সেভ হলে আর ডিলিট হবে না)
+        function registerRider(e) {
+            e.preventDefault();
+            const name = document.getElementById('rider-name').value.trim();
+            const phone = document.getElementById('rider-phone').value.trim();
+            const photoInput = document.getElementById('rider-photo');
+
+            if (!photoInput.files || !photoInput.files[0]) {
+                alert("রেজিস্ট্রেশনের জন্য ছবি দেওয়া বাধ্যতামূলক!");
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                const riderData = {
+                    name: name,
+                    phone: phone,
+                    photo: event.target.result,
+                    registeredAt: new Date().toISOString()
+                };
+                // স্থায়ীভাবে ব্রাউজারে সেভ করা
+                localStorage.setItem('permanent_rider_profile', JSON.stringify(riderData));
+                checkRegistration();
+            };
+            reader.readAsDataURL(photoInput.files[0]);
+        }
+
+        function checkRegistration() {
+            const savedData = localStorage.getItem('permanent_rider_profile');
+            if (savedData) {
+                const rider = JSON.parse(savedData);
+                document.getElementById('reg-form').style.display = 'none';
+                document.getElementById('profile-view').style.display = 'block';
+                document.getElementById('saved-name').innerText = rider.name;
+                document.getElementById('saved-phone').innerText = "মোবাইল: " + rider.phone;
+                document.getElementById('saved-photo').src = rider.photo;
+                
+                // জিপিএস ট্র্যাকিং শুরু
+                startGPSTracking(rider);
+            }
+        }
+
+        // দুইটি জিপিএস পয়েন্টের দূরত্ব নির্ণয় (মিটারে)
+        function getDistanceInMeters(lat1, lon1, lat2, lon2) {
+            const R = 6371e3;
+            const φ1 = lat1 * Math.PI / 180;
+            const φ2 = lat2 * Math.PI / 180;
+            const Δφ = (lat2 - lat1) * Math.PI / 180;
+            const Δλ = (lon2 - lon1) * Math.PI / 180;
+
+            const a = Math.sin(Δφ/2) * Math.sin(Δφ/2) +
+                      Math.cos(φ1) * Math.cos(φ2) *
+                      Math.sin(Δλ/2) * Math.sin(Δλ/2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+            return R * c;
+        }
+
+        // অটোমেটিক জিপিএস চেক (১০০ মিটারের ভেতরে/বাইরে)
+        function startGPSTracking(rider) {
+            if (!navigator.geolocation) {
+                document.getElementById('gps-box').innerText = "আপনার ফোনে জিপিএস সাপোর্ট করছে না।";
+                return;
+            }
+
+            navigator.geolocation.watchPosition(
+                (position) => {
+                    const userLat = position.coords.latitude;
+                    const userLng = position.coords.longitude;
+                    const distance = Math.round(getDistanceInMeters(userLat, userLng, STAND_LAT, STAND_LNG));
+                    const gpsBox = document.getElementById('gps-box');
+
+                    if (distance <= MAX_RADIUS_METERS) {
+                        gpsBox.className = "gps-status status-in";
+                        gpsBox.innerText = `✅ আপনি স্ট্যান্ডের ভেতরে আছেন (${distance} মিটার) - সিরিয়াল চালু আছে`;
+                        renderSerialList([rider]);
+                    } else {
+                        gpsBox.className = "gps-status status-out";
+                        gpsBox.innerText = `❌ আপনি ১০০ মিটারের বাইরে আছেন (${distance} মিটার) - সিরিয়াল কাটা গেছে`;
+                        renderSerialList([]);
+                    }
+                },
+                (error) => {
+                    document.getElementById('gps-box').innerText = "⚠️ অনুগ্রহ করে ফোনের Location (GPS) চালু করুন।";
+                },
+                { enableHighAccuracy: true, maximumAge: 5000, timeout: 10000 }
+            );
+        }
+
+        // ১০টি সিরিয়াল স্লট দেখানো
+        function renderSerialList(activeRiders) {
+            const listContainer = document.getElementById('serial-list');
+            listContainer.innerHTML = '';
+
+            for (let i = 0; i < MAX_SLOTS; i++) {
+                const slotNum = i + 1;
+                const rider = activeRiders[i];
+
+                if (rider) {
+                    listContainer.innerHTML += `
+                        <div class="serial-item">
+                            <div class="serial-left">
+                                <div class="serial-num">${slotNum}</div>
+                                <img class="serial-avatar" src="${rider.photo}">
+                                <div>
+                                    <div style="font-weight:bold; font-size:14px;">${rider.name}</div>
+                                    <div style="font-size:12px; color:#666;">${rider.phone}</div>
+                                </div>
+                            </div>
+                            <span class="active-tag">সিরিয়ালে আছেন</span>
+                        </div>
+                    `;
+                } else {
+                    listContainer.innerHTML += `
+                        <div class="serial-item">
+                            <div class="serial-left">
+                                <div class="serial-num" style="background:#ccc;">${slotNum}</div>
+                                <span class="empty-slot">সিরিয়াল নং ${slotNum} - খালি আছে</span>
+                            </div>
+                        </div>
+                    `;
+                }
+            }
+        }
+    </script>
+</body>
+</html>
+
             align-items: center;
             justify-content: center;
             font-size: 14px;
