@@ -285,7 +285,7 @@
         </div>
     </div>
 
-    <!-- Cancel Serial Confirmation Modal -->
+    <!-- Cancel Serial Confirmation Modal (For other riders) -->
     <div id="cancelSerialModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
         <div class="bg-white rounded-3xl p-5 w-full max-w-xs shadow-2xl">
             <h3 class="text-sm font-bold text-red-600 mb-1 flex items-center gap-1">
@@ -396,7 +396,7 @@
         let currentUserPos = null;
         let currentDistance = 99999;
         let currentLudoRoomId = null;
-        let standLocationLocked = true; // Lock state for stand location
+        let standLocationLocked = true;
 
         function updateWallClock() {
             const now = new Date();
@@ -419,13 +419,11 @@
                 currentUserPos = { lat: pos.coords.latitude, lng: pos.coords.longitude };
                 currentDistance = calculateDistance(currentUserPos.lat, currentUserPos.lng, standSettings.lat, standSettings.lng);
                 
-                // Update live distance display in rider profile
                 const distEl = document.getElementById('myLiveDistanceDisplay');
                 if (distEl) {
                     distEl.innerText = `স্ট্যান্ড থেকে আপনার দূরত্ব: ${currentDistance} মিটার`;
                 }
 
-                // Push rider live location to Firebase for Admin inspection
                 if (myRiderId) {
                     db.ref(`riders/${myRiderId}`).update({
                         currentLat: currentUserPos.lat,
@@ -455,7 +453,7 @@
             const existingEntry = Object.entries(serialList).find(([k, v]) => v.riderId === myRiderId);
             if (!existingEntry) {
                 db.ref('serials').push({
-                    riderId: myRiderId, name: myRiderData.name, photo: myRiderData.photo,
+                    riderId: myRiderId, ownerRiderId: myRiderId, name: myRiderData.name, photo: myRiderData.photo,
                     type: 'auto', entryTime: Date.now(), onBreak: false, breakStartTime: null, cancelling: false, cancelStartTime: null
                 });
             } else {
@@ -526,7 +524,19 @@
             const name = document.getElementById('manualRiderName').value.trim();
             if (!name) { alert("নাম লিখুন!"); return; }
             if (currentDistance > standSettings.defaultRadius) { alert(`স্ট্যান্ডের সীমানার বাইরে আছেন (${currentDistance} মি.)।`); return; }
-            db.ref('serials').push({ riderId: 'manual_' + Date.now(), name, photo: 'https://via.placeholder.com/80?text=Manual', type: 'manual', entryTime: Date.now(), onBreak: false, breakUsedToday: false, breakStartTime: null, cancelling: false, cancelStartTime: null });
+            db.ref('serials').push({
+                riderId: 'manual_' + Date.now(),
+                ownerRiderId: myRiderId || 'guest',
+                name: name,
+                photo: myRiderData ? myRiderData.photo : 'https://via.placeholder.com/80?text=Manual',
+                type: 'manual',
+                entryTime: Date.now(),
+                onBreak: false,
+                breakUsedToday: false,
+                breakStartTime: null,
+                cancelling: false,
+                cancelStartTime: null
+            });
             document.getElementById('manualRiderName').value = "";
         }
 
@@ -540,6 +550,14 @@
                 db.ref(`riders/${myRiderId}`).update({ lastBreakDate: todayStr });
             } else if (item.breakUsedToday) { alert("এই সিরিয়ালে বিরতি শেষ!"); return; }
             db.ref(`serials/${key}`).update({ onBreak: true, breakUsedToday: true, breakStartTime: Date.now() });
+        }
+
+        // নিজের ফোন থেকে নিজের সিরিয়াল তাৎক্ষণিকভাবে কেটে দেওয়ার ফাংশন
+        function removeMySerial(key) {
+            if (confirm("আপনি কি নিশ্চিতভাবে নিজের সিরিয়ালটি কাটতে চান?")) {
+                db.ref(`serials/${key}`).remove();
+                alert("আপনার সিরিয়াল সফলভাবে কেটে দেওয়া হয়েছে।");
+            }
         }
 
         function initiateCancelSerial(key, index) {
@@ -602,6 +620,26 @@
                     else cancelBadge = `<div class="mt-1 text-[10px] bg-red-100 text-red-700 font-bold px-2 py-0.5 rounded">বাতিল হচ্ছে (${Math.floor(remSec/60)}:${String(remSec%60).padStart(2,'0')})</div>`;
                 }
 
+                // Check if this serial belongs to the logged-in rider on this device
+                const isMySerial = myRiderId && (item.riderId === myRiderId || item.ownerRiderId === myRiderId);
+
+                let actionButtons = "";
+                if (isMySerial) {
+                    // নিজের সিরিয়াল হলে সে নিজে বিরতি নিতে পারবে এবং তাৎক্ষণিকভাবে নিজের সিরিয়াল কাটতে পারবে
+                    if (!item.onBreak) {
+                        actionButtons += `<button onclick="startBreak('${key}')" class="bg-amber-500 hover:bg-amber-600 text-white text-[10px] font-bold px-2.5 py-1 rounded-xl shadow-sm">বিরতি</button>`;
+                    }
+                    actionButtons += `<button onclick="removeMySerial('${key}')" class="bg-red-600 hover:bg-red-700 text-white text-[10px] font-bold px-2.5 py-1 rounded-xl shadow-sm">সিরিয়াল কাটুন</button>`;
+                } else {
+                    // অন্যের সিরিয়াল হলে নিয়ম অনুযায়ী বিরতি ও পরবর্তী রাইডার হিসেবে বাতিল রিকোয়েস্ট করতে পারবে
+                    if (!item.onBreak) {
+                        actionButtons += `<button onclick="startBreak('${key}')" class="bg-amber-500 hover:bg-amber-600 text-white text-[10px] font-bold px-2.5 py-1 rounded-xl shadow-sm">বিরতি</button>`;
+                    }
+                    if (!item.cancelling) {
+                        actionButtons += `<button onclick="initiateCancelSerial('${key}', ${serialNum})" class="bg-rose-100 hover:bg-rose-200 text-rose-700 text-[10px] font-bold px-2.5 py-1 rounded-xl">বাতিল করুন</button>`;
+                    }
+                }
+
                 html += `
                 <div class="bg-white/80 border border-slate-200/80 rounded-2xl p-2.5 shadow-sm flex items-center justify-between gap-2">
                     <div class="flex items-center gap-2.5 overflow-hidden">
@@ -617,8 +655,7 @@
                         </div>
                     </div>
                     <div class="flex flex-col gap-1 shrink-0">
-                        ${!item.onBreak ? `<button onclick="startBreak('${key}')" class="bg-amber-500 hover:bg-amber-600 text-white text-[10px] font-bold px-2.5 py-1 rounded-xl shadow-sm">বিরতি</button>` : ''}
-                        ${!item.cancelling ? `<button onclick="initiateCancelSerial('${key}', ${serialNum})" class="bg-rose-100 hover:bg-rose-200 text-rose-700 text-[10px] font-bold px-2.5 py-1 rounded-xl">বাতিল করুন</button>` : ''}
+                        ${actionButtons}
                     </div>
                 </div>`;
             });
@@ -702,7 +739,6 @@
             alert("নোটিশ আপডেট হয়েছে!");
         }
 
-        // Admin panel rider list with live location/distance & per-rider special rules
         function renderAdminRidersList() {
             const container = document.getElementById('adminRidersList');
             const keys = Object.keys(allRiders);
@@ -713,7 +749,6 @@
                 const isSuspended = r.suspended || false;
                 const activeSerialKey = Object.keys(serialList).find(sk => serialList[sk].riderId === k);
                 
-                // Calculate live distance for admin inspection
                 let liveDistText = "লোকেশন অফ / অজানা";
                 if (r.currentLat && r.currentLng) {
                     const dist = calculateDistance(r.currentLat, r.currentLng, standSettings.lat, standSettings.lng);
@@ -736,12 +771,10 @@
                         </div>
                     </div>
 
-                    <!-- Rider Live Location Info for Admin -->
                     <div class="text-[10px] bg-slate-100 p-1.5 rounded-lg text-slate-700 font-mono">
                         📍 <span class="font-semibold">${liveDistText}</span>
                     </div>
 
-                    <!-- Individual Special Settings Controls for Admin -->
                     <div class="grid grid-cols-3 gap-1.5 text-[10px] pt-1 border-t">
                         <div>
                             <label class="text-slate-500 font-bold">বিরতি (মি.):</label>
