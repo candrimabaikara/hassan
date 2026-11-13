@@ -505,7 +505,13 @@
         function addManualSerial() {
             const name = document.getElementById('manualRiderName').value.trim();
             if (!name) { alert("নাম লিখুন!"); return; }
-            if (currentDistance > standSettings.defaultRadius) { alert(`স্ট্যান্ডের সীমানার বাইরে আছেন (${currentDistance} মি.)।`); return; }
+            
+            const allowedRadius = (myRiderData && myRiderData.customRadius) ? Number(myRiderData.customRadius) : standSettings.defaultRadius;
+            if (currentDistance > allowedRadius) { 
+                alert(`স্ট্যান্ডের নির্ধারিত সীমানার বাইরে আছেন (${currentDistance} মি.)। সীমানার মধ্যে এসে সিরিয়াল দিন।`); 
+                return; 
+            }
+
             db.ref('serials').push({
                 riderId: 'manual_' + Date.now(),
                 ownerRiderId: myRiderId || 'guest',
@@ -541,18 +547,18 @@
             }
         }
 
-        // যার সিরিয়াল কাটতে হবে, তার পরের সিরিয়ালের যেকোনো ব্যক্তি এটি কাটতে পারবে
+        // যার সিরিয়াল কাটা হবে, তার পরবর্তীতে সিরিয়ালে থাকা যেকোনো রাইডার এটি কাটতে পারবে (নির্ধারিত সীমানার মধ্যে থেকে)
         function cancelOtherSerial(key, targetIndex) {
-            if (currentDistance > standSettings.defaultRadius) { 
-                alert("সিরিয়াল কাটতে হলে স্ট্যান্ডের সীমানার মধ্যে থাকতে হবে!"); 
+            const allowedRadius = (myRiderData && myRiderData.customRadius) ? Number(myRiderData.customRadius) : standSettings.defaultRadius;
+            if (currentDistance > allowedRadius) { 
+                alert(`সিরিয়াল কাটতে হলে স্ট্যান্ডের নির্ধারিত সীমানার মধ্যে থাকতে হবে! (বর্তমান দূরত্ব: ${currentDistance} মি.)`); 
                 return; 
             }
 
             const sortedKeys = Object.keys(serialList);
-            // targetIndex হলো লক্ষ্য করা সিরিয়ালের ইনডেক্স (0 থেকে শুরু)
-            // পরবর্তী সিরিয়াল শুরু হবে targetIndex + 1 থেকে শেষ পর্যন্ত
             let amIAuthorized = false;
 
+            // targetIndex এর পরবর্তী সিরিয়ালগুলোতে (targetIndex + 1 থেকে শেষ পর্যন্ত) বর্তমান ব্যবহারকারী আছেন কি না যাচাই
             for (let i = targetIndex + 1; i < sortedKeys.length; i++) {
                 const currentKey = sortedKeys[i];
                 const item = serialList[currentKey];
@@ -569,7 +575,6 @@
 
             if (confirm("আপনি কি নিশ্চিতভাবে এই সিরিয়ালটি কেটে দিতে চান?")) {
                 const targetItem = serialList[key];
-                // Log into 24-hour cancel history
                 db.ref('cancelLogs').push({
                     victimName: targetItem.name,
                     cancellerName: myRiderData ? myRiderData.name : 'রাইডার',
@@ -618,7 +623,6 @@
                     if (!item.onBreak) {
                         actionButtons += `<button onclick="startBreak('${key}')" class="bg-amber-500 hover:bg-amber-600 text-white text-[10px] font-bold px-2.5 py-1 rounded-xl shadow-sm">বিরতি</button>`;
                     }
-                    // পরবর্তী সিরিয়ালের যেকোনো রাইডার কাটার জন্য এই বাটন পাবে
                     actionButtons += `<button onclick="cancelOtherSerial('${key}', ${idx})" class="bg-rose-100 hover:bg-rose-200 text-rose-700 text-[10px] font-bold px-2.5 py-1 rounded-xl">বাতিল করুন</button>`;
                 }
 
