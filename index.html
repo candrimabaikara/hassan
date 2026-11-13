@@ -540,7 +540,7 @@
             db.ref(`serials/${key}`).update({ onBreak: true, breakUsedToday: true, breakStartTime: Date.now() });
         }
 
-        // নিজের সিরিয়াল নিজে তাৎক্ষণিকভাবে কেটে দেওয়া
+        // নিজের সিরিয়াল তাৎক্ষণিকভাবে কেটে দেওয়া
         function removeMySerial(key) {
             if (confirm("আপনি কি নিশ্চিতভাবে নিজের সিরিয়ালটি কাটতে চান?")) {
                 const targetItem = serialList[key];
@@ -570,7 +570,7 @@
                 return; 
             }
 
-            if (confirm("আপনি কি এই রাইডারের বিরুদ্ধে সিরিয়াল কাটার জন্য ১০ মিনিটের কাউন্টডাউন শুরু করতে চান?")) {
+            if (confirm("আপনি কি এই সিরিয়ালটি কাটার জন্য ১০ মিনিটের কাউন্টডাউন শুরু করতে চান?")) {
                 db.ref(`serials/${key}`).update({
                     cancelling: true,
                     cancelStartTime: Date.now(),
@@ -579,7 +579,7 @@
             }
         }
 
-        // ১০ মিনিটের মধ্যে রাইডার টাচ করে সিরিয়াল টিকিয়ে রাখা
+        // ১০ মিনিটের মধ্যে সিরিয়াল আবার ফিরিয়ে আনা (টিকিয়ে রাখা)
         function keepMySerial(key) {
             db.ref(`serials/${key}`).update({
                 cancelling: false,
@@ -614,7 +614,7 @@
                     else breakBadge = `<span class="bg-amber-100 text-amber-800 text-[10px] font-bold px-2 py-0.5 rounded-full animate-pulse">বিরতি বাকি: ${Math.floor(remSec/60)}মি ${remSec%60}সে</span>`;
                 }
 
-                // 10-Minute Countdown Logic for Cancellation
+                // 10-Minute Countdown Logic
                 let cancelBadge = "";
                 if (item.cancelling && item.cancelStartTime) {
                     const maxCancelMins = riderProfile.customCancelMins || 10;
@@ -633,9 +633,9 @@
                     } else {
                         const cMin = Math.floor(remCancelSec / 60);
                         const cSec = remCancelSec % 60;
-                        cancelBadge = `<div class="mt-1 text-[10px] bg-red-100 text-red-700 font-bold px-2.5 py-1 rounded-xl border border-red-200 animate-pulse flex items-center justify-between">
-                            <span>কাটার সময় বাকি: ${cMin}:${String(cSec).padStart(2,'0')}</span>
-                            ${(myRiderId && (item.riderId === myRiderId || item.ownerRiderId === myRiderId)) ? `<button onclick="keepMySerial('${key}')" class="bg-emerald-600 hover:bg-emerald-700 text-white px-2 py-0.5 rounded-lg text-[9px] font-bold ml-1">সিরিয়াল রাখুন</button>` : ''}
+                        cancelBadge = `<div class="mt-1.5 text-[10px] bg-red-100 text-red-700 font-bold px-2.5 py-1.5 rounded-xl border border-red-200 animate-pulse flex items-center justify-between">
+                            <span>কাটার টাইম বাকি: ${cMin}:${String(cSec).padStart(2,'0')}</span>
+                            <button onclick="keepMySerial('${key}')" class="bg-emerald-600 hover:bg-emerald-700 text-white px-2.5 py-1 rounded-lg text-[10px] font-bold shadow-sm">সিরিয়াল রাখুন</button>
                         </div>`;
                     }
                 }
