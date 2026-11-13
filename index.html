@@ -151,6 +151,9 @@
                     <img id="myProfileImg" src="" class="w-14 h-14 mx-auto rounded-full object-cover border-2 border-blue-500 shadow">
                     <p id="myProfileName" class="text-xs font-bold text-slate-800 truncate"></p>
                     <p id="myProfilePhone" class="text-[11px] text-slate-500"></p>
+                    <div id="myLiveDistanceDisplay" class="text-[10px] bg-sky-50 text-sky-800 font-bold px-2 py-1 rounded-lg border border-sky-200">
+                        স্ট্যান্ড থেকে দূরত্ব: গণনা হচ্ছে...
+                    </div>
                     <span id="myAccountStatus" class="inline-block text-[10px] px-2 py-0.5 rounded-full bg-green-100 text-green-700 font-bold">অ্যাক্টিভ রাইডার</span>
                 </div>
             </div>
@@ -161,7 +164,7 @@
                     <h2 class="text-xs font-bold text-emerald-900 mb-2.5 flex items-center gap-1">
                         <i class="fas fa-edit text-emerald-600"></i> ম্যানুয়াল সিরিয়াল
                     </h2>
-                    <p class="text-[10px] text-slate-500 mb-2.5">২০০ মিটারের মধ্যে থেকে নাম লিখে এন্ট্রি দিন।</p>
+                    <p class="text-[10px] text-slate-500 mb-2.5">সীমানার মধ্যে থেকে নাম লিখে এন্ট্রি দিন।</p>
                     <input type="text" id="manualRiderName" placeholder="রাইডারের নাম লিখুন" class="w-full text-xs p-2.5 border border-slate-300 rounded-xl focus:outline-none focus:border-emerald-500 bg-slate-50 mb-2">
                 </div>
                 <button onclick="addManualSerial()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold py-2 rounded-xl shadow transition flex items-center justify-center gap-1">
@@ -231,24 +234,20 @@
                 <button onclick="closeModal('adminDashboardModal')" class="bg-red-50 hover:bg-red-100 text-red-600 px-3 py-1 rounded-xl text-xs font-bold">বন্ধ করুন</button>
             </div>
 
-            <!-- A. Stand Location & Clock -->
+            <!-- A. Stand Location & Lock System -->
             <div class="bg-blue-50/70 p-3.5 rounded-2xl space-y-2.5 border border-blue-200">
-                <h3 class="text-xs font-bold text-blue-900">১. স্ট্যান্ড লোকেশন ও ঘড়ি সেটিংস</h3>
+                <h3 class="text-xs font-bold text-blue-900 flex justify-between items-center">
+                    <span>১. স্ট্যান্ড লোকেশন সেটিংস ও লক</span>
+                    <label class="flex items-center gap-1 text-[11px] text-rose-700 cursor-pointer font-semibold">
+                        <input type="checkbox" id="standLockToggle" checked onchange="toggleStandLock()" class="w-3.5 h-3.5 accent-rose-600">
+                        লোকেশন লক অন
+                    </label>
+                </h3>
                 <button onclick="setStandLocationFromGPS()" class="w-full bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold py-2 rounded-xl shadow">
                     <i class="fas fa-map-marker-alt mr-1"></i> বর্তমান GPS লোকেশনকে স্ট্যান্ড হিসেবে সেট করুন
                 </button>
                 <p id="currentStandCoords" class="text-[10px] text-slate-600 text-center font-mono">লোকেশন লোড হচ্ছে...</p>
-                
-                <div class="grid grid-cols-2 gap-2 pt-2 border-t border-blue-200">
-                    <div>
-                        <label class="text-[10px] font-bold text-slate-700">কাস্টম তারিখ ও সময়:</label>
-                        <input type="datetime-local" id="adminCustomClock" class="w-full text-xs p-1.5 border rounded-xl bg-white mt-1">
-                    </div>
-                    <div class="flex items-end gap-1.5">
-                        <button onclick="saveCustomClock()" class="flex-1 bg-indigo-600 text-white text-[10px] py-2 rounded-xl font-bold shadow">সেট করুন</button>
-                        <button onclick="resetAutoClock()" class="bg-slate-600 text-white text-[10px] px-2 py-2 rounded-xl font-bold">অটো</button>
-                    </div>
-                </div>
+                <p class="text-[10px] text-slate-500 italic text-center">*(ভুলবশত টাচ লেগে পরিবর্তন রোধ করতে ওপরের লক অন রাখুন)*</p>
             </div>
 
             <!-- B. Leaders Management -->
@@ -275,13 +274,13 @@
                 </div>
             </div>
 
-            <!-- D. Registered Riders List -->
+            <!-- D. Registered Riders List & Special Per-Rider Controls -->
             <div class="bg-slate-50 p-3.5 rounded-2xl space-y-2.5 border border-slate-200">
                 <div class="flex justify-between items-center">
-                    <h3 class="text-xs font-bold text-slate-900">৪. সকল রাইডার ও স্পেশাল কন্ট্রোল</h3>
+                    <h3 class="text-xs font-bold text-slate-900">৪. রাইডারদের লাইভ লোকেশন ও স্পেশাল কন্ট্রোল</h3>
                     <span id="adminTotalRiders" class="bg-slate-800 text-white text-[10px] px-2 py-0.5 rounded-full font-bold">মোট: ০</span>
                 </div>
-                <div id="adminRidersList" class="space-y-2.5 max-h-60 overflow-y-auto pr-1"></div>
+                <div id="adminRidersList" class="space-y-3 max-h-72 overflow-y-auto pr-1"></div>
             </div>
         </div>
     </div>
@@ -393,13 +392,14 @@
         let myRiderData = null;
         let allRiders = {};
         let serialList = {};
-        let standSettings = { lat: 23.7580, lng: 90.3540, defaultRadius: 200, clockOffset: 0 };
+        let standSettings = { lat: 23.7580, lng: 90.3540, defaultRadius: 200 };
         let currentUserPos = null;
         let currentDistance = 99999;
         let currentLudoRoomId = null;
+        let standLocationLocked = true; // Lock state for stand location
 
         function updateWallClock() {
-            const now = new Date(Date.now() + (standSettings.clockOffset || 0));
+            const now = new Date();
             document.getElementById('clockTime').innerText = now.toLocaleTimeString('bn-BD', { hour12: true, hour: '2-digit', minute: '2-digit', second: '2-digit' });
             document.getElementById('clockDate').innerText = now.toLocaleDateString('bn-BD', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' });
         }
@@ -418,6 +418,23 @@
             navigator.geolocation.watchPosition((pos) => {
                 currentUserPos = { lat: pos.coords.latitude, lng: pos.coords.longitude };
                 currentDistance = calculateDistance(currentUserPos.lat, currentUserPos.lng, standSettings.lat, standSettings.lng);
+                
+                // Update live distance display in rider profile
+                const distEl = document.getElementById('myLiveDistanceDisplay');
+                if (distEl) {
+                    distEl.innerText = `স্ট্যান্ড থেকে আপনার দূরত্ব: ${currentDistance} মিটার`;
+                }
+
+                // Push rider live location to Firebase for Admin inspection
+                if (myRiderId) {
+                    db.ref(`riders/${myRiderId}`).update({
+                        currentLat: currentUserPos.lat,
+                        currentLng: currentUserPos.lng,
+                        currentDistance: currentDistance,
+                        lastSeen: Date.now()
+                    });
+                }
+
                 const allowedRadius = (myRiderData && myRiderData.customRadius) ? Number(myRiderData.customRadius) : standSettings.defaultRadius;
                 const badge = document.getElementById('gpsStatusBadge');
                 
@@ -508,7 +525,7 @@
         function addManualSerial() {
             const name = document.getElementById('manualRiderName').value.trim();
             if (!name) { alert("নাম লিখুন!"); return; }
-            if (currentDistance > standSettings.defaultRadius) { alert(`স্ট্যান্ডের ${standSettings.defaultRadius} মিটারের বাইরে আছেন (${currentDistance} মি.)।`); return; }
+            if (currentDistance > standSettings.defaultRadius) { alert(`স্ট্যান্ডের সীমানার বাইরে আছেন (${currentDistance} মি.)।`); return; }
             db.ref('serials').push({ riderId: 'manual_' + Date.now(), name, photo: 'https://via.placeholder.com/80?text=Manual', type: 'manual', entryTime: Date.now(), onBreak: false, breakUsedToday: false, breakStartTime: null, cancelling: false, cancelStartTime: null });
             document.getElementById('manualRiderName').value = "";
         }
@@ -526,7 +543,7 @@
         }
 
         function initiateCancelSerial(key, index) {
-            if (currentDistance > standSettings.defaultRadius) { alert("স্ট্যান্ডের ২০০ মিটারের মধ্যে থাকতে হবে!"); return; }
+            if (currentDistance > standSettings.defaultRadius) { alert("স্ট্যান্ডের সীমানার মধ্যে থাকতে হবে!"); return; }
             document.getElementById('targetCancelKey').value = key;
             document.getElementById('targetCancelIndex').value = index;
             document.getElementById('cancellerSerialNum').value = "";
@@ -549,7 +566,7 @@
             db.ref(`serials/${key}`).update({ cancelling: true, cancelStartTime: Date.now(), cancelledBy: `${cancellerItem.name} (#${cancellerNum})` });
             db.ref('cancelLogs').push({ victimName: targetItem.name, cancellerName: cancellerItem.name, cancellerSerial: cancellerNum, timestamp: Date.now() });
             closeModal('cancelSerialModal');
-            alert("বাতিল প্রক্রিয়া শুরু হলো (১০ মিনিট কাউন্টডাউন)!");
+            alert("বাতিল প্রক্রিয়া শুরু হলো!");
         }
 
         function renderSerialList() {
@@ -571,14 +588,16 @@
 
                 let breakBadge = "";
                 if (item.onBreak && item.breakStartTime) {
-                    const remSec = (riderProfile.customBreakMins || 30) * 60 - Math.floor((now - item.breakStartTime) / 1000);
+                    const maxBreakMins = riderProfile.customBreakMins || 30;
+                    const remSec = maxBreakMins * 60 - Math.floor((now - item.breakStartTime) / 1000);
                     if (remSec <= 0) db.ref(`serials/${key}`).remove();
                     else breakBadge = `<span class="bg-amber-100 text-amber-800 text-[10px] font-bold px-2 py-0.5 rounded-full animate-pulse">বিরতি বাকি: ${Math.floor(remSec/60)}মি ${remSec%60}সে</span>`;
                 }
 
                 let cancelBadge = "";
                 if (item.cancelling && item.cancelStartTime) {
-                    const remSec = (riderProfile.customCancelMins || 10) * 60 - Math.floor((now - item.cancelStartTime) / 1000);
+                    const maxCancelMins = riderProfile.customCancelMins || 10;
+                    const remSec = maxCancelMins * 60 - Math.floor((now - item.cancelStartTime) / 1000);
                     if (remSec <= 0) db.ref(`serials/${key}`).remove();
                     else cancelBadge = `<div class="mt-1 text-[10px] bg-red-100 text-red-700 font-bold px-2 py-0.5 rounded">বাতিল হচ্ছে (${Math.floor(remSec/60)}:${String(remSec%60).padStart(2,'0')})</div>`;
                 }
@@ -598,7 +617,7 @@
                         </div>
                     </div>
                     <div class="flex flex-col gap-1 shrink-0">
-                        ${!item.onBreak ? `<button onclick="startBreak('${key}')" class="bg-amber-500 hover:bg-amber-600 text-white text-[10px] font-bold px-2.5 py-1 rounded-xl shadow-sm">বিরতি (৩০মি)</button>` : ''}
+                        ${!item.onBreak ? `<button onclick="startBreak('${key}')" class="bg-amber-500 hover:bg-amber-600 text-white text-[10px] font-bold px-2.5 py-1 rounded-xl shadow-sm">বিরতি</button>` : ''}
                         ${!item.cancelling ? `<button onclick="initiateCancelSerial('${key}', ${serialNum})" class="bg-rose-100 hover:bg-rose-200 text-rose-700 text-[10px] font-bold px-2.5 py-1 rounded-xl">বাতিল করুন</button>` : ''}
                     </div>
                 </div>`;
@@ -647,18 +666,21 @@
             if (document.getElementById('adminPassInput').value === "692372") { closeModal('adminLoginModal'); document.getElementById('adminDashboardModal').style.display = 'block'; }
             else alert("ভুল পাসওয়ার্ড!");
         }
+
+        function toggleStandLock() {
+            standLocationLocked = document.getElementById('standLockToggle').checked;
+        }
+
         function setStandLocationFromGPS() {
+            if (standLocationLocked) {
+                alert("⚠️ স্ট্যান্ড লোকেশন লক করা আছে! লোকেশন পরিবর্তন করতে চাইলে ওপরের 'লোকেশন লক অন' টিকমার্ক তুলে আনলক করুন।");
+                return;
+            }
             if (!currentUserPos) { alert("জিপিএস লোকেশন পাওয়া যায়নি।"); return; }
             db.ref('settings').update({ lat: currentUserPos.lat, lng: currentUserPos.lng });
-            alert("লোকেশন আপডেট হয়েছে!");
+            alert("স্ট্যান্ডের নতুন জিপিএস লোকেশন সফলভাবে সেট হয়েছে!");
         }
-        function saveCustomClock() {
-            const val = document.getElementById('adminCustomClock').value;
-            if (!val) return;
-            db.ref('settings').update({ clockOffset: new Date(val).getTime() - Date.now() });
-            alert("ঘড়ি সেট হয়েছে!");
-        }
-        function resetAutoClock() { db.ref('settings').update({ clockOffset: 0 }); alert("অটো ঘড়িতে ফিরেছে!"); }
+
         async function updateLeaderInfo() {
             const role = document.getElementById('leaderRoleSelect').value;
             const name = document.getElementById('leaderNameInput').value.trim();
@@ -668,6 +690,7 @@
             if (file) updates.photo = await compressImage(file, 200);
             if (Object.keys(updates).length) { await db.ref(`leaders/${role}`).update(updates); alert("নেতার তথ্য আপডেট হয়েছে!"); }
         }
+
         async function updateNoticeBoard(removePhoto) {
             const text = document.getElementById('adminNoticeText').value.trim();
             const file = document.getElementById('adminNoticePhoto').files[0];
@@ -678,6 +701,8 @@
             await db.ref('notice').update(updates);
             alert("নোটিশ আপডেট হয়েছে!");
         }
+
+        // Admin panel rider list with live location/distance & per-rider special rules
         function renderAdminRidersList() {
             const container = document.getElementById('adminRidersList');
             const keys = Object.keys(allRiders);
@@ -685,22 +710,75 @@
             let html = "";
             keys.forEach(k => {
                 const r = allRiders[k];
-                const activeKey = Object.keys(serialList).find(sk => serialList[sk].riderId === k);
+                const isSuspended = r.suspended || false;
+                const activeSerialKey = Object.keys(serialList).find(sk => serialList[sk].riderId === k);
+                
+                // Calculate live distance for admin inspection
+                let liveDistText = "লোকেশন অফ / অজানা";
+                if (r.currentLat && r.currentLng) {
+                    const dist = calculateDistance(r.currentLat, r.currentLng, standSettings.lat, standSettings.lng);
+                    liveDistText = `স্ট্যান্ড থেকে দূরত্ব: ${dist} মিটার (Lat: ${r.currentLat.toFixed(4)}, Lng: ${r.currentLng.toFixed(4)})`;
+                }
+
                 html += `
-                <div class="bg-white p-2.5 rounded-2xl border border-slate-200 space-y-2">
+                <div class="bg-white p-3 rounded-2xl border border-slate-200 shadow-sm space-y-2.5">
                     <div class="flex items-center justify-between">
                         <div class="flex items-center gap-2">
-                            <img src="${r.photo}" class="w-9 h-9 rounded-full object-cover">
-                            <div><p class="text-xs font-bold text-slate-800">${r.name}</p><p class="text-[10px] text-slate-500">${r.phone}</p></div>
+                            <img src="${r.photo}" class="w-10 h-10 rounded-full object-cover border">
+                            <div>
+                                <p class="text-xs font-bold text-slate-800">${r.name}</p>
+                                <p class="text-[10px] text-slate-500">${r.phone}</p>
+                            </div>
                         </div>
                         <div class="flex items-center gap-1">
-                            <button onclick="db.ref('riders/${k}').update({suspended: ${!r.suspended}})" class="px-2 py-1 rounded-xl text-[10px] font-bold ${r.suspended?'bg-red-600 text-white':'bg-emerald-600 text-white'}">${r.suspended?'সাসপেন্ডেড':'অ্যাক্টিভ'}</button>
-                            ${activeKey?`<button onclick="db.ref('serials/${activeKey}').remove()" class="bg-rose-700 text-white px-2 py-1 rounded-xl text-[10px] font-bold">কাটুন</button>`:''}
+                            <button onclick="db.ref('riders/${k}').update({suspended: ${!isSuspended}})" class="px-2.5 py-1 rounded-xl text-[10px] font-bold ${isSuspended?'bg-red-600 text-white':'bg-emerald-600 text-white'}">${isSuspended?'সাসপেন্ডেড':'অ্যাক্টিভ'}</button>
+                            ${activeSerialKey?`<button onclick="adminInstantCut('${activeSerialKey}')" class="bg-rose-700 hover:bg-rose-800 text-white px-2.5 py-1 rounded-xl text-[10px] font-bold shadow-sm">ইনস্ট্যান্ট কাটুন</button>`:''}
                         </div>
                     </div>
+
+                    <!-- Rider Live Location Info for Admin -->
+                    <div class="text-[10px] bg-slate-100 p-1.5 rounded-lg text-slate-700 font-mono">
+                        📍 <span class="font-semibold">${liveDistText}</span>
+                    </div>
+
+                    <!-- Individual Special Settings Controls for Admin -->
+                    <div class="grid grid-cols-3 gap-1.5 text-[10px] pt-1 border-t">
+                        <div>
+                            <label class="text-slate-500 font-bold">বিরতি (মি.):</label>
+                            <input type="number" id="brk_${k}" value="${r.customBreakMins || 30}" class="w-full border rounded p-1 bg-slate-50 font-mono">
+                        </div>
+                        <div>
+                            <label class="text-slate-500 font-bold">দূরত্ব (মি.):</label>
+                            <input type="number" id="rad_${k}" value="${r.customRadius || 200}" class="w-full border rounded p-1 bg-slate-50 font-mono">
+                        </div>
+                        <div>
+                            <label class="text-slate-500 font-bold">কাটার টাইম:</label>
+                            <input type="number" id="can_${k}" value="${r.customCancelMins || 10}" class="w-full border rounded p-1 bg-slate-50 font-mono">
+                        </div>
+                    </div>
+                    <button onclick="saveRiderSpecialSettings('${k}')" class="w-full bg-blue-600 hover:bg-blue-700 text-white text-[10px] py-1.5 rounded-xl font-bold shadow-sm">
+                        এই রাইডারের স্পেশাল সেটিংস সেভ করুন
+                    </button>
                 </div>`;
             });
             container.innerHTML = html;
+        }
+
+        function adminInstantCut(serialKey) {
+            db.ref(`serials/${serialKey}`).remove();
+            alert("অ্যাডমিন পাওয়ারে সিরিয়াল তাৎক্ষণিকভাবে কেটে দেওয়া হয়েছে!");
+        }
+
+        function saveRiderSpecialSettings(k) {
+            const brk = Number(document.getElementById(`brk_${k}`).value) || 30;
+            const rad = Number(document.getElementById(`rad_${k}`).value) || 200;
+            const can = Number(document.getElementById(`can_${k}`).value) || 10;
+            db.ref(`riders/${k}`).update({
+                customBreakMins: brk,
+                customRadius: rad,
+                customCancelMins: can
+            });
+            alert("উক্ত রাইডারের জন্য ব্যক্তিগত স্পেশাল সময় ও দূরত্ব সফলভাবে সেভ হয়েছে!");
         }
 
         // Ludo functions
