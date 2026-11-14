@@ -158,7 +158,7 @@
             color: #e2e8f0;
         }
 
-        /* HORIZONTAL SPACE-SAVING LEADERS BAR */
+        /* HORIZONTAL SPACE-SAVING LEADERS BAR (আড়াআড়িভাবে সাজানো) */
         .leaders-strip {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -247,7 +247,7 @@
             flex-shrink: 0;
         }
 
-        /* SQUARE SIDE-BY-SIDE ENTRY BOXES */
+        /* SQUARE / COMPACT SIDE-BY-SIDE ENTRY BOXES (চৌকো করে সাজানো) */
         .entry-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -313,7 +313,7 @@
             box-shadow: 0 1px 4px rgba(0,0,0,0.1);
         }
 
-        /* Alarm Banner with Turn-off Button */
+        /* Alarm Banner */
         #alarmBanner {
             display: none;
             background: linear-gradient(135deg, #dc2626, #991b1b);
@@ -576,11 +576,11 @@
             <button class="btn btn-danger btn-xs" onclick="logoutAdminMode()">লগআউট</button>
         </div>
 
-        <!-- ALARM BANNER FOR TOP 1, 2, 3 WITH STOP BUTTON -->
+        <!-- ALARM BANNER FOR TOP 1, 2, 3 -->
         <div id="alarmBanner">
             <h4 id="alarmTitle">🚨 আপনার সিরিয়াল চলে এসেছে!</h4>
-            <p id="alarmDesc" style="font-size: 12px; margin: 3px 0 8px;">দয়া করে প্রস্তুত হন।</p>
-            <div style="display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;">
+            <p id="alarmDesc" style="font-size: 12px; margin: 3px 0 8px;">দয়া করে দ্রুত প্রস্তুত হন।</p>
+            <div style="display: flex; gap: 8px; justify-content: center;">
                 <button class="btn btn-warning btn-xs" onclick="stopMyAlarm()">🔕 অ্যালার্ম বন্ধ করুন</button>
                 <button class="btn btn-dark btn-xs" onclick="cutMyOwnSerialFromAlarm()">✂️ আমার সিরিয়াল কাটুন</button>
             </div>
@@ -600,7 +600,7 @@
             </div>
         </div>
 
-        <!-- HORIZONTAL LEADERS BAR -->
+        <!-- HORIZONTAL LEADERS BAR (সভাপতি, সহ-সভাপতি, সাংগঠনিক সম্পাদক আড়াআড়িভাবে) -->
         <div class="leaders-strip">
             <div class="leader-chip">
                 <img src="https://via.placeholder.com/80?text=সভাপতি" id="imgPresident" class="leader-img" alt="সভাপতি">
@@ -634,7 +634,7 @@
             <img id="displayNoticeImg" class="notice-img" style="display: none;" onclick="window.open(this.src)" alt="নোটিশ ছবি">
         </div>
 
-        <!-- SQUARE SIDE-BY-SIDE ENTRY BOXES -->
+        <!-- SQUARE SIDE-BY-SIDE ENTRY BOXES (বামে অনলাইন, ডানে ম্যানুয়াল - চৌকো করে) -->
         <div class="entry-grid">
             <!-- LEFT SQUARE BOX: ONLINE REGISTRATION & ENTRY -->
             <div class="box-card box-online">
@@ -726,18 +726,23 @@
                 <button class="btn btn-danger btn-xs" onclick="closeAdminModal()">✖ বন্ধ করুন</button>
             </div>
 
-            <!-- 1. SPECIAL POWER PANEL -->
+            <!-- 1. SPECIAL POWER PANEL (সময়, দূরত্ব ও ১০ মিনিটের কাউন্টডাউন বাড়ানো-কমানো) -->
             <div class="admin-box" style="background: #fffbeb; border-color: #f59e0b;">
-                <h4 style="color: #b45309;">🕵️ স্পেশাল পাওয়ার (সময়, দূরত্ব ও কাউন্টডাউন কন্ট্রোল)</h4>
+                <h4 style="color: #b45309;">🕵️ স্পেশাল পাওয়ার (গোপন সময়, দূরত্ব ও কাউন্টডাউন কন্ট্রোল)</h4>
+                <p style="font-size: 11px; color: #78350f; margin-bottom: 8px;">
+                    যেকোনো রাইডার সিলেক্ট করে তার সিরিয়াল কাটার কাউন্টডাউন (মিনিট), স্ট্যান্ডের দূরত্ব (মিটার) এবং বিরতির সময় বাড়িয়ে বা কমিয়ে দিন। অন্য কেউ এটি দেখতে পাবে না।
+                </p>
+                
                 <div class="form-group">
-                    <label class="form-label">রাইডার নির্বাচন করুন</label>
+                    <label class="form-label">রাইডার নির্বাচন করুন (রেজিস্টার্ড তালিকা থেকে)</label>
                     <select id="specialRiderSelect" class="form-control" onchange="loadSelectedRiderSpecialValues()">
                         <option value="">-- রাইডার বেছে নিন --</option>
                     </select>
                 </div>
+
                 <div class="special-grid">
                     <div>
-                        <label class="form-label">কাউন্টডাউন (মিঃ)</label>
+                        <label class="form-label">কাউন্টডাউন (মিনিট)</label>
                         <input type="number" id="quickSpCutMin" class="form-control" value="10" min="1">
                     </div>
                     <div>
@@ -745,14 +750,14 @@
                         <input type="number" id="quickSpDist" class="form-control" value="200" min="10">
                     </div>
                     <div>
-                        <label class="form-label">বিরতি (মিঃ)</label>
+                        <label class="form-label">বিরতি (মিনিট)</label>
                         <input type="number" id="quickSpBreakMin" class="form-control" value="30" min="1">
                     </div>
                 </div>
                 <button class="btn btn-warning btn-block" onclick="saveQuickSpecialPower()">⚡ স্পেশাল পাওয়ার সেভ করুন</button>
             </div>
 
-            <!-- 2. Stand Name & GPS Location -->
+            <!-- 2. Stand Name & GPS Location with ON/OFF Lock Switch -->
             <div class="admin-box">
                 <h4>📍 স্ট্যান্ডের নাম ও GPS সীমানা সেটিংস</h4>
                 <div class="form-group">
@@ -761,12 +766,15 @@
                         <button class="btn btn-primary btn-xs" onclick="saveStandName()">সেভ</button>
                     </div>
                 </div>
+
                 <div class="switch-row">
                     <div>
                         <strong style="font-size: 12px; color: #be123c;">GPS বাটন আনলক সুইচ (ON/OFF)</strong>
+                        <div style="font-size: 10px; color: #881337;">হাতের টাচ লেগে সীমানা নষ্ট হওয়া রোধ করতে এটি OFF রাখুন</div>
                     </div>
                     <input type="checkbox" id="gpsUnlockSwitch" onchange="toggleGpsSetButton()" style="width: 20px; height: 20px; cursor: pointer;">
                 </div>
+
                 <button id="btnSetStandGps" class="btn btn-danger btn-block" disabled onclick="setStandCurrentLocation()">
                     🔒 বর্তমান অবস্থানকে স্ট্যান্ডের কেন্দ্র হিসেবে সেট করুন (লক করা)
                 </button>
@@ -777,50 +785,56 @@
             <div class="admin-box">
                 <h4>👔 সভাপতি, সহ-সভাপতি ও সাংগঠনিক সম্পাদক</h4>
                 <div class="form-group">
-                    <label class="form-label">১. সভাপতি</label>
-                    <input type="text" id="admPresName" class="form-control" placeholder="নাম" style="margin-bottom:4px;">
-                    <input type="file" id="admPresPhoto" accept="image/*" class="form-control" style="padding: 3px;">
+                    <label class="form-label">১. সভাপতি (নাম ও ছবি)</label>
+                    <div style="display: flex; gap: 5px;">
+                        <input type="text" id="admPresName" class="form-control" placeholder="সভাপতির নাম">
+                        <input type="file" id="admPresPhoto" accept="image/*" class="form-control" style="padding: 3px;">
+                    </div>
                 </div>
                 <div class="form-group">
-                    <label class="form-label">২. সহ-সভাপতি</label>
-                    <input type="text" id="admVpName" class="form-control" placeholder="নাম" style="margin-bottom:4px;">
-                    <input type="file" id="admVpPhoto" accept="image/*" class="form-control" style="padding: 3px;">
+                    <label class="form-label">২. সহ-সভাপতি (নাম ও ছবি)</label>
+                    <div style="display: flex; gap: 5px;">
+                        <input type="text" id="admVpName" class="form-control" placeholder="সহ-সভাপতির নাম">
+                        <input type="file" id="admVpPhoto" accept="image/*" class="form-control" style="padding: 3px;">
+                    </div>
                 </div>
                 <div class="form-group">
-                    <label class="form-label">৩. সাংগঠনিক সম্পাদক</label>
-                    <input type="text" id="admSecName" class="form-control" placeholder="নাম" style="margin-bottom:4px;">
-                    <input type="file" id="admSecPhoto" accept="image/*" class="form-control" style="padding: 3px;">
+                    <label class="form-label">৩. সাংগঠনিক সম্পাদক (নাম ও ছবি)</label>
+                    <div style="display: flex; gap: 5px;">
+                        <input type="text" id="admSecName" class="form-control" placeholder="সাংগঠনিক সম্পাদকের নাম">
+                        <input type="file" id="admSecPhoto" accept="image/*" class="form-control" style="padding: 3px;">
+                    </div>
                 </div>
-                <button class="btn btn-success btn-block" onclick="saveLeadersInfo()">💾 প্রোফাইল সেভ করুন</button>
+                <button class="btn btn-success btn-block" onclick="saveLeadersInfo()">💾 নেতৃবৃন্দের প্রোফাইল সেভ করুন</button>
             </div>
 
             <!-- 4. Notice Board Setup -->
             <div class="admin-box">
                 <h4>📢 নোটিশ বোর্ড আপডেট</h4>
                 <div class="form-group">
-                    <textarea id="admNoticeText" rows="2" class="form-control" placeholder="জরوری নোটিশ লিখুন..."></textarea>
+                    <textarea id="admNoticeText" rows="2" class="form-control" placeholder="জরুরি নোটিশ লিখুন..."></textarea>
                 </div>
                 <div class="form-group">
                     <input type="file" id="admNoticePhoto" accept="image/*" class="form-control" style="padding: 3px;">
                 </div>
                 <div style="display: flex; gap: 6px;">
-                    <button class="btn btn-warning" style="flex: 1;" onclick="saveNoticeBoard()">📢 প্রকাশ করুন</button>
+                    <button class="btn btn-warning" style="flex: 1;" onclick="saveNoticeBoard()">📢 নোটিশ প্রকাশ করুন</button>
                     <button class="btn btn-dark btn-xs" onclick="clearNoticeImage()">ছবি মুছুন</button>
                 </div>
             </div>
 
             <!-- 5. Permanent Registered Riders List -->
             <div class="admin-box">
-                <h4>👥 সমস্ত রেজিস্ট্রেশনকৃত রাইডার লিস্ট</h4>
+                <h4>👥 সমস্ত রেজিস্ট্রেশনকৃত রাইডার লিস্ট (স্থায়ী ডাটাবেস)</h4>
                 <div id="adminRegisteredList">লোড হচ্ছে...</div>
             </div>
         </div>
     </div>
 
-    <!-- RIDER EDIT MODAL -->
+    <!-- RIDER INFO EDIT MODAL -->
     <div class="modal-backdrop" id="riderEditModal" style="z-index: 6000;">
         <div class="modal-card" style="max-width: 400px;">
-            <h4 style="color: var(--primary); margin-bottom: 8px;">✏️ রাইডারের তথ্য পরিবর্তন</h4>
+            <h4 style="color: var(--primary); margin-bottom: 8px;">✏️ রাইডারের তথ্য পরিবর্তন (অ্যাডমিন)</h4>
             <input type="hidden" id="editRiderPhoneKey">
             <div class="form-group">
                 <label class="form-label">রাইডারের নাম</label>
@@ -860,9 +874,13 @@
         // ==========================================
         let userLat = null, userLng = null;
         let gpsGranted = false, batteryConfirmed = false;
-        let isAdminLoggedIn = false;
+        let isAdminLoggedIn = false; // True when admin unlocks password
 
-        let standSettings = { name: "চন্দ্রিমা বাইক স্ট্যান্ড", lat: null, lng: null };
+        let standSettings = {
+            name: "চন্দ্রিমা বাইক স্ট্যান্ড",
+            lat: null,
+            lng: null
+        };
         let registeredRiders = {};
         let activeSerials = {};
         let breakLogs = {};
@@ -871,7 +889,7 @@
 
         let audioCtx = null;
         let alarmInterval = null;
-        let acknowledgedAlarmKey = ""; // Tracks which alarm user stopped
+        let acknowledgedAlarmKey = "";
 
         function playRingtoneBeep() {
             try {
@@ -891,13 +909,10 @@
         }
 
         function startAlarmSound(title, desc, alarmKey) {
-            // If user already clicked "Stop Alarm" for this specific position/serial, don't restart it
             if (acknowledgedAlarmKey === alarmKey) return;
-
             document.getElementById("alarmTitle").innerText = title;
             document.getElementById("alarmDesc").innerText = desc;
             document.getElementById("alarmBanner").style.display = "block";
-            
             if (!alarmInterval) {
                 playRingtoneBeep();
                 alarmInterval = setInterval(playRingtoneBeep, 1000);
@@ -910,17 +925,15 @@
                 alarmInterval = null;
             }
             document.getElementById("alarmBanner").style.display = "none";
-
-            // Mark this specific top position as acknowledged so it won't keep ringing repeatedly
             const sorted = getSortedSerials();
             const myIdx = sorted.findIndex(item => normalizeName(item.name) === normalizeName(myLocalRiderName));
-            if (myIdx !== -1 && myIdx < 3) {
+            if (myIdx !== -1) {
                 acknowledgedAlarmKey = sorted[myIdx].id + "_pos_" + (myIdx + 1);
             }
         }
 
         // ==========================================
-        // 3. GATEKEEPER
+        // 3. GATEKEEPER (GPS + BATTERY SAVER + ALLOW)
         // ==========================================
         function requestGpsPermission() {
             const statusText = document.getElementById("gpsStatusText");
@@ -981,7 +994,7 @@
         updateLiveClock();
 
         // ==========================================
-        // 5. GEOFENCE
+        // 5. GEOFENCE & DISTANCE CALCULATION
         // ==========================================
         function getDistanceMeters(lat1, lon1, lat2, lon2) {
             const R = 6371000;
@@ -1012,7 +1025,7 @@
                 return false;
             }
             if (!userLat || !userLng) {
-                alert("❌ আপনার GPS লোকেশন পাওয়া যাচ্ছে না।");
+                alert("❌ আপনার GPS লোকেশন পাওয়া যাচ্ছে না। লোকেশন চালু করুন।");
                 return false;
             }
             const dist = getDistanceMeters(userLat, userLng, standSettings.lat, standSettings.lng);
@@ -1024,7 +1037,7 @@
         }
 
         // ==========================================
-        // 6. HELPERS
+        // 6. IMAGE COMPRESSION & HELPERS
         // ==========================================
         function compressImageToBase64(file, maxWidth = 250) {
             return new Promise((resolve) => {
@@ -1057,7 +1070,7 @@
         }
 
         // ==========================================
-        // 7. FIREBASE LISTENERS
+        // 7. FIREBASE REALTIME LISTENERS
         // ==========================================
         db.ref('standConfig').on('value', (snap) => {
             const data = snap.val() || {};
@@ -1076,8 +1089,10 @@
             if (data.leaders) {
                 if (data.leaders.presName) document.getElementById("namePresident").innerText = data.leaders.presName;
                 if (data.leaders.presImg) document.getElementById("imgPresident").src = data.leaders.presImg;
+
                 if (data.leaders.vpName) document.getElementById("nameVicePresident").innerText = data.leaders.vpName;
                 if (data.leaders.vpImg) document.getElementById("imgVicePresident").src = data.leaders.vpImg;
+
                 if (data.leaders.secName) document.getElementById("nameOrgSecretary").innerText = data.leaders.secName;
                 if (data.leaders.secImg) document.getElementById("imgOrgSecretary").src = data.leaders.secImg;
             }
@@ -1145,7 +1160,7 @@
         });
 
         // ==========================================
-        // 8. REGISTRATION & ENTRIES
+        // 8. ONLINE REGISTRATION & DUAL ENTRY
         // ==========================================
         function switchOnlineTab(tab) {
             document.getElementById("tabOnlineEntry").classList.toggle("active", tab === 'entry');
@@ -1177,7 +1192,7 @@
             }
 
             if (registeredRiders[cleanPhone]) {
-                alert("🚫 এই ফোন নাম্বার দিয়ে ইতিমধ্যে অ্যাকাউন্ট খোলা আছে!");
+                alert("🚫 এই ফোন নাম্বার দিয়ে ইতিমধ্যে অ্যাকাউন্ট খোলা আছে! একবার অ্যাকাউন্ট খুললে আর পরিবর্তন করা যায় না।");
                 return;
             }
 
@@ -1198,7 +1213,7 @@
             myLocalRiderName = name;
 
             document.getElementById("loginPhone").value = cleanPhone;
-            alert("✅ স্থায়ী রেজিস্ট্রেশন সম্পন্ন!");
+            alert("✅ স্থায়ী রেজিস্ট্রেশন সম্পন্ন! এখন সিরিয়াল দিন।");
             switchOnlineTab('entry');
         }
 
@@ -1215,12 +1230,12 @@
             }
             const rider = registeredRiders[phone];
             if (!rider) {
-                alert("❌ এই নাম্বারে রেজিস্ট্রেশন নেই!");
+                alert("❌ এই নাম্বারে রেজিস্ট্রেশন নেই! আগে 'রেজিস্ট্রেশন' ট্যাব থেকে অ্যাকাউন্ট খুলুন।");
                 return;
             }
 
             if (isNameAlreadyInActiveSerial(rider.name)) {
-                alert(`🚫 "${rider.name}" ইতিমধ্যে সিরিয়ালে আছেন!`);
+                alert(`🚫 "${rider.name}" ইতিমধ্যে সিরিয়ালে আছেন! একই নাম দুইবার দেওয়া যাবে না।`);
                 return;
             }
 
@@ -1254,10 +1269,11 @@
             }
 
             if (isNameAlreadyInActiveSerial(name)) {
-                alert(`🚫 "${name}" ইতিমধ্যে সিরিয়ালে আছেন!`);
+                alert(`🚫 "${name}" ইতিমধ্যে সিরিয়ালে আছেন! একই নাম দুইবার দেওয়া যাবে না।`);
                 return;
             }
 
+            // Must be within boundary for manual entry as well
             const matchedRider = Object.values(registeredRiders).find(r => normalizeName(r.name) === normalizeName(name));
             const allowedDist = matchedRider ? (matchedRider.customDistMeters || 200) : 200;
             if (!checkWithinStandBoundary(allowedDist)) return;
@@ -1283,7 +1299,7 @@
         }
 
         // ==========================================
-        // 9. SERIAL ACTIONS & ALARM CHECK (1, 2, 3 only)
+        // 9. SERIAL ACTIONS: BREAK, CUT (ADMIN / SELF / OTHERS), RESTORE
         // ==========================================
         function getRiderSecretConfig(riderName, phone) {
             let rider = phone ? registeredRiders[phone] : null;
@@ -1303,7 +1319,7 @@
 
             const nameKey = normalizeName(item.name).replace(/[.#$\[\]]/g, '_');
             if (breakLogs[nameKey]) {
-                alert(`🚫 "${item.name}" আজ ইতিমধ্যে একবার বিরতি নিয়েছেন!`);
+                alert(`🚫 "${item.name}" আজ ইতিমধ্যে একবার বিরতি নিয়েছেন! দ্বিতীয়বার বিরতি নেওয়া যাবে না।`);
                 return;
             }
 
@@ -1319,17 +1335,23 @@
             const item = activeSerials[serialId];
             if (!item) return;
 
+            // 1. ADMIN CAN CUT FROM ANYWHERE WITHOUT BOUNDARY OR BREAK RESTRICTIONS
             if (isAdminLoggedIn) {
-                if (confirm(`🛡️ অ্যাডমিন পাওয়ার: "${item.name}"-এর সিরিয়াল কাটতে চান?`)) {
-                    db.ref('cutHistory').push({ targetName: item.name, cutterName: "🛡️ অ্যাডমিন", timestamp: Date.now() });
+                if (confirm(`🛡️ অ্যাডমিন পাওয়ার: আপনি কি দূরত্ব ছাড়াই "${item.name}"-এর সিরিয়াল সরাসরি কাটতে চান?`)) {
+                    db.ref('cutHistory').push({
+                        targetName: item.name,
+                        cutterName: "🛡️ অ্যাডমিন",
+                        timestamp: Date.now()
+                    });
                     db.ref('activeSerials/' + serialId).remove();
-                    alert(`✅ সিরিয়াল কেটে দেওয়া হয়েছে!`);
+                    alert(`✅ অ্যাডমিন কর্তৃক ${item.name}-এর সিরিয়াল কেটে দেওয়া হয়েছে!`);
                 }
                 return;
             }
 
+            // 2. FOR SELF OR OTHERS: MUST NOT BE ON BREAK & MUST BE WITHIN BOUNDARY
             if (item.breakUntil && Date.now() < item.breakUntil) {
-                alert("⏸️ এই রাইডার এখন বিরতিতে আছেন!");
+                alert("⏸️ এই রাইডার এখন বিরতিতে আছেন! বিরতি চলাকালীন সিরিয়াল কাটা যাবে না।");
                 return;
             }
 
@@ -1338,7 +1360,7 @@
 
             let cutterName = myLocalRiderName;
             if (!cutterName) {
-                cutterName = prompt("আপনার নাম লিখুন:");
+                cutterName = prompt("আপনার নাম লিখুন (কে সিরিয়াল কাটছেন):");
                 if (!cutterName || !cutterName.trim()) return;
                 cutterName = cutterName.trim();
                 localStorage.setItem("myRiderName", cutterName);
@@ -1351,8 +1373,16 @@
             const targetCfg = getRiderSecretConfig(item.name, item.phone);
             const cutUntil = Date.now() + (targetCfg.cutMin * 60 * 1000);
 
-            db.ref('activeSerials/' + serialId).update({ cutUntil: cutUntil, cutBy: displayCutter });
-            db.ref('cutHistory').push({ targetName: item.name, cutterName: displayCutter, timestamp: Date.now() });
+            db.ref('activeSerials/' + serialId).update({
+                cutUntil: cutUntil,
+                cutBy: displayCutter
+            });
+
+            db.ref('cutHistory').push({
+                targetName: item.name,
+                cutterName: displayCutter,
+                timestamp: Date.now()
+            });
         }
 
         function restoreSerial(serialId) {
@@ -1364,8 +1394,11 @@
                 if (!checkWithinStandBoundary(myCfg.distMeters)) return;
             }
 
-            db.ref('activeSerials/' + serialId).update({ cutUntil: null, cutBy: null });
-            alert(`✅ সিরিয়াল ফিরিয়ে আনা হয়েছে!`);
+            db.ref('activeSerials/' + serialId).update({
+                cutUntil: null,
+                cutBy: null
+            });
+            alert(`✅ ${item.name}-এর সিরিয়াল ফিরিয়ে আনা হয়েছে!`);
         }
 
         function cutMyOwnSerialFromAlarm() {
@@ -1416,7 +1449,6 @@
 
             const now = Date.now();
             let html = "";
-            let currentLoggedInUserInTop3 = false;
 
             sorted.forEach((item, index) => {
                 const pos = index + 1;
@@ -1424,7 +1456,11 @@
                 const isCut = item.cutUntil && now < item.cutUntil;
 
                 if (item.breakUntil && now >= item.breakUntil) {
-                    db.ref('cutHistory').push({ targetName: item.name, cutterName: "সিস্টেম (বিরতি শেষ)", timestamp: now });
+                    db.ref('cutHistory').push({
+                        targetName: item.name,
+                        cutterName: "সিস্টেম (বিরতি শেষ)",
+                        timestamp: now
+                    });
                     db.ref('activeSerials/' + item.id).remove();
                     return;
                 }
@@ -1434,13 +1470,11 @@
                     return;
                 }
 
-                // Check if currently logged in user is in Top 1, 2 or 3
                 if (pos <= 3 && myLocalRiderName && normalizeName(item.name) === normalizeName(myLocalRiderName)) {
-                    currentLoggedInUserInTop3 = true;
                     const alarmKey = `${item.id}_pos_${pos}`;
                     startAlarmSound(
                         `🚨 আপনি এখন ${pos} নম্বর সিরিয়ালে আছেন!`,
-                        `রাইডার: ${item.name} — দ্রুত প্রস্তুত হন।`,
+                        `রাইডার: ${item.name} — প্রস্তুত হন।`,
                         alarmKey
                     );
                 }
@@ -1456,20 +1490,28 @@
                 if (isCut) cardClass += " is-cut";
 
                 let statusHtml = "";
-                if (isBreak) statusHtml += `<div class="status-pill pill-break">⏸️ বিরতি: ${formatMinSec(item.breakUntil - now)}</div>`;
-                if (isCut) statusHtml += `<div class="status-pill pill-cut">⚠️ কাটা হয়েছে (${item.cutBy}) — বাকি: ${formatMinSec(item.cutUntil - now)}</div>`;
+                if (isBreak) {
+                    statusHtml += `<div class="status-pill pill-break">⏸️ বিরতি: ${formatMinSec(item.breakUntil - now)}</div>`;
+                }
+                if (isCut) {
+                    statusHtml += `<div class="status-pill pill-cut">⚠️ কাটা হয়েছে (${item.cutBy}) — বাকি: ${formatMinSec(item.cutUntil - now)}</div>`;
+                }
 
                 let actionBtns = "";
                 if (isCut) {
                     actionBtns += `<button class="btn btn-success btn-xs" onclick="restoreSerial('${item.id}')">🔄 ফিরিয়ে আনুন</button>`;
-                    if (isAdminLoggedIn) actionBtns += `<button class="btn btn-danger btn-xs" onclick="cutSerial('${item.id}')">🛡️ কাটুন</button>`;
+                    if (isAdminLoggedIn) {
+                        actionBtns += `<button class="btn btn-danger btn-xs" onclick="cutSerial('${item.id}')">🛡️ স্থায়ী কাটুন</button>`;
+                    }
                 } else {
                     if (!isBreak) {
                         actionBtns += `<button class="btn btn-warning btn-xs" onclick="takeBreak('${item.id}')">⏸️ বিরতি</button>`;
-                        actionBtns += `<button class="btn btn-danger btn-xs" onclick="cutSerial('${item.id}')">✂️ কাটুন</button>`;
+                        actionBtns += `<button class="btn btn-danger btn-xs" onclick="cutSerial('${item.id}')">✂️ সিরিয়াল কাটুন</button>`;
                     } else {
                         actionBtns += `<span style="font-size:11px; color:#7e22ce; font-weight:700;">🔒 বিরতিতে</span>`;
-                        if (isAdminLoggedIn) actionBtns += `<button class="btn btn-danger btn-xs" onclick="cutSerial('${item.id}')">🛡️ কাট</button>`;
+                        if (isAdminLoggedIn) {
+                            actionBtns += `<button class="btn btn-danger btn-xs" onclick="cutSerial('${item.id}')">🛡️ অ্যাডমিন কাট</button>`;
+                        }
                     }
                 }
 
@@ -1489,17 +1531,14 @@
                                 ${statusHtml}
                             </div>
                         </div>
-                        <div class="rider-actions">${actionBtns}</div>
+                        <div class="rider-actions">
+                            ${actionBtns}
+                        </div>
                     </div>
                 `;
             });
 
             container.innerHTML = html;
-
-            // If logged in user is no longer in Top 1, 2, 3, automatically hide alarm banner
-            if (!currentLoggedInUserInTop3 && alarmInterval) {
-                stopMyAlarm();
-            }
         }
 
         setInterval(() => {
@@ -1509,7 +1548,7 @@
         }, 1000);
 
         // ==========================================
-        // 10. ADMIN & CONTROLS
+        // 10. ADMIN PANEL & SPECIAL POWER CONTROLS
         // ==========================================
         function openAdminLogin() {
             if (isAdminLoggedIn) {
@@ -1542,6 +1581,7 @@
             toggleGpsSetButton();
         }
 
+        // Populate Special Power Dropdown inside Admin Panel
         function populateSpecialRiderDropdown() {
             const select = document.getElementById("specialRiderSelect");
             if (!select) return;
@@ -1566,7 +1606,7 @@
         async function saveQuickSpecialPower() {
             const phone = document.getElementById("specialRiderSelect").value;
             if (!phone || !registeredRiders[phone]) {
-                alert("⚠️ রাইডার নির্বাচন করুন!");
+                alert("⚠️ আগে তালিকা থেকে একজন রাইডার বেছে নিন!");
                 return;
             }
             const cutMin = Number(document.getElementById("quickSpCutMin").value) || 10;
@@ -1578,26 +1618,28 @@
                 customDistMeters: distMeters,
                 customBreakMin: breakMin
             });
-            alert(`✅ স্পেশাল পাওয়ার সেভ হয়েছে!`);
+            alert(`✅ ${registeredRiders[phone].name}-এর গোপন স্পেশাল সময় ও দূরত্ব সেভ হয়েছে!`);
         }
 
         function toggleGpsSetButton() {
             const unlocked = document.getElementById("gpsUnlockSwitch").checked;
             const btn = document.getElementById("btnSetStandGps");
             btn.disabled = !unlocked;
-            btn.innerText = unlocked ? "📍 বর্তমান অবস্থানকে স্ট্যান্ডের কেন্দ্র হিসেবে সেট করুন" : "🔒 বর্তমান অবস্থানকে স্ট্যান্ডের কেন্দ্র হিসেবে সেট করুন (লক করা)";
+            btn.innerText = unlocked 
+                ? "📍 বর্তমান অবস্থানকে স্ট্যান্ডের কেন্দ্র হিসেবে সেট করুন" 
+                : "🔒 বর্তমান অবস্থানকে স্ট্যান্ডের কেন্দ্র হিসেবে সেট করুন (লক করা)";
         }
 
         function setStandCurrentLocation() {
             if (!userLat || !userLng) {
-                alert("❌ GPS লোকেশন নেই!");
+                alert("❌ আপনার ফোনের GPS লোকেশন পাওয়া যাচ্ছে না!");
                 return;
             }
-            if (confirm("স্ট্যান্ডের কেন্দ্র হিসেবে সেট করতে চান?")) {
+            if (confirm("আপনি কি নিশ্চিতভাবে এই জায়গাটিকে স্ট্যান্ডের কেন্দ্র হিসেবে সেট করতে চান?")) {
                 db.ref('standConfig').update({ lat: userLat, lng: userLng });
                 document.getElementById("gpsUnlockSwitch").checked = false;
                 toggleGpsSetButton();
-                alert("✅ সফলভাবে সেট হয়েছে!");
+                alert("✅ স্ট্যান্ডের GPS লোকেশন সেট হয়েছে!");
             }
         }
 
@@ -1605,7 +1647,7 @@
             const name = document.getElementById("adminStandName").value.trim();
             if (!name) return;
             db.ref('standConfig').update({ name: name });
-            alert("✅ নাম আপডেট হয়েছে!");
+            alert("✅ স্ট্যান্ডের নাম আপডেট হয়েছে!");
         }
 
         async function saveLeadersInfo() {
@@ -1628,7 +1670,7 @@
 
             if (Object.keys(updates).length > 0) {
                 await db.ref('standConfig').update(updates);
-                alert("✅ প্রোফাইল আপডেট হয়েছে!");
+                alert("✅ নেতৃবৃন্দের প্রোফাইল আপডেট হয়েছে!");
             }
         }
 
@@ -1638,15 +1680,17 @@
             const updates = {};
 
             if (text) updates['notice/text'] = text;
-            if (imgFile) updates['notice/img'] = await compressImageToBase64(imgFile, 450);
+            if (imgFile) {
+                updates['notice/img'] = await compressImageToBase64(imgFile, 450);
+            }
 
             await db.ref('standConfig').update(updates);
-            alert("✅ নোটিশ প্রকাশিত হয়েছে!");
+            alert("✅ নোটিশ বোর্ড আপডেট হয়েছে!");
         }
 
         function clearNoticeImage() {
             db.ref('standConfig/notice/img').remove();
-            alert("ছবি মুছে ফেলা হয়েছে।");
+            alert("নোটিশের ছবি মুছে ফেলা হয়েছে।");
         }
 
         function renderAdminRegisteredList() {
@@ -1654,7 +1698,7 @@
             const list = Object.values(registeredRiders);
 
             if (list.length === 0) {
-                container.innerHTML = `<p style="font-size: 12px; color: #64748b;">কোনো রাইডার নেই।</p>`;
+                container.innerHTML = `<p style="font-size: 12px; color: #64748b;">এখনো কোনো রাইডার রেজিস্ট্রেশন করেননি।</p>`;
                 return;
             }
 
@@ -1688,13 +1732,15 @@
 
             const updates = {};
             if (newName) updates.name = newName;
-            if (photoFile) updates.photo = await compressImageToBase64(photoFile, 220);
+            if (photoFile) {
+                updates.photo = await compressImageToBase64(photoFile, 220);
+            }
 
             if (Object.keys(updates).length > 0) {
                 await db.ref('registeredRiders/' + phone).update(updates);
             }
             document.getElementById("riderEditModal").style.display = "none";
-            alert("✅ আপডেট সফল হয়েছে!");
+            alert("✅ রাইডারের তথ্য আপডেট হয়েছে!");
         }
     </script>
 </body>
