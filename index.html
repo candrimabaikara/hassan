@@ -566,7 +566,7 @@
             }
         }
 
-        // Manual Serial Entry with Geofence Check
+        // Manual Serial Entry with Geofence Check and Isolated Placeholder Photo
         async function addManualSerial() {
             const nameInput = document.getElementById('manualRiderName');
             const name = nameInput.value.trim();
@@ -585,7 +585,7 @@
                 riderId: 'manual_' + Date.now(),
                 ownerRiderId: null,
                 name: name,
-                photo: 'https://via.placeholder.com/100?text=Manual',
+                photo: 'https://via.placeholder.com/100?text=Manual', // Isolated manual placeholder, never mixes with registered users
                 phone: 'ম্যানুয়াল এন্ট্রি',
                 type: 'manual',
                 entryTime: Date.now(),
@@ -677,19 +677,22 @@
                 const isMyEntry = (myRiderId && item.riderId === myRiderId) || item.type === 'manual';
                 const badgeBg = index === 0 ? 'bg-amber-500 text-white font-bold shadow' : 'bg-slate-100 text-slate-700 font-semibold';
                 
-                // Check 10-minute cancellation countdown logic
+                // Check 10-minute cancellation countdown logic safely with once() check
                 if (item.cancelling && item.cancelStartTime) {
                     const elapsed = now - item.cancelStartTime;
                     const remaining = tenMinutes - elapsed;
 
                     if (remaining <= 0) {
-                        // Time expired: Automatically remove from serial list and log to cancelLogs
-                        db.ref('cancelLogs').push({
-                            name: item.name,
-                            phone: item.phone || 'N/A',
-                            cancelledAt: Date.now()
+                        db.ref(`serials/${key}`).once('value', (snap) => {
+                            if (snap.exists()) {
+                                db.ref('cancelLogs').push({
+                                    name: item.name,
+                                    phone: item.phone || 'ম্যানুয়াল এন্ট্রি',
+                                    cancelledAt: Date.now()
+                                });
+                                db.ref(`serials/${key}`).remove();
+                            }
                         });
-                        db.ref(`serials/${key}`).remove();
                         return;
                     }
                 }
