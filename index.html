@@ -2,316 +2,807 @@
 <html lang="bn">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>চন্দ্রিমা মডেল টাউন একতা যুব উন্নয়ন বাইকার গ্রুপ - সিরিয়াল ম্যানেজমেন্ট সিস্টেম</title>
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Font -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>বাইক রাইডার সিরিয়াল ম্যানেজমেন্ট</title>
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Firebase SDK v9 Compat -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+
     <style>
-        body { font-family: 'Hind Siliguri', sans-serif; background: #0f172a; color: #f8fafc; }
-        .glass-box { background: rgba(30, 41, 59, 0.85); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        :root {
+            --primary: #4f46e5;
+            --secondary: #0ea5e9;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --dark: #1e293b;
+            --light: #f8fafc;
+            --card-bg: #ffffff;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Hind Siliguri', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #e0e7ff 0%, #f0f9ff 50%, #ecfdf5 100%);
+            color: var(--dark);
+            min-height: 100vh;
+            padding-bottom: 40px;
+        }
+
+        /* Mandatory Gatekeeper Overlay */
+        #gatekeeper {
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(135deg, #1e1b4b, #0f172a);
+            color: white;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .gate-box {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 25px;
+            max-width: 420px;
+            width: 100%;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+        }
+
+        .gate-step {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 12px;
+            margin: 15px 0;
+            border-left: 4px solid var(--warning);
+            text-align: left;
+        }
+
+        .gate-step.done {
+            border-left-color: var(--success);
+            background: rgba(16, 185, 129, 0.15);
+        }
+
+        .btn {
+            border: none;
+            padding: 10px 16px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 15px;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .btn:active { transform: scale(0.97); }
+        .btn-primary { background: linear-gradient(135deg, #4f46e5, #6366f1); color: white; }
+        .btn-success { background: linear-gradient(135deg, #059669, #10b981); color: white; }
+        .btn-warning { background: linear-gradient(135deg, #d97706, #f59e0b); color: white; }
+        .btn-danger { background: linear-gradient(135deg, #dc2626, #ef4444); color: white; }
+        .btn-info { background: linear-gradient(135deg, #0284c7, #0ea5e9); color: white; }
+        .btn-dark { background: #334155; color: white; }
+        .btn-sm { padding: 6px 10px; font-size: 13px; border-radius: 8px; }
+        .btn-block { width: 100%; }
+
+        /* Main Container */
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 12px;
+        }
+
+        /* Header Section */
+        .header-card {
+            background: linear-gradient(135deg, #312e81 0%, #4338ca 50%, #0369a1 100%);
+            color: white;
+            border-radius: 18px;
+            padding: 16px;
+            box-shadow: 0 10px 25px rgba(67, 56, 202, 0.25);
+            margin-bottom: 14px;
+            position: relative;
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .stand-title {
+            font-size: 22px;
+            font-weight: 700;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .gps-badge {
+            display: inline-block;
+            font-size: 12px;
+            background: rgba(255,255,255,0.2);
+            padding: 3px 10px;
+            border-radius: 20px;
+            margin-top: 4px;
+        }
+
+        .clock-box {
+            background: rgba(0, 0, 0, 0.35);
+            border: 1px solid rgba(255,255,255,0.25);
+            padding: 8px 14px;
+            border-radius: 12px;
+            text-align: right;
+            margin-left: auto;
+        }
+
+        .clock-time {
+            font-size: 18px;
+            font-weight: 700;
+            color: #fde047;
+            letter-spacing: 0.5px;
+        }
+
+        .clock-date {
+            font-size: 12px;
+            color: #e2e8f0;
+        }
+
+        /* Leaders Grid */
+        .leaders-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 14px;
+        }
+
+        .leader-card {
+            background: white;
+            border-radius: 14px;
+            padding: 10px 6px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+            border-top: 4px solid var(--primary);
+        }
+
+        .leader-card:nth-child(2) { border-top-color: var(--secondary); }
+        .leader-card:nth-child(3) { border-top-color: var(--success); }
+
+        .leader-img {
+            width: 62px;
+            height: 62px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #e0e7ff;
+            margin-bottom: 6px;
+            background: #f1f5f9;
+        }
+
+        .leader-role {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--primary);
+            background: #eef2ff;
+            padding: 2px 8px;
+            border-radius: 10px;
+            display: inline-block;
+            margin-bottom: 3px;
+        }
+
+        .leader-name {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--dark);
+            line-height: 1.2;
+        }
+
+        /* Notice Board */
+        .notice-card {
+            background: linear-gradient(to right, #fffbeb, #fef3c7);
+            border: 1px solid #fcd34d;
+            border-left: 5px solid #f59e0b;
+            border-radius: 14px;
+            padding: 14px;
+            margin-bottom: 14px;
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.1);
+        }
+
+        .notice-header {
+            font-weight: 700;
+            color: #b45309;
+            font-size: 16px;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .notice-img {
+            max-width: 100%;
+            max-height: 220px;
+            border-radius: 10px;
+            margin-top: 10px;
+            display: block;
+            object-fit: contain;
+        }
+
+        /* Entry Boxes Grid (Left: Online Reg/Entry, Right: Manual Entry) */
+        .entry-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        @media (max-width: 640px) {
+            .entry-grid { grid-template-columns: 1fr; }
+        }
+
+        .box-card {
+            background: white;
+            border-radius: 16px;
+            padding: 15px;
+            box-shadow: 0 6px 16px rgba(0,0,0,0.06);
+            border: 1px solid #e2e8f0;
+        }
+
+        .box-online { border-top: 5px solid #4f46e5; }
+        .box-manual { border-top: 5px solid #10b981; }
+
+        .box-title {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            padding-bottom: 6px;
+            border-bottom: 1px dashed #cbd5e1;
+        }
+
+        .form-group { margin-bottom: 10px; }
+        .form-label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 3px; color: #475569; }
+        .form-control {
+            width: 100%;
+            padding: 9px 12px;
+            border: 1.5px solid #cbd5e1;
+            border-radius: 10px;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .form-control:focus { border-color: var(--primary); }
+
+        /* Tabs inside Online Box */
+        .mini-tabs {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 10px;
+            background: #f1f5f9;
+            padding: 4px;
+            border-radius: 10px;
+        }
+        .mini-tab {
+            flex: 1;
+            text-align: center;
+            padding: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        .mini-tab.active {
+            background: white;
+            color: var(--primary);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+        }
+
+        /* Alarm Banner */
+        #alarmBanner {
+            display: none;
+            background: linear-gradient(135deg, #dc2626, #991b1b);
+            color: white;
+            padding: 16px;
+            border-radius: 16px;
+            margin-bottom: 14px;
+            text-align: center;
+            animation: pulseAlarm 1s infinite;
+            box-shadow: 0 10px 25px rgba(220, 38, 38, 0.4);
+        }
+
+        @keyframes pulseAlarm {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+
+        /* Serial List Section */
+        .serial-section {
+            background: white;
+            border-radius: 18px;
+            padding: 16px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+            margin-bottom: 16px;
+            border-top: 5px solid #0ea5e9;
+        }
+
+        .serial-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            padding: 12px;
+            border-radius: 14px;
+            margin-bottom: 10px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            flex-wrap: wrap;
+        }
+
+        .serial-item.top-1 { background: linear-gradient(to right, #fef2f2, #fff1f2); border-color: #fca5a5; }
+        .serial-item.top-2 { background: linear-gradient(to right, #fffbeb, #fef3c7); border-color: #fcd34d; }
+        .serial-item.top-3 { background: linear-gradient(to right, #f0fdf4, #dcfce7); border-color: #86efac; }
+        .serial-item.on-break { background: #f3e8ff; border-color: #d8b4fe; }
+        .serial-item.is-cut { background: #fee2e2; border: 2px dashed #ef4444; }
+
+        .rider-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .serial-num {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+
+        .top-1 .serial-num { background: #dc2626; }
+        .top-2 .serial-num { background: #d97706; }
+        .top-3 .serial-num { background: #059669; }
+
+        .rider-avatar {
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #cbd5e1;
+            background: #e2e8f0;
+            flex-shrink: 0;
+        }
+
+        .rider-info h4 {
+            font-size: 16px;
+            font-weight: 700;
+            color: #0f172a;
+        }
+
+        .badge-type {
+            font-size: 11px;
+            padding: 1px 6px;
+            border-radius: 6px;
+            font-weight: 600;
+        }
+        .badge-online { background: #dbeafe; color: #1d4ed8; }
+        .badge-manual { background: #d1fae5; color: #047857; }
+
+        .live-timer {
+            font-size: 13px;
+            font-weight: 700;
+            color: #4338ca;
+            margin-top: 2px;
+        }
+
+        .status-pill {
+            font-size: 12px;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 8px;
+            display: inline-block;
+            margin-top: 3px;
+        }
+        .pill-break { background: #9333ea; color: white; }
+        .pill-cut { background: #dc2626; color: white; }
+
+        .rider-actions {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            margin-left: auto;
+        }
+
+        /* Cut History Section */
+        .history-section {
+            background: white;
+            border-radius: 16px;
+            padding: 15px;
+            box-shadow: 0 6px 16px rgba(0,0,0,0.05);
+            border-top: 5px solid #ef4444;
+            margin-bottom: 20px;
+        }
+
+        .history-list {
+            max-height: 240px;
+            overflow-y: auto;
+        }
+
+        .history-item {
+            padding: 8px 10px;
+            border-bottom: 1px solid #f1f5f9;
+            font-size: 13px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Admin Modal & Section */
+        .modal-backdrop {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(4px);
+            z-index: 5000;
+            overflow-y: auto;
+            padding: 15px;
+        }
+
+        .modal-card {
+            background: white;
+            max-width: 650px;
+            margin: 20px auto;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+
+        .admin-box {
+            background: #f8fafc;
+            border: 1px solid #cbd5e1;
+            border-radius: 14px;
+            padding: 14px;
+            margin-bottom: 14px;
+        }
+
+        .admin-box h4 {
+            color: var(--primary);
+            margin-bottom: 10px;
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 5px;
+        }
+
+        /* Toggle Switch for GPS Lock */
+        .switch-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #fff1f2;
+            padding: 10px 12px;
+            border-radius: 10px;
+            border: 1px solid #fecdd3;
+            margin-bottom: 10px;
+        }
+
+        .reg-rider-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: white;
+            padding: 10px;
+            border-radius: 10px;
+            border: 1px solid #e2e8f0;
+            margin-bottom: 8px;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
     </style>
 </head>
-<body class="min-h-screen pb-10">
+<body>
 
-    <!-- Battery Saver Warning Banner -->
-    <div id="batteryWarning" class="bg-gradient-to-r from-amber-600 to-orange-600 text-white text-xs sm:text-sm py-2 px-4 text-center font-medium flex justify-between items-center shadow-lg">
-        <span><i class="fa-solid fa-triangle-exclamation mr-1"></i> সতর্কীকরণ: ব্যাকগ্রাউন্ড জিপিএস ও সঠিক টাইমারের জন্য আপনার ফোনের **Battery Saver** বন্ধ রাখুন।</span>
-        <button onclick="document.getElementById('batteryWarning').style.display='none'" class="ml-2 font-bold bg-amber-800 hover:bg-amber-900 px-2.5 py-1 rounded text-xs">বন্ধ করুন</button>
-    </div>
+    <!-- 1. MANDATORY GATEKEEPER (GPS + BATTERY SAVER) -->
+    <div id="gatekeeper">
+        <div class="gate-box">
+            <h2 style="margin-bottom: 6px;">🏍️ বাইক স্ট্যান্ড সিরিয়াল অ্যাপ</h2>
+            <p style="font-size: 13px; color: #cbd5e1;">অ্যাপটি ব্যবহার করতে নিচের ৩টি ধাপ বাধ্যতামূলকভাবে সম্পন্ন করুন</p>
 
-    <!-- Alarm Modal / Notification Banner for Top 3 -->
-    <div id="alarmBanner" class="fixed top-0 left-0 w-full bg-red-600 text-white py-3 px-4 z-50 hidden shadow-2xl animate-pulse flex justify-between items-center border-b-4 border-yellow-300">
-        <div class="flex items-center space-x-3">
-            <i class="fa-solid fa-bell-ring text-3xl animate-bounce text-yellow-300"></i>
-            <div>
-                <h4 class="font-bold text-lg" id="alarmTitle">⚠️ সিরিয়াল অ্যালার্ট!</h4>
-                <p class="text-sm" id="alarmText">আপনার সিরিয়াল ১, ২ বা ৩ নম্বরের মধ্যে চলে এসেছে!</p>
+            <div class="gate-step" id="stepGps">
+                <strong>১. লোকেশন পারমিশন (GPS বাধ্যতামূলক)</strong>
+                <p style="font-size: 12px; color: #cbd5e1; margin: 4px 0 8px;">স্ট্যান্ডের ২০০ মিটার সীমানা যাচাইয়ের জন্য লাইভ লোকেশন চালু করুন।</p>
+                <button class="btn btn-warning btn-sm" onclick="requestGpsPermission()">📍 লোকেশন চালু করুন</button>
+                <span id="gpsStatusText" style="font-size: 12px; margin-left: 8px; color: #fde047;">অপেক্ষমাণ...</span>
+            </div>
+
+            <div class="gate-step" id="stepBattery">
+                <strong>২. ব্যাটারি সেভার বন্ধ করুন</strong>
+                <p style="font-size: 12px; color: #cbd5e1; margin: 4px 0 8px;">সিরিয়াল অ্যালার্ম ও টাইমার সচল রাখতে ফোনের Battery Saver বন্ধ রাখুন।</p>
+                <button class="btn btn-info btn-sm" onclick="confirmBatterySaverOff()">🔋 ব্যাটারি সেভার বন্ধ করেছি</button>
+            </div>
+
+            <div class="gate-step" id="stepAllow">
+                <strong>৩. অ্যাপে প্রবেশের অনুমতি (Allow)</strong>
+                <p style="font-size: 12px; color: #cbd5e1; margin: 4px 0 8px;">অ্যালার্ম সাউন্ড এবং নোটিফিকেশন সক্রিয় করতে Allow চাপুন।</p>
+                <button class="btn btn-success btn-block" id="btnEnterApp" disabled onclick="enterMainApp()">✅ অ্যাপসে প্রবেশ করুন (Allow)</button>
             </div>
         </div>
-        <button onclick="stopAlarm()" class="bg-yellow-300 text-slate-950 font-bold px-4 py-2 rounded-xl hover:bg-yellow-400 shadow-lg text-sm">এলার্ম বন্ধ করুন</button>
     </div>
 
-    <!-- Main Container -->
-    <div class="max-w-4xl mx-auto p-3 sm:p-5 space-y-5">
+    <!-- MAIN APP CONTAINER -->
+    <div class="container" id="mainApp" style="display: none;">
 
-        <!-- Top Header Bar -->
-        <header class="glass-box p-4 rounded-2xl shadow-2xl flex flex-col md:flex-row justify-between items-center gap-3 border-emerald-500/30">
-            <div class="text-center md:text-left">
-                <h1 class="text-xl sm:text-2xl font-bold text-yellow-400 drop-shadow flex items-center justify-center md:justify-start gap-2">
-                    <i class="fa-solid fa-motorcycle text-teal-400"></i> চন্দ্রিমা মডেল টাউন একতা যুব উন্নয়ন বাইকার গ্রুপ
-                </h1>
-                <p class="text-xs sm:text-sm text-emerald-300 mt-0.5 font-medium">অফিশিয়াল বাইক রাইডার সিরিয়াল ম্যানেজমেন্ট সিস্টেম</p>
+        <!-- ALARM BANNER FOR TOP 1, 2, 3 -->
+        <div id="alarmBanner">
+            <h3 id="alarmTitle">🚨 আপনার সিরিয়াল চলে এসেছে!</h3>
+            <p id="alarmDesc" style="font-size: 14px; margin: 4px 0 10px;">দয়া করে দ্রুত প্রস্তুত হন।</p>
+            <div style="display: flex; gap: 10px; justify-content: center;">
+                <button class="btn btn-warning" onclick="stopMyAlarm()">🔕 অ্যালার্ম বন্ধ করুন</button>
+                <button class="btn btn-dark" onclick="cutMyOwnSerialFromAlarm()">✂️ আমার সিরিয়াল কেটে দিন</button>
             </div>
-            <div class="bg-slate-900/80 px-4 py-2 rounded-xl border border-teal-500/30 text-center min-w-[160px] shadow-inner">
-                <div id="liveClock" class="text-lg font-bold text-cyan-300">00:00:00 AM</div>
-                <div id="liveDate" class="text-xs text-slate-300">তারিখ লোড হচ্ছে...</div>
-            </div>
-        </header>
+        </div>
 
-        <!-- Leadership Section (Side-by-Side Grid Layout) -->
-        <section class="glass-box p-4 rounded-2xl shadow-xl border-slate-700">
-            <h2 class="text-sm sm:text-base font-bold text-yellow-400 mb-3 border-b border-slate-700 pb-2 flex items-center gap-2">
-                <i class="fa-solid fa-users-gear text-cyan-400"></i> স্ট্যান্ড কার্যনির্বাহী কমিটি
-            </h2>
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                <!-- President -->
-                <div class="bg-slate-900/70 p-3 rounded-xl border border-slate-700/80 text-center flex flex-col items-center shadow">
-                    <img id="presImg" src="https://via.placeholder.com/100" class="w-14 h-14 object-cover rounded-full mb-2 border-2 border-yellow-400 shadow-md">
-                    <h3 class="text-[11px] text-slate-400 font-semibold uppercase tracking-wider">সভাপতি</h3>
-                    <p id="presName" class="text-xs sm:text-sm font-bold text-emerald-300 mt-0.5">লোড হচ্ছে...</p>
-                </div>
-                <!-- Vice President -->
-                <div class="bg-slate-900/70 p-3 rounded-xl border border-slate-700/80 text-center flex flex-col items-center shadow">
-                    <img id="vpImg" src="https://via.placeholder.com/100" class="w-14 h-14 object-cover rounded-full mb-2 border-2 border-yellow-400 shadow-md">
-                    <h3 class="text-[11px] text-slate-400 font-semibold uppercase tracking-wider">সহ-সভাপতি</h3>
-                    <p id="vpName" class="text-xs sm:text-sm font-bold text-emerald-300 mt-0.5">লোড হচ্ছে...</p>
-                </div>
-                <!-- Org Secretary -->
-                <div class="bg-slate-900/70 p-3 rounded-xl border border-slate-700/80 text-center flex flex-col items-center shadow">
-                    <img id="secImg" src="https://via.placeholder.com/100" class="w-14 h-14 object-cover rounded-full mb-2 border-2 border-yellow-400 shadow-md">
-                    <h3 class="text-[11px] text-slate-400 font-semibold uppercase tracking-wider">সাংগঠনিক সম্পাদক</h3>
-                    <p id="secName" class="text-xs sm:text-sm font-bold text-emerald-300 mt-0.5">লোড হচ্ছে...</p>
-                </div>
-            </div>
-        </section>
-
-        <!-- Notice Board -->
-        <section class="glass-box p-4 rounded-2xl shadow-xl border-amber-600/30">
-            <h2 class="text-sm sm:text-base font-bold text-amber-400 mb-2 flex items-center gap-2">
-                <i class="fa-solid fa-bullhorn"></i> নোটিশ বোর্ড
-            </h2>
-            <div id="noticeContent" class="text-xs sm:text-sm text-slate-200 bg-slate-900/60 p-3 rounded-xl border border-amber-500/20 shadow-inner">
-                নোটিশ লোড হচ্ছে...
-            </div>
-            <div id="noticeImgContainer" class="mt-3 hidden text-center">
-                <img id="noticeImg" src="" class="max-h-40 rounded-xl mx-auto border border-amber-500/30 shadow">
-            </div>
-        </section>
-
-        <!-- Registration & Entry Grid Boxes -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            
-            <!-- Online Registration & Entry Box -->
-            <div class="glass-box p-4 rounded-2xl shadow-xl flex flex-col justify-between border-teal-600/30">
+        <!-- HEADER: STAND NAME & LIVE CLOCK WITH DATE -->
+        <div class="header-card">
+            <div class="header-top">
                 <div>
-                    <h2 class="text-sm sm:text-base font-bold text-teal-400 mb-3 border-b border-slate-700 pb-2 flex items-center gap-2">
-                        <i class="fa-solid fa-user-plus"></i> অনলাইন রেজিস্ট্রেশন ও এন্ট্রি
-                    </h2>
-                    <form id="onlineRegForm" class="space-y-3">
-                        <div>
-                            <label class="block text-xs font-medium text-slate-300 mb-1">রাইডার নাম</label>
-                            <input type="text" id="regName" required placeholder="আপনার সম্পূর্ণ নাম লিখুন" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-xs sm:text-sm text-slate-100 focus:outline-none focus:border-teal-500 shadow-inner">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-medium text-slate-300 mb-1">মোবাইল নাম্বার</label>
-                            <input type="tel" id="regPhone" required placeholder="০১XXXXXXXXX" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-xs sm:text-sm text-slate-100 focus:outline-none focus:border-teal-500 shadow-inner">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-medium text-slate-300 mb-1">রাইডার ছবি (ফাইল)</label>
-                            <input type="file" id="regPhotoFile" accept="image/*" class="w-full text-xs text-slate-400 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-teal-600 file:text-white hover:file:bg-teal-700 cursor-pointer bg-slate-900 border border-slate-700 rounded-xl">
-                        </div>
-                        <button type="submit" id="regSubmitBtn" class="w-full bg-gradient-to-r from-teal-600 to-emerald-600 text-white font-bold py-2.5 rounded-xl hover:from-teal-500 hover:to-emerald-500 shadow-lg text-xs sm:text-sm transition">
-                            রেজিস্ট্রেশন ও সিরিয়ালে নাম দিন
-                        </button>
-                    </form>
+                    <div class="stand-title" id="displayStandName">চন্দ্রিমা বাইক স্ট্যান্ড</div>
+                    <div class="gps-badge" id="userDistanceBadge">📍 দূরত্ব মাপা হচ্ছে...</div>
                 </div>
-                <p id="regLockMsg" class="text-xs text-amber-400 mt-3 text-center hidden font-medium"><i class="fa-solid fa-lock"></i> আপনি ইতিমধ্যে রেজিস্টার্ড। তথ্য পরিবর্তন করতে অ্যাডমিনের সাহায্য নিন।</p>
-            </div>
-
-            <!-- Manual Entry Box -->
-            <div class="glass-box p-4 rounded-2xl shadow-xl flex flex-col justify-between border-cyan-600/30">
-                <div>
-                    <h2 class="text-sm sm:text-base font-bold text-cyan-400 mb-3 border-b border-slate-700 pb-2 flex items-center gap-2">
-                        <i class="fa-solid fa-list-check"></i> ম্যানুয়াল এন্ট্রি (শুধু নাম)
-                    </h2>
-                    <form id="manualEntryForm" class="space-y-3">
-                        <div>
-                            <label class="block text-xs font-medium text-slate-300 mb-1">রাইডারের নাম</label>
-                            <input type="text" id="manualName" required placeholder="নাম লিখুন" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-xs sm:text-sm text-slate-100 focus:outline-none focus:border-cyan-500 shadow-inner">
-                        </div>
-                        <button type="submit" class="w-full bg-gradient-to-r from-cyan-600 to-blue-600 text-white font-bold py-2.5 rounded-xl hover:from-cyan-500 hover:to-blue-500 shadow-lg text-xs sm:text-sm transition mt-6">
-                            ম্যানুয়াল সিরিয়াল এন্ট্রি দিন
-                        </button>
-                    </form>
-                </div>
-                <div class="mt-4 p-3 bg-slate-900/60 rounded-xl border border-slate-700 text-xs text-slate-300 shadow-inner">
-                    <i class="fa-solid fa-circle-info text-cyan-400 mr-1"></i> নিয়ম: এন্ট্রি বা সিরিয়াল কাটতে হলে স্ট্যান্ডের **২০০ মিটার** সীমানার মধ্যে থাকতে হবে। একই নামে একাধিক রাইডার একই সাথে সিরিয়ালে থাকতে পারবে না।
+                <div class="clock-box">
+                    <div class="clock-time" id="liveClock">00:00:00 AM</div>
+                    <div class="clock-date" id="liveDate">তারিখ লোড হচ্ছে...</div>
                 </div>
             </div>
-
         </div>
 
-        <!-- Serial Queue List Section -->
-        <section class="glass-box p-4 rounded-2xl shadow-xl border-yellow-500/30">
-            <div class="flex flex-col sm:flex-row justify-between items-center mb-3 border-b border-slate-700 pb-2 gap-2">
-                <h2 class="text-sm sm:text-base font-bold text-yellow-300 flex items-center gap-2">
-                    <i class="fa-solid fa-list-ol"></i> লাইভ সিরিয়াল লিস্ট (যে কেউ যেকোনো স্থান থেকে দেখতে পারবেন)
-                </h2>
-                <div class="text-xs text-emerald-400 font-semibold bg-slate-900 px-3 py-1.5 rounded-xl border border-emerald-500/30 shadow-inner">
-                    মোট সিরিয়াল: <span id="totalQueueCount">০</span> জন
+        <!-- LEADERS SECTION (সভাপতি, সহ-সভাপতি, সাংগঠনিক সম্পাদক) -->
+        <div class="leaders-grid">
+            <div class="leader-card">
+                <img src="https://via.placeholder.com/100?text=সভাপতি" id="imgPresident" class="leader-img" alt="সভাপতি">
+                <div><span class="leader-role">সভাপতি</span></div>
+                <div class="leader-name" id="namePresident">নাম সেট করা নেই</div>
+            </div>
+            <div class="leader-card">
+                <img src="https://via.placeholder.com/100?text=সহ-সভাপতি" id="imgVicePresident" class="leader-img" alt="সহ-সভাপতি">
+                <div><span class="leader-role">সহ-সভাপতি</span></div>
+                <div class="leader-name" id="nameVicePresident">নাম সেট করা নেই</div>
+            </div>
+            <div class="leader-card">
+                <img src="https://via.placeholder.com/100?text=সাংগঠনিক" id="imgOrgSecretary" class="leader-img" alt="সাংগঠনিক সম্পাদক">
+                <div><span class="leader-role">সাংগঠনিক সম্পাদক</span></div>
+                <div class="leader-name" id="nameOrgSecretary">নাম সেট করা নেই</div>
+            </div>
+        </div>
+
+        <!-- NOTICE BOARD -->
+        <div class="notice-card">
+            <div class="notice-header">📢 স্ট্যান্ড নোটিশ বোর্ড</div>
+            <p id="displayNoticeText" style="font-size: 14px; color: #78350f; white-space: pre-line;">কোনো নতুন নোটিশ নেই।</p>
+            <img id="displayNoticeImg" class="notice-img" style="display: none;" alt="নোটিশ ছবি">
+        </div>
+
+        <!-- DUAL ENTRY SECTION: LEFT (ONLINE REG & ENTRY), RIGHT (MANUAL ENTRY) -->
+        <div class="entry-grid">
+            <!-- LEFT BOX: ONLINE REGISTRATION & ENTRY -->
+            <div class="box-card box-online">
+                <div class="box-title" style="color: #4338ca;">📱 অনলাইন রেজিস্ট্রেশন ও এন্ট্রি</div>
+                
+                <div class="mini-tabs">
+                    <div class="mini-tab active" id="tabOnlineEntry" onclick="switchOnlineTab('entry')">সিরিয়াল এন্ট্রি</div>
+                    <div class="mini-tab" id="tabOnlineReg" onclick="switchOnlineTab('reg')">নতুন রেজিস্ট্রেশন</div>
+                </div>
+
+                <!-- Online Entry Form -->
+                <div id="onlineEntryForm">
+                    <div class="form-group">
+                        <label class="form-label">আপনার রেজিস্টার্ড ফোন নাম্বার দিন</label>
+                        <input type="tel" id="loginPhone" class="form-control" placeholder="017XXXXXXXX">
+                    </div>
+                    <button class="btn btn-primary btn-block" onclick="submitOnlineEntry()">🚀 অনলাইন সিরিয়াল দিন</button>
+                    <p style="font-size: 11px; color: #64748b; margin-top: 6px;">* আপনার নাম ও ছবি অটোমেটিক যুক্ত হবে।</p>
+                </div>
+
+                <!-- New Registration Form (One-time permanent) -->
+                <div id="onlineRegForm" style="display: none;">
+                    <div class="form-group">
+                        <label class="form-label">পূর্ণ নাম (একবারই সেট হবে)</label>
+                        <input type="text" id="regName" class="form-control" placeholder="আপনার নাম লিখুন">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">ফোন নাম্বার (একবারই সেট হবে)</label>
+                        <input type="tel" id="regPhone" class="form-control" placeholder="017XXXXXXXX">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">আপনার ছবি নির্বাচন করুন</label>
+                        <input type="file" id="regPhoto" accept="image/*" class="form-control">
+                    </div>
+                    <button class="btn btn-success btn-block" onclick="registerNewRider()">💾 স্থায়ী রেজিস্ট্রেশন করুন</button>
+                    <p style="font-size: 11px; color: #dc2626; margin-top: 5px;">* একবার অ্যাকাউন্ট খুললে নাম, ছবি বা নাম্বার পরিবর্তন করা যাবে না।</p>
                 </div>
             </div>
+
+            <!-- RIGHT BOX: MANUAL ENTRY -->
+            <div class="box-card box-manual">
+                <div class="box-title" style="color: #047857;">✍️ ম্যানুয়াল এন্ট্রি (শুধু নাম)</div>
+                <div class="form-group">
+                    <label class="form-label">রাইডারের নাম লিখুন</label>
+                    <input type="text" id="manualRiderName" class="form-control" placeholder="রাইডারের নাম">
+                </div>
+                <button class="btn btn-success btn-block" onclick="submitManualEntry()">➕ ম্যানুয়াল সিরিয়াল দিন</button>
+                <div style="background: #ecfdf5; padding: 8px; border-radius: 8px; margin-top: 10px; font-size: 12px; color: #065f46;">
+                    • ম্যানুয়াল ও অনলাইন সিরিয়াল একই লিস্টে দেখা যাবে।<br>
+                    • সিরিয়ালে থাকা অবস্থায় একই নাম দুইবার দেওয়া যাবে না।
+                </div>
+            </div>
+        </div>
+
+        <!-- LIVE SERIAL LIST -->
+        <div class="serial-section">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                <h3 style="font-size: 18px; color: #0369a1;">📋 বর্তমান সিরিয়াল তালিকা (<span id="totalSerialCount">0</span>)</h3>
+                <span style="font-size: 12px; background: #e0f2fe; color: #0369a1; padding: 3px 8px; border-radius: 8px; font-weight: 600;">লাইভ আপডেট</span>
+            </div>
+            <div id="serialListContainer">
+                <p style="text-align: center; color: #64748b; padding: 20px;">বর্তমানে কোনো রাইডার সিরিয়ালে নেই।</p>
+            </div>
+        </div>
+
+        <!-- 24-HOUR CUT HISTORY -->
+        <div class="history-section">
+            <h3 style="font-size: 16px; color: #dc2626; margin-bottom: 8px;">📜 কে কার সিরিয়াল কেটেছে (২৪ ঘণ্টার হিস্ট্রি)</h3>
+            <div class="history-list" id="cutHistoryContainer">
+                <p style="color: #64748b; font-size: 13px;">গত ২৪ ঘণ্টায় কোনো সিরিয়াল কাটা হয়নি।</p>
+            </div>
+        </div>
+
+        <!-- ADMIN ACCESS BUTTON -->
+        <div style="text-align: center; margin-top: 20px;">
+            <button class="btn btn-dark btn-sm" onclick="openAdminLogin()">🔐 অ্যাডমিন প্যানেল</button>
+        </div>
+    </div>
+
+    <!-- ADMIN PANEL MODAL -->
+    <div class="modal-backdrop" id="adminModal">
+        <div class="modal-card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                <h3 style="color: var(--primary);">🛡️ মাস্টার অ্যাডমিন কন্ট্রোল প্যানেল</h3>
+                <button class="btn btn-danger btn-sm" onclick="closeAdminModal()">✖ বন্ধ করুন</button>
+            </div>
+
+            <!-- 1. Stand Name & GPS Location with Protection Switch -->
+            <div class="admin-box">
+                <h4>📍 স্ট্যান্ডের নাম ও GPS সীমানা সেটিংস</h4>
+                <div class="form-group">
+                    <label class="form-label">স্ট্যান্ডের নাম</label>
+                    <div style="display: flex; gap: 6px;">
+                        <input type="text" id="adminStandName" class="form-control" placeholder="স্ট্যান্ডের নাম">
+                        <button class="btn btn-primary btn-sm" onclick="saveStandName()">সেভ</button>
+                    </div>
+                </div>
+
+                <!-- GPS Lock Switch so accidental touch doesn't ruin location -->
+                <div class="switch-row">
+                    <div>
+                        <strong style="font-size: 13px; color: #be123c;">GPS লোকেশন সেট বাটন আনলক করুন</strong>
+                        <div style="font-size: 11px; color: #881337;">হাতের টাচ লেগে লোকেশন নষ্ট হওয়া রোধ করতে এটি বন্ধ রাখুন</div>
+                    </div>
+                    <input type="checkbox" id="gpsUnlockSwitch" onchange="toggleGpsSetButton()" style="width: 22px; height: 22px; cursor: pointer;">
+                </div>
+
+                <button id="btnSetStandGps" class="btn btn-danger btn-block" disabled onclick="setStandCurrentLocation()">
+                    🔒 বর্তমান অবস্থানকে স্ট্যান্ডের কেন্দ্র হিসেবে সেট করুন
+                </button>
+                <p id="savedStandCoords" style="font-size: 12px; color: #475569; margin-top: 6px;"></p>
+            </div>
+
+            <!-- 2. Leaders Profile Setup -->
+            <div class="admin-box">
+                <h4>👔 সভাপতি, সহ-সভাপতি ও সাংগঠনিক সম্পাদক সেটআপ</h4>
+                <div class="form-group">
+                    <label class="form-label">১. সভাপতির নাম ও ছবি</label>
+                    <input type="text" id="admPresName" class="form-control" placeholder="সভাপতির নাম" style="margin-bottom: 5px;">
+                    <input type="file" id="admPresPhoto" accept="image/*" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">২. সহ-সভাপতির নাম ও ছবি</label>
+                    <input type="text" id="admVpName" class="form-control" placeholder="সহ-সভাপতির নাম" style="margin-bottom: 5px;">
+                    <input type="file" id="admVpPhoto" accept="image/*" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">৩. সাংগঠনিক সম্পাদকের নাম ও ছবি</label>
+                    <input type="text" id="admSecName" class="form-control" placeholder="সাংগঠনিক সম্পাদকের নাম" style="margin-bottom: 5px;">
+                    <input type="file" id="admSecPhoto" accept="image/*" class="form-control">
+                </div>
+                <button class="btn btn-success btn-block" onclick="saveLeadersInfo()">💾 নেতৃবৃন্দের প্রোফাইল সেভ করুন</button>
+            </div>
+
+            <!-- 3. Notice Board Setup -->
+            <div class="admin-box">
+                <h4>📢 নোটিশ বোর্ড আপডেট (একমাত্র অ্যাডমিন)</h4>
+                <div class="form-group">
+                    <label class="form-label">নোটিশ লিখুন</label>
+                    <textarea id="admNoticeText" rows="3" class="form-control" placeholder="জরুরি নোটিশ লিখুন..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">নোটিশের সাথে ছবি যুক্ত করুন (ঐচ্ছিক)</label>
+                    <input type="file" id="admNoticePhoto" accept="image/*" class="form-control">
+                </div>
+                <div style="display: flex; gap: 8px;">
+                    <button class="btn btn-warning" style="flex: 1;" onclick="saveNoticeBoard()">📢 নোটিশ প্রকাশ করুন</button>
+                    <button class="btn btn-dark btn-sm" onclick="clearNoticeImage()">ছবি মুছুন</button>
+                </div>
+            </div>
+
+            <!-- 4. Registered Riders List & Special Secret Power -->
+            <div class="admin-box">
+                <h4>⭐ রেজিস্ট্রেশনকৃত রাইডার লিস্ট ও স্পেশাল পাওয়ার</h4>
+                <p style="font-size: 12px; color: #475569; margin-bottom: 10px;">
+                    এখান থেকে রাইডারের তথ্য এডিট করতে পারবেন এবং গোপনে কাউন্টডাউন টাইম, স্ট্যান্ডের দূরত্ব (মিটার) ও বিরতির সময় বাড়াতে/কমাতে পারবেন (অন্য কেউ দেখতে পাবে না)।
+                </p>
+                <div id="adminRegisteredList">লোড হচ্ছে...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SPECIAL POWER EDIT MODAL FOR SPECIFIC RIDER -->
+    <div class="modal-backdrop" id="riderEditModal" style="z-index: 6000;">
+        <div class="modal-card" style="max-width: 450px;">
+            <h4 style="color: var(--primary); margin-bottom: 10px;">⚙️ রাইডার এডিট ও স্পেশাল পাওয়ার</h4>
+            <input type="hidden" id="editRiderPhoneKey">
             
-            <div class="overflow-x-auto">
-                <table class="w-full text-left text-xs sm:text-sm text-slate-200">
-                    <thead class="bg-slate-900 uppercase text-slate-400 border-b border-slate-700 text-[11px]">
-                        <tr>
-                            <th class="p-2.5">পজিশন</th>
-                            <th class="p-2.5">রাইডার</th>
-                            <th class="p-2.5">টাইমার</th>
-                            <th class="p-2.5">স্ট্যাটাস</th>
-                            <th class="p-2.5 text-center">অ্যাকশন (সিরিয়াল কাটুন / বিরতি)</th>
-                        </tr>
-                    </thead>
-                    <tbody id="queueTableBody" class="divide-y divide-slate-700/50">
-                        <tr>
-                            <td colspan="5" class="p-4 text-center text-slate-400">সিরিয়াল লোড হচ্ছে...</td>
-                        </tr>
-                    </tbody>
-                </table>
+            <div class="form-group">
+                <label class="form-label">রাইডারের নাম (অ্যাডমিন পরিবর্তন)</label>
+                <input type="text" id="editRiderName" class="form-control">
             </div>
-        </section>
-
-        <!-- 24-Hour History Section -->
-        <section class="glass-box p-4 rounded-2xl shadow-xl border-rose-500/30">
-            <h2 class="text-sm sm:text-base font-bold text-rose-400 mb-3 border-b border-slate-700 pb-2 flex items-center gap-2">
-                <i class="fa-solid fa-clock-rotate-left"></i> সিরিয়াল কাটার হিস্টরি (২৪ ঘণ্টা)
-            </h2>
-            <div class="max-h-48 overflow-y-auto space-y-2" id="historyContainer">
-                <p class="text-xs text-slate-400 text-center py-2">হিস্টরি লোড হচ্ছে...</p>
+            <div class="form-group">
+                <label class="form-label">নতুন ছবি (পরিবর্তন করতে চাইলে)</label>
+                <input type="file" id="editRiderPhoto" accept="image/*" class="form-control">
             </div>
-        </section>
 
-        <!-- Admin Section Button -->
-        <div class="text-center pt-2">
-            <button onclick="openAdminLogin()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white px-6 py-3 rounded-xl border border-slate-600 text-xs sm:text-sm font-semibold shadow-xl transition flex items-center gap-2 mx-auto">
-                <i class="fa-solid fa-shield-halved text-yellow-400 text-base"></i> অ্যাডমিন প্যানেল প্রবেশ করুন
-            </button>
-        </div>
+            <div style="background: #fef3c7; padding: 10px; border-radius: 10px; margin: 10px 0; border: 1px solid #f59e0b;">
+                <strong style="font-size: 13px; color: #b45309;">🕵️ গোপন স্পেশাল পাওয়ার (শুধু এই রাইডারের জন্য)</strong>
+                <div class="form-group" style="margin-top: 8px;">
+                    <label class="form-label">সিরিয়াল কাটার কাউন্টডাউন সময় (মিনিট) [ডিফল্ট: ১০]</label>
+                    <input type="number" id="spCutMinutes" class="form-control" value="10" min="1">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">স্ট্যান্ডের অনুমোদিত দূরত্ব (মিটার) [ডিফল্ট: ২০০]</label>
+                    <input type="number" id="spDistanceMeters" class="form-control" value="200" min="10">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">বিরতির সময়সীমা (মিনিট) [ডিফল্ট: ৩০]</label>
+                    <input type="number" id="spBreakMinutes" class="form-control" value="30" min="1">
+                </div>
+            </div>
 
-    </div>
-
-    <!-- Admin Login Modal -->
-    <div id="adminLoginModal" class="fixed inset-0 bg-slate-950/80 z-50 hidden flex justify-center items-center p-4">
-        <div class="glass-box p-6 rounded-2xl w-full max-w-sm shadow-2xl space-y-4 border-yellow-500/40">
-            <h3 class="text-base sm:text-lg font-bold text-yellow-400 flex items-center gap-2">
-                <i class="fa-solid fa-lock"></i> অ্যাডমিন পাসওয়ার্ড দিন
-            </h3>
-            <p class="text-xs text-slate-300">অ্যাডমিন প্যানেলে প্রবেশ করতে সিক্রেট পাসওয়ার্ড (692372) লিখুন।</p>
-            <input type="password" id="adminPassInput" placeholder="পাসওয়ার্ড লিখুন" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-sm text-slate-100 focus:outline-none focus:border-yellow-500 shadow-inner">
-            <div class="flex justify-end space-x-2 pt-2">
-                <button onclick="closeAdminLogin()" class="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-slate-200 rounded-xl text-xs font-medium">বাতিল</button>
-                <button onclick="verifyAdminPass()" class="px-4 py-2 bg-yellow-400 hover:bg-yellow-300 text-slate-950 font-bold rounded-xl text-xs shadow">প্রবেশ করুন</button>
+            <div style="display: flex; gap: 8px;">
+                <button class="btn btn-success" style="flex: 1;" onclick="saveRiderSpecialSettings()">💾 সেভ করুন</button>
+                <button class="btn btn-dark" onclick="document.getElementById('riderEditModal').style.display='none'">বাতিল</button>
             </div>
         </div>
     </div>
-
-    <!-- Admin Panel Modal -->
-    <div id="adminPanelModal" class="fixed inset-0 bg-slate-950/90 z-50 hidden overflow-y-auto p-3 sm:p-6">
-        <div class="max-w-3xl mx-auto glass-box p-5 rounded-2xl shadow-2xl space-y-6 border-yellow-500/40">
-            
-            <div class="flex justify-between items-center border-b border-slate-700 pb-3">
-                <h2 class="text-base sm:text-lg font-bold text-yellow-400 flex items-center gap-2">
-                    <i class="fa-solid fa-screwdriver-wrench"></i> অ্যাডমিন কন্ট্রোল প্যানেল
-                </h2>
-                <button onclick="closeAdminPanel()" class="bg-rose-600 hover:bg-rose-500 text-white px-3.5 py-1.5 rounded-xl text-xs font-bold shadow">বন্ধ করুন</button>
-            </div>
-
-            <!-- Stand Location Setting with Lock Toggle -->
-            <div class="bg-slate-800/80 p-4 rounded-xl border border-slate-700 space-y-3 shadow-inner">
-                <div class="flex justify-between items-center">
-                    <h3 class="text-xs sm:text-sm font-bold text-cyan-400 flex items-center gap-2">
-                        <i class="fa-solid fa-location-dot"></i> স্ট্যান্ড জিপিএস লোকেশন (২০০ মিটার রেঞ্জ)
-                    </h3>
-                    <div class="flex items-center space-x-2">
-                        <span class="text-xs text-slate-300">লোকেশন লক:</span>
-                        <input type="checkbox" id="locationLockToggle" class="w-4 h-4 accent-cyan-500 cursor-pointer">
-                    </div>
-                </div>
-                <p class="text-xs text-slate-400">হাত লেগে যেন সীমানা নষ্ট না হয়, সেজন্য 'লোকেশন লক' অন রাখতে পারেন। বর্তমান লোকেশন সেট করতে নিচের বাটনে চাপুন।</p>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <input type="text" id="adminLat" placeholder="Latitude" class="bg-slate-900 border border-slate-700 rounded-xl p-2 text-xs text-slate-300" readonly>
-                    <input type="text" id="adminLng" placeholder="Longitude" class="bg-slate-900 border border-slate-700 rounded-xl p-2 text-xs text-slate-300" readonly>
-                </div>
-                <div class="flex flex-wrap gap-2">
-                    <button onclick="captureCurrentLocation()" class="bg-cyan-600 hover:bg-cyan-500 text-white font-bold px-3.5 py-2 rounded-xl text-xs flex items-center gap-1 shadow">
-                        <i class="fa-solid fa-crosshairs"></i> বর্তমান জিপিএস লোকেশন সেট করুন
-                    </button>
-                    <button onclick="saveStandLocation()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-4 py-2 rounded-xl text-xs shadow">সেভ করুন</button>
-                </div>
-            </div>
-
-            <!-- Leadership Profile Editor -->
-            <div class="bg-slate-800/80 p-4 rounded-xl border border-slate-700 space-y-3 shadow-inner">
-                <h3 class="text-xs sm:text-sm font-bold text-yellow-400 flex items-center gap-2">
-                    <i class="fa-solid fa-user-tie"></i> কমিটি লিডারশিপ প্রোফাইল এডিটর
-                </h3>
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                    <div class="space-y-1">
-                        <label class="text-[11px] text-slate-300">সভাপতি নাম ও ছবি</label>
-                        <input type="text" id="editPresName" placeholder="নাম" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2 text-xs text-slate-200">
-                        <input type="text" id="editPresImg" placeholder="ছবির লিংক" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2 text-xs text-slate-200">
-                    </div>
-                    <div class="space-y-1">
-                        <label class="text-[11px] text-slate-300">সহ-সভাপতি নাম ও ছবি</label>
-                        <input type="text" id="editVpName" placeholder="নাম" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2 text-xs text-slate-200">
-                        <input type="text" id="editVpImg" placeholder="ছবির লিংক" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2 text-xs text-slate-200">
-                    </div>
-                    <div class="space-y-1">
-                        <label class="text-[11px] text-slate-300">সাংগঠনিক সম্পাদক নাম ও ছবি</label>
-                        <input type="text" id="editSecName" placeholder="নাম" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2 text-xs text-slate-200">
-                        <input type="text" id="editSecImg" placeholder="ছবির লিংক" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2 text-xs text-slate-200">
-                    </div>
-                </div>
-                <button onclick="saveLeadership()" class="bg-yellow-500 hover:bg-yellow-400 text-slate-950 font-bold px-4 py-2 rounded-xl text-xs shadow">লিডারশিপ আপডেট করুন</button>
-            </div>
-
-            <!-- Notice Board Editor -->
-            <div class="bg-slate-800/80 p-4 rounded-xl border border-slate-700 space-y-3 shadow-inner">
-                <h3 class="text-xs sm:text-sm font-bold text-amber-400 flex items-center gap-2">
-                    <i class="fa-solid fa-pen-to-square"></i> নোটিশ বোর্ড এডিটর
-                </h3>
-                <textarea id="editNoticeText" rows="2" placeholder="নোটিশের বিবরণ লিখুন..." class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2 text-xs text-slate-200 focus:outline-none focus:border-amber-500"></textarea>
-                <input type="text" id="editNoticeImg" placeholder="নোটিশ ছবির লিংক (ঐচ্ছিক)" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2 text-xs text-slate-200">
-                <button onclick="saveNotice()" class="bg-amber-600 hover:bg-amber-500 text-white font-bold px-4 py-2 rounded-xl text-xs shadow">নোটিশ আপডেট করুন</button>
-            </div>
-
-            <!-- Registered Users Management Table & Special Powers -->
-            <div class="bg-slate-800/80 p-4 rounded-xl border border-slate-700 space-y-3 shadow-inner">
-                <h3 class="text-xs sm:text-sm font-bold text-teal-400 flex items-center gap-2">
-                    <i class="fa-solid fa-users"></i> সমস্ত রেজিস্ট্রেশন করা রাইডারদের তালিকা ও স্পেশাল পাওয়ার
-                </h3>
-                <p class="text-[11px] text-slate-400">অ্যাডমিন চাইলে এখান থেকে রাইডারদের স্পেশাল টাইম, দূরত্বের ছাড় দিতে পারবেন অথবা রাইডার মুছে ফেলতে পারবেন।</p>
-                <div class="max-h-60 overflow-y-auto">
-                    <table class="w-full text-left text-xs text-slate-200">
-                        <thead class="bg-slate-900 uppercase text-slate-400 border-b border-slate-700 text-[10px]">
-                            <tr>
-                                <th class="p-2">নাম</th>
-                                <th class="p-2">ফোন</th>
-                                <th class="p-2">স্ট্যাটাস / স্পেশাল পাওয়ার</th>
-                                <th class="p-2 text-center">অ্যাকশন</th>
-                            </tr>
-                        </thead>
-                        <tbody id="adminUserTableBody" class="divide-y divide-slate-700/50">
-                            <!-- Users loaded here -->
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-        </div>
-    </div>
-
-    <!-- Firebase SDKs (v8 Compat) -->
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
     <script>
-        // Firebase Configuration provided by user
+        // ==========================================
+        // 1. FIREBASE INITIALIZATION
+        // ==========================================
         const firebaseConfig = {
             apiKey: "AIzaSyB-ZGbRbYN_3ASW59cXQw4aKNvEOWzOodg",
             authDomain: "candrimabaikara-86815.firebaseapp.com",
@@ -326,514 +817,847 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        const ADMIN_PASSWORD = "692372";
-        let standLocation = { lat: 23.8103, lng: 90.4125, locked: true };
-        let currentUserId = localStorage.getItem('candrima_registered_id') || null;
-        let audioContext = null;
-        let alarmInterval = null;
-        let isAlarmPlaying = false;
-        let isAdminLoggedIn = false;
+        // ==========================================
+        // 2. GLOBAL STATE & AUDIO ALARM (Web Audio API)
+        // ==========================================
+        let userLat = null, userLng = null;
+        let gpsGranted = false, batteryConfirmed = false;
+        let standSettings = {
+            name: "চন্দ্রিমা বাইক স্ট্যান্ড",
+            lat: null,
+            lng: null
+        };
+        let registeredRiders = {}; // Permanent database (never deleted)
+        let activeSerials = {};    // Current serial queue
+        let breakLogs = {};        // Daily break tracker per rider name
+        let myLocalRiderName = localStorage.getItem("myRiderName") || "";
+        let myLocalRiderPhone = localStorage.getItem("myRiderPhone") || "";
 
-        // Live Clock & Date
-        setInterval(() => {
+        // Alarm Audio Variables
+        let audioCtx = null;
+        let alarmInterval = null;
+        let acknowledgedAlarmKey = ""; // To stop alarm when user clicks stop
+
+        function playRingtoneBeep() {
+            try {
+                if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(880, audioCtx.currentTime); // A5
+                osc.frequency.setValueAtTime(1100, audioCtx.currentTime + 0.15);
+                gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.4);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.4);
+            } catch (e) {}
+        }
+
+        function startAlarmSound(title, desc, alarmKey) {
+            if (acknowledgedAlarmKey === alarmKey) return;
+            document.getElementById("alarmTitle").innerText = title;
+            document.getElementById("alarmDesc").innerText = desc;
+            document.getElementById("alarmBanner").style.display = "block";
+            if (!alarmInterval) {
+                playRingtoneBeep();
+                alarmInterval = setInterval(playRingtoneBeep, 1000);
+            }
+        }
+
+        function stopMyAlarm() {
+            if (alarmInterval) {
+                clearInterval(alarmInterval);
+                alarmInterval = null;
+            }
+            document.getElementById("alarmBanner").style.display = "none";
+            // Mark current position alarm as acknowledged
+            const sorted = getSortedSerials();
+            const myIdx = sorted.findIndex(item => normalizeName(item.name) === normalizeName(myLocalRiderName));
+            if (myIdx !== -1) {
+                acknowledgedAlarmKey = sorted[myIdx].id + "_pos_" + (myIdx + 1);
+            }
+        }
+
+        // ==========================================
+        // 3. GATEKEEPER (GPS + BATTERY SAVER + ALLOW)
+        // ==========================================
+        function requestGpsPermission() {
+            const statusText = document.getElementById("gpsStatusText");
+            if (!navigator.geolocation) {
+                alert("আপনার ব্রাউজারে GPS সাপোর্ট নেই!");
+                return;
+            }
+            statusText.innerText = "লোকেশন খোঁজা হচ্ছে...";
+            navigator.geolocation.watchPosition(
+                (pos) => {
+                    userLat = pos.coords.latitude;
+                    userLng = pos.coords.longitude;
+                    gpsGranted = true;
+                    document.getElementById("stepGps").classList.add("done");
+                    statusText.innerText = "✅ লোকেশন সংযুক্ত!";
+                    statusText.style.color = "#4ade80";
+                    updateDistanceDisplay();
+                    checkGatekeeperReady();
+                },
+                (err) => {
+                    statusText.innerText = "❌ পারমিশন দিন! সেটিংস থেকে লোকেশন চালু করুন।";
+                    statusText.style.color = "#f87171";
+                },
+                { enableHighAccuracy: true, maximumAge: 5000, timeout: 15000 }
+            );
+        }
+
+        function confirmBatterySaverOff() {
+            batteryConfirmed = true;
+            document.getElementById("stepBattery").classList.add("done");
+            checkGatekeeperReady();
+        }
+
+        function checkGatekeeperReady() {
+            if (gpsGranted && batteryConfirmed) {
+                document.getElementById("btnEnterApp").disabled = false;
+            }
+        }
+
+        function enterMainApp() {
+            // Initialize audio context on user gesture
+            try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch(e){}
+            document.getElementById("stepAllow").classList.add("done");
+            document.getElementById("gatekeeper").style.display = "none";
+            document.getElementById("mainApp").style.display = "block";
+        }
+
+        // ==========================================
+        // 4. CLOCK & DATE (TOP RIGHT)
+        // ==========================================
+        function updateLiveClock() {
             const now = new Date();
-            document.getElementById('liveClock').innerText = now.toLocaleTimeString();
-            document.getElementById('liveDate').innerText = now.toLocaleDateString('bn-BD', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+            const timeStr = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
+            const dateStr = now.toLocaleDateString('bn-BD', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+            document.getElementById("liveClock").innerText = timeStr;
+            document.getElementById("liveDate").innerText = dateStr;
+        }
+        setInterval(updateLiveClock, 1000);
+        updateLiveClock();
+
+        // ==========================================
+        // 5. HAVERSINE DISTANCE & GEOFENCE CHECK
+        // ==========================================
+        function getDistanceMeters(lat1, lon1, lat2, lon2) {
+            const R = 6371000;
+            const dLat = (lat2 - lat1) * Math.PI / 180;
+            const dLon = (lon2 - lon1) * Math.PI / 180;
+            const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                      Math.sin(dLon / 2) * Math.sin(dLon / 2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+            return Math.round(R * c);
+        }
+
+        function updateDistanceDisplay() {
+            const badge = document.getElementById("userDistanceBadge");
+            if (!standSettings.lat || !standSettings.lng) {
+                badge.innerText = "⚠️ অ্যাডমিন এখনো স্ট্যান্ড লোকেশন সেট করেননি";
+                return;
+            }
+            if (userLat && userLng) {
+                const dist = getDistanceMeters(userLat, userLng, standSettings.lat, standSettings.lng);
+                badge.innerText = `📍 স্ট্যান্ড থেকে আপনার দূরত্ব: ${dist} মিটার`;
+            }
+        }
+
+        function checkWithinStandBoundary(customMaxMeters = 200) {
+            if (!standSettings.lat || !standSettings.lng) {
+                alert("⚠️ অ্যাডমিন প্যানেল থেকে আগে স্ট্যান্ডের GPS লোকেশন সেট করতে হবে!");
+                return false;
+            }
+            if (!userLat || !userLng) {
+                alert("❌ আপনার GPS লোকেশন পাওয়া যাচ্ছে না। লোকেশন চালু করুন।");
+                return false;
+            }
+            const dist = getDistanceMeters(userLat, userLng, standSettings.lat, standSettings.lng);
+            if (dist > customMaxMeters) {
+                alert(`🚫 আপনি স্ট্যান্ডের ${customMaxMeters} মিটার সীমানার বাইরে আছেন! (বর্তমান দূরত্ব: ${dist} মিটার)`);
+                return false;
+            }
+            return true;
+        }
+
+        // ==========================================
+        // 6. IMAGE COMPRESSION (TO STORE SAFELY IN FIREBASE)
+        // ==========================================
+        function compressImageToBase64(file, maxWidth = 300) {
+            return new Promise((resolve) => {
+                if (!file) return resolve(null);
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = new Image();
+                    img.onload = function() {
+                        const canvas = document.createElement('canvas');
+                        const scale = Math.min(maxWidth / img.width, 1);
+                        canvas.width = img.width * scale;
+                        canvas.height = img.height * scale;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                        resolve(canvas.toDataURL('image/jpeg', 0.7));
+                    };
+                    img.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
+        function normalizeName(name) {
+            return (name || "").trim().toLowerCase().replace(/\s+/g, ' ');
+        }
+
+        function getTodayDateKey() {
+            const d = new Date();
+            return `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`;
+        }
+
+        // ==========================================
+        // 7. FIREBASE REALTIME LISTENERS
+        // ==========================================
+        // Stand Settings & Leaders & Notice
+        db.ref('standConfig').on('value', (snap) => {
+            const data = snap.val() || {};
+            standSettings.name = data.name || "চন্দ্রিমা বাইক স্ট্যান্ড";
+            standSettings.lat = data.lat || null;
+            standSettings.lng = data.lng || null;
+
+            document.getElementById("displayStandName").innerText = standSettings.name;
+            document.getElementById("adminStandName").value = standSettings.name;
+
+            if (standSettings.lat && standSettings.lng) {
+                document.getElementById("savedStandCoords").innerText = `সেট করা লোকেশন: ${standSettings.lat.toFixed(5)}, ${standSettings.lng.toFixed(5)}`;
+            }
+            updateDistanceDisplay();
+
+            // Leaders
+            if (data.leaders) {
+                if (data.leaders.presName) document.getElementById("namePresident").innerText = data.leaders.presName;
+                if (data.leaders.presImg) document.getElementById("imgPresident").src = data.leaders.presImg;
+
+                if (data.leaders.vpName) document.getElementById("nameVicePresident").innerText = data.leaders.vpName;
+                if (data.leaders.vpImg) document.getElementById("imgVicePresident").src = data.leaders.vpImg;
+
+                if (data.leaders.secName) document.getElementById("nameOrgSecretary").innerText = data.leaders.secName;
+                if (data.leaders.secImg) document.getElementById("imgOrgSecretary").src = data.leaders.secImg;
+            }
+
+            // Notice Board
+            if (data.notice) {
+                document.getElementById("displayNoticeText").innerText = data.notice.text || "কোনো নতুন নোটিশ নেই।";
+                const nImg = document.getElementById("displayNoticeImg");
+                if (data.notice.img) {
+                    nImg.src = data.notice.img;
+                    nImg.style.display = "block";
+                } else {
+                    nImg.style.display = "none";
+                }
+            }
+        });
+
+        // Permanent Registered Riders
+        db.ref('registeredRiders').on('value', (snap) => {
+            registeredRiders = snap.val() || {};
+            renderAdminRegisteredList();
+        });
+
+        // Daily Break Logs
+        db.ref('breakLogs/' + getTodayDateKey()).on('value', (snap) => {
+            breakLogs = snap.val() || {};
+        });
+
+        // Active Serial Queue
+        db.ref('activeSerials').on('value', (snap) => {
+            activeSerials = snap.val() || {};
+            renderSerialList();
+        });
+
+        // 24-Hour Cut History
+        db.ref('cutHistory').on('value', (snap) => {
+            const history = snap.val() || {};
+            const container = document.getElementById("cutHistoryContainer");
+            const now = Date.now();
+            const twentyFourHours = 24 * 60 * 60 * 1000;
+            let items = [];
+
+            Object.entries(history).forEach(([key, val]) => {
+                if (now - val.timestamp > twentyFourHours) {
+                    // Auto clean older than 24 hours
+                    db.ref('cutHistory/' + key).remove();
+                } else {
+                    items.push(val);
+                }
+            });
+
+            items.sort((a, b) => b.timestamp - a.timestamp);
+            if (items.length === 0) {
+                container.innerHTML = `<p style="color: #64748b; font-size: 13px;">গত ২৪ ঘণ্টায় কোনো সিরিয়াল কাটা হয়নি।</p>`;
+                return;
+            }
+
+            container.innerHTML = items.map(item => {
+                const timeStr = new Date(item.timestamp).toLocaleTimeString('bn-BD', { hour: '2-digit', minute: '2-digit' });
+                return `
+                    <div class="history-item">
+                        <div>
+                            <strong style="color: #dc2626;">✂️ ${item.targetName}</strong>-এর সিরিয়াল কেটেছেন 
+                            <strong style="color: #1e293b;">${item.cutterName}</strong>
+                            <span style="font-size: 11px; color: #64748b;">(${item.reason || 'ম্যানুয়াল কাট'})</span>
+                        </div>
+                        <span style="font-size: 11px; background: #fee2e2; color: #991b1b; padding: 2px 6px; border-radius: 6px; white-space: nowrap;">${timeStr}</span>
+                    </div>
+                `;
+            }).join('');
+        });
+
+        // ==========================================
+        // 8. ONLINE REGISTRATION & DUAL ENTRY LOGIC
+        // ==========================================
+        function switchOnlineTab(tab) {
+            document.getElementById("tabOnlineEntry").classList.toggle("active", tab === 'entry');
+            document.getElementById("tabOnlineReg").classList.toggle("active", tab === 'reg');
+            document.getElementById("onlineEntryForm").style.display = tab === 'entry' ? 'block' : 'none';
+            document.getElementById("onlineRegForm").style.display = tab === 'reg' ? 'block' : 'none';
+        }
+
+        // Pre-fill saved phone if available
+        if (myLocalRiderPhone) {
+            document.getElementById("loginPhone").value = myLocalRiderPhone;
+        }
+
+        async function registerNewRider() {
+            const name = document.getElementById("regName").value.trim();
+            const phone = document.getElementById("regPhone").value.trim();
+            const photoFile = document.getElementById("regPhoto").files[0];
+
+            if (!name || !phone || !photoFile) {
+                alert("⚠️ অনুগ্রহ করে নাম, ফোন নাম্বার এবং ছবি তিনটিই দিন!");
+                return;
+            }
+
+            const cleanPhone = phone.replace(/[^0-9]/g, '');
+            if (cleanPhone.length < 11) {
+                alert("⚠️ সঠিক ১১ ডিজিটের মোবাইল নাম্বার দিন।");
+                return;
+            }
+
+            // Check if account already exists (One-time permanent rule)
+            if (registeredRiders[cleanPhone]) {
+                alert("🚫 এই ফোন নাম্বার দিয়ে ইতিমধ্যে অ্যাকাউন্ট খোলা আছে! একবার অ্যাকাউন্ট খুললে আর পরিবর্তন করা যায় না।");
+                return;
+            }
+
+            const base64Img = await compressImageToBase64(photoFile, 250);
+            const riderObj = {
+                name: name,
+                phone: cleanPhone,
+                photo: base64Img,
+                createdAt: Date.now(),
+                // Default secret limits (Admin can modify silently)
+                customCutMin: 10,
+                customDistMeters: 200,
+                customBreakMin: 30
+            };
+
+            await db.ref('registeredRiders/' + cleanPhone).set(riderObj);
+            localStorage.setItem("myRiderPhone", cleanPhone);
+            localStorage.setItem("myRiderName", name);
+            myLocalRiderPhone = cleanPhone;
+            myLocalRiderName = name;
+
+            document.getElementById("loginPhone").value = cleanPhone;
+            alert("✅ স্থায়ী রেজিস্ট্রেশন সফল হয়েছে! এখন আপনি সিরিয়াল এন্ট্রি দিতে পারবেন।");
+            switchOnlineTab('entry');
+        }
+
+        function isNameAlreadyInActiveSerial(name) {
+            const target = normalizeName(name);
+            return Object.values(activeSerials).some(s => normalizeName(s.name) === target);
+        }
+
+        function submitOnlineEntry() {
+            const phone = document.getElementById("loginPhone").value.trim().replace(/[^0-9]/g, '');
+            if (!phone) {
+                alert("⚠️ আপনার রেজিস্টার্ড ফোন নাম্বার দিন।");
+                return;
+            }
+            const rider = registeredRiders[phone];
+            if (!rider) {
+                alert("❌ এই নাম্বারে কোনো রেজিস্ট্রেশন পাওয়া যায়নি! আগে 'নতুন রেজিস্ট্রেশন' ট্যাব থেকে অ্যাকাউন্ট খুলুন।");
+                return;
+            }
+
+            // Check duplicate name in active serial
+            if (isNameAlreadyInActiveSerial(rider.name)) {
+                alert(`🚫 "${rider.name}" ইতিমধ্যে সিরিয়ালে আছেন! সিরিয়ালে থাকা অবস্থায় একই নাম দুইবার দেওয়া যাবে না।`);
+                return;
+            }
+
+            // Check Geofence (use rider's custom distance if admin set one, default 200m)
+            const allowedDist = rider.customDistMeters || 200;
+            if (!checkWithinStandBoundary(allowedDist)) return;
+
+            localStorage.setItem("myRiderPhone", phone);
+            localStorage.setItem("myRiderName", rider.name);
+            myLocalRiderPhone = phone;
+            myLocalRiderName = rider.name;
+
+            const newRef = db.ref('activeSerials').push();
+            newRef.set({
+                name: rider.name,
+                phone: phone,
+                photo: rider.photo,
+                type: 'online',
+                joinedAt: Date.now(),
+                breakUntil: null,
+                cutUntil: null,
+                cutBy: null
+            });
+
+            alert(`✅ ${rider.name}, আপনার অনলাইন সিরিয়াল যুক্ত হয়েছে!`);
+        }
+
+        function submitManualEntry() {
+            const name = document.getElementById("manualRiderName").value.trim();
+            if (!name) {
+                alert("⚠️ রাইডারের নাম লিখুন।");
+                return;
+            }
+
+            // Check duplicate name in active serial
+            if (isNameAlreadyInActiveSerial(name)) {
+                alert(`🚫 "${name}" ইতিমধ্যে সিরিয়ালে আছেন! সিরিয়ালে থাকা অবস্থায় একই নাম দুইবার দেওয়া যাবে না।`);
+                return;
+            }
+
+            // Check if this name matches a registered rider for secret custom distance, else 200m
+            const matchedRider = Object.values(registeredRiders).find(r => normalizeName(r.name) === normalizeName(name));
+            const allowedDist = matchedRider ? (matchedRider.customDistMeters || 200) : 200;
+
+            if (!checkWithinStandBoundary(allowedDist)) return;
+
+            if (!myLocalRiderName) {
+                localStorage.setItem("myRiderName", name);
+                myLocalRiderName = name;
+            }
+
+            const newRef = db.ref('activeSerials').push();
+            newRef.set({
+                name: name,
+                phone: matchedRider ? matchedRider.phone : null,
+                photo: matchedRider ? matchedRider.photo : null,
+                type: 'manual',
+                joinedAt: Date.now(),
+                breakUntil: null,
+                cutUntil: null,
+                cutBy: null
+            });
+
+            document.getElementById("manualRiderName").value = "";
+            alert(`✅ ${name}-এর ম্যানুয়াল সিরিয়াল যুক্ত হয়েছে!`);
+        }
+
+        // ==========================================
+        // 9. SERIAL ACTIONS: BREAK, CUT, RESTORE & TIMERS
+        // ==========================================
+        function getRiderSecretConfig(riderName, phone) {
+            let rider = phone ? registeredRiders[phone] : null;
+            if (!rider) {
+                rider = Object.values(registeredRiders).find(r => normalizeName(r.name) === normalizeName(riderName));
+            }
+            return {
+                cutMin: rider && rider.customCutMin ? Number(rider.customCutMin) : 10,
+                distMeters: rider && rider.customDistMeters ? Number(rider.customDistMeters) : 200,
+                breakMin: rider && rider.customBreakMin ? Number(rider.customBreakMin) : 30
+            };
+        }
+
+        function takeBreak(serialId) {
+            const item = activeSerials[serialId];
+            if (!item) return;
+
+            const nameKey = normalizeName(item.name).replace(/[.#$\[\]]/g, '_');
+            if (breakLogs[nameKey]) {
+                alert(`🚫 "${item.name}" আজ ইতিমধ্যে একবার বিরতি নিয়েছেন! একই দিনে দ্বিতীয়বার বিরতি নেওয়া যাবে না।`);
+                return;
+            }
+
+            const cfg = getRiderSecretConfig(item.name, item.phone);
+            const breakDurationMs = cfg.breakMin * 60 * 1000;
+            const breakUntil = Date.now() + breakDurationMs;
+
+            db.ref('breakLogs/' + getTodayDateKey() + '/' + nameKey).set(true);
+            db.ref('activeSerials/' + serialId).update({
+                breakUntil: breakUntil
+            });
+            alert(`⏸️ ${item.name} বিরতিতে গেলেন। বিরতি শেষ হলে অটোমেটিক সিরিয়াল কেটে যাবে।`);
+        }
+
+        function cutSerial(serialId) {
+            const item = activeSerials[serialId];
+            if (!item) return;
+
+            // Check if on break
+            if (item.breakUntil && Date.now() < item.breakUntil) {
+                alert("⏸️ এই রাইডার এখন বিরতিতে আছেন! বিরতি চলাকালীন সিরিয়াল কাটা যাবে না।");
+                return;
+            }
+
+            // Geofence check (200m or cutter's custom dist)
+            const myCfg = getRiderSecretConfig(myLocalRiderName, myLocalRiderPhone);
+            if (!checkWithinStandBoundary(myCfg.distMeters)) return;
+
+            let cutterName = myLocalRiderName;
+            if (!cutterName) {
+                cutterName = prompt("আপনার নাম লিখুন (কে সিরিয়াল কাটছেন):");
+                if (!cutterName || !cutterName.trim()) return;
+                cutterName = cutterName.trim();
+                localStorage.setItem("myRiderName", cutterName);
+                myLocalRiderName = cutterName;
+            }
+
+            // Target rider's countdown minutes (default 10m, or secret admin setting)
+            const targetCfg = getRiderSecretConfig(item.name, item.phone);
+            const cutUntil = Date.now() + (targetCfg.cutMin * 60 * 1000);
+
+            db.ref('activeSerials/' + serialId).update({
+                cutUntil: cutUntil,
+                cutBy: cutterName
+            });
+
+            // Log to 24-hour history
+            db.ref('cutHistory').push({
+                targetName: item.name,
+                cutterName: cutterName,
+                reason: "সিরিয়াল কাটা হয়েছে",
+                timestamp: Date.now()
+            });
+        }
+
+        function restoreSerial(serialId) {
+            const item = activeSerials[serialId];
+            if (!item) return;
+
+            const myCfg = getRiderSecretConfig(myLocalRiderName, myLocalRiderPhone);
+            if (!checkWithinStandBoundary(myCfg.distMeters)) return;
+
+            db.ref('activeSerials/' + serialId).update({
+                cutUntil: null,
+                cutBy: null
+            });
+            alert(`✅ ${item.name}-এর সিরিয়াল সফলভাবে ফিরিয়ে আনা হয়েছে!`);
+        }
+
+        function cutMyOwnSerialFromAlarm() {
+            const sorted = getSortedSerials();
+            const myItem = sorted.find(item => normalizeName(item.name) === normalizeName(myLocalRiderName));
+            if (myItem) {
+                stopMyAlarm();
+                db.ref('cutHistory').push({
+                    targetName: myItem.name,
+                    cutterName: myItem.name + " (নিজে)",
+                    reason: "টপ সিরিয়াল থেকে নিজে কেটেছেন",
+                    timestamp: Date.now()
+                });
+                db.ref('activeSerials/' + myItem.id).remove();
+                alert("✅ আপনার সিরিয়াল কেটে দেওয়া হয়েছে। শুভ যাত্রা!");
+            }
+        }
+
+        function getSortedSerials() {
+            return Object.entries(activeSerials)
+                .map(([id, val]) => ({ id, ...val }))
+                .sort((a, b) => a.joinedAt - b.joinedAt);
+        }
+
+        function formatDuration(ms) {
+            if (ms < 0) ms = 0;
+            const totalSec = Math.floor(ms / 1000);
+            const hrs = Math.floor(totalSec / 3600);
+            const mins = Math.floor((totalSec % 3600) / 60);
+            const secs = totalSec % 60;
+            return `${String(hrs).padStart(2, '0')} ঘণ্টা ${String(mins).padStart(2, '0')} মি. ${String(secs).padStart(2, '0')} সে.`;
+        }
+
+        function formatMinSec(ms) {
+            if (ms < 0) ms = 0;
+            const totalSec = Math.floor(ms / 1000);
+            const mins = Math.floor(totalSec / 60);
+            const secs = totalSec % 60;
+            return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+        }
+
+        // Render Serial List & Handle Auto-Expirations & Top 1-2-3 Alarm
+        function renderSerialList() {
+            const container = document.getElementById("serialListContainer");
+            const sorted = getSortedSerials();
+            document.getElementById("totalSerialCount").innerText = sorted.length;
+
+            if (sorted.length === 0) {
+                container.innerHTML = `<p style="text-align: center; color: #64748b; padding: 20px;">বর্তমানে কোনো রাইডার সিরিয়ালে নেই।</p>`;
+                return;
+            }
+
+            const now = Date.now();
+            let html = "";
+
+            sorted.forEach((item, index) => {
+                const pos = index + 1;
+                const isBreak = item.breakUntil && now < item.breakUntil;
+                const isCut = item.cutUntil && now < item.cutUntil;
+
+                // Auto remove if break expired
+                if (item.breakUntil && now >= item.breakUntil) {
+                    db.ref('cutHistory').push({
+                        targetName: item.name,
+                        cutterName: "সিস্টেম (বিরতি শেষ)",
+                        reason: "বিরতির সময় শেষ হওয়ায় অটো কাট",
+                        timestamp: now
+                    });
+                    db.ref('activeSerials/' + item.id).remove();
+                    return;
+                }
+
+                // Auto remove if 10-min cut countdown expired
+                if (item.cutUntil && now >= item.cutUntil) {
+                    db.ref('activeSerials/' + item.id).remove();
+                    return;
+                }
+
+                // Top 1, 2, 3 Alarm Check for current user
+                if (pos <= 3 && myLocalRiderName && normalizeName(item.name) === normalizeName(myLocalRiderName)) {
+                    const alarmKey = `${item.id}_pos_${pos}`;
+                    startAlarmSound(
+                        `🚨 আপনি এখন ${pos} নম্বর সিরিয়ালে আছেন!`,
+                        `রাইডার: ${item.name} — আপনার ট্রিপের সময় প্রায় চলে এসেছে।`,
+                        alarmKey
+                    );
+                }
+
+                const avatarUrl = item.photo || `https://ui-avatars.com/api/?name=${encodeURIComponent(item.name)}&background=random&color=fff`;
+                const waitTimeStr = formatDuration(now - item.joinedAt);
+
+                let cardClass = "serial-item";
+                if (pos === 1) cardClass += " top-1";
+                else if (pos === 2) cardClass += " top-2";
+                else if (pos === 3) cardClass += " top-3";
+                if (isBreak) cardClass += " on-break";
+                if (isCut) cardClass += " is-cut";
+
+                let statusHtml = "";
+                if (isBreak) {
+                    statusHtml += `<div class="status-pill pill-break">⏸️ বিরতি চলছে: ${formatMinSec(item.breakUntil - now)} বাকি</div>`;
+                }
+                if (isCut) {
+                    statusHtml += `<div class="status-pill pill-cut">⚠️ সিরিয়াল কাটা হয়েছে (${item.cutBy}) — রিমুভ হতে বাকি: ${formatMinSec(item.cutUntil - now)}</div>`;
+                }
+
+                let actionBtns = "";
+                if (isCut) {
+                    actionBtns += `<button class="btn btn-success btn-sm" onclick="restoreSerial('${item.id}')">🔄 সিরিয়াল ফিরিয়ে আনুন</button>`;
+                } else {
+                    if (!isBreak) {
+                        actionBtns += `<button class="btn btn-warning btn-sm" onclick="takeBreak('${item.id}')">⏸️ বিরতি</button>`;
+                        actionBtns += `<button class="btn btn-danger btn-sm" onclick="cutSerial('${item.id}')">✂️ সিরিয়াল কাটুন</button>`;
+                    } else {
+                        actionBtns += `<span style="font-size:12px; color:#7e22ce; font-weight:600;">🔒 বিরতিতে সুরক্ষিত</span>`;
+                    }
+                }
+
+                html += `
+                    <div class="${cardClass}">
+                        <div class="rider-left">
+                            <div class="serial-num">${pos}</div>
+                            <img src="${avatarUrl}" class="rider-avatar" alt="${item.name}">
+                            <div class="rider-info">
+                                <h4>
+                                    ${item.name} 
+                                    <span class="badge-type ${item.type === 'online' ? 'badge-online' : 'badge-manual'}">
+                                        ${item.type === 'online' ? 'অনলাইন' : 'ম্যানুয়াল'}
+                                    </span>
+                                </h4>
+                                <div class="live-timer">⏱️ অপেক্ষমাণ: ${waitTimeStr}</div>
+                                ${statusHtml}
+                            </div>
+                        </div>
+                        <div class="rider-actions">
+                            ${actionBtns}
+                        </div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+
+        // Tick every 1 second for live timers & countdowns
+        setInterval(() => {
+            if (Object.keys(activeSerials).length > 0) {
+                renderSerialList();
+            }
         }, 1000);
 
-        window.addEventListener('DOMContentLoaded', () => {
-            loadSettings();
-            loadLeadership();
-            loadNotice();
-            loadQueue();
-            loadHistory();
-            checkRegistrationLock();
-        });
-
-        function checkRegistrationLock() {
-            if (currentUserId) {
-                db.ref('users/' + currentUserId).once('value', snapshot => {
-                    if (snapshot.exists()) {
-                        const val = snapshot.val();
-                        document.getElementById('regName').value = val.name;
-                        document.getElementById('regPhone').value = val.phone;
-                        document.getElementById('regName').disabled = true;
-                        document.getElementById('regPhone').disabled = true;
-                        document.getElementById('regPhotoFile').disabled = true;
-                        document.getElementById('regSubmitBtn').disabled = true;
-                        document.getElementById('regSubmitBtn').classList.add('opacity-50', 'cursor-not-allowed');
-                        document.getElementById('regLockMsg').classList.remove('hidden');
-                    } else {
-                        localStorage.removeItem('candrima_registered_id');
-                        currentUserId = null;
-                    }
-                });
+        // ==========================================
+        // 10. ADMIN PANEL CONTROLS (PASSWORD: 692372)
+        // ==========================================
+        function openAdminLogin() {
+            const pass = prompt("🔐 অ্যাডমিন পাসওয়ার্ড দিন:");
+            if (pass === "692372") {
+                document.getElementById("adminModal").style.display = "block";
+                renderAdminRegisteredList();
+            } else if (pass !== null) {
+                alert("❌ ভুল পাসওয়ার্ড!");
             }
         }
 
-        function calculateDistance(lat1, lon1, lat2, lon2) {
-            const R = 6371e3;
-            const φ1 = lat1 * Math.PI/180;
-            const φ2 = lat2 * Math.PI/180;
-            const Δφ = (lat2-lat1) * Math.PI/180;
-            const Δλ = (lon2-lon1) * Math.PI/180;
-            const a = Math.sin(Δφ/2) * Math.sin(Δφ/2) + Math.cos(φ1) * Math.cos(φ2) * Math.sin(Δλ/2) * Math.sin(Δλ/2);
-            return R * (2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)));
+        function closeAdminModal() {
+            document.getElementById("adminModal").style.display = "none";
+            document.getElementById("gpsUnlockSwitch").checked = false;
+            toggleGpsSetButton();
         }
 
-        // Distance verification (Within 200 meters)
-        function verifyLocationAndExecute(callback) {
-            if (isAdminLoggedIn) {
-                callback(); // Admin bypasses distance check
+        function toggleGpsSetButton() {
+            const unlocked = document.getElementById("gpsUnlockSwitch").checked;
+            const btn = document.getElementById("btnSetStandGps");
+            btn.disabled = !unlocked;
+            btn.innerText = unlocked 
+                ? "📍 বর্তমান অবস্থানকে স্ট্যান্ডের কেন্দ্র হিসেবে সেট করুন" 
+                : "🔒 বর্তমান অবস্থানকে স্ট্যান্ডের কেন্দ্র হিসেবে সেট করুন (লক করা)";
+        }
+
+        function setStandCurrentLocation() {
+            if (!userLat || !userLng) {
+                alert("❌ আপনার ফোনের GPS লোকেশন পাওয়া যাচ্ছে না!");
                 return;
             }
-            if (!navigator.geolocation) {
-                alert("আপনার ব্রাউজার জিপিএস সাপোর্ট করে না!");
+            if (confirm("আপনি কি নিশ্চিতভাবে এই জায়গাটিকে স্ট্যান্ডের কেন্দ্র হিসেবে সেট করতে চান?")) {
+                db.ref('standConfig').update({
+                    lat: userLat,
+                    lng: userLng
+                });
+                document.getElementById("gpsUnlockSwitch").checked = false;
+                toggleGpsSetButton();
+                alert("✅ স্ট্যান্ডের GPS লোকেশন সফলভাবে সেট হয়েছে!");
+            }
+        }
+
+        function saveStandName() {
+            const name = document.getElementById("adminStandName").value.trim();
+            if (!name) return;
+            db.ref('standConfig').update({ name: name });
+            alert("✅ স্ট্যান্ডের নাম আপডেট হয়েছে!");
+        }
+
+        async function saveLeadersInfo() {
+            const updates = {};
+            const pName = document.getElementById("admPresName").value.trim();
+            const vpName = document.getElementById("admVpName").value.trim();
+            const sName = document.getElementById("admSecName").value.trim();
+
+            if (pName) updates['leaders/presName'] = pName;
+            if (vpName) updates['leaders/vpName'] = vpName;
+            if (sName) updates['leaders/secName'] = sName;
+
+            const pImg = await compressImageToBase64(document.getElementById("admPresPhoto").files[0], 200);
+            const vpImg = await compressImageToBase64(document.getElementById("admVpPhoto").files[0], 200);
+            const sImg = await compressImageToBase64(document.getElementById("admSecPhoto").files[0], 200);
+
+            if (pImg) updates['leaders/presImg'] = pImg;
+            if (vpImg) updates['leaders/vpImg'] = vpImg;
+            if (sImg) updates['leaders/secImg'] = sImg;
+
+            if (Object.keys(updates).length > 0) {
+                await db.ref('standConfig').update(updates);
+                alert("✅ নেতৃবৃন্দের প্রোফাইল আপডেট হয়েছে!");
+            }
+        }
+
+        async function saveNoticeBoard() {
+            const text = document.getElementById("admNoticeText").value.trim();
+            const imgFile = document.getElementById("admNoticePhoto").files[0];
+            const updates = {};
+
+            if (text) updates['notice/text'] = text;
+            if (imgFile) {
+                const imgBase64 = await compressImageToBase64(imgFile, 500);
+                updates['notice/img'] = imgBase64;
+            }
+
+            await db.ref('standConfig').update(updates);
+            alert("✅ নোটিশ বোর্ড আপডেট হয়েছে!");
+        }
+
+        function clearNoticeImage() {
+            db.ref('standConfig/notice/img').remove();
+            alert("নোটিশের ছবি মুছে ফেলা হয়েছে।");
+        }
+
+        // Admin Registered Riders List & Special Power Modal
+        function renderAdminRegisteredList() {
+            const container = document.getElementById("adminRegisteredList");
+            const list = Object.values(registeredRiders);
+
+            if (list.length === 0) {
+                container.innerHTML = `<p style="font-size: 13px; color: #64748b;">এখনো কোনো রাইডার রেজিস্ট্রেশন করেননি।</p>`;
                 return;
             }
-            navigator.geolocation.getCurrentPosition(position => {
-                const distance = calculateDistance(position.coords.latitude, position.coords.longitude, standLocation.lat, standLocation.lng);
-                if (distance > 200) {
-                    alert(`আপনি স্ট্যান্ডের ২০০ মিটার সীমানার বাইরে আছেন! (বর্তমান দূরত্ব: ${Math.round(distance)} মিটার)। এন্ট্রি বা সিরিয়াল কাটতে হলে স্ট্যান্ডের ২০০ মিটারের মধ্যে থাকতে হবে।`);
-                } else {
-                    callback();
-                }
-            }, error => {
-                alert("লোকেশন পারমিশন পাওয়া যায়নি! জিপিএস চালু করুন।");
-            }, { enableHighAccuracy: true });
+
+            container.innerHTML = list.map(r => `
+                <div class="reg-rider-row">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <img src="${r.photo || 'https://via.placeholder.com/40'}" style="width: 38px; height: 38px; border-radius: 50%; object-fit: cover;">
+                        <div>
+                            <strong style="font-size: 14px;">${r.name}</strong>
+                            <div style="font-size: 12px; color: #475569;">📞 ${r.phone}</div>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary btn-sm" onclick="openRiderSpecialEdit('${r.phone}')">⚙️ এডিট / স্পেশাল পাওয়ার</button>
+                </div>
+            `).join('');
         }
 
-        function loadSettings() {
-            db.ref('settings/location').on('value', snapshot => {
-                if (snapshot.exists()) {
-                    standLocation = snapshot.val();
-                    document.getElementById('adminLat').value = standLocation.lat;
-                    document.getElementById('adminLng').value = standLocation.lng;
-                    document.getElementById('locationLockToggle').checked = standLocation.locked;
-                }
-            });
+        function openRiderSpecialEdit(phone) {
+            const r = registeredRiders[phone];
+            if (!r) return;
+            document.getElementById("editRiderPhoneKey").value = phone;
+            document.getElementById("editRiderName").value = r.name;
+            document.getElementById("editRiderPhoto").value = "";
+            document.getElementById("spCutMinutes").value = r.customCutMin || 10;
+            document.getElementById("spDistanceMeters").value = r.customDistMeters || 200;
+            document.getElementById("spBreakMinutes").value = r.customBreakMin || 30;
+
+            document.getElementById("riderEditModal").style.display = "block";
         }
 
-        function loadLeadership() {
-            db.ref('settings/leadership').on('value', snapshot => {
-                const data = snapshot.val() || {};
-                document.getElementById('presName').innerText = data.presName || 'সভাপতি নাম নেই';
-                if(data.presImg) document.getElementById('presImg').src = data.presImg;
-                document.getElementById('vpName').innerText = data.vpName || 'সহ-সভাপতি নাম নেই';
-                if(data.vpImg) document.getElementById('vpImg').src = data.vpImg;
-                document.getElementById('secName').innerText = data.secName || 'সাধারণ সম্পাদক নাম নেই';
-                if(data.secImg) document.getElementById('secImg').src = data.secImg;
+        async function saveRiderSpecialSettings() {
+            const phone = document.getElementById("editRiderPhoneKey").value;
+            const newName = document.getElementById("editRiderName").value.trim();
+            const photoFile = document.getElementById("editRiderPhoto").files[0];
 
-                document.getElementById('editPresName').value = data.presName || '';
-                document.getElementById('editPresImg').value = data.presImg || '';
-                document.getElementById('editVpName').value = data.vpName || '';
-                document.getElementById('editVpImg').value = data.vpImg || '';
-                document.getElementById('editSecName').value = data.secName || '';
-                document.getElementById('editSecImg').value = data.secImg || '';
-            });
-        }
+            const cutMin = Number(document.getElementById("spCutMinutes").value) || 10;
+            const distMeters = Number(document.getElementById("spDistanceMeters").value) || 200;
+            const breakMin = Number(document.getElementById("spBreakMinutes").value) || 30;
 
-        function loadNotice() {
-            db.ref('settings/notice').on('value', snapshot => {
-                const data = snapshot.val() || {};
-                document.getElementById('noticeContent').innerText = data.text || 'কোনো নোটিশ নেই।';
-                const imgContainer = document.getElementById('noticeImgContainer');
-                const imgTag = document.getElementById('noticeImg');
-                if(data.img) {
-                    imgTag.src = data.img;
-                    imgContainer.classList.remove('hidden');
-                } else {
-                    imgContainer.classList.add('hidden');
-                }
-                document.getElementById('editNoticeText').value = data.text || '';
-                document.getElementById('editNoticeImg').value = data.img || '';
-            });
-        }
-
-        // Online Reg Form
-        document.getElementById('onlineRegForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const name = document.getElementById('regName').value.trim();
-            const phone = document.getElementById('regPhone').value.trim();
-            const fileInput = document.getElementById('regPhotoFile');
-
-            verifyLocationAndExecute(() => {
-                db.ref('queue').once('value', snapshot => {
-                    let duplicate = false;
-                    snapshot.forEach(child => {
-                        if (child.val().name.toLowerCase() === name.toLowerCase() && (child.val().status === 'active' || child.val().status === 'break')) {
-                            duplicate = true;
-                        }
-                    });
-
-                    if (duplicate) {
-                        alert("এই নামের রাইডার ইতিমধ্যে সিরিয়ালে আছেন! একই নামে দুইবার সিরিয়াল নেওয়া যাবে না।");
-                        return;
-                    }
-
-                    const processReg = (photoUrl) => {
-                        const userId = db.ref('users').push().key;
-                        const userData = { id: userId, name: name, phone: phone, photo: photoUrl, createdAt: Date.now(), specialTime: 0 };
-                        db.ref('users/' + userId).set(userData).then(() => {
-                            localStorage.setItem('candrima_registered_id', userId);
-                            currentUserId = userId;
-
-                            const queueId = db.ref('queue').push().key;
-                            db.ref('queue/' + queueId).set({
-                                id: queueId,
-                                userId: userId,
-                                name: name,
-                                photo: photoUrl,
-                                type: 'online',
-                                joinedAt: Date.now(),
-                                status: 'active',
-                                breakUntil: 0,
-                                cutTime: 0,
-                                cutBy: ''
-                            }).then(() => {
-                                alert("রেজিস্ট্রেশন ও সিরিয়ালে নাম এন্ট্রি সফল হয়েছে!");
-                                checkRegistrationLock();
-                                document.getElementById('onlineRegForm').reset();
-                            });
-                        });
-                    };
-
-                    if (fileInput.files && fileInput.files[0]) {
-                        const reader = new FileReader();
-                        reader.onload = ev => processReg(ev.target.result);
-                        reader.readAsDataURL(fileInput.files[0]);
-                    } else {
-                        processReg('https://via.placeholder.com/100');
-                    }
-                });
-            });
-        });
-
-        // Manual Entry Form
-        document.getElementById('manualEntryForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const name = document.getElementById('manualName').value.trim();
-
-            verifyLocationAndExecute(() => {
-                db.ref('queue').once('value', snapshot => {
-                    let duplicate = false;
-                    snapshot.forEach(child => {
-                        if (child.val().name.toLowerCase() === name.toLowerCase() && (child.val().status === 'active' || child.val().status === 'break')) {
-                            duplicate = true;
-                        }
-                    });
-
-                    if (duplicate) {
-                        alert("এই নামের রাইডার ইতিমধ্যে সিরিয়ালে আছেন!");
-                        return;
-                    }
-
-                    const queueId = db.ref('queue').push().key;
-                    db.ref('queue/' + queueId).set({
-                        id: queueId,
-                        userId: 'manual_' + Date.now(),
-                        name: name,
-                        photo: 'https://via.placeholder.com/100',
-                        type: 'manual',
-                        joinedAt: Date.now(),
-                        status: 'active',
-                        breakUntil: 0,
-                        cutTime: 0,
-                        cutBy: ''
-                    }).then(() => {
-                        alert("ম্যানুয়াল সিরিয়াল এন্ট্রি সফল হয়েছে!");
-                        document.getElementById('manualEntryForm').reset();
-                    });
-                });
-            });
-        });
-
-        // Load Queue & Timers
-        function loadQueue() {
-            db.ref('queue').on('value', snapshot => {
-                const tbody = document.getElementById('queueTableBody');
-                tbody.innerHTML = '';
-                let items = [];
-                snapshot.forEach(child => items.push(child.val()));
-
-                items.sort((a, b) => a.joinedAt - b.joinedAt);
-                document.getElementById('totalQueueCount').innerText = items.filter(i => i.status === 'active' || i.status === 'cutting' || i.status === 'break').length;
-
-                if (items.length === 0) {
-                    tbody.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-slate-400">বর্তমানে কোনো সিরিয়াল নেই।</td></tr>`;
-                    return;
-                }
-
-                let activePos = 0;
-                let topThreeNames = [];
-
-                items.forEach((item) => {
-                    if (item.status === 'active' || item.status === 'cutting' || item.status === 'break') {
-                        activePos++;
-                        if (activePos <= 3 && item.status === 'active') {
-                            topThreeNames.push({ pos: activePos, name: item.name });
-                        }
-
-                        const tr = document.createElement('tr');
-                        tr.className = "hover:bg-slate-700/30 transition border-b border-slate-700/50";
-                        
-                        let timeInQueue = Math.floor((Date.now() - item.joinedAt) / 1000);
-                        let hrs = Math.floor(timeInQueue / 3600);
-                        let mins = Math.floor((timeInQueue % 3600) / 60);
-                        let secs = timeInQueue % 60;
-                        let timeStr = `${hrs > 0 ? hrs + ' ঘণ্টা ' : ''}${mins} মিনিট ${secs} সেকেন্ড`;
-
-                        let statusBadge = `<span class="px-2 py-1 bg-emerald-500/20 text-emerald-300 rounded text-xs font-semibold">সক্রিয়</span>`;
-                        let actionBtn = `<button onclick="cutSerial('${item.id}', '${item.name}', '${item.userId}')" class="bg-rose-600 hover:bg-rose-500 text-white px-3 py-1.5 rounded-xl text-xs font-bold shadow">সিরিয়াল কাটুন</button>`;
-                        let breakBtn = `<button onclick="takeBreak('${item.id}', '${item.name}')" class="bg-amber-600 hover:bg-amber-500 text-white px-2.5 py-1.5 rounded-xl text-xs font-bold ml-1 shadow">বিরতি (৩০মি)</button>`;
-
-                        if (item.status === 'cutting') {
-                            let cutElapsed = Math.floor((Date.now() - item.cutTime) / 1000);
-                            let remainCut = 600 - cutElapsed; // 10 minutes
-                            if (remainCut <= 0) {
-                                db.ref('queue/' + item.id).remove();
-                                return;
-                            }
-                            let rmMin = Math.floor(remainCut / 60);
-                            let rmSec = remainCut % 60;
-                            statusBadge = `<span class="px-2 py-1 bg-rose-500/20 text-rose-300 rounded text-xs font-semibold animate-pulse">কাটা হয়েছে (${rmMin}মি ${rmSec}সে)</span>`;
-                            actionBtn = `<button onclick="restoreSerial('${item.id}')" class="bg-teal-600 hover:bg-teal-500 text-white px-3 py-1.5 rounded-xl text-xs font-bold shadow">ফিরিয়ে আনুন</button>`;
-                            breakBtn = '';
-                        } else if (item.breakUntil > Date.now()) {
-                            let breakRemain = Math.floor((item.breakUntil - Date.now()) / 1000);
-                            let bmMin = Math.floor(breakRemain / 60);
-                            let bmSec = breakRemain % 60;
-                            statusBadge = `<span class="px-2 py-1 bg-blue-500/20 text-blue-300 rounded text-xs font-semibold">বিরতিতে (${bmMin}মি ${bmSec}সে)</span>`;
-                            breakBtn = `<span class="text-[11px] text-slate-400 font-medium">বিরতি চলছে</span>`;
-                        }
-
-                        tr.innerHTML = `
-                            <td class="p-2.5 font-bold text-yellow-400">#${activePos}</td>
-                            <td class="p-2.5 flex items-center gap-2">
-                                <img src="${item.photo}" class="w-8 h-8 rounded-full object-cover border border-slate-600 shadow">
-                                <div>
-                                    <div class="font-semibold text-slate-100">${item.name}</div>
-                                    <div class="text-[10px] text-slate-400">টাইপ: ${item.type === 'online' ? 'অনলাইন' : 'ম্যানুয়াল'}</div>
-                                </div>
-                            </td>
-                            <td class="p-2.5 text-xs text-cyan-300 font-mono">${timeStr}</td>
-                            <td class="p-2.5">${statusBadge}</td>
-                            <td class="p-2.5 text-center flex justify-center items-center gap-1">
-                                ${actionBtn}
-                                ${breakBtn}
-                            </td>
-                        `;
-                        tbody.appendChild(tr);
-                    }
-                });
-
-                checkTopThreeAlarm(topThreeNames);
-            });
-        }
-
-        // Cut Serial with Anti-Fake-Name Protection
-        function cutSerial(id, name, ownerUserId) {
-            verifyLocationAndExecute(() => {
-                // Check if current user is the owner or admin
-                if (!isAdminLoggedIn && currentUserId !== ownerUserId) {
-                    alert("দুষ্টামি করে বা অন্য কারো সিরিয়াল আপনি কাটতে পারবেন না! শুধুমাত্র যার সিরিয়াল তিনি নিজে অথবা অ্যাডমিন প্যানেল থেকে এটি কাটা সম্ভব।");
-                    return;
-                }
-
-                let cutterName = isAdminLoggedIn ? "অ্যাডমিন" : name;
-                db.ref('queue/' + id).update({
-                    status: 'cutting',
-                    cutTime: Date.now(),
-                    cutBy: cutterName
-                }).then(() => {
-                    const historyId = db.ref('history').push().key;
-                    db.ref('history/' + historyId).set({
-                        text: `${cutterName} কর্তক ${name}-এর সিরিয়াল কাটা হয়েছে।`,
-                        time: Date.now()
-                    });
-                });
-            });
-        }
-
-        function restoreSerial(id) {
-            verifyLocationAndExecute(() => {
-                db.ref('queue/' + id).update({ status: 'active', cutTime: 0, cutBy: '' });
-            });
-        }
-
-        // Take Break (Once per day check can be added or standard 30 min break)
-        function takeBreak(id, name) {
-            verifyLocationAndExecute(() => {
-                db.ref('queue/' + id).once('value', snapshot => {
-                    if (!snapshot.exists()) return;
-                    const item = snapshot.val();
-                    
-                    db.ref('queue/' + id).update({ breakUntil: Date.now() + (30 * 60 * 1000), status: 'break' }).then(() => {
-                        alert("৩০ মিনিটের বিরতি চালু করা হয়েছে। বিরতির সময় শেষ হলে বা অটোমেটিক সিরিয়াল আপডেট হবে।");
-                    });
-                });
-            });
-        }
-
-        function loadHistory() {
-            db.ref('history').on('value', snapshot => {
-                const container = document.getElementById('historyContainer');
-                container.innerHTML = '';
-                let histList = [];
-                const twentyFourHoursAgo = Date.now() - (24 * 60 * 60 * 1000);
-
-                snapshot.forEach(child => {
-                    const h = child.val();
-                    if (h.time >= twentyFourHoursAgo) {
-                        histList.push(h);
-                    } else {
-                        db.ref('history/' + child.key).remove();
-                    }
-                });
-
-                histList.sort((a, b) => b.time - a.time);
-                if (histList.length === 0) {
-                    container.innerHTML = `<p class="text-xs text-slate-400 text-center py-2">গত ২৪ ঘণ্টায় কোনো হিস্টরি নেই।</p>`;
-                    return;
-                }
-
-                histList.forEach(h => {
-                    const timeFormatted = new Date(h.time).toLocaleTimeString();
-                    const div = document.createElement('div');
-                    div.className = "bg-slate-900/70 p-2.5 rounded-xl border border-slate-700/70 text-xs flex justify-between items-center shadow-inner";
-                    div.innerHTML = `
-                        <span class="text-slate-200"><i class="fa-solid fa-clock-rotate-left text-rose-400 mr-1.5"></i> ${h.text}</span>
-                        <span class="text-slate-400 font-mono">${timeFormatted}</span>
-                    `;
-                    container.appendChild(div);
-                });
-            });
-        }
-
-        // Ringtone Alarm for Top 3
-        function checkTopThreeAlarm(topList) {
-            if (!currentUserId) return;
-            db.ref('users/' + currentUserId).once('value', snapshot => {
-                if (!snapshot.exists()) return;
-                const myName = snapshot.val().name.toLowerCase();
-                const matched = topList.find(t => t.name.toLowerCase() === myName);
-
-                if (matched && !isAlarmPlaying) {
-                    triggerAlarm(`⚠️ আপনার সিরিয়াল পজিশন #${matched.pos}!`, `আপনার নাম সিরিয়ালের ${matched.pos} নম্বরে এসেছে!`);
-                }
-            });
-        }
-
-        function triggerAlarm(title, text) {
-            isAlarmPlaying = true;
-            document.getElementById('alarmTitle').innerText = title;
-            document.getElementById('alarmText').innerText = text;
-            document.getElementById('alarmBanner').classList.remove('hidden');
-
-            try {
-                window.AudioContext = window.AudioContext || window.webkitAudioContext;
-                audioContext = new AudioContext();
-                alarmInterval = setInterval(() => {
-                    if (!audioContext) return;
-                    const osc = audioContext.createOscillator();
-                    const gain = audioContext.createGain();
-                    osc.type = 'sine';
-                    osc.frequency.value = 880;
-                    gain.gain.setValueAtTime(0.5, audioContext.currentTime);
-                    gain.gain.exponentialRampToValueAtTime(0.0001, audioContext.currentTime + 0.5);
-                    osc.connect(gain);
-                    gain.connect(audioContext.destination);
-                    osc.start();
-                    osc.stop(audioContext.currentTime + 0.5);
-                }, 1000);
-            } catch (e) {
-                console.log(e);
-            }
-        }
-
-        function stopAlarm() {
-            isAlarmPlaying = false;
-            document.getElementById('alarmBanner').classList.add('hidden');
-            if (alarmInterval) clearInterval(alarmInterval);
-            if (audioContext) { audioContext.close(); audioContext = null; }
-        }
-
-        // Admin Flow
-        function openAdminLogin() { document.getElementById('adminLoginModal').classList.remove('hidden'); }
-        function closeAdminLogin() { document.getElementById('adminLoginModal').classList.add('hidden'); document.getElementById('adminPassInput').value = ''; }
-        function verifyAdminPass() {
-            if (document.getElementById('adminPassInput').value === ADMIN_PASSWORD) {
-                isAdminLoggedIn = true;
-                closeAdminLogin();
-                document.getElementById('adminPanelModal').classList.remove('hidden');
-                loadAdminUsersTable();
-            } else {
-                alert("ভুল পাসওয়ার্ড!");
-            }
-        }
-        function closeAdminPanel() { document.getElementById('adminPanelModal').classList.add('hidden'); }
-
-        function captureCurrentLocation() {
-            if (document.getElementById('locationLockToggle').checked) {
-                alert("লোকেশন লক অন আছে! প্রথমে লক বন্ধ করুন।");
-                return;
-            }
-            navigator.geolocation.getCurrentPosition(pos => {
-                document.getElementById('adminLat').value = pos.coords.latitude;
-                document.getElementById('adminLng').value = pos.coords.longitude;
-                alert("বর্তমান জিপিএস লোকেশন সফলভাবে নেওয়া হয়েছে। এখন সেভ করুন।");
-            }, () => alert("লোকেশন নেওয়া যায়নি।"), { enableHighAccuracy: true });
-        }
-
-        function saveStandLocation() {
-            const lat = parseFloat(document.getElementById('adminLat').value);
-            const lng = parseFloat(document.getElementById('adminLng').value);
-            const locked = document.getElementById('locationLockToggle').checked;
-            db.ref('settings/location').set({ lat, lng, locked }).then(() => alert("স্ট্যান্ড লোকেশন সফলভাবে সেভ হয়েছে!"));
-        }
-
-        function saveLeadership() {
-            const data = {
-                presName: document.getElementById('editPresName').value,
-                presImg: document.getElementById('editPresImg').value,
-                vpName: document.getElementById('editVpName').value,
-                vpImg: document.getElementById('editVpImg').value,
-                secName: document.getElementById('editSecName').value,
-                secImg: document.getElementById('editSecImg').value
+            const updates = {
+                customCutMin: cutMin,
+                customDistMeters: distMeters,
+                customBreakMin: breakMin
             };
-            db.ref('settings/leadership').set(data).then(() => alert("লিডারশিপ আপডেট হয়েছে!"));
-        }
 
-        function saveNotice() {
-            const data = { text: document.getElementById('editNoticeText').value, img: document.getElementById('editNoticeImg').value };
-            db.ref('settings/notice').set(data).then(() => alert("নোটিশ আপডেট হয়েছে!"));
-        }
-
-        function loadAdminUsersTable() {
-            db.ref('users').on('value', snapshot => {
-                const tbody = document.getElementById('adminUserTableBody');
-                tbody.innerHTML = '';
-                snapshot.forEach(child => {
-                    const u = child.val();
-                    const tr = document.createElement('tr');
-                    tr.className = "border-b border-slate-700/50 hover:bg-slate-800/80";
-                    tr.innerHTML = `
-                        <td class="p-2 font-semibold text-slate-100">${u.name}</td>
-                        <td class="p-2 text-slate-300">${u.phone}</td>
-                        <td class="p-2 text-slate-400 text-[11px]">রেজিস্টার্ড ব্যবহারকারী</td>
-                        <td class="p-2 text-center">
-                            <button onclick="deleteUser('${u.id}')" class="bg-rose-600 hover:bg-rose-500 text-white px-2.5 py-1 rounded-lg text-[10px] font-bold shadow">ডিলিট</button>
-                        </td>
-                    `;
-                    tbody.appendChild(tr);
-                });
-            });
-        }
-
-        function deleteUser(id) {
-            if (confirm("এই রাইডারকে মুছতে চান?")) {
-                db.ref('users/' + id).remove().then(() => alert("মুছে ফেলা হয়েছে।"));
+            if (newName) updates.name = newName;
+            if (photoFile) {
+                updates.photo = await compressImageToBase64(photoFile, 250);
             }
+
+            await db.ref('registeredRiders/' + phone).update(updates);
+            document.getElementById("riderEditModal").style.display = "none";
+            alert("✅ রাইডারের তথ্য এবং গোপন স্পেশাল পাওয়ার সেভ হয়েছে!");
         }
     </script>
 </body>
