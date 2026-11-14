@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>বাইক রাইডার সিরিয়াল ম্যানেজমেন্ট</title>
+    <title>চন্দ্রিমা যুব উন্নয়ন টান সমিতি - বাইক রাইডার সিরিয়াল ম্যানেজমেন্ট</title>
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
     
     <!-- Firebase SDK v9 Compat -->
@@ -105,6 +105,28 @@
             padding: 8px;
         }
 
+        /* Association Top Banner */
+        .assoc-banner {
+            background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
+            color: #fde047;
+            text-align: center;
+            padding: 10px;
+            border-radius: 12px;
+            margin-bottom: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            border: 1px solid rgba(253, 224, 71, 0.3);
+        }
+        .assoc-banner h1 {
+            font-size: 18px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+        .assoc-banner p {
+            font-size: 11px;
+            color: #e2e8f0;
+            margin-top: 2px;
+        }
+
         /* Compact Header Section */
         .header-card {
             background: linear-gradient(135deg, #312e81 0%, #4338ca 55%, #0284c7 100%);
@@ -123,7 +145,7 @@
         }
 
         .stand-title {
-            font-size: 18px;
+            font-size: 16px;
             font-weight: 700;
             line-height: 1.2;
         }
@@ -147,7 +169,7 @@
         }
 
         .clock-time {
-            font-size: 15px;
+            font-size: 14px;
             font-weight: 700;
             color: #fde047;
             line-height: 1.1;
@@ -245,6 +267,26 @@
             cursor: pointer;
             border: 1px solid #f59e0b;
             flex-shrink: 0;
+        }
+
+        /* PAYMENT RECHARGE BOX */
+        .recharge-card {
+            background: white;
+            border-radius: 12px;
+            padding: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+            border: 1px solid #cbd5e1;
+            border-top: 4px solid #f59e0b;
+            margin-bottom: 10px;
+        }
+        .recharge-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: #b45309;
+            margin-bottom: 6px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
         /* ENTRY GRID */
@@ -446,7 +488,7 @@
             margin-left: auto;
         }
 
-        /* UPDATED: COLLAPSED CUT HISTORY BOX WITH RED LOGO */
+        /* CUT HISTORY BOX */
         .history-card-box {
             background: white;
             border-radius: 12px;
@@ -594,9 +636,15 @@
     <!-- MAIN APP CONTAINER -->
     <div class="container" id="mainApp" style="display: none;">
 
+        <!-- ASSOCIATION BANNER -->
+        <div class="assoc-banner">
+            <h1>চন্দ্রিমা যুব উন্নয়ন টান সমিতি</h1>
+            <p>বাইক রাইডার সিরিয়াল ও আর্থিক হিসাব ব্যবস্থাপনা প্যানেল</p>
+        </div>
+
         <!-- ADMIN MODE ACTIVE BAR -->
         <div id="adminModeBar">
-            <span>🛡️ অ্যাডমিন মোড চালু আছে (যেকোনো জায়গা থেকে সিরিয়াল কাটতে পারবেন)</span>
+            <span>🛡️ অ্যাডমিন মোড চালু আছে</span>
             <button class="btn btn-danger btn-xs" onclick="logoutAdminMode()">লগআউট</button>
         </div>
 
@@ -658,6 +706,43 @@
             <img id="displayNoticeImg" class="notice-img" style="display: none;" onclick="window.open(this.src)" alt="নোটিশ ছবি">
         </div>
 
+        <!-- PAYMENT & RECHARGE BOX -->
+        <div class="recharge-card">
+            <div class="recharge-title">
+                <span>💳 সেন্ড মানি / পেমেন্ট ও ব্যালেন্স রিচার্জ</span>
+                <span id="myWalletBalanceBadge" style="font-size: 11px; background: #e0f2fe; color: #0369a1; padding: 2px 6px; border-radius: 6px;">ব্যালেন্স: ৳০</span>
+            </div>
+            <div style="font-size: 11px; color: #475569; margin-bottom: 6px;">
+                অফিসিয়াল নাম্বার: <strong id="assocDefaultPayNum" style="color: #dc2626;">01719592128</strong> (বিকাশ/নগদ)
+            </div>
+            <div class="form-group">
+                <label class="form-label">রেজিস্টার্ড ফোন নাম্বার (যিনি পাঠিয়েছেন)</label>
+                <input type="tel" id="rechargePhone" class="form-control" placeholder="017XXXXXXXX">
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; margin-bottom: 6px;">
+                <div>
+                    <label class="form-label">মাধ্যম</label>
+                    <select id="rechargeMethod" class="form-control">
+                        <option value="bKash">বিকাশ</option>
+                        <option value="Nagad">নগদ</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="form-label">টাকার পরিমাণ (৳)</label>
+                    <input type="number" id="rechargeAmount" class="form-control" placeholder="৫০০">
+                </div>
+                <div>
+                    <label class="form-label">যে নাম্বার থেকে পাঠিয়েছেন</label>
+                    <input type="tel" id="rechargeSenderNo" class="form-control" placeholder="018XXXXXXXX">
+                </div>
+            </div>
+            <div style="display: flex; gap: 6px;">
+                <input type="text" id="rechargeTrxId" class="form-control" placeholder="TrxID (যেমন: 9N7K...) বা পেমেন্ট ট্রানজেকশন আইডি" style="flex: 1;">
+                <button class="btn btn-warning btn-xs" onclick="submitRechargeRequest()">📤 রিচার্জ রিকুয়েস্ট পাঠান</button>
+            </div>
+            <div id="myRechargeStatusList" style="margin-top: 6px; font-size: 11px; color: #1e293b;"></div>
+        </div>
+
         <!-- ENTRY BOXES -->
         <div class="entry-grid">
             <div class="box-card box-online">
@@ -677,12 +762,13 @@
 
                     <div id="onlineRegForm" style="display: none;">
                         <div class="form-group">
-                            <input type="text" id="regName" class="form-control" placeholder="পূর্ণ নাম (একবারই সেট হবে)">
+                            <input type="text" id="regName" class="form-control" placeholder="পূর্ণ নাম">
                         </div>
                         <div class="form-group">
-                            <input type="tel" id="regPhone" class="form-control" placeholder="ফোন নাম্বার">
+                            <input type="tel" id="regPhone" class="form-control" placeholder="বিকাশ / ফোন নাম্বার">
                         </div>
                         <div class="form-group">
+                            <label class="form-label" style="font-size:10px;">ছবি (বাধ্যতামূলক)</label>
                             <input type="file" id="regPhoto" accept="image/*" class="form-control" style="padding: 4px;">
                         </div>
                     </div>
@@ -690,7 +776,7 @@
 
                 <div>
                     <button id="btnOnlineSubmit" class="btn btn-primary btn-block" onclick="submitOnlineEntry()">🚀 অনলাইন সিরিয়াল</button>
-                    <button id="btnRegSubmit" class="btn btn-success btn-block" style="display: none;" onclick="registerNewRider()">💾 স্থায়ী সেভ করুন</button>
+                    <button id="btnRegSubmit" class="btn btn-success btn-block" style="display: none;" onclick="registerNewRider()">💾 রেজিস্ট্রেশনের আবেদন করুন</button>
                 </div>
             </div>
 
@@ -724,7 +810,7 @@
             </div>
         </div>
 
-        <!-- UPDATED: COLLAPSED 24-HOUR CUT HISTORY BOX WITH RED LOGO -->
+        <!-- CUT HISTORY BOX -->
         <div class="history-card-box">
             <div class="history-card-header" onclick="toggleHistoryDropdown()">
                 <h3>
@@ -752,15 +838,39 @@
                 <button class="btn btn-danger btn-xs" onclick="closeAdminModal()">✖ বন্ধ করুন</button>
             </div>
 
-            <!-- 1. SPECIAL POWER PANEL -->
+            <!-- PENDING RECHARGE & REGISTRATION APPROVAL -->
             <div class="admin-box" style="background: #fffbeb; border-color: #f59e0b;">
-                <h4 style="color: #b45309;">🕵️ স্পেশাল পাওয়ার (গোপন সময়, দূরত্ব ও কাউন্টডাউন কন্ট্রোল)</h4>
-                <p style="font-size: 11px; color: #78350f; margin-bottom: 8px;">
-                    যেকোনো রাইডার সিলেক্ট করে তার সিরিয়াল কাটার কাউন্টডাউন (মিনিট), স্ট্যান্ডের দূরত্ব (মিটার) এবং বিরতির সময় বাড়িয়ে বা কমিয়ে দিন।
-                </p>
+                <h4 style="color: #b45309;">🔔 পেন্ডিং রিচার্জ ও রেজিস্ট্রেশন এপ্রুভাল</h4>
                 
+                <div style="margin-bottom: 10px;">
+                    <strong style="font-size: 12px; color: #9a3412;">টাকা রিচার্জ পেন্ডিং রিকুয়েস্টসমূহ:</strong>
+                    <div id="adminPendingRechargeList" style="margin-top: 4px;">লোড হচ্ছে...</div>
+                </div>
+
+                <div style="margin-top: 10px;">
+                    <strong style="font-size: 12px; color: #9a3412;">রাইডার রেজিস্ট্রেশন পেন্ডিং আবেদনসমূহ:</strong>
+                    <div id="adminPendingRegList" style="margin-top: 4px;">লোড হচ্ছে...</div>
+                </div>
+            </div>
+
+            <!-- PAYMENT NUMBER MANAGEMENT -->
+            <div class="admin-box">
+                <h4>💳 বিকাশ/নগদ পেমেন্ট নাম্বার ম্যানেজমেন্ট</h4>
                 <div class="form-group">
-                    <label class="form-label">রাইডার নির্বাচন করুন (রেজিস্টার্ড তালিকা থেকে)</label>
+                    <label class="form-label">নতুন পেমেন্ট নাম্বার যোগ করুন</label>
+                    <div style="display: flex; gap: 6px;">
+                        <input type="text" id="admNewPayNum" class="form-control" placeholder="017XXXXXXXX (বিকাশ/নগদ)">
+                        <button class="btn btn-success btn-xs" onclick="addPaymentNumber()">যোগ করুন</button>
+                    </div>
+                </div>
+                <div id="adminPaymentNumbersList" style="font-size: 12px; color: #1e293b; margin-top: 5px;"></div>
+            </div>
+
+            <!-- 1. SPECIAL POWER PANEL -->
+            <div class="admin-box" style="background: #f0fdf4; border-color: #10b981;">
+                <h4 style="color: #047857;">🕵️ স্পেশাল পাওয়ার (সময়, দূরত্ব ও ব্যালেন্স কন্ট্রোল)</h4>
+                <div class="form-group">
+                    <label class="form-label">রাইডার নির্বাচন করুন</label>
                     <select id="specialRiderSelect" class="form-control" onchange="loadSelectedRiderSpecialValues()">
                         <option value="">-- রাইডার বেছে নিন --</option>
                     </select>
@@ -768,7 +878,7 @@
 
                 <div class="special-grid">
                     <div>
-                        <label class="form-label">কাউন্টডাউন (মিনিট)</label>
+                        <label class="form-label">কাউন্টডাউন (মিঃ)</label>
                         <input type="number" id="quickSpCutMin" class="form-control" value="10" min="1">
                     </div>
                     <div>
@@ -776,11 +886,11 @@
                         <input type="number" id="quickSpDist" class="form-control" value="200" min="10">
                     </div>
                     <div>
-                        <label class="form-label">বিরতি (মিনিট)</label>
+                        <label class="form-label">বিরতি (মিঃ)</label>
                         <input type="number" id="quickSpBreakMin" class="form-control" value="30" min="1">
                     </div>
                 </div>
-                <button class="btn btn-warning btn-block" onclick="saveQuickSpecialPower()">⚡ স্পেশাল পাওয়ার সেভ করুন</button>
+                <button class="btn btn-success btn-block" onclick="saveQuickSpecialPower()">⚡ স্পেশাল পাওয়ার সেভ করুন</button>
             </div>
 
             <!-- 2. Stand Name & GPS Location -->
@@ -796,13 +906,12 @@
                 <div class="switch-row">
                     <div>
                         <strong style="font-size: 12px; color: #be123c;">GPS বাটন আনলক সুইচ (ON/OFF)</strong>
-                        <div style="font-size: 10px; color: #881337;">হাতের টাচ লেগে সীমানা নষ্ট হওয়া রোধ করতে এটি OFF রাখুন</div>
                     </div>
                     <input type="checkbox" id="gpsUnlockSwitch" onchange="toggleGpsSetButton()" style="width: 20px; height: 20px; cursor: pointer;">
                 </div>
 
                 <button id="btnSetStandGps" class="btn btn-danger btn-block" disabled onclick="setStandCurrentLocation()">
-                    🔒 বর্তমান অবস্থানকে স্ট্যান্ডের কেন্দ্র হিসেবে সেট করুন (লক করা)
+                    🔒 বর্তমান অবস্থানকে স্ট্যান্ডের কেন্দ্র হিসেবে সেট করুন
                 </button>
                 <p id="savedStandCoords" style="font-size: 11px; color: #475569; margin-top: 5px;"></p>
             </div>
@@ -811,21 +920,21 @@
             <div class="admin-box">
                 <h4>👔 সভাপতি, সহ-সভাপতি ও সাংগঠনিক সম্পাদক</h4>
                 <div class="form-group">
-                    <label class="form-label">১. সভাপতি (নাম ও ছবি)</label>
+                    <label class="form-label">১. সভাপতি</label>
                     <div style="display: flex; gap: 5px;">
                         <input type="text" id="admPresName" class="form-control" placeholder="সভাপতির নাম">
                         <input type="file" id="admPresPhoto" accept="image/*" class="form-control" style="padding: 3px;">
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="form-label">২. সহ-সভাপতি (নাম ও ছবি)</label>
+                    <label class="form-label">২. সহ-সভাপতি</label>
                     <div style="display: flex; gap: 5px;">
                         <input type="text" id="admVpName" class="form-control" placeholder="সহ-সভাপতির নাম">
                         <input type="file" id="admVpPhoto" accept="image/*" class="form-control" style="padding: 3px;">
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="form-label">৩. সাংগঠনিক সম্পাদক (নাম ও ছবি)</label>
+                    <label class="form-label">৩. সাংগঠনিক সম্পাদক</label>
                     <div style="display: flex; gap: 5px;">
                         <input type="text" id="admSecName" class="form-control" placeholder="সাংগঠনিক সম্পাদকের নাম">
                         <input type="file" id="admSecPhoto" accept="image/*" class="form-control" style="padding: 3px;">
@@ -849,9 +958,9 @@
                 </div>
             </div>
 
-            <!-- 5. Registered Riders List with Edit & Live Location Pin -->
+            <!-- 5. Registered Riders List -->
             <div class="admin-box">
-                <h4>👥 সমস্ত রেজিস্ট্রেশনকৃত রাইডার লিস্ট ও লাইভ লোকেশন</h4>
+                <h4>👥 অনুমোদিত সমস্ত রাইডার লিস্ট</h4>
                 <div id="adminRegisteredList">লোড হচ্ছে...</div>
             </div>
         </div>
@@ -860,7 +969,7 @@
     <!-- RIDER INFO EDIT MODAL -->
     <div class="modal-backdrop" id="riderEditModal" style="z-index: 6000;">
         <div class="modal-card" style="max-width: 400px;">
-            <h4 style="color: var(--primary); margin-bottom: 8px;">✏️ রাইডারের তথ্য পরিবর্তন (অ্যাডমিন)</h4>
+            <h4 style="color: var(--primary); margin-bottom: 8px;">✏️ রাইডারের তথ্য পরিবর্তন</h4>
             <input type="hidden" id="editRiderPhoneKey">
             <div class="form-group">
                 <label class="form-label">রাইডারের নাম</label>
@@ -877,7 +986,7 @@
         </div>
     </div>
 
-    <!-- RIDER LIVE LOCATION INFO MODAL (ADMIN) -->
+    <!-- RIDER LIVE LOCATION INFO MODAL -->
     <div class="modal-backdrop" id="riderLocModal" style="z-index: 6000;">
         <div class="modal-card" style="max-width: 380px; text-align: center;">
             <h4 style="color: var(--primary); margin-bottom: 10px;">📍 রাইডারের লাইভ লোকেশন ও সময়</h4>
@@ -919,8 +1028,12 @@
             lng: null
         };
         let registeredRiders = {};
+        let pendingRiders = {};
+        let pendingRecharges = {};
         let activeSerials = {};
         let breakLogs = {};
+        let paymentNumbers = ["01719592128"];
+        
         let myLocalRiderName = localStorage.getItem("myRiderName") || "";
         let myLocalRiderPhone = localStorage.getItem("myRiderPhone") || "";
 
@@ -970,7 +1083,7 @@
         }
 
         // ==========================================
-        // 3. GATEKEEPER & HEARTBEAT LOCATION SYNC
+        // 3. GATEKEEPER & LOCATION SYNC
         // ==========================================
         function requestGpsPermission() {
             const statusText = document.getElementById("gpsStatusText");
@@ -990,8 +1103,7 @@
                     updateDistanceDisplay();
                     checkGatekeeperReady();
 
-                    // If logged in via phone, periodically update last known location to Firebase
-                    if (myLocalRiderPhone) {
+                    if (myLocalRiderPhone && registeredRiders[myLocalRiderPhone]) {
                         db.ref('registeredRiders/' + myLocalRiderPhone).update({
                             lastLat: userLat,
                             lastLng: userLng,
@@ -1040,7 +1152,7 @@
         updateLiveClock();
 
         // ==========================================
-        // 5. GEOFENCE & DISTANCE CALCULATION
+        // 5. GEOFENCE & DISTANCE
         // ==========================================
         function getDistanceMeters(lat1, lon1, lat2, lon2) {
             const R = 6371000;
@@ -1083,7 +1195,7 @@
         }
 
         // ==========================================
-        // 6. IMAGE COMPRESSION & HELPERS
+        // 6. COMPRESSION & HELPERS
         // ==========================================
         function compressImageToBase64(file, maxWidth = 250) {
             return new Promise((resolve) => {
@@ -1115,7 +1227,6 @@
             return `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`;
         }
 
-        // Toggle History Dropdown
         function toggleHistoryDropdown() {
             const content = document.getElementById("cutHistoryContainer");
             const arrow = document.getElementById("historyToggleArrow");
@@ -1129,7 +1240,7 @@
         }
 
         // ==========================================
-        // 7. FIREBASE REALTIME LISTENERS
+        // 7. FIREBASE LISTENERS
         // ==========================================
         db.ref('standConfig').on('value', (snap) => {
             const data = snap.val() || {};
@@ -1148,10 +1259,8 @@
             if (data.leaders) {
                 if (data.leaders.presName) document.getElementById("namePresident").innerText = data.leaders.presName;
                 if (data.leaders.presImg) document.getElementById("imgPresident").src = data.leaders.presImg;
-
                 if (data.leaders.vpName) document.getElementById("nameVicePresident").innerText = data.leaders.vpName;
                 if (data.leaders.vpImg) document.getElementById("imgVicePresident").src = data.leaders.vpImg;
-
                 if (data.leaders.secName) document.getElementById("nameOrgSecretary").innerText = data.leaders.secName;
                 if (data.leaders.secImg) document.getElementById("imgOrgSecretary").src = data.leaders.secImg;
             }
@@ -1166,12 +1275,30 @@
                     nImg.style.display = "none";
                 }
             }
+
+            if (data.paymentNumbers) {
+                paymentNumbers = data.paymentNumbers;
+                document.getElementById("assocDefaultPayNum").innerText = paymentNumbers.join(", ");
+                renderAdminPaymentNumbersList();
+            }
         });
 
         db.ref('registeredRiders').on('value', (snap) => {
             registeredRiders = snap.val() || {};
             renderAdminRegisteredList();
             populateSpecialRiderDropdown();
+            updateMyWalletDisplay();
+        });
+
+        db.ref('pendingRiders').on('value', (snap) => {
+            pendingRiders = snap.val() || {};
+            renderAdminPendingRegList();
+        });
+
+        db.ref('pendingRecharges').on('value', (snap) => {
+            pendingRecharges = snap.val() || {};
+            renderAdminPendingRecharges();
+            renderMyRechargeStatus();
         });
 
         db.ref('breakLogs/' + getTodayDateKey()).on('value', (snap) => {
@@ -1219,7 +1346,7 @@
         });
 
         // ==========================================
-        // 8. ONLINE REGISTRATION & DUAL ENTRY
+        // 8. REGISTRATION & RECHARGE SYSTEM
         // ==========================================
         function switchOnlineTab(tab) {
             document.getElementById("tabOnlineEntry").classList.toggle("active", tab === 'entry');
@@ -1232,6 +1359,7 @@
 
         if (myLocalRiderPhone) {
             document.getElementById("loginPhone").value = myLocalRiderPhone;
+            document.getElementById("rechargePhone").value = myLocalRiderPhone;
         }
 
         async function registerNewRider() {
@@ -1240,7 +1368,7 @@
             const photoFile = document.getElementById("regPhoto").files[0];
 
             if (!name || !phone || !photoFile) {
-                alert("⚠️ নাম, ফোন নাম্বার এবং ছবি তিনটিই দিন!");
+                alert("⚠️ নাম, বিকাশ/ফোন নাম্বার এবং ছবি তিনটিই বাধ্যতামূলক!");
                 return;
             }
 
@@ -1251,32 +1379,88 @@
             }
 
             if (registeredRiders[cleanPhone]) {
-                alert("🚫 এই ফোন নাম্বার দিয়ে ইতিমধ্যে অ্যাকাউন্ট খোলা আছে!");
+                alert("🚫 এই নাম্বার দিয়ে ইতিমধ্যে অনুমোদিত অ্যাকাউন্ট রয়েছে!");
+                return;
+            }
+
+            if (pendingRiders[cleanPhone]) {
+                alert("⏳ আপনার রেজিস্ট্রেশন আবেদনটি ইতিমধ্যে পেন্ডিং অবস্থায় আছে। অ্যাডমিন অনুমোদন করলে প্রবেশ করতে পারবেন।");
                 return;
             }
 
             const base64Img = await compressImageToBase64(photoFile, 220);
-            await db.ref('registeredRiders/' + cleanPhone).set({
+            
+            await db.ref('pendingRiders/' + cleanPhone).set({
                 name: name,
                 phone: cleanPhone,
                 photo: base64Img,
-                createdAt: Date.now(),
-                customCutMin: 10,
-                customDistMeters: 200,
-                customBreakMin: 30,
-                lastLat: userLat || null,
-                lastLng: userLng || null,
-                lastActiveTime: Date.now()
+                appliedAt: Date.now()
             });
 
-            localStorage.setItem("myRiderPhone", cleanPhone);
-            localStorage.setItem("myRiderName", name);
-            myLocalRiderPhone = cleanPhone;
-            myLocalRiderName = name;
-
-            document.getElementById("loginPhone").value = cleanPhone;
-            alert("✅ স্থায়ী রেজিস্ট্রেশন সম্পন্ন! এখন সিরিয়াল দিন।");
+            alert("✅ রেজিস্ট্রেশনের আবেদন সফলভাবে জমা হয়েছে! অ্যাডমিন অনুমোদন করার পর আপনি সিরিয়ালে অংশগ্রহণ করতে পারবেন।");
             switchOnlineTab('entry');
+        }
+
+        function submitRechargeRequest() {
+            const phone = document.getElementById("rechargePhone").value.trim().replace(/[^0-9]/g, '');
+            const method = document.getElementById("rechargeMethod").value;
+            const amount = Number(document.getElementById("rechargeAmount").value);
+            const senderNo = document.getElementById("rechargeSenderNo").value.trim();
+            const trxId = document.getElementById("rechargeTrxId").value.trim();
+
+            if (!phone || !amount || !senderNo || !trxId) {
+                alert("⚠️ সকল তথ্য (ফোন, পরিমাণ, প্রেরক নাম্বার ও TrxID) সঠিকভাবে পূরণ করুন!");
+                return;
+            }
+
+            if (!registeredRiders[phone]) {
+                alert("❌ এই নাম্বার দিয়ে কোনো অনুমোদিত রেজিস্টার্ড অ্যাকাউন্ট পাওয়া যায়নি!");
+                return;
+            }
+
+            const reqId = db.ref('pendingRecharges').push().key;
+            db.ref('pendingRecharges/' + reqId).set({
+                id: reqId,
+                phone: phone,
+                riderName: registeredRiders[phone].name,
+                method: method,
+                amount: amount,
+                senderNo: senderNo,
+                trxId: trxId,
+                timestamp: Date.now(),
+                status: 'pending'
+            });
+
+            document.getElementById("rechargeAmount").value = "";
+            document.getElementById("rechargeSenderNo").value = "";
+            document.getElementById("rechargeTrxId").value = "";
+            alert("📤 আপনার রিচার্জ রিকুয়েস্ট সফলভাবে পাঠানো হয়েছে। অ্যাডমিন যাচাই করে ব্যালেন্স যুক্ত করার পর আপনার ওয়ালেটে দেখতে পাবেন।");
+        }
+
+        function updateMyWalletDisplay() {
+            if (!myLocalRiderPhone || !registeredRiders[myLocalRiderPhone]) {
+                document.getElementById("myWalletBalanceBadge").innerText = "ব্যালেন্স: ৳০";
+                return;
+            }
+            const rider = registeredRiders[myLocalRiderPhone];
+            const bal = rider.balance || 0;
+            document.getElementById("myWalletBalanceBadge").innerText = `ব্যালেন্স: ৳${bal}`;
+        }
+
+        function renderMyRechargeStatus() {
+            if (!myLocalRiderPhone) return;
+            const container = document.getElementById("myRechargeStatusList");
+            let myReqs = Object.values(pendingRecharges).filter(r => r.phone === myLocalRiderPhone);
+            if (myReqs.length === 0) {
+                container.innerHTML = `<span style="color:#64748b;">কোনো সাম্প্রতিক রিচার্জ রিকুয়েস্ট নেই।</span>`;
+                return;
+            }
+            let html = "<strong>আপনার রিচার্জ স্ট্যাটাস:</strong><br>";
+            myReqs.slice(-3).reverse().forEach(r => {
+                let statusText = r.status === 'approved' ? '✅ অনুমোদিত' : (r.status === 'rejected' ? '❌ বাতিল' : '⏳ পেন্ডিং');
+                html += `• ৳${r.amount} (${r.method}) - TrxID: ${r.trxId} [${statusText}]<br>`;
+            });
+            container.innerHTML = html;
         }
 
         function isNameAlreadyInActiveSerial(name) {
@@ -1292,7 +1476,7 @@
             }
             const rider = registeredRiders[phone];
             if (!rider) {
-                alert("❌ এই নাম্বারে রেজিস্ট্রেশন নেই! আগে অ্যাকাউন্ট খুলুন।");
+                alert("❌ এই নাম্বারে অনুমোদিত রেজিস্ট্রেশন নেই! অথবা আপনার আবেদন এখনো পেন্ডিং থাকতে পারে।");
                 return;
             }
 
@@ -1308,8 +1492,9 @@
             localStorage.setItem("myRiderName", rider.name);
             myLocalRiderPhone = phone;
             myLocalRiderName = rider.name;
+            document.getElementById("rechargePhone").value = phone;
+            updateMyWalletDisplay();
 
-            // Update heartbeat location
             db.ref('registeredRiders/' + phone).update({
                 lastLat: userLat,
                 lastLng: userLng,
@@ -1404,7 +1589,7 @@
             if (!item) return;
 
             if (isAdminLoggedIn) {
-                if (confirm(`🛡️ অ্যাডমিন পাওয়ার: আপনি কি দূরত্ব ছাড়াই "${item.name}"-এর সিরিয়াল সরাসরি কাটতে চান?`)) {
+                if (confirm(`🛡️ অ্যাডমিন পাওয়ার: আপনি কি "${item.name}"-এর সিরিয়াল সরাসরি কাটতে চান?`)) {
                     db.ref('cutHistory').push({
                         targetName: item.name,
                         cutterName: "🛡️ অ্যাডমিন",
@@ -1614,7 +1799,7 @@
         }, 1000);
 
         // ==========================================
-        // 10. ADMIN PANEL & SPECIAL CONTROLS
+        // 10. ADMIN PANEL & APPROVALS
         // ==========================================
         function openAdminLogin() {
             if (isAdminLoggedIn) {
@@ -1627,6 +1812,9 @@
                 document.getElementById("adminModeBar").style.display = "flex";
                 document.getElementById("adminModal").style.display = "block";
                 renderAdminRegisteredList();
+                renderAdminPendingRegList();
+                renderAdminPendingRecharges();
+                renderAdminPaymentNumbersList();
                 populateSpecialRiderDropdown();
                 renderSerialList();
             } else if (pass !== null) {
@@ -1647,13 +1835,136 @@
             toggleGpsSetButton();
         }
 
+        function renderAdminPendingRegList() {
+            const container = document.getElementById("adminPendingRegList");
+            const list = Object.entries(pendingRiders);
+            if (list.length === 0) {
+                container.innerHTML = `<span style="font-size:11px; color:#64748b;">কোনো পেন্ডিং রেজিস্ট্রেশন আবেদন নেই।</span>`;
+                return;
+            }
+            container.innerHTML = list.map(([phone, r]) => `
+                <div class="reg-rider-row" style="background:#fffbeb;">
+                    <div style="display: flex; align-items: center; gap: 6px;">
+                        <img src="${r.photo}" style="width: 30px; height: 30px; border-radius: 50%; object-fit: cover;">
+                        <div>
+                            <strong style="font-size: 12px;">${r.name}</strong>
+                            <div style="font-size: 10px; color: #475569;">📞 ${r.phone}</div>
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 4px;">
+                        <button class="btn btn-success btn-xs" onclick="approveRider('${phone}')">✅ এপ্রুভ</button>
+                        <button class="btn btn-danger btn-xs" onclick="rejectRider('${phone}')">❌ ডিলিট</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        async function approveRider(phone) {
+            const r = pendingRiders[phone];
+            if (!r) return;
+            await db.ref('registeredRiders/' + phone).set({
+                name: r.name,
+                phone: r.phone,
+                photo: r.photo,
+                createdAt: Date.now(),
+                customCutMin: 10,
+                customDistMeters: 200,
+                customBreakMin: 30,
+                balance: 0,
+                lastLat: null,
+                lastLng: null,
+                lastActiveTime: Date.now()
+            });
+            await db.ref('pendingRiders/' + phone).remove();
+            alert(`✅ ${r.name}-এর রেজিস্ট্রেশন সফলভাবে এপ্রুভ করা হয়েছে!`);
+        }
+
+        async function rejectRider(phone) {
+            if (confirm("আপনি কি এই আবেদনটি মুছে ফেলতে চান?")) {
+                await db.ref('pendingRiders/' + phone).remove();
+                alert("আবেদনটি মুছে ফেলা হয়েছে।");
+            }
+        }
+
+        function renderAdminPendingRecharges() {
+            const container = document.getElementById("adminPendingRechargeList");
+            const list = Object.entries(pendingRecharges).filter(([k, r]) => r.status === 'pending');
+            if (list.length === 0) {
+                container.innerHTML = `<span style="font-size:11px; color:#64748b;">কোনো পেন্ডিং রিচার্জ রিকুয়েস্ট নেই।</span>`;
+                return;
+            }
+            container.innerHTML = list.map(([key, r]) => `
+                <div class="reg-rider-row" style="background:#fef3c7;">
+                    <div style="font-size: 11px;">
+                        <strong>${r.riderName}</strong> (${r.phone})<br>
+                        মড: ${r.method} | এমাউন্ট: ৳<strong>${r.amount}</strong><br>
+                        প্রেরক: ${r.senderNo} | TrxID: <strong>${r.trxId}</strong>
+                    </div>
+                    <div style="display: flex; gap: 4px;">
+                        <button class="btn btn-success btn-xs" onclick="approveRecharge('${key}')">✅ এপ্রুভ</button>
+                        <button class="btn btn-danger btn-xs" onclick="rejectRecharge('${key}')">❌ বাতিল</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        async function approveRecharge(key) {
+            const r = pendingRecharges[key];
+            if (!r) return;
+            const riderRef = db.ref('registeredRiders/' + r.phone);
+            const snap = await riderRef.once('value');
+            const riderData = snap.val();
+            if (!riderData) {
+                alert("রাইডার অ্যাকাউন্ট পাওয়া যায়নি!");
+                return;
+            }
+            const currentBal = Number(riderData.balance || 0);
+            const newBal = currentBal + Number(r.amount);
+
+            await riderRef.update({ balance: newBal });
+            await db.ref('pendingRecharges/' + key).update({ status: 'approved' });
+            alert(`✅ ৳${r.amount} সফলভাবে ${riderData.name}-এর অ্যাকাউন্টে যোগ করা হয়েছে!`);
+        }
+
+        async function rejectRecharge(key) {
+            await db.ref('pendingRecharges/' + key).update({ status: 'rejected' });
+            alert("রিচার্জ রিকুয়েস্ট বাতিল করা হয়েছে।");
+        }
+
+        function addPaymentNumber() {
+            const num = document.getElementById("admNewPayNum").value.trim();
+            if (!num) return;
+            if (!paymentNumbers.includes(num)) {
+                paymentNumbers.push(num);
+                db.ref('standConfig/paymentNumbers').set(paymentNumbers);
+                document.getElementById("admNewPayNum").value = "";
+                alert("✅ পেমেন্ট নাম্বার যোগ করা হয়েছে!");
+            }
+        }
+
+        function removePaymentNumber(num) {
+            paymentNumbers = paymentNumbers.filter(n => n !== num);
+            db.ref('standConfig/paymentNumbers').set(paymentNumbers);
+            alert("পেমেন্ট নাম্বার মুছে ফেলা হয়েছে।");
+        }
+
+        function renderAdminPaymentNumbersList() {
+            const container = document.getElementById("adminPaymentNumbersList");
+            container.innerHTML = paymentNumbers.map(n => `
+                <div style="display:flex; justify-content:space-between; align-items:center; background:#fff; padding:4px 8px; border-radius:6px; margin-bottom:4px; border:1px solid #cbd5e1;">
+                    <span>📞 ${n}</span>
+                    <button class="btn btn-danger btn-xs" onclick="removePaymentNumber('${n}')">মুছুন</button>
+                </div>
+            `).join('');
+        }
+
         function populateSpecialRiderDropdown() {
             const select = document.getElementById("specialRiderSelect");
             if (!select) return;
             const currentVal = select.value;
             let opts = `<option value="">-- রাইডার বেছে নিন --</option>`;
             Object.values(registeredRiders).forEach(r => {
-                opts += `<option value="${r.phone}">${r.name} (${r.phone})</option>`;
+                opts += `<option value="${r.phone}">${r.name} (${r.phone}) - ব্যালেন্স: ৳${r.balance || 0}</option>`;
             });
             select.innerHTML = opts;
             select.value = currentVal;
@@ -1683,24 +1994,21 @@
                 customDistMeters: distMeters,
                 customBreakMin: breakMin
             });
-            alert(`✅ ${registeredRiders[phone].name}-এর গোপন স্পেশাল সময় ও দূরত্ব সেভ হয়েছে!`);
+            alert(`✅ ${registeredRiders[phone].name}-এর বিশেষ সেটিংস সেভ হয়েছে!`);
         }
 
         function toggleGpsSetButton() {
             const unlocked = document.getElementById("gpsUnlockSwitch").checked;
             const btn = document.getElementById("btnSetStandGps");
             btn.disabled = !unlocked;
-            btn.innerText = unlocked 
-                ? "📍 বর্তমান অবস্থানকে স্ট্যান্ডের কেন্দ্র হিসেবে সেট করুন" 
-                : "🔒 বর্তমান অবস্থানকে স্ট্যান্ডের কেন্দ্র হিসেবে সেট করুন (লক করা)";
         }
 
         function setStandCurrentLocation() {
             if (!userLat || !userLng) {
-                alert("❌ আপনার ফোনের GPS লোকেশন পাওয়া যাচ্ছে না!");
+                alert("❌ GPS লোকেশন পাওয়া যাচ্ছে না!");
                 return;
             }
-            if (confirm("আপনি কি নিশ্চিতভাবে এই জায়গাটিকে স্ট্যান্ডের কেন্দ্র হিসেবে সেট করতে চান?")) {
+            if (confirm("এই অবস্থানকে স্ট্যান্ডের কেন্দ্র হিসেবে সেট করতে চান?")) {
                 db.ref('standConfig').update({ lat: userLat, lng: userLng });
                 document.getElementById("gpsUnlockSwitch").checked = false;
                 toggleGpsSetButton();
@@ -1763,7 +2071,7 @@
             const list = Object.values(registeredRiders);
 
             if (list.length === 0) {
-                container.innerHTML = `<p style="font-size: 12px; color: #64748b;">এখনো কোনো রাইডার রেজিস্ট্রেশন করেননি।</p>`;
+                container.innerHTML = `<p style="font-size: 12px; color: #64748b;">কোনো অনুমোদিত রাইডার নেই।</p>`;
                 return;
             }
 
@@ -1773,18 +2081,25 @@
                         <img src="${r.photo || 'https://via.placeholder.com/40'}" style="width: 34px; height: 34px; border-radius: 50%; object-fit: cover;">
                         <div>
                             <strong style="font-size: 13px;">${r.name}</strong>
-                            <div style="font-size: 11px; color: #475569;">📞 ${r.phone}</div>
+                            <div style="font-size: 11px; color: #475569;">📞 ${r.phone} | ব্যালেন্স: ৳${r.balance || 0}</div>
                         </div>
                     </div>
                     <div style="display: flex; gap: 4px; margin-left: auto;">
                         <button class="btn btn-info btn-xs" onclick="viewRiderLiveLocation('${r.phone}')">📍 লোকেশন</button>
                         <button class="btn btn-primary btn-xs" onclick="openRiderBasicEdit('${r.phone}')">✏️ এডিট</button>
+                        <button class="btn btn-danger btn-xs" onclick="deleteRegisteredRider('${r.phone}')">🗑️ ডিলিট</button>
                     </div>
                 </div>
             `).join('');
         }
 
-        // View Rider Location & Last Active Time Modal
+        async function deleteRegisteredRider(phone) {
+            if (confirm("আপনি কি নিশ্চিতভাবে এই রাইডারকে ডিলিট করতে চান?")) {
+                await db.ref('registeredRiders/' + phone).remove();
+                alert("রাইডার সফলভাবে ডিলিট করা হয়েছে।");
+            }
+        }
+
         function viewRiderLiveLocation(phone) {
             const r = registeredRiders[phone];
             if (!r) return;
@@ -1804,6 +2119,7 @@
             modalDetails.innerHTML = `
                 👤 <strong>রাইডার:</strong> ${r.name}<br>
                 📞 <strong>নম্বর:</strong> ${r.phone}<br>
+                💰 <strong>ব্যালেন্স:</strong> ৳${r.balance || 0}<br>
                 ⏱️ <strong>শেষ সক্রিয় সময়:</strong> ${timeStr}<br>
                 📍 <strong>অবস্থান (GPS):</strong> ${r.lastLat ? r.lastLat.toFixed(5) + ', ' + r.lastLng.toFixed(5) : 'GPS পাওয়া যায়নি'}<br>
                 📏 <strong>দূরত্ব:</strong> ${distText}
