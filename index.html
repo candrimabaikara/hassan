@@ -188,7 +188,7 @@
         .notice-header { font-weight: 700; color: #b45309; font-size: 13px; }
         .notice-img { width: 55px; height: 55px; border-radius: 8px; object-fit: cover; cursor: pointer; border: 1px solid #f59e0b; flex-shrink: 0; }
 
-        /* TAN SAMITY (WEEKLY GAME & DEPOSIT) CARD */
+        /* TAN SAMITY (WEEKLY GAME & DEPOSIT) CARD WITH COLLAPSE */
         .samity-card {
             background: white;
             border-radius: 14px;
@@ -202,17 +202,23 @@
             background: linear-gradient(135deg, #fef3c7, #fde68a);
             padding: 8px 10px;
             border-radius: 10px;
-            margin-bottom: 8px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             border: 1px solid #f59e0b;
+            cursor: pointer;
         }
         .samity-header h2 {
             font-size: 15px;
             color: #92400e;
             font-weight: 700;
         }
+        .samity-body-container {
+            display: none;
+            margin-top: 10px;
+            animation: fadeIn 0.2s ease;
+        }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
         /* Samity Live Match Counter Bar */
         .samity-status-bar {
@@ -275,8 +281,8 @@
             background: #f1f5f9;
         }
 
-        .ready-badge {
-            background: #10b981;
+        .winner-badge {
+            background: #2563eb;
             color: white;
             font-size: 10px;
             font-weight: 700;
@@ -285,16 +291,7 @@
             display: inline-block;
         }
         .pending-badge {
-            background: #ef4444;
-            color: white;
-            font-size: 10px;
-            font-weight: 700;
-            padding: 2px 6px;
-            border-radius: 10px;
-            display: inline-block;
-        }
-        .winner-badge {
-            background: #2563eb;
+            background: #d97706;
             color: white;
             font-size: 10px;
             font-weight: 700;
@@ -476,106 +473,111 @@
         </div>
 
         <!-- ========================================================= -->
-        <!-- SEPARATE TAN SAMITY (WEEKLY GAME & DEPOSIT) CARD          -->
+        <!-- COLLAPSIBLE TAN SAMITY CARD                               -->
         <!-- ========================================================= -->
         <div class="samity-card">
-            <div class="samity-header">
+            <div class="samity-header" onclick="toggleSamityCardCollapse()">
                 <h2>🏆 চন্দ্রিমা বাইকার টান সমিতি</h2>
-                <span style="font-size: 11px; font-weight: 700; background: #92400e; color: white; padding: 2px 8px; border-radius: 10px;">সাপ্তাহিক খেলা</span>
-            </div>
-
-            <!-- SAMITY LIVE MATCH COUNTER BAR -->
-            <div class="samity-status-bar" id="samityStatusBar">
-                <span>🎯 খেলা সম্পন্ন: <strong id="cntCompletedGames">০</strong> | বাকি: <strong id="cntRemainingGames">০</strong></span>
-                <span>👥 মোট সদস্য: <span id="cntTotalMembers">০</span> (বিজয়ী: <span id="cntWinners" style="color:var(--primary);">০</span>, অপেক্ষমাণ: <span id="cntWaitings" style="color:#b45309;">০</span>)</span>
-            </div>
-
-            <div style="font-size: 11px; color: #78350f; background: #fffbeb; padding: 6px 8px; border-radius: 6px; margin-bottom: 8px; border: 1px dashed #f59e0b;">
-                💡 নিয়ম: প্রতিদিন <strong>৳২০০</strong> করে ৭ দিনে মোট <strong>৳১৪০০</strong> পরিশোধ থাকতে হবে।
-            </div>
-
-            <!-- 3 Sub-Tabs inside Tan Samity -->
-            <div class="mini-tabs">
-                <div class="mini-tab active" id="tabSamityMembers" onclick="switchSamityTab('members')">👥 সদস্য ও হিসাব</div>
-                <div class="mini-tab" id="tabSamityPay" onclick="switchSamityPayTab()">💸 টাকা পাঠান</div>
-                <div class="mini-tab" id="tabSamityReg" onclick="switchSamityRegTab()">📝 সমিতি রেজিঃ</div>
-            </div>
-
-            <!-- SUB-TAB 1: APPROVED MEMBERS LIST & 7-DAY QUOTA VIEW -->
-            <div id="samityMembersSection">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-                    <span style="font-size: 12px; font-weight: 700; color: #1e293b;">অনুমোদিত সদস্যবৃন্দ (<span id="samityTotalMembersCount">0</span> জন)</span>
-                    <span style="font-size: 10px; color: #64748b;">* নামের ওপর টাচ করে ৭ দিনের হিসাব দেখুন</span>
-                </div>
-                <div id="samityMembersListContainer" style="max-height: 280px; overflow-y: auto;">
-                    <p style="font-size: 12px; color: #64748b; text-align: center; padding: 10px;">লোড হচ্ছে...</p>
+                <div style="display: flex; align-items: center; gap: 6px;">
+                    <span style="font-size: 11px; font-weight: 700; background: #92400e; color: white; padding: 2px 8px; border-radius: 10px;">সাপ্তাহিক খেলা</span>
+                    <span id="samityToggleArrow" style="font-size: 12px; font-weight: 700; color: #92400e;">▼ খুলুন</span>
                 </div>
             </div>
 
-            <!-- SUB-TAB 2: SEND MONEY / PAYMENT REQUEST -->
-            <div id="samityPaySection" style="display: none;">
-                <div style="font-size: 11px; color: #475569; margin-bottom: 6px;">
-                    অফিসিয়াল পেমেন্ট নাম্বার: <strong id="assocDefaultPayNum" style="color: #dc2626;">01719592128</strong> (বিকাশ/নগদ)
+            <div class="samity-body-container" id="samityBodyContainer">
+                <!-- SAMITY LIVE MATCH COUNTER BAR -->
+                <div class="samity-status-bar" id="samityStatusBar">
+                    <span>🎯 খেলা সম্পন্ন: <strong id="cntCompletedGames">০</strong> | বাকি: <strong id="cntRemainingGames">০</strong></span>
+                    <span>👥 মোট সদস্য: <span id="cntTotalMembers">০</span> (বিজয়ী: <span id="cntWinners" style="color:var(--primary);">০</span>, অপেক্ষমাণ: <span id="cntWaitings" style="color:#b45309;">০</span>)</span>
                 </div>
 
-                <div class="form-group">
-                    <label class="form-label">১. কার অ্যাকাউন্টে টাকা জমা হবে? (রেজিস্টার্ড ফোন নাম্বার দিন)</label>
-                    <div style="display: flex; gap: 6px;">
-                        <input type="tel" id="samityTargetPhone" class="form-control" placeholder="নিজের বা অন্য সদস্যের নম্বর (017XXXXXXXX)" oninput="autoCheckSamityMember()">
-                        <button class="btn btn-info btn-xs" onclick="autoCheckSamityMember(true)">চেক</button>
+                <div style="font-size: 11px; color: #78350f; background: #fffbeb; padding: 6px 8px; border-radius: 6px; margin-bottom: 8px; border: 1px dashed #f59e0b;">
+                    💡 নিয়ম: প্রতিদিন <strong>৳২০০</strong> করে ৭ দিনে মোট <strong>৳১৪০০</strong> পরিশোধ থাকতে হবে।
+                </div>
+
+                <!-- 3 Sub-Tabs inside Tan Samity -->
+                <div class="mini-tabs">
+                    <div class="mini-tab active" id="tabSamityMembers" onclick="switchSamityTab('members')">👥 সদস্য ও হিসাব</div>
+                    <div class="mini-tab" id="tabSamityPay" onclick="switchSamityPayTab()">💸 টাকা পাঠান</div>
+                    <div class="mini-tab" id="tabSamityReg" onclick="switchSamityRegTab()">📝 সমিতি রেজিঃ</div>
+                </div>
+
+                <!-- SUB-TAB 1: APPROVED MEMBERS LIST & 7-DAY QUOTA VIEW -->
+                <div id="samityMembersSection">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                        <span style="font-size: 12px; font-weight: 700; color: #1e293b;">অনুমোদিত সদস্যবৃন্দ (<span id="samityTotalMembersCount">0</span> জন)</span>
+                        <span style="font-size: 10px; color: #64748b;">* নামের ওপর টাচ করে ৭ দিনের হিসাব দেখুন</span>
+                    </div>
+                    <div id="samityMembersListContainer" style="max-height: 280px; overflow-y: auto;">
+                        <p style="font-size: 12px; color: #64748b; text-align: center; padding: 10px;">লোড হচ্ছে...</p>
                     </div>
                 </div>
 
-                <!-- Auto Identified Member Box -->
-                <div id="samityTargetPreview" style="display: none; background: #ecfdf5; border: 1px solid #10b981; border-radius: 8px; padding: 6px 8px; margin-bottom: 8px; align-items: center; gap: 8px;">
-                    <img id="samityTargetImg" src="" style="width: 34px; height: 34px; border-radius: 50%; object-fit: cover; border: 1.5px solid #059669;">
-                    <div style="font-size: 12px;">
-                        <strong id="samityTargetName" style="color: #065f46;">নাম</strong>
-                        <div style="font-size: 10px; color: #047857;">✅ অনুমোদিত সদস্য | বর্তমান জমা: <strong id="samityTargetPaid">৳০</strong></div>
+                <!-- SUB-TAB 2: SEND MONEY / PAYMENT REQUEST -->
+                <div id="samityPaySection" style="display: none;">
+                    <div style="font-size: 11px; color: #475569; margin-bottom: 6px;">
+                        অফিসিয়াল পেমেন্ট নাম্বার: <strong id="assocDefaultPayNum" style="color: #dc2626;">01719592128</strong> (বিকাশ/নগদ)
                     </div>
-                </div>
 
-                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; margin-bottom: 8px;">
-                    <div>
-                        <label class="form-label">মাধ্যম</label>
-                        <select id="samityPayMethod" class="form-control">
-                            <option value="bKash">বিকাশ</option>
-                            <option value="Nagad">নগদ</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="form-label">টাকার পরিমাণ (৳)</label>
-                        <input type="number" id="samityPayAmount" class="form-control" placeholder="২০০ / ১৪০০">
-                    </div>
-                    <div>
-                        <label class="form-label">যে নাম্বার থেকে পাঠিয়েছেন</label>
-                        <input type="tel" id="samitySenderPhone" class="form-control" placeholder="018XXXXXXXX">
-                    </div>
-                </div>
-
-                <button class="btn btn-warning btn-block" onclick="submitSamityPayment()">📤 অ্যাডমিনের কাছে পেমেন্ট তথ্য পাঠান</button>
-                <div id="samityRecentRequests" style="margin-top: 8px; font-size: 11px; color: #334155;"></div>
-            </div>
-
-            <!-- SUB-TAB 3: SEPARATE TAN SAMITY REGISTRATION -->
-            <div id="samityRegSection" style="display: none;">
-                <p id="samityRegNoticeText" style="font-size: 11px; color: #92400e; margin-bottom: 6px; font-weight: 600;">
-                    * এটি শুধুমাত্র "চন্দ্রিমা বাইকার টান সমিতি"-এর জন্য আলাদা রেজিস্ট্রেশন।
-                </p>
-                <div id="samityRegFormContainer">
                     <div class="form-group">
-                        <label class="form-label">পূর্ণ নাম (বাধ্যতামূলক)</label>
-                        <input type="text" id="samityRegName" class="form-control" placeholder="আপনার পূর্ণ নাম লিখুন">
+                        <label class="form-label">১. কার অ্যাকাউন্টে টাকা জমা হবে? (রেজিস্টার্ড ফোন নাম্বার দিন)</label>
+                        <div style="display: flex; gap: 6px;">
+                            <input type="tel" id="samityTargetPhone" class="form-control" placeholder="নিজের বা অন্য সদস্যের নম্বর (017XXXXXXXX)" oninput="autoCheckSamityMember()">
+                            <button class="btn btn-info btn-xs" onclick="autoCheckSamityMember(true)">চেক</button>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label class="form-label">ফোন নাম্বার (বাধ্যতামূলক)</label>
-                        <input type="tel" id="samityRegPhone" class="form-control" placeholder="১১ ডিজিটের মোবাইল নাম্বার">
+
+                    <!-- Auto Identified Member Box -->
+                    <div id="samityTargetPreview" style="display: none; background: #ecfdf5; border: 1px solid #10b981; border-radius: 8px; padding: 6px 8px; margin-bottom: 8px; align-items: center; gap: 8px;">
+                        <img id="samityTargetImg" src="" style="width: 34px; height: 34px; border-radius: 50%; object-fit: cover; border: 1.5px solid #059669;">
+                        <div style="font-size: 12px;">
+                            <strong id="samityTargetName" style="color: #065f46;">নাম</strong>
+                            <div style="font-size: 10px; color: #047857;">✅ অনুমোদিত সদস্য | বর্তমান জমা: <strong id="samityTargetPaid">৳০</strong></div>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label class="form-label">আপনার ছবি (বাধ্যতামূলক)</label>
-                        <input type="file" id="samityRegPhoto" accept="image/*" class="form-control" style="padding: 4px;">
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; margin-bottom: 8px;">
+                        <div>
+                            <label class="form-label">মাধ্যম</label>
+                            <select id="samityPayMethod" class="form-control">
+                                <option value="bKash">বিকাশ</option>
+                                <option value="Nagad">নগদ</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="form-label">টাকার পরিমাণ (৳)</label>
+                            <input type="number" id="samityPayAmount" class="form-control" placeholder="২০০ / ১৪০০">
+                        </div>
+                        <div>
+                            <label class="form-label">যে নাম্বার থেকে পাঠিয়েছেন</label>
+                            <input type="tel" id="samitySenderPhone" class="form-control" placeholder="018XXXXXXXX">
+                        </div>
                     </div>
-                    <button class="btn btn-success btn-block" onclick="registerTanSamityMember()">💾 সমিতিতে রেজিস্ট্রেশনের আবেদন করুন</button>
+
+                    <button class="btn btn-warning btn-block" onclick="submitSamityPayment()">📤 অ্যাডমিনের কাছে পেমেন্ট তথ্য পাঠান</button>
+                    <div id="samityRecentRequests" style="margin-top: 8px; font-size: 11px; color: #334155;"></div>
+                </div>
+
+                <!-- SUB-TAB 3: SEPARATE TAN SAMITY REGISTRATION -->
+                <div id="samityRegSection" style="display: none;">
+                    <p id="samityRegNoticeText" style="font-size: 11px; color: #92400e; margin-bottom: 6px; font-weight: 600;">
+                        * এটি শুধুমাত্র "চন্দ্রিমা বাইকার টান সমিতি"-এর জন্য আলাদা রেজিস্ট্রেশন।
+                    </p>
+                    <div id="samityRegFormContainer">
+                        <div class="form-group">
+                            <label class="form-label">পূর্ণ নাম (বাধ্যতামূলক)</label>
+                            <input type="text" id="samityRegName" class="form-control" placeholder="আপনার পূর্ণ নাম লিখুন">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">ফোন নাম্বার (বাধ্যতামূলক)</label>
+                            <input type="tel" id="samityRegPhone" class="form-control" placeholder="১১ ডিজিটের মোবাইল নাম্বার">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">আপনার ছবি (বাধ্যতামূলক)</label>
+                            <input type="file" id="samityRegPhoto" accept="image/*" class="form-control" style="padding: 4px;">
+                        </div>
+                        <button class="btn btn-success btn-block" onclick="registerTanSamityMember()">💾 সমিতিতে রেজিস্ট্রেশনের আবেদন করুন</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -678,9 +680,7 @@
                 <button class="btn btn-danger btn-xs" onclick="closeAdminModal()">✖ বন্ধ করুন</button>
             </div>
 
-            <!-- ===================================================== -->
-            <!-- DEDICATED TAN SAMITY ADMIN CONTROL BOX                -->
-            <!-- ===================================================== -->
+            <!-- DEDICATED TAN SAMITY ADMIN CONTROL BOX -->
             <div class="admin-box" style="background: #fffbeb; border: 2px solid #f59e0b;">
                 <h4 style="color: #b45309; font-size: 15px;">🏆 চন্দ্রিমা বাইকার টান সমিতি কন্ট্রোল</h4>
 
@@ -819,9 +819,9 @@
                 </div>
             </div>
 
-            <!-- Bike Serial Registered Riders List -->
+            <!-- Bike Serial Registered Riders List with Edit Options -->
             <div class="admin-box">
-                <h4>🏍️ বাইক সিরিয়াল রাইডার লিস্ট</h4>
+                <h4>🏍️ বাইক সিরিয়াল রাইডার লিস্ট (এডিট ও ডিলিট অপশনসহ)</h4>
                 <div id="adminRegisteredList">লোড হচ্ছে...</div>
             </div>
         </div>
@@ -853,6 +853,10 @@
             <div class="form-group">
                 <label class="form-label">রাইডারের নাম</label>
                 <input type="text" id="editRiderName" class="form-control">
+            </div>
+            <div class="form-group">
+                <label class="form-label">ফোন নাম্বার</label>
+                <input type="tel" id="editRiderPhoneNum" class="form-control">
             </div>
             <div class="form-group">
                 <label class="form-label">নতুন ছবি (ঐচ্ছিক)</label>
@@ -1147,6 +1151,18 @@
             }
         }
 
+        function toggleSamityCardCollapse() {
+            const body = document.getElementById("samityBodyContainer");
+            const arrow = document.getElementById("samityToggleArrow");
+            if (body.style.display === "block") {
+                body.style.display = "none";
+                arrow.innerText = "▼ খুলুন";
+            } else {
+                body.style.display = "block";
+                arrow.innerText = "▲ বন্ধ করুন";
+            }
+        }
+
         // ==========================================
         // 7. FIREBASE REALTIME LISTENERS
         // ==========================================
@@ -1269,7 +1285,7 @@
         });
 
         // ==========================================
-        // 8. TAN SAMITY LOGIC (UPDATED WITH NEW FEATURES)
+        // 8. TAN SAMITY LOGIC
         // ==========================================
         function switchSamityTab(tab) {
             document.getElementById("tabSamityMembers").classList.toggle("active", tab === 'members');
@@ -1387,8 +1403,6 @@
                 const paid = Number(m.weeklyPaid || 0);
                 const isExpanded = expandedSamityMemberPhone === m.phone;
                 const isWinner = m.isWinner === true;
-
-                // Color coding total amount (Green if >=0, Red if <0)
                 const amtColor = paid < 0 ? '#dc2626' : '#16a34a';
 
                 return `
@@ -1407,7 +1421,7 @@
                             <div style="text-align: right;">
                                 ${isWinner 
                                     ? `<span class="winner-badge">🏆 বিজয়ী</span>` 
-                                    : `<span class="pending-badge" style="background:#d97706;">⏳ অপেক্ষমাণ</span>`
+                                    : `<span class="pending-badge">⏳ অপেক্ষমাণ</span>`
                                 }
                                 <div style="font-size: 10px; color: var(--primary); margin-top: 2px;">${isExpanded ? '▲ বন্ধ করুন' : '▼ ৭ দিন দেখুন'}</div>
                             </div>
@@ -1538,13 +1552,13 @@
         }
 
         // ==========================================
-        // 9. BIKE RIDER ENTRY & ACTIONS
+        // 9. BIKE RIDER ENTRY & FIFO SERIAL LOGIC
         // ==========================================
         function switchOnlineTab(tab) {
             document.getElementById("tabOnlineEntry").classList.toggle("active", tab === 'entry');
             document.getElementById("tabOnlineReg").classList.toggle("active", tab === 'reg');
             document.getElementById("onlineEntryForm").style.display = tab === 'entry' ? 'block' : 'none';
-            document.getElementById("onlineRegForm").style.display = tab === 'reg' ? 'block' : 'none';
+            document.getElementById("onlineRegForm").style.display = tab === 'reg' ? 'none' : 'block';
             document.getElementById("btnOnlineSubmit").style.display = tab === 'entry' ? 'inline-flex' : 'none';
             document.getElementById("btnRegSubmit").style.display = tab === 'reg' ? 'inline-flex' : 'none';
         }
@@ -1869,7 +1883,7 @@
         }, 1000);
 
         // ==========================================
-        // 10. ADMIN PANEL & TAN SAMITY CONTROLS
+        // 10. ADMIN PANEL & CONTROLS
         // ==========================================
         function openAdminLogin() {
             if (isAdminLoggedIn) {
@@ -1906,7 +1920,7 @@
             toggleGpsSetButton();
         }
 
-        // --- TAN SAMITY ADMIN FUNCTIONS ---
+        // --- TAN SAMITY ADMIN ---
         async function toggleSamityRegStatus(checkbox) {
             const isOpen = checkbox.checked;
             await db.ref('tanSamity/config/registrationOpen').set(isOpen);
@@ -1946,7 +1960,7 @@
                 photo: m.photo,
                 weeklyPaid: 0,
                 isWinner: false,
-                isLocked: true, // Default locked to prevent accidental touch deletion
+                isLocked: true,
                 joinedAt: Date.now()
             });
             await db.ref('tanSamity/pendingMembers/' + phone).remove();
@@ -2017,7 +2031,7 @@
             container.innerHTML = list.map((m, idx) => {
                 const paid = Number(m.weeklyPaid || 0);
                 const isWinner = m.isWinner === true;
-                const isLocked = m.isLocked !== false; // Default true
+                const isLocked = m.isLocked !== false;
 
                 return `
                     <div style="background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; padding: 8px; margin-bottom: 6px;">
@@ -2032,9 +2046,9 @@
                             </div>
                             <div style="display: flex; gap: 4px; align-items: center;">
                                 <button class="btn ${isWinner ? 'btn-primary' : 'btn-warning'} btn-xs" onclick="toggleSamityWinner('${m.phone}', ${!isWinner})">
-                                    ${isWinner ? '🏆 বিজয়ী (বাদ দিন)' : '⭐ বিজয়ী করুন'}
+                                    ${isWinner ? '🏆 বিজয়ী (বাদ)' : '⭐ বিজয়ী'}
                                 </button>
-                                <button class="btn btn-info btn-xs" onclick="openSamityAdjustModal('${m.phone}')">💰 জমা/মাইনাস</button>
+                                <button class="btn btn-info btn-xs" onclick="openSamityAdjustModal('${m.phone}')">💰 জমা</button>
                                 <button class="btn ${isLocked ? 'btn-dark' : 'btn-danger'} btn-xs" onclick="toggleSamityMemberLock('${m.phone}', ${!isLocked})">
                                     ${isLocked ? '🔒 লকড' : '🔓 আনলক'}
                                 </button>
@@ -2110,7 +2124,111 @@
             }
         }
 
-        // --- OTHER ADMIN FUNCTIONS ---
+        // --- RIDER ADMIN CONTROLS (WITH EDIT PHOTO, NAME, PHONE) ---
+        function renderAdminRegisteredList() {
+            const container = document.getElementById("adminRegisteredList");
+            const list = Object.values(registeredRiders);
+
+            if (list.length === 0) {
+                container.innerHTML = `<p style="font-size: 12px; color: #64748b;">কোনো রাইডার নেই।</p>`;
+                return;
+            }
+
+            container.innerHTML = list.map(r => `
+                <div class="reg-rider-row">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <img src="${r.photo || 'https://via.placeholder.com/40'}" style="width: 34px; height: 34px; border-radius: 50%; object-fit: cover;">
+                        <div>
+                            <strong style="font-size: 13px;">${r.name}</strong>
+                            <div style="font-size: 11px; color: #475569;">📞 ${r.phone}</div>
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 4px; margin-left: auto;">
+                        <button class="btn btn-info btn-xs" onclick="viewRiderLiveLocation('${r.phone}')">📍 লোকেশন</button>
+                        <button class="btn btn-primary btn-xs" onclick="openRiderBasicEdit('${r.phone}')">✏️ এডিট</button>
+                        <button class="btn btn-danger btn-xs" onclick="deleteRegisteredRider('${r.phone}')">🗑️</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        async function deleteRegisteredRider(phone) {
+            if (confirm("আপনি কি নিশ্চিতভাবে এই রাইডারকে ডিলিট করতে চান?")) {
+                await db.ref('registeredRiders/' + phone).remove();
+                showToast("রাইডার ডিলিট করা হয়েছে।", "info");
+            }
+        }
+
+        function viewRiderLiveLocation(phone) {
+            const r = registeredRiders[phone];
+            if (!r) return;
+            const modalDetails = document.getElementById("riderLocDetails");
+            let timeStr = r.lastActiveTime ? new Date(r.lastActiveTime).toLocaleString('bn-BD') : "তথ্য নেই";
+            let distText = "দূরত্ব মাপা যায়নি";
+            if (r.lastLat && r.lastLng && standSettings.lat && standSettings.lng) {
+                distText = `${getDistanceMeters(r.lastLat, r.lastLng, standSettings.lat, standSettings.lng)} মিটার`;
+            }
+            modalDetails.innerHTML = `
+                👤 <strong>রাইডার:</strong> ${r.name}<br>
+                📞 <strong>নম্বর:</strong> ${r.phone}<br>
+                ⏱️ <strong>শেষ সক্রিয়:</strong> ${timeStr}<br>
+                📍 <strong>GPS:</strong> ${r.lastLat ? r.lastLat.toFixed(5) + ', ' + r.lastLng.toFixed(5) : 'নেই'}<br>
+                📏 <strong>দূরত্ব:</strong> ${distText}
+            `;
+            document.getElementById("riderLocModal").style.display = "block";
+        }
+
+        function openRiderBasicEdit(phone) {
+            const r = registeredRiders[phone];
+            if (!r) return;
+            document.getElementById("editRiderPhoneKey").value = phone;
+            document.getElementById("editRiderName").value = r.name;
+            document.getElementById("editRiderPhoneNum").value = r.phone;
+            document.getElementById("editRiderPhoto").value = "";
+            document.getElementById("riderEditModal").style.display = "block";
+        }
+
+        async function saveRiderBasicEdit() {
+            const oldPhone = document.getElementById("editRiderPhoneKey").value;
+            const newName = document.getElementById("editRiderName").value.trim();
+            const newPhone = document.getElementById("editRiderPhoneNum").value.trim().replace(/[^0-9]/g, '');
+            const photoFile = document.getElementById("editRiderPhoto").files[0];
+
+            if (!newName || !newPhone) {
+                showToast("⚠️ নাম এবং ফোন নাম্বার খালি রাখা যাবে না।", "error");
+                return;
+            }
+
+            let photoBase64 = registeredRiders[oldPhone] ? registeredRiders[oldPhone].photo : null;
+            if (photoFile) {
+                photoBase64 = await compressImageToBase64(photoFile, 220);
+            }
+
+            if (newPhone !== oldPhone) {
+                if (registeredRiders[newPhone]) {
+                    showToast("🚫 এই ফোন নাম্বার দিয়ে ইতিমধ্যে অন্য রাইডার রেজিস্টার্ড আছে!", "error");
+                    return;
+                }
+                // Copy data to new phone key and delete old key
+                let data = registeredRiders[oldPhone];
+                data.name = newName;
+                data.phone = newPhone;
+                if (photoBase64) data.photo = photoBase64;
+
+                await db.ref('registeredRiders/' + newPhone).set(data);
+                await db.ref('registeredRiders/' + oldPhone).remove();
+            } else {
+                await db.ref('registeredRiders/' + oldPhone).update({
+                    name: newName,
+                    photo: photoBase64
+                });
+            }
+
+            document.getElementById("riderEditModal").style.display = "none";
+            showToast("✅ রাইডারের তথ্য সফলভাবে আপডেট হয়েছে!", "success");
+        }
+
+        // --- OTHER ADMIN HELPERS ---
         function addPaymentNumber() {
             const num = document.getElementById("admNewPayNum").value.trim();
             if (!num) return;
@@ -2239,82 +2357,6 @@
         function clearNoticeImage() {
             db.ref('standConfig/notice/img').remove();
             showToast("নোটিশের ছবি মুছে ফেলা হয়েছে।", "info");
-        }
-
-        function renderAdminRegisteredList() {
-            const container = document.getElementById("adminRegisteredList");
-            const list = Object.values(registeredRiders);
-
-            if (list.length === 0) {
-                container.innerHTML = `<p style="font-size: 12px; color: #64748b;">কোনো রাইডার নেই।</p>`;
-                return;
-            }
-
-            container.innerHTML = list.map(r => `
-                <div class="reg-rider-row">
-                    <div style="display: flex; align-items: center; gap: 8px;">
-                        <img src="${r.photo || 'https://via.placeholder.com/40'}" style="width: 34px; height: 34px; border-radius: 50%; object-fit: cover;">
-                        <div>
-                            <strong style="font-size: 13px;">${r.name}</strong>
-                            <div style="font-size: 11px; color: #475569;">📞 ${r.phone}</div>
-                        </div>
-                    </div>
-                    <div style="display: flex; gap: 4px; margin-left: auto;">
-                        <button class="btn btn-info btn-xs" onclick="viewRiderLiveLocation('${r.phone}')">📍 লোকেশন</button>
-                        <button class="btn btn-primary btn-xs" onclick="openRiderBasicEdit('${r.phone}')">✏️ এডিট</button>
-                        <button class="btn btn-danger btn-xs" onclick="deleteRegisteredRider('${r.phone}')">🗑️</button>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        async function deleteRegisteredRider(phone) {
-            if (confirm("আপনি কি নিশ্চিতভাবে এই রাইডারকে ডিলিট করতে চান?")) {
-                await db.ref('registeredRiders/' + phone).remove();
-                showToast("রাইডার ডিলিট করা হয়েছে।", "info");
-            }
-        }
-
-        function viewRiderLiveLocation(phone) {
-            const r = registeredRiders[phone];
-            if (!r) return;
-            const modalDetails = document.getElementById("riderLocDetails");
-            let timeStr = r.lastActiveTime ? new Date(r.lastActiveTime).toLocaleString('bn-BD') : "তথ্য নেই";
-            let distText = "দূরত্ব মাপা যায়নি";
-            if (r.lastLat && r.lastLng && standSettings.lat && standSettings.lng) {
-                distText = `${getDistanceMeters(r.lastLat, r.lastLng, standSettings.lat, standSettings.lng)} মিটার`;
-            }
-            modalDetails.innerHTML = `
-                👤 <strong>রাইডার:</strong> ${r.name}<br>
-                📞 <strong>নম্বর:</strong> ${r.phone}<br>
-                ⏱️ <strong>শেষ সক্রিয়:</strong> ${timeStr}<br>
-                📍 <strong>GPS:</strong> ${r.lastLat ? r.lastLat.toFixed(5) + ', ' + r.lastLng.toFixed(5) : 'নেই'}<br>
-                📏 <strong>দূরত্ব:</strong> ${distText}
-            `;
-            document.getElementById("riderLocModal").style.display = "block";
-        }
-
-        function openRiderBasicEdit(phone) {
-            const r = registeredRiders[phone];
-            if (!r) return;
-            document.getElementById("editRiderPhoneKey").value = phone;
-            document.getElementById("editRiderName").value = r.name;
-            document.getElementById("editRiderPhoto").value = "";
-            document.getElementById("riderEditModal").style.display = "block";
-        }
-
-        async function saveRiderBasicEdit() {
-            const phone = document.getElementById("editRiderPhoneKey").value;
-            const newName = document.getElementById("editRiderName").value.trim();
-            const photoFile = document.getElementById("editRiderPhoto").files[0];
-            const updates = {};
-            if (newName) updates.name = newName;
-            if (photoFile) updates.photo = await compressImageToBase64(photoFile, 220);
-            if (Object.keys(updates).length > 0) {
-                await db.ref('registeredRiders/' + phone).update(updates);
-            }
-            document.getElementById("riderEditModal").style.display = "none";
-            showToast("✅ রাইডারের তথ্য আপডেট হয়েছে!", "success");
         }
     </script>
 </body>
