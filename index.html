@@ -3,169 +3,171 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>চন্দ্রিমা মডেল টাউন একতা যুব উন্নয়ন বাইকার গ্রুপ - সিরিয়াল ম্যানেজমেন্ট</title>
+    <title>চন্দ্রিমা মডেল টাউন একতা যুব উন্নয়ন বাইকার গ্রুপ - সিরিয়াল ম্যানেজমেন্ট সিস্টেম</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Font (SolaimanLipi / Inter) -->
+    <!-- Google Font -->
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Hind Siliguri', sans-serif; }
+        body { font-family: 'Hind Siliguri', sans-serif; background: #0f172a; color: #f8fafc; }
+        .glass-box { background: rgba(30, 41, 59, 0.85); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); }
     </style>
 </head>
-<body class="bg-slate-900 text-slate-100 min-h-screen">
+<body class="min-h-screen pb-10">
 
     <!-- Battery Saver Warning Banner -->
-    <div id="batteryWarning" class="bg-amber-600 text-white text-xs sm:text-sm py-2 px-4 text-center font-medium flex justify-between items-center shadow-md">
-        <span><i class="fa-solid fa-triangle-exclamation mr-1"></i> সতর্কীকরণ: সঠিক জিপিএস এবং ব্যাকগ্রাউন্ড টাইমার সচল রাখতে আপনার ফোনের **Battery Saver (ব্যাটারি সেভার)** বন্ধ রাখুন।</span>
-        <button onclick="document.getElementById('batteryWarning').style.display='none'" class="ml-2 font-bold bg-amber-700 hover:bg-amber-800 px-2 py-0.5 rounded text-xs">বন্ধ করুন</button>
+    <div id="batteryWarning" class="bg-gradient-to-r from-amber-600 to-orange-600 text-white text-xs sm:text-sm py-2 px-4 text-center font-medium flex justify-between items-center shadow-lg">
+        <span><i class="fa-solid fa-triangle-exclamation mr-1"></i> সতর্কীকরণ: ব্যাকগ্রাউন্ড জিপিএস ও সঠিক টাইমারের জন্য আপনার ফোনের **Battery Saver** বন্ধ রাখুন।</span>
+        <button onclick="document.getElementById('batteryWarning').style.display='none'" class="ml-2 font-bold bg-amber-800 hover:bg-amber-900 px-2.5 py-1 rounded text-xs">বন্ধ করুন</button>
     </div>
 
-    <!-- Alarm Modal / Notification Banner -->
-    <div id="alarmBanner" class="fixed top-0 left-0 w-full bg-red-600 text-white py-3 px-4 z-50 hidden shadow-2xl animate-pulse flex justify-between items-center border-b-4 border-yellow-400">
+    <!-- Alarm Modal / Notification Banner for Top 3 -->
+    <div id="alarmBanner" class="fixed top-0 left-0 w-full bg-red-600 text-white py-3 px-4 z-50 hidden shadow-2xl animate-pulse flex justify-between items-center border-b-4 border-yellow-300">
         <div class="flex items-center space-x-3">
-            <i class="fa-solid fa-bell-ring text-2xl animate-bounce text-yellow-300"></i>
+            <i class="fa-solid fa-bell-ring text-3xl animate-bounce text-yellow-300"></i>
             <div>
                 <h4 class="font-bold text-lg" id="alarmTitle">⚠️ সিরিয়াল অ্যালার্ট!</h4>
                 <p class="text-sm" id="alarmText">আপনার সিরিয়াল ১, ২ বা ৩ নম্বরের মধ্যে চলে এসেছে!</p>
             </div>
         </div>
-        <button onclick="stopAlarm()" class="bg-yellow-400 text-slate-900 font-bold px-4 py-2 rounded-lg hover:bg-yellow-300 shadow">এলার্ম বন্ধ করুন</button>
+        <button onclick="stopAlarm()" class="bg-yellow-300 text-slate-950 font-bold px-4 py-2 rounded-xl hover:bg-yellow-400 shadow-lg text-sm">এলার্ম বন্ধ করুন</button>
     </div>
 
     <!-- Main Container -->
     <div class="max-w-4xl mx-auto p-3 sm:p-5 space-y-5">
 
         <!-- Top Header Bar -->
-        <header class="bg-gradient-to-r from-emerald-800 via-teal-700 to-cyan-800 p-4 rounded-2xl shadow-xl border border-emerald-600 flex flex-col md:flex-row justify-between items-center gap-3">
+        <header class="glass-box p-4 rounded-2xl shadow-2xl flex flex-col md:flex-row justify-between items-center gap-3 border-emerald-500/30">
             <div class="text-center md:text-left">
-                <h1 class="text-xl sm:text-2xl font-bold text-yellow-300 drop-shadow flex items-center justify-center md:justify-start gap-2">
-                    <i class="fa-solid fa-motorcycle"></i> চন্দ্রিমা মডেল টাউন একতা যুব উন্নয়ন বাইকার গ্রুপ
+                <h1 class="text-xl sm:text-2xl font-bold text-yellow-400 drop-shadow flex items-center justify-center md:justify-start gap-2">
+                    <i class="fa-solid fa-motorcycle text-teal-400"></i> চন্দ্রিমা মডেল টাউন একতা যুব উন্নয়ন বাইকার গ্রুপ
                 </h1>
-                <p class="text-xs sm:text-sm text-emerald-200 mt-0.5">অফিশিয়াল বাইক রাইডার সিরিয়াল ম্যানেজমেন্ট সিস্টেম</p>
+                <p class="text-xs sm:text-sm text-emerald-300 mt-0.5 font-medium">অফিশিয়াল বাইক রাইডার সিরিয়াল ম্যানেজমেন্ট সিস্টেম</p>
             </div>
-            <div class="bg-slate-900/70 px-4 py-2 rounded-xl border border-emerald-500/40 text-center min-w-[160px]">
+            <div class="bg-slate-900/80 px-4 py-2 rounded-xl border border-teal-500/30 text-center min-w-[160px] shadow-inner">
                 <div id="liveClock" class="text-lg font-bold text-cyan-300">00:00:00 AM</div>
                 <div id="liveDate" class="text-xs text-slate-300">তারিখ লোড হচ্ছে...</div>
             </div>
         </header>
 
-        <!-- Leadership Section (President, VP, Org Sec) -->
-        <section class="bg-slate-800/90 border border-slate-700 p-4 rounded-2xl shadow-lg">
-            <h2 class="text-base font-bold text-yellow-400 mb-3 border-b border-slate-700 pb-2 flex items-center gap-2">
-                <i class="fa-solid fa-users-gear"></i> স্ট্যান্ড কার্যনির্বাহী কমিটি
+        <!-- Leadership Section (Side-by-Side Grid Layout) -->
+        <section class="glass-box p-4 rounded-2xl shadow-xl border-slate-700">
+            <h2 class="text-sm sm:text-base font-bold text-yellow-400 mb-3 border-b border-slate-700 pb-2 flex items-center gap-2">
+                <i class="fa-solid fa-users-gear text-cyan-400"></i> স্ট্যান্ড কার্যনির্বাহী কমিটি
             </h2>
-            <div id="leadershipContainer" class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                <!-- Dynamically Loaded Leader Cards -->
-                <div class="bg-slate-900/60 p-3 rounded-xl border border-slate-700 text-center">
-                    <img id="presImg" src="https://via.placeholder.com/100" class="w-16 h-16 object-cover rounded-full mx-auto mb-2 border-2 border-yellow-400 shadow">
-                    <h3 id="presTitle" class="text-xs text-slate-400 font-semibold">সভাপতি</h3>
-                    <p id="presName" class="text-sm font-bold text-emerald-300">লোড হচ্ছে...</p>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <!-- President -->
+                <div class="bg-slate-900/70 p-3 rounded-xl border border-slate-700/80 text-center flex flex-col items-center shadow">
+                    <img id="presImg" src="https://via.placeholder.com/100" class="w-14 h-14 object-cover rounded-full mb-2 border-2 border-yellow-400 shadow-md">
+                    <h3 class="text-[11px] text-slate-400 font-semibold uppercase tracking-wider">সভাপতি</h3>
+                    <p id="presName" class="text-xs sm:text-sm font-bold text-emerald-300 mt-0.5">লোড হচ্ছে...</p>
                 </div>
-                <div class="bg-slate-900/60 p-3 rounded-xl border border-slate-700 text-center">
-                    <img id="vpImg" src="https://via.placeholder.com/100" class="w-16 h-16 object-cover rounded-full mx-auto mb-2 border-2 border-yellow-400 shadow">
-                    <h3 id="vpTitle" class="text-xs text-slate-400 font-semibold">সহ-সভাপতি</h3>
-                    <p id="vpName" class="text-sm font-bold text-emerald-300">লোড হচ্ছে...</p>
+                <!-- Vice President -->
+                <div class="bg-slate-900/70 p-3 rounded-xl border border-slate-700/80 text-center flex flex-col items-center shadow">
+                    <img id="vpImg" src="https://via.placeholder.com/100" class="w-14 h-14 object-cover rounded-full mb-2 border-2 border-yellow-400 shadow-md">
+                    <h3 class="text-[11px] text-slate-400 font-semibold uppercase tracking-wider">সহ-সভাপতি</h3>
+                    <p id="vpName" class="text-xs sm:text-sm font-bold text-emerald-300 mt-0.5">লোড হচ্ছে...</p>
                 </div>
-                <div class="bg-slate-900/60 p-3 rounded-xl border border-slate-700 text-center">
-                    <img id="secImg" src="https://via.placeholder.com/100" class="w-16 h-16 object-cover rounded-full mx-auto mb-2 border-2 border-yellow-400 shadow">
-                    <h3 id="secTitle" class="text-xs text-slate-400 font-semibold">সাংগঠনিক সম্পাদক</h3>
-                    <p id="secName" class="text-sm font-bold text-emerald-300">লোড হচ্ছে...</p>
+                <!-- Org Secretary -->
+                <div class="bg-slate-900/70 p-3 rounded-xl border border-slate-700/80 text-center flex flex-col items-center shadow">
+                    <img id="secImg" src="https://via.placeholder.com/100" class="w-14 h-14 object-cover rounded-full mb-2 border-2 border-yellow-400 shadow-md">
+                    <h3 class="text-[11px] text-slate-400 font-semibold uppercase tracking-wider">সাংগঠনিক সম্পাদক</h3>
+                    <p id="secName" class="text-xs sm:text-sm font-bold text-emerald-300 mt-0.5">লোড হচ্ছে...</p>
                 </div>
             </div>
         </section>
 
         <!-- Notice Board -->
-        <section class="bg-gradient-to-r from-amber-900/40 to-slate-800 border border-amber-600/40 p-4 rounded-2xl shadow-lg">
-            <h2 class="text-base font-bold text-amber-400 mb-2 flex items-center gap-2">
+        <section class="glass-box p-4 rounded-2xl shadow-xl border-amber-600/30">
+            <h2 class="text-sm sm:text-base font-bold text-amber-400 mb-2 flex items-center gap-2">
                 <i class="fa-solid fa-bullhorn"></i> নোটিশ বোর্ড
             </h2>
-            <div id="noticeContent" class="text-sm text-slate-200 bg-slate-900/50 p-3 rounded-xl border border-amber-500/20">
+            <div id="noticeContent" class="text-xs sm:text-sm text-slate-200 bg-slate-900/60 p-3 rounded-xl border border-amber-500/20 shadow-inner">
                 নোটিশ লোড হচ্ছে...
             </div>
-            <div id="noticeImgContainer" class="mt-3 hidden">
-                <img id="noticeImg" src="" class="max-h-40 rounded-lg mx-auto border border-amber-500/30">
+            <div id="noticeImgContainer" class="mt-3 hidden text-center">
+                <img id="noticeImg" src="" class="max-h-40 rounded-xl mx-auto border border-amber-500/30 shadow">
             </div>
         </section>
 
-        <!-- Registration & Entry Section -->
+        <!-- Registration & Entry Grid Boxes -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             
-            <!-- Left: Online Registration & Entry -->
-            <div class="bg-slate-800/90 border border-slate-700 p-4 rounded-2xl shadow-lg flex flex-col justify-between">
+            <!-- Online Registration & Entry Box -->
+            <div class="glass-box p-4 rounded-2xl shadow-xl flex flex-col justify-between border-teal-600/30">
                 <div>
-                    <h2 class="text-base font-bold text-teal-400 mb-3 border-b border-slate-700 pb-2 flex items-center gap-2">
+                    <h2 class="text-sm sm:text-base font-bold text-teal-400 mb-3 border-b border-slate-700 pb-2 flex items-center gap-2">
                         <i class="fa-solid fa-user-plus"></i> অনলাইন রেজিস্ট্রেশন ও এন্ট্রি
                     </h2>
                     <form id="onlineRegForm" class="space-y-3">
                         <div>
                             <label class="block text-xs font-medium text-slate-300 mb-1">রাইডার নাম</label>
-                            <input type="text" id="regName" required placeholder="আপনার সম্পূর্ণ নাম লিখুন" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-slate-100 focus:outline-none focus:border-teal-500">
+                            <input type="text" id="regName" required placeholder="আপনার সম্পূর্ণ নাম লিখুন" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-xs sm:text-sm text-slate-100 focus:outline-none focus:border-teal-500 shadow-inner">
                         </div>
                         <div>
                             <label class="block text-xs font-medium text-slate-300 mb-1">মোবাইল নাম্বার</label>
-                            <input type="tel" id="regPhone" required placeholder="০১XXXXXXXXX" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-slate-100 focus:outline-none focus:border-teal-500">
+                            <input type="tel" id="regPhone" required placeholder="০১XXXXXXXXX" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-xs sm:text-sm text-slate-100 focus:outline-none focus:border-teal-500 shadow-inner">
                         </div>
                         <div>
-                            <label class="block text-xs font-medium text-slate-300 mb-1">ছবি (লিংক বা আপলোড)</label>
-                            <input type="file" id="regPhotoFile" accept="image/*" class="w-full text-xs text-slate-400 file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-teal-600 file:text-white hover:file:bg-teal-700 cursor-pointer bg-slate-900 border border-slate-700 rounded-lg">
+                            <label class="block text-xs font-medium text-slate-300 mb-1">রাইডার ছবি (ফাইল)</label>
+                            <input type="file" id="regPhotoFile" accept="image/*" class="w-full text-xs text-slate-400 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-teal-600 file:text-white hover:file:bg-teal-700 cursor-pointer bg-slate-900 border border-slate-700 rounded-xl">
                         </div>
-                        <button type="submit" id="regSubmitBtn" class="w-full bg-gradient-to-r from-teal-600 to-emerald-600 text-white font-bold py-2.5 rounded-lg hover:from-teal-500 hover:to-emerald-500 shadow-md text-sm transition">
+                        <button type="submit" id="regSubmitBtn" class="w-full bg-gradient-to-r from-teal-600 to-emerald-600 text-white font-bold py-2.5 rounded-xl hover:from-teal-500 hover:to-emerald-500 shadow-lg text-xs sm:text-sm transition">
                             রেজিস্ট্রেশন ও সিরিয়ালে নাম দিন
                         </button>
                     </form>
                 </div>
-                <p id="regLockMsg" class="text-xs text-amber-400 mt-3 text-center hidden"><i class="fa-solid fa-lock"></i> আপনি একবার রেজিস্ট্রেশন সম্পন্ন করেছেন। তথ্য পরিবর্তন করতে অ্যাডমিনের সাহায্য নিন।</p>
+                <p id="regLockMsg" class="text-xs text-amber-400 mt-3 text-center hidden font-medium"><i class="fa-solid fa-lock"></i> আপনি ইতিমধ্যে রেজিস্টার্ড। তথ্য পরিবর্তন করতে অ্যাডমিনের সাহায্য নিন।</p>
             </div>
 
-            <!-- Right: Manual Entry -->
-            <div class="bg-slate-800/90 border border-slate-700 p-4 rounded-2xl shadow-lg flex flex-col justify-between">
+            <!-- Manual Entry Box -->
+            <div class="glass-box p-4 rounded-2xl shadow-xl flex flex-col justify-between border-cyan-600/30">
                 <div>
-                    <h2 class="text-base font-bold text-cyan-400 mb-3 border-b border-slate-700 pb-2 flex items-center gap-2">
+                    <h2 class="text-sm sm:text-base font-bold text-cyan-400 mb-3 border-b border-slate-700 pb-2 flex items-center gap-2">
                         <i class="fa-solid fa-list-check"></i> ম্যানুয়াল এন্ট্রি (শুধু নাম)
                     </h2>
                     <form id="manualEntryForm" class="space-y-3">
                         <div>
                             <label class="block text-xs font-medium text-slate-300 mb-1">রাইডারের নাম</label>
-                            <input type="text" id="manualName" required placeholder="নাম লিখুন" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-slate-100 focus:outline-none focus:border-cyan-500">
+                            <input type="text" id="manualName" required placeholder="নাম লিখুন" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-xs sm:text-sm text-slate-100 focus:outline-none focus:border-cyan-500 shadow-inner">
                         </div>
-                        <button type="submit" class="w-full bg-gradient-to-r from-cyan-600 to-blue-600 text-white font-bold py-2.5 rounded-lg hover:from-cyan-500 hover:to-blue-500 shadow-md text-sm transition mt-6">
+                        <button type="submit" class="w-full bg-gradient-to-r from-cyan-600 to-blue-600 text-white font-bold py-2.5 rounded-xl hover:from-cyan-500 hover:to-blue-500 shadow-lg text-xs sm:text-sm transition mt-6">
                             ম্যানুয়াল সিরিয়াল এন্ট্রি দিন
                         </button>
                     </form>
                 </div>
-                <div class="mt-4 p-3 bg-slate-900/60 rounded-xl border border-slate-700 text-xs text-slate-300">
-                    <i class="fa-solid fa-circle-info text-cyan-400 mr-1"></i> নিয়ম: এন্ট্রি বা সিরিয়াল কাটার জন্য স্ট্যান্ডের **২০০ মিটার** সীমানার মধ্যে থাকতে হবে। একই নামে একাধিক রাইডার একই সাথে সিরিয়ালে থাকতে পারবে না।
+                <div class="mt-4 p-3 bg-slate-900/60 rounded-xl border border-slate-700 text-xs text-slate-300 shadow-inner">
+                    <i class="fa-solid fa-circle-info text-cyan-400 mr-1"></i> নিয়ম: এন্ট্রি বা সিরিয়াল কাটতে হলে স্ট্যান্ডের **২০০ মিটার** সীমানার মধ্যে থাকতে হবে। একই নামে একাধিক রাইডার একই সাথে সিরিয়ালে থাকতে পারবে না।
                 </div>
             </div>
 
         </div>
 
         <!-- Serial Queue List Section -->
-        <section class="bg-slate-800/90 border border-slate-700 p-4 rounded-2xl shadow-lg">
+        <section class="glass-box p-4 rounded-2xl shadow-xl border-yellow-500/30">
             <div class="flex flex-col sm:flex-row justify-between items-center mb-3 border-b border-slate-700 pb-2 gap-2">
-                <h2 class="text-base font-bold text-yellow-300 flex items-center gap-2">
-                    <i class="fa-solid fa-list-ol"></i> লাইভ সিরিয়াল লিস্ট (অটো ও ম্যানুয়াল)
+                <h2 class="text-sm sm:text-base font-bold text-yellow-300 flex items-center gap-2">
+                    <i class="fa-solid fa-list-ol"></i> লাইভ সিরিয়াল লিস্ট (যে কেউ যেকোনো স্থান থেকে দেখতে পারবেন)
                 </h2>
-                <div class="text-xs text-emerald-400 font-semibold bg-slate-900 px-3 py-1 rounded-full border border-emerald-500/30">
+                <div class="text-xs text-emerald-400 font-semibold bg-slate-900 px-3 py-1.5 rounded-xl border border-emerald-500/30 shadow-inner">
                     মোট সিরিয়াল: <span id="totalQueueCount">০</span> জন
                 </div>
             </div>
             
             <div class="overflow-x-auto">
-                <table class="w-full text-left text-sm text-slate-200">
-                    <thead class="bg-slate-900 text-xs uppercase text-slate-400 border-b border-slate-700">
+                <table class="w-full text-left text-xs sm:text-sm text-slate-200">
+                    <thead class="bg-slate-900 uppercase text-slate-400 border-b border-slate-700 text-[11px]">
                         <tr>
-                            <th class="p-3">পজিশন</th>
-                            <th class="p-3">রাইডার</th>
-                            <th class="p-3">টাইমার (কতক্ষণ আছে)</th>
-                            <th class="p-3">স্ট্যাটাস / বিরতি</th>
-                            <th class="p-3 text-center">অ্যাকশন / কাটুন</th>
+                            <th class="p-2.5">পজিশন</th>
+                            <th class="p-2.5">রাইডার</th>
+                            <th class="p-2.5">টাইমার</th>
+                            <th class="p-2.5">স্ট্যাটাস</th>
+                            <th class="p-2.5 text-center">অ্যাকশন (সিরিয়াল কাটুন / বিরতি)</th>
                         </tr>
                     </thead>
                     <tbody id="queueTableBody" class="divide-y divide-slate-700/50">
-                        <!-- Queue items rendered here -->
                         <tr>
                             <td colspan="5" class="p-4 text-center text-slate-400">সিরিয়াল লোড হচ্ছে...</td>
                         </tr>
@@ -175,8 +177,8 @@
         </section>
 
         <!-- 24-Hour History Section -->
-        <section class="bg-slate-800/90 border border-slate-700 p-4 rounded-2xl shadow-lg">
-            <h2 class="text-base font-bold text-rose-400 mb-3 border-b border-slate-700 pb-2 flex items-center gap-2">
+        <section class="glass-box p-4 rounded-2xl shadow-xl border-rose-500/30">
+            <h2 class="text-sm sm:text-base font-bold text-rose-400 mb-3 border-b border-slate-700 pb-2 flex items-center gap-2">
                 <i class="fa-solid fa-clock-rotate-left"></i> সিরিয়াল কাটার হিস্টরি (২৪ ঘণ্টা)
             </h2>
             <div class="max-h-48 overflow-y-auto space-y-2" id="historyContainer">
@@ -184,10 +186,10 @@
             </div>
         </section>
 
-        <!-- Admin Section Toggle Button -->
+        <!-- Admin Section Button -->
         <div class="text-center pt-2">
-            <button onclick="openAdminLogin()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white px-5 py-2.5 rounded-xl border border-slate-600 text-sm font-semibold shadow transition flex items-center gap-2 mx-auto">
-                <i class="fa-solid fa-shield-halved text-yellow-400"></i> অ্যাডমিন প্যানেল প্রবেশ করুন
+            <button onclick="openAdminLogin()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white px-6 py-3 rounded-xl border border-slate-600 text-xs sm:text-sm font-semibold shadow-xl transition flex items-center gap-2 mx-auto">
+                <i class="fa-solid fa-shield-halved text-yellow-400 text-base"></i> অ্যাডমিন প্যানেল প্রবেশ করুন
             </button>
         </div>
 
@@ -195,34 +197,34 @@
 
     <!-- Admin Login Modal -->
     <div id="adminLoginModal" class="fixed inset-0 bg-slate-950/80 z-50 hidden flex justify-center items-center p-4">
-        <div class="bg-slate-800 border border-slate-700 p-6 rounded-2xl w-full max-w-sm shadow-2xl space-y-4">
-            <h3 class="text-lg font-bold text-yellow-400 flex items-center gap-2">
+        <div class="glass-box p-6 rounded-2xl w-full max-w-sm shadow-2xl space-y-4 border-yellow-500/40">
+            <h3 class="text-base sm:text-lg font-bold text-yellow-400 flex items-center gap-2">
                 <i class="fa-solid fa-lock"></i> অ্যাডমিন পাসওয়ার্ড দিন
             </h3>
-            <p class="text-xs text-slate-300">অ্যাডমিন প্যানেলে প্রবেশ করতে সিক্রেট পাসওয়ার্ড লিখুন।</p>
-            <input type="password" id="adminPassInput" placeholder="পাসওয়ার্ড লিখুন" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-3 text-sm text-slate-100 focus:outline-none focus:border-yellow-500">
+            <p class="text-xs text-slate-300">অ্যাডমিন প্যানেলে প্রবেশ করতে সিক্রেট পাসওয়ার্ড (692372) লিখুন।</p>
+            <input type="password" id="adminPassInput" placeholder="পাসওয়ার্ড লিখুন" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-sm text-slate-100 focus:outline-none focus:border-yellow-500 shadow-inner">
             <div class="flex justify-end space-x-2 pt-2">
-                <button onclick="closeAdminLogin()" class="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-slate-200 rounded-lg text-sm font-medium">বাতিল</button>
-                <button onclick="verifyAdminPass()" class="px-4 py-2 bg-yellow-500 hover:bg-yellow-400 text-slate-950 font-bold rounded-lg text-sm">প্রবেশ করুন</button>
+                <button onclick="closeAdminLogin()" class="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-slate-200 rounded-xl text-xs font-medium">বাতিল</button>
+                <button onclick="verifyAdminPass()" class="px-4 py-2 bg-yellow-400 hover:bg-yellow-300 text-slate-950 font-bold rounded-xl text-xs shadow">প্রবেশ করুন</button>
             </div>
         </div>
     </div>
 
     <!-- Admin Panel Modal -->
     <div id="adminPanelModal" class="fixed inset-0 bg-slate-950/90 z-50 hidden overflow-y-auto p-3 sm:p-6">
-        <div class="max-w-3xl mx-auto bg-slate-900 border border-slate-700 p-5 rounded-2xl shadow-2xl space-y-6">
+        <div class="max-w-3xl mx-auto glass-box p-5 rounded-2xl shadow-2xl space-y-6 border-yellow-500/40">
             
             <div class="flex justify-between items-center border-b border-slate-700 pb-3">
-                <h2 class="text-lg font-bold text-yellow-400 flex items-center gap-2">
+                <h2 class="text-base sm:text-lg font-bold text-yellow-400 flex items-center gap-2">
                     <i class="fa-solid fa-screwdriver-wrench"></i> অ্যাডমিন কন্ট্রোল প্যানেল
                 </h2>
-                <button onclick="closeAdminPanel()" class="bg-rose-600 hover:bg-rose-500 text-white px-3 py-1.5 rounded-lg text-xs font-bold">বন্ধ করুন</button>
+                <button onclick="closeAdminPanel()" class="bg-rose-600 hover:bg-rose-500 text-white px-3.5 py-1.5 rounded-xl text-xs font-bold shadow">বন্ধ করুন</button>
             </div>
 
             <!-- Stand Location Setting with Lock Toggle -->
-            <div class="bg-slate-800 p-4 rounded-xl border border-slate-700 space-y-3">
+            <div class="bg-slate-800/80 p-4 rounded-xl border border-slate-700 space-y-3 shadow-inner">
                 <div class="flex justify-between items-center">
-                    <h3 class="text-sm font-bold text-cyan-400 flex items-center gap-2">
+                    <h3 class="text-xs sm:text-sm font-bold text-cyan-400 flex items-center gap-2">
                         <i class="fa-solid fa-location-dot"></i> স্ট্যান্ড জিপিএস লোকেশন (২০০ মিটার রেঞ্জ)
                     </h3>
                     <div class="flex items-center space-x-2">
@@ -230,66 +232,67 @@
                         <input type="checkbox" id="locationLockToggle" class="w-4 h-4 accent-cyan-500 cursor-pointer">
                     </div>
                 </div>
-                <p class="text-xs text-slate-400">হাত লেগে যেন সীমানা নষ্ট না হয়, সেজন্য 'লোকেশন লক' অন রাখতে পারেন। বর্তমান লোকেশন স্বয়ংক্রিয়ভাবে সেট করতে নিচের বাটনে চাপুন।</p>
+                <p class="text-xs text-slate-400">হাত লেগে যেন সীমানা নষ্ট না হয়, সেজন্য 'লোকেশন লক' অন রাখতে পারেন। বর্তমান লোকেশন সেট করতে নিচের বাটনে চাপুন।</p>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <input type="text" id="adminLat" placeholder="Latitude" class="bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs text-slate-300" readonly>
-                    <input type="text" id="adminLng" placeholder="Longitude" class="bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs text-slate-300" readonly>
+                    <input type="text" id="adminLat" placeholder="Latitude" class="bg-slate-900 border border-slate-700 rounded-xl p-2 text-xs text-slate-300" readonly>
+                    <input type="text" id="adminLng" placeholder="Longitude" class="bg-slate-900 border border-slate-700 rounded-xl p-2 text-xs text-slate-300" readonly>
                 </div>
-                <div class="flex gap-2">
-                    <button onclick="captureCurrentLocation()" class="bg-cyan-600 hover:bg-cyan-500 text-white font-bold px-4 py-2 rounded-lg text-xs flex items-center gap-1">
-                        <i class="fa-solid fa-crosshairs"></i> আমার বর্তমান জিপিএস লোকেশন সেট করুন
+                <div class="flex flex-wrap gap-2">
+                    <button onclick="captureCurrentLocation()" class="bg-cyan-600 hover:bg-cyan-500 text-white font-bold px-3.5 py-2 rounded-xl text-xs flex items-center gap-1 shadow">
+                        <i class="fa-solid fa-crosshairs"></i> বর্তমান জিপিএস লোকেশন সেট করুন
                     </button>
-                    <button onclick="saveStandLocation()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-4 py-2 rounded-lg text-xs">সেভ করুন</button>
+                    <button onclick="saveStandLocation()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-4 py-2 rounded-xl text-xs shadow">সেভ করুন</button>
                 </div>
             </div>
 
             <!-- Leadership Profile Editor -->
-            <div class="bg-slate-800 p-4 rounded-xl border border-slate-700 space-y-3">
-                <h3 class="text-sm font-bold text-yellow-400 flex items-center gap-2">
+            <div class="bg-slate-800/80 p-4 rounded-xl border border-slate-700 space-y-3 shadow-inner">
+                <h3 class="text-xs sm:text-sm font-bold text-yellow-400 flex items-center gap-2">
                     <i class="fa-solid fa-user-tie"></i> কমিটি লিডারশিপ প্রোফাইল এডিটর
                 </h3>
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
                     <div class="space-y-1">
-                        <label class="text-xs text-slate-300">সভাপতি নাম ও ছবি</label>
-                        <input type="text" id="editPresName" placeholder="নাম" class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-xs text-slate-200">
-                        <input type="text" id="editPresImg" placeholder="ছবির লিংক" class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-xs text-slate-200">
+                        <label class="text-[11px] text-slate-300">সভাপতি নাম ও ছবি</label>
+                        <input type="text" id="editPresName" placeholder="নাম" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2 text-xs text-slate-200">
+                        <input type="text" id="editPresImg" placeholder="ছবির লিংক" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2 text-xs text-slate-200">
                     </div>
                     <div class="space-y-1">
-                        <label class="text-xs text-slate-300">সহ-সভাপতি নাম ও ছবি</label>
-                        <input type="text" id="editVpName" placeholder="নাম" class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-xs text-slate-200">
-                        <input type="text" id="editVpImg" placeholder="ছবির লিংক" class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-xs text-slate-200">
+                        <label class="text-[11px] text-slate-300">সহ-সভাপতি নাম ও ছবি</label>
+                        <input type="text" id="editVpName" placeholder="নাম" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2 text-xs text-slate-200">
+                        <input type="text" id="editVpImg" placeholder="ছবির লিংক" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2 text-xs text-slate-200">
                     </div>
                     <div class="space-y-1">
-                        <label class="text-xs text-slate-300">সাংগঠনিক সম্পাদক নাম ও ছবি</label>
-                        <input type="text" id="editSecName" placeholder="নাম" class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-xs text-slate-200">
-                        <input type="text" id="editSecImg" placeholder="ছবির লিংক" class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-xs text-slate-200">
+                        <label class="text-[11px] text-slate-300">সাংগঠনিক সম্পাদক নাম ও ছবি</label>
+                        <input type="text" id="editSecName" placeholder="নাম" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2 text-xs text-slate-200">
+                        <input type="text" id="editSecImg" placeholder="ছবির লিংক" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2 text-xs text-slate-200">
                     </div>
                 </div>
-                <button onclick="saveLeadership()" class="bg-yellow-500 hover:bg-yellow-400 text-slate-950 font-bold px-4 py-2 rounded-lg text-xs">লিডারশিপ আপডেট করুন</button>
+                <button onclick="saveLeadership()" class="bg-yellow-500 hover:bg-yellow-400 text-slate-950 font-bold px-4 py-2 rounded-xl text-xs shadow">লিডারশিপ আপডেট করুন</button>
             </div>
 
             <!-- Notice Board Editor -->
-            <div class="bg-slate-800 p-4 rounded-xl border border-slate-700 space-y-3">
-                <h3 class="text-sm font-bold text-amber-400 flex items-center gap-2">
+            <div class="bg-slate-800/80 p-4 rounded-xl border border-slate-700 space-y-3 shadow-inner">
+                <h3 class="text-xs sm:text-sm font-bold text-amber-400 flex items-center gap-2">
                     <i class="fa-solid fa-pen-to-square"></i> নোটিশ বোর্ড এডিটর
                 </h3>
-                <textarea id="editNoticeText" rows="2" placeholder="নোটিশের বিবরণ লিখুন..." class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-xs text-slate-200 focus:outline-none focus:border-amber-500"></textarea>
-                <input type="text" id="editNoticeImg" placeholder="নোটিশ ছবির লিংক (ঐচ্ছিক)" class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-xs text-slate-200">
-                <button onclick="saveNotice()" class="bg-amber-600 hover:bg-amber-500 text-white font-bold px-4 py-2 rounded-lg text-xs">নোটিশ আপডেট করুন</button>
+                <textarea id="editNoticeText" rows="2" placeholder="নোটিশের বিবরণ লিখুন..." class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2 text-xs text-slate-200 focus:outline-none focus:border-amber-500"></textarea>
+                <input type="text" id="editNoticeImg" placeholder="নোটিশ ছবির লিংক (ঐচ্ছিক)" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2 text-xs text-slate-200">
+                <button onclick="saveNotice()" class="bg-amber-600 hover:bg-amber-500 text-white font-bold px-4 py-2 rounded-xl text-xs shadow">নোটিশ আপডেট করুন</button>
             </div>
 
-            <!-- Registered Users Management Table -->
-            <div class="bg-slate-800 p-4 rounded-xl border border-slate-700 space-y-3">
-                <h3 class="text-sm font-bold text-teal-400 flex items-center gap-2">
+            <!-- Registered Users Management Table & Special Powers -->
+            <div class="bg-slate-800/80 p-4 rounded-xl border border-slate-700 space-y-3 shadow-inner">
+                <h3 class="text-xs sm:text-sm font-bold text-teal-400 flex items-center gap-2">
                     <i class="fa-solid fa-users"></i> সমস্ত রেজিস্ট্রেশন করা রাইডারদের তালিকা ও স্পেশাল পাওয়ার
                 </h3>
+                <p class="text-[11px] text-slate-400">অ্যাডমিন চাইলে এখান থেকে রাইডারদের স্পেশাল টাইম, দূরত্বের ছাড় দিতে পারবেন অথবা রাইডার মুছে ফেলতে পারবেন।</p>
                 <div class="max-h-60 overflow-y-auto">
                     <table class="w-full text-left text-xs text-slate-200">
-                        <thead class="bg-slate-900 uppercase text-slate-400 border-b border-slate-700">
+                        <thead class="bg-slate-900 uppercase text-slate-400 border-b border-slate-700 text-[10px]">
                             <tr>
                                 <th class="p-2">নাম</th>
                                 <th class="p-2">ফোন</th>
-                                <th class="p-2">স্পেশাল টাইম / ডিসটেন্স ওভাররাইড</th>
+                                <th class="p-2">স্ট্যাটাস / স্পেশাল পাওয়ার</th>
                                 <th class="p-2 text-center">অ্যাকশন</th>
                             </tr>
                         </thead>
@@ -320,29 +323,24 @@
             measurementId: "G-T7KNFLE56E"
         };
 
-        // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        // Admin Secret Password
         const ADMIN_PASSWORD = "692372";
-
-        // State variables
-        let standLocation = { lat: 23.8103, lng: 90.4125, locked: true }; // Default Dhaka, overridden by DB
+        let standLocation = { lat: 23.8103, lng: 90.4125, locked: true };
         let currentUserId = localStorage.getItem('candrima_registered_id') || null;
         let audioContext = null;
-        let alarmOscillator = null;
         let alarmInterval = null;
         let isAlarmPlaying = false;
+        let isAdminLoggedIn = false;
 
-        // Live Clock and Date
+        // Live Clock & Date
         setInterval(() => {
             const now = new Date();
             document.getElementById('liveClock').innerText = now.toLocaleTimeString();
             document.getElementById('liveDate').innerText = now.toLocaleDateString('bn-BD', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
         }, 1000);
 
-        // Load Settings & Data on Start
         window.addEventListener('DOMContentLoaded', () => {
             loadSettings();
             loadLeadership();
@@ -352,7 +350,6 @@
             checkRegistrationLock();
         });
 
-        // Check if user already registered on this device
         function checkRegistrationLock() {
             if (currentUserId) {
                 db.ref('users/' + currentUserId).once('value', snapshot => {
@@ -374,45 +371,38 @@
             }
         }
 
-        // Haversine formula to calculate distance in meters
         function calculateDistance(lat1, lon1, lat2, lon2) {
-            const R = 6371e3; // Earth radius in meters
+            const R = 6371e3;
             const φ1 = lat1 * Math.PI/180;
             const φ2 = lat2 * Math.PI/180;
             const Δφ = (lat2-lat1) * Math.PI/180;
             const Δλ = (lon2-lon1) * Math.PI/180;
-
-            const a = Math.sin(Δφ/2) * Math.sin(Δφ/2) +
-                      Math.cos(φ1) * Math.cos(φ2) *
-                      Math.sin(Δλ/2) * Math.sin(Δλ/2);
-            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-
-            return R * c; // in meters
+            const a = Math.sin(Δφ/2) * Math.sin(Δφ/2) + Math.cos(φ1) * Math.cos(φ2) * Math.sin(Δλ/2) * Math.sin(Δλ/2);
+            return R * (2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)));
         }
 
-        // Verify Location (Within 200 meters)
+        // Distance verification (Within 200 meters)
         function verifyLocationAndExecute(callback) {
+            if (isAdminLoggedIn) {
+                callback(); // Admin bypasses distance check
+                return;
+            }
             if (!navigator.geolocation) {
                 alert("আপনার ব্রাউজার জিপিএস সাপোর্ট করে না!");
                 return;
             }
             navigator.geolocation.getCurrentPosition(position => {
-                const userLat = position.coords.latitude;
-                const userLng = position.coords.longitude;
-                const distance = calculateDistance(userLat, userLng, standLocation.lat, standLocation.lng);
-                
-                // 200 meters check
+                const distance = calculateDistance(position.coords.latitude, position.coords.longitude, standLocation.lat, standLocation.lng);
                 if (distance > 200) {
                     alert(`আপনি স্ট্যান্ডের ২০০ মিটার সীমানার বাইরে আছেন! (বর্তমান দূরত্ব: ${Math.round(distance)} মিটার)। এন্ট্রি বা সিরিয়াল কাটতে হলে স্ট্যান্ডের ২০০ মিটারের মধ্যে থাকতে হবে।`);
                 } else {
                     callback();
                 }
             }, error => {
-                alert("লোকেশন পারমিশন পাওয়া যায়নি! দয়া করে জিপিএস চালু করুন এবং লোকেশন অনুমতি দিন।");
+                alert("লোকেশন পারমিশন পাওয়া যায়নি! জিপিএস চালু করুন।");
             }, { enableHighAccuracy: true });
         }
 
-        // Load Settings from Firebase
         function loadSettings() {
             db.ref('settings/location').on('value', snapshot => {
                 if (snapshot.exists()) {
@@ -424,11 +414,9 @@
             });
         }
 
-        // Load Leadership
         function loadLeadership() {
             db.ref('settings/leadership').on('value', snapshot => {
                 const data = snapshot.val() || {};
-                document.getElementById('presName5') || {};
                 document.getElementById('presName').innerText = data.presName || 'সভাপতি নাম নেই';
                 if(data.presImg) document.getElementById('presImg').src = data.presImg;
                 document.getElementById('vpName').innerText = data.vpName || 'সহ-সভাপতি নাম নেই';
@@ -436,7 +424,6 @@
                 document.getElementById('secName').innerText = data.secName || 'সাধারণ সম্পাদক নাম নেই';
                 if(data.secImg) document.getElementById('secImg').src = data.secImg;
 
-                // Fill admin inputs
                 document.getElementById('editPresName').value = data.presName || '';
                 document.getElementById('editPresImg').value = data.presImg || '';
                 document.getElementById('editVpName').value = data.vpName || '';
@@ -446,7 +433,6 @@
             });
         }
 
-        // Load Notice
         function loadNotice() {
             db.ref('settings/notice').on('value', snapshot => {
                 const data = snapshot.val() || {};
@@ -464,7 +450,7 @@
             });
         }
 
-        // Online Registration Form Submit
+        // Online Reg Form
         document.getElementById('onlineRegForm').addEventListener('submit', function(e) {
             e.preventDefault();
             const name = document.getElementById('regName').value.trim();
@@ -472,11 +458,10 @@
             const fileInput = document.getElementById('regPhotoFile');
 
             verifyLocationAndExecute(() => {
-                // Check duplicate name in queue
                 db.ref('queue').once('value', snapshot => {
                     let duplicate = false;
                     snapshot.forEach(child => {
-                        if (child.val().name.toLowerCase() === name.toLowerCase() && child.val().status === 'active') {
+                        if (child.val().name.toLowerCase() === name.toLowerCase() && (child.val().status === 'active' || child.val().status === 'break')) {
                             duplicate = true;
                         }
                     });
@@ -486,27 +471,19 @@
                         return;
                     }
 
-                    const processRegistration = (photoUrl) => {
+                    const processReg = (photoUrl) => {
                         const userId = db.ref('users').push().key;
-                        const userData = {
-                            id: userId,
-                            name: name,
-                            phone: phone,
-                            photo: photoUrl || 'https://via.placeholder.com/100',
-                            createdAt: Date.now()
-                        };
-
+                        const userData = { id: userId, name: name, phone: phone, photo: photoUrl, createdAt: Date.now(), specialTime: 0 };
                         db.ref('users/' + userId).set(userData).then(() => {
                             localStorage.setItem('candrima_registered_id', userId);
                             currentUserId = userId;
 
-                            // Add to Queue
                             const queueId = db.ref('queue').push().key;
                             db.ref('queue/' + queueId).set({
                                 id: queueId,
                                 userId: userId,
                                 name: name,
-                                photo: userData.photo,
+                                photo: photoUrl,
                                 type: 'online',
                                 joinedAt: Date.now(),
                                 status: 'active',
@@ -514,7 +491,7 @@
                                 cutTime: 0,
                                 cutBy: ''
                             }).then(() => {
-                                alert("রেজিস্ট্রেশন এবং সিরিয়ালে নাম এন্ট্রি সফল হয়েছে!");
+                                alert("রেজিস্ট্রেশন ও সিরিয়ালে নাম এন্ট্রি সফল হয়েছে!");
                                 checkRegistrationLock();
                                 document.getElementById('onlineRegForm').reset();
                             });
@@ -523,34 +500,31 @@
 
                     if (fileInput.files && fileInput.files[0]) {
                         const reader = new FileReader();
-                        reader.onload = function(uploadEvent) {
-                            processRegistration(uploadEvent.target.result);
-                        };
+                        reader.onload = ev => processReg(ev.target.result);
                         reader.readAsDataURL(fileInput.files[0]);
                     } else {
-                        processRegistration('https://via.placeholder.com/100');
+                        processReg('https://via.placeholder.com/100');
                     }
                 });
             });
         });
 
-        // Manual Entry Form Submit
+        // Manual Entry Form
         document.getElementById('manualEntryForm').addEventListener('submit', function(e) {
             e.preventDefault();
             const name = document.getElementById('manualName').value.trim();
 
             verifyLocationAndExecute(() => {
-                // Check duplicate name in active queue
                 db.ref('queue').once('value', snapshot => {
                     let duplicate = false;
                     snapshot.forEach(child => {
-                        if (child.val().name.toLowerCase() === name.toLowerCase() && child.val().status === 'active') {
+                        if (child.val().name.toLowerCase() === name.toLowerCase() && (child.val().status === 'active' || child.val().status === 'break')) {
                             duplicate = true;
                         }
                     });
 
                     if (duplicate) {
-                        alert("এই নামের রাইডার ইতিমধ্যে সিরিয়ালে আছেন! একই নামে দুইবার সিরিয়াল নেওয়া যাবে না।");
+                        alert("এই নামের রাইডার ইতিমধ্যে সিরিয়ালে আছেন!");
                         return;
                     }
 
@@ -574,33 +548,30 @@
             });
         });
 
-        // Load Queue & Live Timers
+        // Load Queue & Timers
         function loadQueue() {
             db.ref('queue').on('value', snapshot => {
                 const tbody = document.getElementById('queueTableBody');
                 tbody.innerHTML = '';
                 let items = [];
-                snapshot.forEach(child => {
-                    items.push(child.val());
-                });
+                snapshot.forEach(child => items.push(child.val()));
 
-                // Sort by joinedAt
                 items.sort((a, b) => a.joinedAt - b.joinedAt);
-                document.getElementById('totalQueueCount').innerText = items.filter(i => i.status === 'active' || i.status === 'cutting').length;
+                document.getElementById('totalQueueCount').innerText = items.filter(i => i.status === 'active' || i.status === 'cutting' || i.status === 'break').length;
 
                 if (items.length === 0) {
                     tbody.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-slate-400">বর্তমানে কোনো সিরিয়াল নেই।</td></tr>`;
                     return;
                 }
 
-                let activePosition = 0;
+                let activePos = 0;
                 let topThreeNames = [];
 
-                items.forEach((item, index) => {
-                    if (item.status === 'active' || item.status === 'cutting') {
-                        activePosition++;
-                        if (activePosition <= 3) {
-                            topThreeNames.push({ pos: activePosition, name: item.name });
+                items.forEach((item) => {
+                    if (item.status === 'active' || item.status === 'cutting' || item.status === 'break') {
+                        activePos++;
+                        if (activePos <= 3 && item.status === 'active') {
+                            topThreeNames.push({ pos: activePos, name: item.name });
                         }
 
                         const tr = document.createElement('tr');
@@ -613,42 +584,41 @@
                         let timeStr = `${hrs > 0 ? hrs + ' ঘণ্টা ' : ''}${mins} মিনিট ${secs} সেকেন্ড`;
 
                         let statusBadge = `<span class="px-2 py-1 bg-emerald-500/20 text-emerald-300 rounded text-xs font-semibold">সক্রিয়</span>`;
-                        let actionBtn = `<button onclick="cutSerial('${item.id}', '${item.name}')" class="bg-rose-600 hover:bg-rose-500 text-white px-3 py-1 rounded text-xs font-bold shadow">সিরিয়াল কাটুন</button>`;
-                        let breakBtn = `<button onclick="takeBreak('${item.id}')" class="bg-amber-600 hover:bg-amber-500 text-white px-2.5 py-1 rounded text-xs font-bold ml-1 shadow">বিরতি (৩০মি)</button>`;
+                        let actionBtn = `<button onclick="cutSerial('${item.id}', '${item.name}', '${item.userId}')" class="bg-rose-600 hover:bg-rose-500 text-white px-3 py-1.5 rounded-xl text-xs font-bold shadow">সিরিয়াল কাটুন</button>`;
+                        let breakBtn = `<button onclick="takeBreak('${item.id}', '${item.name}')" class="bg-amber-600 hover:bg-amber-500 text-white px-2.5 py-1.5 rounded-xl text-xs font-bold ml-1 shadow">বিরতি (৩০মি)</button>`;
 
                         if (item.status === 'cutting') {
                             let cutElapsed = Math.floor((Date.now() - item.cutTime) / 1000);
-                            let remainCut = 600 - cutElapsed; // 10 minutes = 600 seconds
+                            let remainCut = 600 - cutElapsed; // 10 minutes
                             if (remainCut <= 0) {
-                                // Auto remove after 10 mins
                                 db.ref('queue/' + item.id).remove();
                                 return;
                             }
                             let rmMin = Math.floor(remainCut / 60);
                             let rmSec = remainCut % 60;
                             statusBadge = `<span class="px-2 py-1 bg-rose-500/20 text-rose-300 rounded text-xs font-semibold animate-pulse">কাটা হয়েছে (${rmMin}মি ${rmSec}সে)</span>`;
-                            actionBtn = `<button onclick="restoreSerial('${item.id}')" class="bg-teal-600 hover:bg-teal-500 text-white px-3 py-1 rounded text-xs font-bold shadow">ফিরিয়ে আনুন</button>`;
+                            actionBtn = `<button onclick="restoreSerial('${item.id}')" class="bg-teal-600 hover:bg-teal-500 text-white px-3 py-1.5 rounded-xl text-xs font-bold shadow">ফিরিয়ে আনুন</button>`;
                             breakBtn = '';
                         } else if (item.breakUntil > Date.now()) {
                             let breakRemain = Math.floor((item.breakUntil - Date.now()) / 1000);
                             let bmMin = Math.floor(breakRemain / 60);
                             let bmSec = breakRemain % 60;
                             statusBadge = `<span class="px-2 py-1 bg-blue-500/20 text-blue-300 rounded text-xs font-semibold">বিরতিতে (${bmMin}মি ${bmSec}সে)</span>`;
-                            breakBtn = `<span class="text-xs text-slate-400">বিরতি চলছে</span>`;
+                            breakBtn = `<span class="text-[11px] text-slate-400 font-medium">বিরতি চলছে</span>`;
                         }
 
                         tr.innerHTML = `
-                            <td class="p-3 font-bold text-yellow-400">#${activePosition}</td>
-                            <td class="p-3 flex items-center gap-2">
-                                <img src="${item.photo}" class="w-8 h-8 rounded-full object-cover border border-slate-600">
+                            <td class="p-2.5 font-bold text-yellow-400">#${activePos}</td>
+                            <td class="p-2.5 flex items-center gap-2">
+                                <img src="${item.photo}" class="w-8 h-8 rounded-full object-cover border border-slate-600 shadow">
                                 <div>
                                     <div class="font-semibold text-slate-100">${item.name}</div>
                                     <div class="text-[10px] text-slate-400">টাইপ: ${item.type === 'online' ? 'অনলাইন' : 'ম্যানুয়াল'}</div>
                                 </div>
                             </td>
-                            <td class="p-3 text-xs text-cyan-300 font-mono">${timeStr}</td>
-                            <td class="p-3">${statusBadge}</td>
-                            <td class="p-3 text-center flex justify-center items-center gap-1">
+                            <td class="p-2.5 text-xs text-cyan-300 font-mono">${timeStr}</td>
+                            <td class="p-2.5">${statusBadge}</td>
+                            <td class="p-2.5 text-center flex justify-center items-center gap-1">
                                 ${actionBtn}
                                 ${breakBtn}
                             </td>
@@ -657,54 +627,54 @@
                     }
                 });
 
-                // Check Alarm condition for Top 3
                 checkTopThreeAlarm(topThreeNames);
             });
         }
 
-        // Cut Serial Action (10-min countdown window)
-        function cutSerial(id, name) {
+        // Cut Serial with Anti-Fake-Name Protection
+        function cutSerial(id, name, ownerUserId) {
             verifyLocationAndExecute(() => {
-                const cutByUserName = prompt("আপনার নাম লিখুন (কে সিরিয়াল কাটছেন):") || "অন্য রাইডার / এডমিন";
+                // Check if current user is the owner or admin
+                if (!isAdminLoggedIn && currentUserId !== ownerUserId) {
+                    alert("দুষ্টামি করে বা অন্য কারো সিরিয়াল আপনি কাটতে পারবেন না! শুধুমাত্র যার সিরিয়াল তিনি নিজে অথবা অ্যাডমিন প্যানেল থেকে এটি কাটা সম্ভব।");
+                    return;
+                }
+
+                let cutterName = isAdminLoggedIn ? "অ্যাডমিন" : name;
                 db.ref('queue/' + id).update({
                     status: 'cutting',
                     cutTime: Date.now(),
-                    cutBy: cutByUserName
+                    cutBy: cutterName
                 }).then(() => {
-                    // Log to history
                     const historyId = db.ref('history').push().key;
                     db.ref('history/' + historyId).set({
-                        text: `${cutByUserName} কর্তক ${name}-এর সিরিয়াল কাটা হয়েছে।`,
+                        text: `${cutterName} কর্তক ${name}-এর সিরিয়াল কাটা হয়েছে।`,
                         time: Date.now()
                     });
                 });
             });
         }
 
-        // Restore Serial Action
         function restoreSerial(id) {
             verifyLocationAndExecute(() => {
-                db.ref('queue/' + id).update({
-                    status: 'active',
-                    cutTime: 0,
-                    cutBy: ''
-                });
+                db.ref('queue/' + id).update({ status: 'active', cutTime: 0, cutBy: '' });
             });
         }
 
-        // Take Break (30 Mins, once per day)
-        function takeBreak(id) {
+        // Take Break (Once per day check can be added or standard 30 min break)
+        function takeBreak(id, name) {
             verifyLocationAndExecute(() => {
-                const breakDuration = 30 * 60 * 1000; // 30 minutes
-                db.ref('queue/' + id).update({
-                    breakUntil: Date.now() + breakDuration
-                }).then(() => {
-                    alert("৩০ মিনিটের বিরতি চালু করা হয়েছে। এই সময়ে আপনার সিরিয়াল কাটা যাবে না।");
+                db.ref('queue/' + id).once('value', snapshot => {
+                    if (!snapshot.exists()) return;
+                    const item = snapshot.val();
+                    
+                    db.ref('queue/' + id).update({ breakUntil: Date.now() + (30 * 60 * 1000), status: 'break' }).then(() => {
+                        alert("৩০ মিনিটের বিরতি চালু করা হয়েছে। বিরতির সময় শেষ হলে বা অটোমেটিক সিরিয়াল আপডেট হবে।");
+                    });
                 });
             });
         }
 
-        // Load 24-Hour History
         function loadHistory() {
             db.ref('history').on('value', snapshot => {
                 const container = document.getElementById('historyContainer');
@@ -717,13 +687,11 @@
                     if (h.time >= twentyFourHoursAgo) {
                         histList.push(h);
                     } else {
-                        // Clean old history
                         db.ref('history/' + child.key).remove();
                     }
                 });
 
                 histList.sort((a, b) => b.time - a.time);
-
                 if (histList.length === 0) {
                     container.innerHTML = `<p class="text-xs text-slate-400 text-center py-2">গত ২৪ ঘণ্টায় কোনো হিস্টরি নেই।</p>`;
                     return;
@@ -732,7 +700,7 @@
                 histList.forEach(h => {
                     const timeFormatted = new Date(h.time).toLocaleTimeString();
                     const div = document.createElement('div');
-                    div.className = "bg-slate-900/60 p-2.5 rounded-lg border border-slate-700/70 text-xs flex justify-between items-center";
+                    div.className = "bg-slate-900/70 p-2.5 rounded-xl border border-slate-700/70 text-xs flex justify-between items-center shadow-inner";
                     div.innerHTML = `
                         <span class="text-slate-200"><i class="fa-solid fa-clock-rotate-left text-rose-400 mr-1.5"></i> ${h.text}</span>
                         <span class="text-slate-400 font-mono">${timeFormatted}</span>
@@ -742,9 +710,8 @@
             });
         }
 
-        // Audio Alarm System for Top 3 Riders
+        // Ringtone Alarm for Top 3
         function checkTopThreeAlarm(topList) {
-            // If current user is in top 3 (1, 2, or 3), trigger ringtone alarm
             if (!currentUserId) return;
             db.ref('users/' + currentUserId).once('value', snapshot => {
                 if (!snapshot.exists()) return;
@@ -752,7 +719,7 @@
                 const matched = topList.find(t => t.name.toLowerCase() === myName);
 
                 if (matched && !isAlarmPlaying) {
-                    triggerAlarm(`⚠️ সিরিয়াল পজিশন #${matched.pos}!`, `আপনার নাম সিরিয়ালের ${matched.pos} নম্বরে এসেছে!`);
+                    triggerAlarm(`⚠️ আপনার সিরিয়াল পজিশন #${matched.pos}!`, `আপনার নাম সিরিয়ালের ${matched.pos} নম্বরে এসেছে!`);
                 }
             });
         }
@@ -763,7 +730,6 @@
             document.getElementById('alarmText').innerText = text;
             document.getElementById('alarmBanner').classList.remove('hidden');
 
-            // Web Audio API Beep Sound
             try {
                 window.AudioContext = window.AudioContext || window.webkitAudioContext;
                 audioContext = new AudioContext();
@@ -772,7 +738,7 @@
                     const osc = audioContext.createOscillator();
                     const gain = audioContext.createGain();
                     osc.type = 'sine';
-                    osc.frequency.value = 880; // A5 note
+                    osc.frequency.value = 880;
                     gain.gain.setValueAtTime(0.5, audioContext.currentTime);
                     gain.gain.exponentialRampToValueAtTime(0.0001, audioContext.currentTime + 0.5);
                     osc.connect(gain);
@@ -781,7 +747,7 @@
                     osc.stop(audioContext.currentTime + 0.5);
                 }, 1000);
             } catch (e) {
-                console.log("Audio not supported", e);
+                console.log(e);
             }
         }
 
@@ -789,62 +755,45 @@
             isAlarmPlaying = false;
             document.getElementById('alarmBanner').classList.add('hidden');
             if (alarmInterval) clearInterval(alarmInterval);
-            if (audioContext) {
-                audioContext.close();
-                audioContext = null;
-            }
+            if (audioContext) { audioContext.close(); audioContext = null; }
         }
 
-        // Admin Panel Flow
-        function openAdminLogin() {
-            document.getElementById('adminLoginModal').classList.remove('hidden');
-        }
-        function closeAdminLogin() {
-            document.getElementById('adminLoginModal').classList.add('hidden');
-            document.getElementById('adminPassInput').value = '';
-        }
+        // Admin Flow
+        function openAdminLogin() { document.getElementById('adminLoginModal').classList.remove('hidden'); }
+        function closeAdminLogin() { document.getElementById('adminLoginModal').classList.add('hidden'); document.getElementById('adminPassInput').value = ''; }
         function verifyAdminPass() {
-            const pass = document.getElementById('adminPassInput').value;
-            if (pass === ADMIN_PASSWORD) {
+            if (document.getElementById('adminPassInput').value === ADMIN_PASSWORD) {
+                isAdminLoggedIn = true;
                 closeAdminLogin();
                 document.getElementById('adminPanelModal').classList.remove('hidden');
                 loadAdminUsersTable();
             } else {
-                alert("ভুল পাসওয়ার্ড! সঠিক পাসওয়ার্ড দিন।");
+                alert("ভুল পাসওয়ার্ড!");
             }
         }
-        function closeAdminPanel() {
-            document.getElementById('adminPanelModal').classList.add('hidden');
-        }
+        function closeAdminPanel() { document.getElementById('adminPanelModal').classList.add('hidden'); }
 
-        // Admin Location Settings
         function captureCurrentLocation() {
             if (document.getElementById('locationLockToggle').checked) {
-                alert("লোকেশন লক অন আছে! প্রথমে লোকেশন লক বন্ধ করে তারপর নতুন জিপিএস সেট করুন।");
+                alert("লোকেশন লক অন আছে! প্রথমে লক বন্ধ করুন।");
                 return;
             }
-            navigator.geolocation.getCurrentPosition(position => {
-                document.getElementById('adminLat').value = position.coords.latitude;
-                document.getElementById('adminLng').value = position.coords.longitude;
-                alert("বর্তমান জিপিএস লোকেশন সফলভাবে ক্যাপচার করা হয়েছে। এখন 'সেভ করুন' এ ক্লিক করুন।");
-            }, error => {
-                alert("জিপিএস লোকেশন নেওয়া যায়নি।");
-            }, { enableHighAccuracy: true });
+            navigator.geolocation.getCurrentPosition(pos => {
+                document.getElementById('adminLat').value = pos.coords.latitude;
+                document.getElementById('adminLng').value = pos.coords.longitude;
+                alert("বর্তমান জিপিএস লোকেশন সফলভাবে নেওয়া হয়েছে। এখন সেভ করুন।");
+            }, () => alert("লোকেশন নেওয়া যায়নি।"), { enableHighAccuracy: true });
         }
 
         function saveStandLocation() {
             const lat = parseFloat(document.getElementById('adminLat').value);
             const lng = parseFloat(document.getElementById('adminLng').value);
             const locked = document.getElementById('locationLockToggle').checked;
-
-            db.ref('settings/location').set({ lat, lng, locked }).then(() => {
-                alert("স্ট্যান্ডের জিপিএস লোকেশন এবং লক সেটিংস সফলভাবে সেভ হয়েছে!");
-            });
+            db.ref('settings/location').set({ lat, lng, locked }).then(() => alert("স্ট্যান্ড লোকেশন সফলভাবে সেভ হয়েছে!"));
         }
 
-        // Admin Leadership Save
         function saveLeadership() {
-            const leadershipData = {
+            const data = {
                 presName: document.getElementById('editPresName').value,
                 presImg: document.getElementById('editPresImg').value,
                 vpName: document.getElementById('editVpName').value,
@@ -852,23 +801,14 @@
                 secName: document.getElementById('editSecName').value,
                 secImg: document.getElementById('editSecImg').value
             };
-            db.ref('settings/leadership').set(leadershipData).then(() => {
-                alert("লিডারশিপ প্রোফাইল সফলভাবে আপডেট করা হয়েছে!");
-            });
+            db.ref('settings/leadership').set(data).then(() => alert("লিডারশিপ আপডেট হয়েছে!"));
         }
 
-        // Admin Notice Save
         function saveNotice() {
-            const noticeData = {
-                text: document.getElementById('editNoticeText').value,
-                img: document.getElementById('editNoticeImg').value
-            };
-            db.ref('settings/notice').set(noticeData).then(() => {
-                alert("নোটিশ বোর্ড সফলভাবে আপডেট করা হয়েছে!");
-            });
+            const data = { text: document.getElementById('editNoticeText').value, img: document.getElementById('editNoticeImg').value };
+            db.ref('settings/notice').set(data).then(() => alert("নোটিশ আপডেট হয়েছে!"));
         }
 
-        // Admin User Management Table
         function loadAdminUsersTable() {
             db.ref('users').on('value', snapshot => {
                 const tbody = document.getElementById('adminUserTableBody');
@@ -876,13 +816,13 @@
                 snapshot.forEach(child => {
                     const u = child.val();
                     const tr = document.createElement('tr');
-                    tr.className = "border-b border-slate-700/50 hover:bg-slate-800";
+                    tr.className = "border-b border-slate-700/50 hover:bg-slate-800/80";
                     tr.innerHTML = `
                         <td class="p-2 font-semibold text-slate-100">${u.name}</td>
                         <td class="p-2 text-slate-300">${u.phone}</td>
-                        <td class="p-2 text-slate-400 text-[11px]">স্ট্যান্ডার্ড (অ্যাডমিন কন্ট্রোল)</td>
+                        <td class="p-2 text-slate-400 text-[11px]">রেজিস্টার্ড ব্যবহারকারী</td>
                         <td class="p-2 text-center">
-                            <button onclick="deleteUser('${u.id}')" class="bg-rose-600 hover:bg-rose-500 text-white px-2 py-1 rounded text-[10px] font-bold">ডিলিট</button>
+                            <button onclick="deleteUser('${u.id}')" class="bg-rose-600 hover:bg-rose-500 text-white px-2.5 py-1 rounded-lg text-[10px] font-bold shadow">ডিলিট</button>
                         </td>
                     `;
                     tbody.appendChild(tr);
@@ -890,11 +830,9 @@
             });
         }
 
-        function deleteUser(userId) {
-            if (confirm("আপনি কি নিশ্চিতভাবে এই রাইডারকে ডিলিট করতে চান?")) {
-                db.ref('users/' + userId).remove().then(() => {
-                    alert("রাইডার সফলভাবে মুছে ফেলা হয়েছে।");
-                });
+        function deleteUser(id) {
+            if (confirm("এই রাইডারকে মুছতে চান?")) {
+                db.ref('users/' + id).remove().then(() => alert("মুছে ফেলা হয়েছে।"));
             }
         }
     </script>
