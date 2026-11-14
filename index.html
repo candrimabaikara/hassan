@@ -2,359 +2,313 @@
 <html lang="bn">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>চন্দ্রিমা মডেল টাউন একতা যুব উন্নয়ন বাইকার গ্রুপ</title>
-    <!-- Tailwind CSS -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>চন্দ্রিমা মডেল টাউন একতা যুব উন্নয়ন বাইকার গ্রুপ - সিরিয়াল ম্যানেজমেন্ট</title>
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts: Hind Siliguri -->
+    <!-- Google Font (SolaimanLipi / Inter) -->
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
-    <!-- Firebase SDKs -->
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-
     <style>
-        body {
-            font-family: 'Hind Siliguri', sans-serif;
-            background: linear-gradient(135deg, #f0f4f8 0%, #d9e2ec 100%);
-            color: #1e293b;
-            user-select: none;
-        }
-        .glass-card {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.6);
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08);
-            transition: transform 0.2s ease;
-        }
-        .glass-card:hover {
-            transform: translateY(-2px);
-        }
-        .wall-clock {
-            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-            border: 2px solid #38bdf8;
-            box-shadow: 0 4px 15px rgba(56, 189, 248, 0.3);
-        }
-        /* Ludo Board Styles */
-        .ludo-grid {
-            display: grid;
-            grid-template-columns: repeat(15, 1fr);
-            grid-template-rows: repeat(15, 1fr);
-            aspect-ratio: 1 / 1;
-            width: 100%;
-            max-width: 340px;
-            margin: auto;
-            border: 2px solid #1e293b;
-            background: #fff;
-        }
-        .ludo-cell { border: 0.5px solid #cbd5e1; display: flex; align-items: center; justify-content: center; font-size: 8px; position: relative; }
-        .bg-red-base { background-color: #ef4444; }
-        .bg-green-base { background-color: #22c55e; }
-        .bg-yellow-base { background-color: #eab308; }
-        .bg-blue-base { background-color: #3b82f6; }
-        
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 5px; }
-        ::-webkit-scrollbar-track { background: #f1f1f1; }
-        ::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 10px; }
+        body { font-family: 'Hind Siliguri', sans-serif; }
     </style>
 </head>
-<body class="pb-24">
+<body class="bg-slate-900 text-slate-100 min-h-screen">
 
-    <!-- Top Header & Wall Clock -->
-    <header class="bg-gradient-to-r from-blue-900 via-indigo-900 to-slate-900 text-white p-3.5 rounded-b-3xl shadow-xl sticky top-0 z-40 border-b border-blue-500/20">
-        <div class="flex justify-between items-center max-w-lg mx-auto">
+    <!-- Battery Saver Warning Banner -->
+    <div id="batteryWarning" class="bg-amber-600 text-white text-xs sm:text-sm py-2 px-4 text-center font-medium flex justify-between items-center shadow-md">
+        <span><i class="fa-solid fa-triangle-exclamation mr-1"></i> সতর্কীকরণ: সঠিক জিপিএস এবং ব্যাকগ্রাউন্ড টাইমার সচল রাখতে আপনার ফোনের **Battery Saver (ব্যাটারি সেভার)** বন্ধ রাখুন।</span>
+        <button onclick="document.getElementById('batteryWarning').style.display='none'" class="ml-2 font-bold bg-amber-700 hover:bg-amber-800 px-2 py-0.5 rounded text-xs">বন্ধ করুন</button>
+    </div>
+
+    <!-- Alarm Modal / Notification Banner -->
+    <div id="alarmBanner" class="fixed top-0 left-0 w-full bg-red-600 text-white py-3 px-4 z-50 hidden shadow-2xl animate-pulse flex justify-between items-center border-b-4 border-yellow-400">
+        <div class="flex items-center space-x-3">
+            <i class="fa-solid fa-bell-ring text-2xl animate-bounce text-yellow-300"></i>
             <div>
-                <h1 class="text-base font-bold leading-tight text-amber-400 flex items-center gap-1.5">
-                    <i class="fas fa-motorcycle"></i> চন্দ্রিমা মডেল টাউন
+                <h4 class="font-bold text-lg" id="alarmTitle">⚠️ সিরিয়াল অ্যালার্ট!</h4>
+                <p class="text-sm" id="alarmText">আপনার সিরিয়াল ১, ২ বা ৩ নম্বরের মধ্যে চলে এসেছে!</p>
+            </div>
+        </div>
+        <button onclick="stopAlarm()" class="bg-yellow-400 text-slate-900 font-bold px-4 py-2 rounded-lg hover:bg-yellow-300 shadow">এলার্ম বন্ধ করুন</button>
+    </div>
+
+    <!-- Main Container -->
+    <div class="max-w-4xl mx-auto p-3 sm:p-5 space-y-5">
+
+        <!-- Top Header Bar -->
+        <header class="bg-gradient-to-r from-emerald-800 via-teal-700 to-cyan-800 p-4 rounded-2xl shadow-xl border border-emerald-600 flex flex-col md:flex-row justify-between items-center gap-3">
+            <div class="text-center md:text-left">
+                <h1 class="text-xl sm:text-2xl font-bold text-yellow-300 drop-shadow flex items-center justify-center md:justify-start gap-2">
+                    <i class="fa-solid fa-motorcycle"></i> চন্দ্রিমা মডেল টাউন একতা যুব উন্নয়ন বাইকার গ্রুপ
                 </h1>
-                <p class="text-xs text-blue-200">একতা যুব উন্নয়ন বাইকার গ্রুপ</p>
-                <div id="gpsStatusBadge" class="mt-1.5 inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-red-500/20 text-red-300 border border-red-500/30">
-                    <i class="fas fa-location-crosshairs mr-1 animate-pulse"></i> GPS খোঁজা হচ্ছে...
+                <p class="text-xs sm:text-sm text-emerald-200 mt-0.5">অফিশিয়াল বাইক রাইডার সিরিয়াল ম্যানেজমেন্ট সিস্টেম</p>
+            </div>
+            <div class="bg-slate-900/70 px-4 py-2 rounded-xl border border-emerald-500/40 text-center min-w-[160px]">
+                <div id="liveClock" class="text-lg font-bold text-cyan-300">00:00:00 AM</div>
+                <div id="liveDate" class="text-xs text-slate-300">তারিখ লোড হচ্ছে...</div>
+            </div>
+        </header>
+
+        <!-- Leadership Section (President, VP, Org Sec) -->
+        <section class="bg-slate-800/90 border border-slate-700 p-4 rounded-2xl shadow-lg">
+            <h2 class="text-base font-bold text-yellow-400 mb-3 border-b border-slate-700 pb-2 flex items-center gap-2">
+                <i class="fa-solid fa-users-gear"></i> স্ট্যান্ড কার্যনির্বাহী কমিটি
+            </h2>
+            <div id="leadershipContainer" class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <!-- Dynamically Loaded Leader Cards -->
+                <div class="bg-slate-900/60 p-3 rounded-xl border border-slate-700 text-center">
+                    <img id="presImg" src="https://via.placeholder.com/100" class="w-16 h-16 object-cover rounded-full mx-auto mb-2 border-2 border-yellow-400 shadow">
+                    <h3 id="presTitle" class="text-xs text-slate-400 font-semibold">সভাপতি</h3>
+                    <p id="presName" class="text-sm font-bold text-emerald-300">লোড হচ্ছে...</p>
+                </div>
+                <div class="bg-slate-900/60 p-3 rounded-xl border border-slate-700 text-center">
+                    <img id="vpImg" src="https://via.placeholder.com/100" class="w-16 h-16 object-cover rounded-full mx-auto mb-2 border-2 border-yellow-400 shadow">
+                    <h3 id="vpTitle" class="text-xs text-slate-400 font-semibold">সহ-সভাপতি</h3>
+                    <p id="vpName" class="text-sm font-bold text-emerald-300">লোড হচ্ছে...</p>
+                </div>
+                <div class="bg-slate-900/60 p-3 rounded-xl border border-slate-700 text-center">
+                    <img id="secImg" src="https://via.placeholder.com/100" class="w-16 h-16 object-cover rounded-full mx-auto mb-2 border-2 border-yellow-400 shadow">
+                    <h3 id="secTitle" class="text-xs text-slate-400 font-semibold">সাংগঠনিক সম্পাদক</h3>
+                    <p id="secName" class="text-sm font-bold text-emerald-300">লোড হচ্ছে...</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Notice Board -->
+        <section class="bg-gradient-to-r from-amber-900/40 to-slate-800 border border-amber-600/40 p-4 rounded-2xl shadow-lg">
+            <h2 class="text-base font-bold text-amber-400 mb-2 flex items-center gap-2">
+                <i class="fa-solid fa-bullhorn"></i> নোটিশ বোর্ড
+            </h2>
+            <div id="noticeContent" class="text-sm text-slate-200 bg-slate-900/50 p-3 rounded-xl border border-amber-500/20">
+                নোটিশ লোড হচ্ছে...
+            </div>
+            <div id="noticeImgContainer" class="mt-3 hidden">
+                <img id="noticeImg" src="" class="max-h-40 rounded-lg mx-auto border border-amber-500/30">
+            </div>
+        </section>
+
+        <!-- Registration & Entry Section -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            
+            <!-- Left: Online Registration & Entry -->
+            <div class="bg-slate-800/90 border border-slate-700 p-4 rounded-2xl shadow-lg flex flex-col justify-between">
+                <div>
+                    <h2 class="text-base font-bold text-teal-400 mb-3 border-b border-slate-700 pb-2 flex items-center gap-2">
+                        <i class="fa-solid fa-user-plus"></i> অনলাইন রেজিস্ট্রেশন ও এন্ট্রি
+                    </h2>
+                    <form id="onlineRegForm" class="space-y-3">
+                        <div>
+                            <label class="block text-xs font-medium text-slate-300 mb-1">রাইডার নাম</label>
+                            <input type="text" id="regName" required placeholder="আপনার সম্পূর্ণ নাম লিখুন" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-slate-100 focus:outline-none focus:border-teal-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-slate-300 mb-1">মোবাইল নাম্বার</label>
+                            <input type="tel" id="regPhone" required placeholder="০১XXXXXXXXX" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-slate-100 focus:outline-none focus:border-teal-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-slate-300 mb-1">ছবি (লিংক বা আপলোড)</label>
+                            <input type="file" id="regPhotoFile" accept="image/*" class="w-full text-xs text-slate-400 file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-teal-600 file:text-white hover:file:bg-teal-700 cursor-pointer bg-slate-900 border border-slate-700 rounded-lg">
+                        </div>
+                        <button type="submit" id="regSubmitBtn" class="w-full bg-gradient-to-r from-teal-600 to-emerald-600 text-white font-bold py-2.5 rounded-lg hover:from-teal-500 hover:to-emerald-500 shadow-md text-sm transition">
+                            রেজিস্ট্রেশন ও সিরিয়ালে নাম দিন
+                        </button>
+                    </form>
+                </div>
+                <p id="regLockMsg" class="text-xs text-amber-400 mt-3 text-center hidden"><i class="fa-solid fa-lock"></i> আপনি একবার রেজিস্ট্রেশন সম্পন্ন করেছেন। তথ্য পরিবর্তন করতে অ্যাডমিনের সাহায্য নিন।</p>
+            </div>
+
+            <!-- Right: Manual Entry -->
+            <div class="bg-slate-800/90 border border-slate-700 p-4 rounded-2xl shadow-lg flex flex-col justify-between">
+                <div>
+                    <h2 class="text-base font-bold text-cyan-400 mb-3 border-b border-slate-700 pb-2 flex items-center gap-2">
+                        <i class="fa-solid fa-list-check"></i> ম্যানুয়াল এন্ট্রি (শুধু নাম)
+                    </h2>
+                    <form id="manualEntryForm" class="space-y-3">
+                        <div>
+                            <label class="block text-xs font-medium text-slate-300 mb-1">রাইডারের নাম</label>
+                            <input type="text" id="manualName" required placeholder="নাম লিখুন" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-slate-100 focus:outline-none focus:border-cyan-500">
+                        </div>
+                        <button type="submit" class="w-full bg-gradient-to-r from-cyan-600 to-blue-600 text-white font-bold py-2.5 rounded-lg hover:from-cyan-500 hover:to-blue-500 shadow-md text-sm transition mt-6">
+                            ম্যানুয়াল সিরিয়াল এন্ট্রি দিন
+                        </button>
+                    </form>
+                </div>
+                <div class="mt-4 p-3 bg-slate-900/60 rounded-xl border border-slate-700 text-xs text-slate-300">
+                    <i class="fa-solid fa-circle-info text-cyan-400 mr-1"></i> নিয়ম: এন্ট্রি বা সিরিয়াল কাটার জন্য স্ট্যান্ডের **২০০ মিটার** সীমানার মধ্যে থাকতে হবে। একই নামে একাধিক রাইডার একই সাথে সিরিয়ালে থাকতে পারবে না।
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Serial Queue List Section -->
+        <section class="bg-slate-800/90 border border-slate-700 p-4 rounded-2xl shadow-lg">
+            <div class="flex flex-col sm:flex-row justify-between items-center mb-3 border-b border-slate-700 pb-2 gap-2">
+                <h2 class="text-base font-bold text-yellow-300 flex items-center gap-2">
+                    <i class="fa-solid fa-list-ol"></i> লাইভ সিরিয়াল লিস্ট (অটো ও ম্যানুয়াল)
+                </h2>
+                <div class="text-xs text-emerald-400 font-semibold bg-slate-900 px-3 py-1 rounded-full border border-emerald-500/30">
+                    মোট সিরিয়াল: <span id="totalQueueCount">০</span> জন
                 </div>
             </div>
             
-            <!-- Digital Wall Clock -->
-            <div class="wall-clock px-3 py-1.5 rounded-2xl text-right">
-                <div id="clockTime" class="text-base font-bold text-sky-400 tracking-wider leading-none font-mono">00:00:00</div>
-                <div id="clockDate" class="text-[10px] text-slate-300 mt-1">তারিখ লোড হচ্ছে...</div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-sm text-slate-200">
+                    <thead class="bg-slate-900 text-xs uppercase text-slate-400 border-b border-slate-700">
+                        <tr>
+                            <th class="p-3">পজিশন</th>
+                            <th class="p-3">রাইডার</th>
+                            <th class="p-3">টাইমার (কতক্ষণ আছে)</th>
+                            <th class="p-3">স্ট্যাটাস / বিরতি</th>
+                            <th class="p-3 text-center">অ্যাকশন / কাটুন</th>
+                        </tr>
+                    </thead>
+                    <tbody id="queueTableBody" class="divide-y divide-slate-700/50">
+                        <!-- Queue items rendered here -->
+                        <tr>
+                            <td colspan="5" class="p-4 text-center text-slate-400">সিরিয়াল লোড হচ্ছে...</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
-        </div>
-    </header>
+        </section>
 
-    <main class="max-w-lg mx-auto px-3 mt-4 space-y-4">
-
-        <!-- 1. Leaders Grid Section -->
-        <section class="glass-card rounded-2xl p-3.5 border-t-4 border-indigo-600">
-            <h2 class="text-xs font-bold text-indigo-900 mb-2.5 flex items-center gap-1.5">
-                <i class="fas fa-users-crown text-indigo-600"></i> স্ট্যান্ডের পরিচালনা কমিটি
+        <!-- 24-Hour History Section -->
+        <section class="bg-slate-800/90 border border-slate-700 p-4 rounded-2xl shadow-lg">
+            <h2 class="text-base font-bold text-rose-400 mb-3 border-b border-slate-700 pb-2 flex items-center gap-2">
+                <i class="fa-solid fa-clock-rotate-left"></i> সিরিয়াল কাটার হিস্টরি (২৪ ঘণ্টা)
             </h2>
-            <div class="grid grid-cols-3 gap-2.5 text-center">
-                <!-- President -->
-                <div class="bg-gradient-to-b from-blue-50 to-white p-2.5 rounded-xl border border-blue-200 shadow-sm">
-                    <img id="imgPresident" src="https://via.placeholder.com/100?text=সভাপতি" class="w-16 h-16 mx-auto rounded-full object-cover border-2 border-blue-600 shadow">
-                    <span class="block text-[10px] font-bold text-blue-700 mt-1.5 bg-blue-100 rounded-full px-1.5 py-0.5">সভাপতি</span>
-                    <p id="namePresident" class="text-xs font-bold text-slate-800 mt-1 truncate">লোডিং...</p>
-                </div>
-                <!-- Vice President -->
-                <div class="bg-gradient-to-b from-indigo-50 to-white p-2.5 rounded-xl border border-indigo-200 shadow-sm">
-                    <img id="imgVP" src="https://via.placeholder.com/100?text=সহ-সভাপতি" class="w-16 h-16 mx-auto rounded-full object-cover border-2 border-indigo-600 shadow">
-                    <span class="block text-[10px] font-bold text-indigo-700 mt-1.5 bg-indigo-100 rounded-full px-1.5 py-0.5">সহ-সভাপতি</span>
-                    <p id="nameVP" class="text-xs font-bold text-slate-800 mt-1 truncate">লোডিং...</p>
-                </div>
-                <!-- Organizing Secretary -->
-                <div class="bg-gradient-to-b from-emerald-50 to-white p-2.5 rounded-xl border border-emerald-200 shadow-sm">
-                    <img id="imgOrg" src="https://via.placeholder.com/100?text=সাংগঠনিক" class="w-16 h-16 mx-auto rounded-full object-cover border-2 border-emerald-600 shadow">
-                    <span class="block text-[10px] font-bold text-emerald-700 mt-1.5 bg-emerald-100 rounded-full px-1.5 py-0.5">সাংগঠনিক</span>
-                    <p id="nameOrg" class="text-xs font-bold text-slate-800 mt-1 truncate">লোডিং...</p>
-                </div>
+            <div class="max-h-48 overflow-y-auto space-y-2" id="historyContainer">
+                <p class="text-xs text-slate-400 text-center py-2">হিস্টরি লোড হচ্ছে...</p>
             </div>
         </section>
 
-        <!-- 2. Notice Board Box -->
-        <section class="glass-card rounded-2xl p-3.5 border-l-4 border-amber-500 bg-gradient-to-r from-amber-50/50 to-white">
-            <div class="flex items-center gap-2 mb-1.5">
-                <span class="bg-amber-500 text-white text-[11px] font-bold px-2.5 py-0.5 rounded-lg shadow-sm">
-                    <i class="fas fa-bullhorn mr-1"></i> নোটিশ বোর্ড
-                </span>
-            </div>
-            <p id="noticeText" class="text-xs text-slate-800 font-medium leading-relaxed">স্বাগতম! স্ট্যান্ডের নিয়ম মেনে সিরিয়াল বজায় রাখুন।</p>
-            <img id="noticeImage" src="" class="hidden mt-2.5 w-full max-h-48 object-cover rounded-xl border border-amber-200 shadow-sm">
-        </section>
-
-        <!-- 3. Dual Grid: Registration Box & Manual Entry Box -->
-        <section class="grid grid-cols-2 gap-3">
-            <!-- Box A: Online Registration / Rider Profile -->
-            <div class="glass-card rounded-2xl p-3.5 border-t-4 border-blue-600 flex flex-col justify-between">
-                <div>
-                    <h2 class="text-xs font-bold text-blue-900 mb-2.5 flex items-center gap-1">
-                        <i class="fas fa-id-card text-blue-600"></i> অনলাইন রেজিস্ট্রেশন
-                    </h2>
-                    
-                    <!-- Registration Form -->
-                    <div id="regFormContainer" class="space-y-2">
-                        <input type="text" id="regName" placeholder="আপনার পূর্ণ নাম" class="w-full text-xs p-2 border border-slate-300 rounded-xl focus:outline-none focus:border-blue-500 bg-slate-50">
-                        <input type="tel" id="regPhone" placeholder="ফোন (017...)" class="w-full text-xs p-2 border border-slate-300 rounded-xl focus:outline-none focus:border-blue-500 bg-slate-50">
-                        <label class="block text-[10px] text-slate-500 font-semibold">ছবি সিলেক্ট করুন:</label>
-                        <input type="file" id="regPhoto" accept="image/*" class="w-full text-[10px] file:mr-2 file:py-1 file:px-2 file:rounded-lg file:border-0 file:bg-blue-50 file:text-blue-700 font-medium">
-                    </div>
-                </div>
-                <button onclick="registerRider()" id="regSubmitBtn" class="mt-3 w-full bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold py-2 rounded-xl shadow transition">
-                    রেজিস্ট্রেশন করুন
-                </button>
-
-                <!-- Registered Profile View -->
-                <div id="regProfileContainer" class="hidden text-center space-y-1.5">
-                    <img id="myProfileImg" src="" class="w-14 h-14 mx-auto rounded-full object-cover border-2 border-blue-500 shadow">
-                    <p id="myProfileName" class="text-xs font-bold text-slate-800 truncate"></p>
-                    <p id="myProfilePhone" class="text-[11px] text-slate-500"></p>
-                    <div id="myLiveDistanceDisplay" class="text-[10px] bg-sky-50 text-sky-800 font-bold px-2 py-1 rounded-lg border border-sky-200">
-                        স্ট্যান্ড থেকে দূরত্ব: গণনা হচ্ছে...
-                    </div>
-                    <span id="myAccountStatus" class="inline-block text-[10px] px-2 py-0.5 rounded-full bg-green-100 text-green-700 font-bold">অ্যাক্টিভ রাইডার</span>
-                </div>
-            </div>
-
-            <!-- Box B: Manual Serial Entry -->
-            <div class="glass-card rounded-2xl p-3.5 border-t-4 border-emerald-600 flex flex-col justify-between">
-                <div>
-                    <h2 class="text-xs font-bold text-emerald-900 mb-2.5 flex items-center gap-1">
-                        <i class="fas fa-edit text-emerald-600"></i> ম্যানুয়াল সিরিয়াল
-                    </h2>
-                    <p class="text-[10px] text-slate-500 mb-2.5">সীমার মধ্যে থেকে শুধু নাম দিয়ে এন্ট্রি দিন।</p>
-                    <input type="text" id="manualRiderName" placeholder="রাইডারের নাম লিখুন" class="w-full text-xs p-2.5 border border-slate-300 rounded-xl focus:outline-none focus:border-emerald-500 bg-slate-50 mb-2">
-                </div>
-                <button onclick="addManualSerial()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold py-2 rounded-xl shadow transition flex items-center justify-center gap-1">
-                    <i class="fas fa-plus-circle"></i> এন্ট্রি দিন
-                </button>
-            </div>
-        </section>
-
-        <!-- 4. Action Grid: Ludo Game & 24h Cancel Log -->
-        <section class="grid grid-cols-2 gap-3">
-            <button onclick="openLudoModal()" class="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white p-3 rounded-2xl shadow-md flex items-center justify-center gap-2 font-bold text-xs active:scale-95 transition">
-                <i class="fas fa-dice text-lg text-amber-300 animate-spin" style="animation-duration: 4s;"></i> লুডু খেলুন (অনলাইন)
+        <!-- Admin Section Toggle Button -->
+        <div class="text-center pt-2">
+            <button onclick="openAdminLogin()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white px-5 py-2.5 rounded-xl border border-slate-600 text-sm font-semibold shadow transition flex items-center gap-2 mx-auto">
+                <i class="fa-solid fa-shield-halved text-yellow-400"></i> অ্যাডমিন প্যানেল প্রবেশ করুন
             </button>
-            <button onclick="openCancelLogModal()" class="bg-gradient-to-r from-rose-600 to-red-600 hover:from-rose-700 hover:to-red-700 text-white p-3 rounded-2xl shadow-md flex items-center justify-center gap-2 font-bold text-xs active:scale-95 transition">
-                <i class="fas fa-history text-base"></i> সিরিয়াল কাটার লগ
-            </button>
-        </section>
+        </div>
 
-        <!-- 5. Live Serial List Box -->
-        <section class="glass-card rounded-2xl p-4 border-t-4 border-sky-600">
-            <div class="flex justify-between items-center border-b border-slate-200 pb-2.5 mb-3">
-                <h2 class="text-xs font-bold text-slate-800 flex items-center gap-1.5">
-                    <i class="fas fa-list-ol text-blue-600"></i> লাইভ সিরিয়াল তালিকা
-                </h2>
-                <span id="totalSerialCount" class="bg-blue-600 text-white text-[11px] font-bold px-2.5 py-0.5 rounded-full shadow-sm">মোট: ০ জন</span>
-            </div>
+    </div>
 
-            <div id="serialListContainer" class="space-y-2.5">
-                <p class="text-center text-xs text-slate-400 py-6">বর্তমানে সিরিয়ালে কেউ নেই...</p>
-            </div>
-        </section>
-
-        <!-- 6. Admin Panel Button -->
-        <section class="text-center pt-2">
-            <button onclick="openAdminLogin()" class="text-xs text-slate-600 hover:text-slate-900 font-semibold bg-white/80 hover:bg-white px-5 py-2.5 rounded-full shadow-sm border border-slate-300 transition">
-                <i class="fas fa-user-shield text-blue-600 mr-1.5"></i> অ্যাডমিন কন্ট্রোল প্যানেল
-            </button>
-        </section>
-
-    </main>
-
-    <!-- ================= MODALS ================= -->
-
-    <!-- Admin Password Modal -->
-    <div id="adminLoginModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
-        <div class="bg-white rounded-3xl p-5 w-full max-w-xs text-center shadow-2xl border border-slate-100">
-            <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-2.5 text-xl">
-                <i class="fas fa-lock"></i>
-            </div>
-            <h3 class="text-base font-bold text-slate-800">অ্যাডমিন ভেরিফিকেশন</h3>
-            <p class="text-xs text-slate-500 mb-3">গোপন পাসওয়ার্ড প্রদান করুন</p>
-            <input type="password" id="adminPassInput" placeholder="••••••" class="w-full text-center text-lg tracking-widest p-2.5 border-2 border-slate-200 rounded-2xl mb-3 focus:border-blue-600 focus:outline-none bg-slate-50 font-mono">
-            <div class="flex gap-2">
-                <button onclick="closeModal('adminLoginModal')" class="flex-1 py-2.5 bg-slate-100 hover:bg-slate-200 rounded-2xl text-xs font-bold text-slate-700">বাতিল</button>
-                <button onclick="verifyAdmin()" class="flex-1 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl text-xs font-bold shadow">প্রবেশ</button>
+    <!-- Admin Login Modal -->
+    <div id="adminLoginModal" class="fixed inset-0 bg-slate-950/80 z-50 hidden flex justify-center items-center p-4">
+        <div class="bg-slate-800 border border-slate-700 p-6 rounded-2xl w-full max-w-sm shadow-2xl space-y-4">
+            <h3 class="text-lg font-bold text-yellow-400 flex items-center gap-2">
+                <i class="fa-solid fa-lock"></i> অ্যাডমিন পাসওয়ার্ড দিন
+            </h3>
+            <p class="text-xs text-slate-300">অ্যাডমিন প্যানেলে প্রবেশ করতে সিক্রেট পাসওয়ার্ড লিখুন।</p>
+            <input type="password" id="adminPassInput" placeholder="পাসওয়ার্ড লিখুন" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-3 text-sm text-slate-100 focus:outline-none focus:border-yellow-500">
+            <div class="flex justify-end space-x-2 pt-2">
+                <button onclick="closeAdminLogin()" class="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-slate-200 rounded-lg text-sm font-medium">বাতিল</button>
+                <button onclick="verifyAdminPass()" class="px-4 py-2 bg-yellow-500 hover:bg-yellow-400 text-slate-950 font-bold rounded-lg text-sm">প্রবেশ করুন</button>
             </div>
         </div>
     </div>
 
-    <!-- Full Admin Dashboard Modal -->
-    <div id="adminDashboardModal" class="fixed inset-0 bg-slate-900/90 hidden overflow-y-auto z-50 p-3">
-        <div class="bg-white rounded-3xl max-w-lg mx-auto p-4 space-y-4 my-4 shadow-2xl">
-            <div class="flex justify-between items-center border-b pb-2.5">
-                <h2 class="text-sm font-bold text-blue-900 flex items-center gap-1.5">
-                    <i class="fas fa-cogs"></i> অ্যাডমিন কন্ট্রোল প্যানেল
+    <!-- Admin Panel Modal -->
+    <div id="adminPanelModal" class="fixed inset-0 bg-slate-950/90 z-50 hidden overflow-y-auto p-3 sm:p-6">
+        <div class="max-w-3xl mx-auto bg-slate-900 border border-slate-700 p-5 rounded-2xl shadow-2xl space-y-6">
+            
+            <div class="flex justify-between items-center border-b border-slate-700 pb-3">
+                <h2 class="text-lg font-bold text-yellow-400 flex items-center gap-2">
+                    <i class="fa-solid fa-screwdriver-wrench"></i> অ্যাডমিন কন্ট্রোল প্যানেল
                 </h2>
-                <button onclick="closeModal('adminDashboardModal')" class="bg-red-50 hover:bg-red-100 text-red-600 px-3 py-1 rounded-xl text-xs font-bold">বন্ধ করুন</button>
+                <button onclick="closeAdminPanel()" class="bg-rose-600 hover:bg-rose-500 text-white px-3 py-1.5 rounded-lg text-xs font-bold">বন্ধ করুন</button>
             </div>
 
-            <!-- A. Stand Location & Lock System -->
-            <div class="bg-blue-50/70 p-3.5 rounded-2xl space-y-2.5 border border-blue-200">
-                <h3 class="text-xs font-bold text-blue-900 flex justify-between items-center">
-                    <span>১. স্ট্যান্ড লোকেশন সেটিংস ও লক</span>
-                    <label class="flex items-center gap-1 text-[11px] text-rose-700 cursor-pointer font-semibold">
-                        <input type="checkbox" id="standLockToggle" checked onchange="toggleStandLock()" class="w-3.5 h-3.5 accent-rose-600">
-                        লোকেশন লক অন
-                    </label>
-                </h3>
-                <button onclick="setStandLocationFromGPS()" class="w-full bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold py-2 rounded-xl shadow">
-                    <i class="fas fa-map-marker-alt mr-1"></i> বর্তমান GPS লোকেশনকে স্ট্যান্ড হিসেবে সেট করুন
-                </button>
-                <p id="currentStandCoords" class="text-[10px] text-slate-600 text-center font-mono">লোকেশন লোড হচ্ছে...</p>
-            </div>
-
-            <!-- B. Leaders Management -->
-            <div class="bg-slate-50 p-3.5 rounded-2xl space-y-2.5 border border-slate-200">
-                <h3 class="text-xs font-bold text-slate-900">২. কমিটির নেতার ছবি ও নাম পরিবর্তন</h3>
-                <select id="leaderRoleSelect" class="w-full text-xs p-2 border rounded-xl bg-white">
-                    <option value="president">সভাপতি</option>
-                    <option value="vp">সহ-সভাপতি</option>
-                    <option value="org">সাংগঠনিক সম্পাদক</option>
-                </select>
-                <input type="text" id="leaderNameInput" placeholder="নেতার নতুন নাম" class="w-full text-xs p-2 border rounded-xl bg-white">
-                <input type="file" id="leaderPhotoInput" accept="image/*" class="w-full text-xs file:mr-2 file:py-1 file:px-2 file:rounded-lg file:border-0 file:bg-slate-200 file:text-slate-700">
-                <button onclick="updateLeaderInfo()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold py-2 rounded-xl shadow">নেতার তথ্য সেভ করুন</button>
-            </div>
-
-            <!-- C. Notice Board Update -->
-            <div class="bg-amber-50/70 p-3.5 rounded-2xl space-y-2.5 border border-amber-200">
-                <h3 class="text-xs font-bold text-amber-900">৩. নোটিশ বোর্ড আপডেট</h3>
-                <textarea id="adminNoticeText" rows="2" placeholder="নোটিশের বিস্তারিত..." class="w-full text-xs p-2 border rounded-xl bg-white"></textarea>
-                <input type="file" id="adminNoticePhoto" accept="image/*" class="w-full text-xs">
-                <div class="flex gap-2">
-                    <button onclick="updateNoticeBoard(false)" class="flex-1 bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold py-2 rounded-xl shadow">নোটিশ পাবলিশ</button>
-                    <button onclick="updateNoticeBoard(true)" class="bg-red-500 hover:bg-red-600 text-white text-xs font-bold px-3 py-2 rounded-xl shadow">ছবি মুছুন</button>
-                </div>
-            </div>
-
-            <!-- D. Registered Riders List -->
-            <div class="bg-slate-50 p-3.5 rounded-2xl space-y-2.5 border border-slate-200">
+            <!-- Stand Location Setting with Lock Toggle -->
+            <div class="bg-slate-800 p-4 rounded-xl border border-slate-700 space-y-3">
                 <div class="flex justify-between items-center">
-                    <h3 class="text-xs font-bold text-slate-900">৪. রাইডারদের লাইভ লোকেশন ও কন্ট্রোল</h3>
-                    <span id="adminTotalRiders" class="bg-slate-800 text-white text-[10px] px-2 py-0.5 rounded-full font-bold">মোট: ০</span>
-                </div>
-                <div id="adminRidersList" class="space-y-3 max-h-72 overflow-y-auto pr-1"></div>
-            </div>
-        </div>
-    </div>
-
-    <!-- 24 Hour Cancel Log Modal -->
-    <div id="cancelLogModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
-        <div class="bg-white rounded-3xl p-4 w-full max-w-md max-h-[80vh] flex flex-col shadow-2xl">
-            <div class="flex justify-between items-center border-b pb-2 mb-3">
-                <h3 class="text-sm font-bold text-rose-700 flex items-center gap-1">
-                    <i class="fas fa-history"></i> ২৪ ঘণ্টায় সিরিয়াল কাটার লগ
-                </h3>
-                <button onclick="closeModal('cancelLogModal')" class="text-slate-500 font-bold text-lg hover:text-slate-800">&times;</button>
-            </div>
-            <div id="cancelLogList" class="overflow-y-auto space-y-2.5 flex-1 text-xs pr-1">
-                <p class="text-center text-slate-400 py-4">কোনো রেকর্ড পাওয়া যায়নি।</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- Online Ludo Game Modal -->
-    <div id="ludoModal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md hidden overflow-y-auto z-50 p-3">
-        <div class="bg-white rounded-3xl max-w-md mx-auto p-4 space-y-3.5 my-2 shadow-2xl">
-            <div class="flex justify-between items-center border-b pb-2.5">
-                <h3 class="text-sm font-bold text-indigo-900 flex items-center gap-1.5">
-                    <i class="fas fa-dice text-amber-500"></i> বাইকার ক্লাব অনলাইন লুডু
-                </h3>
-                <button onclick="closeModal('ludoModal')" class="bg-red-50 hover:bg-red-100 text-red-600 px-3 py-1 rounded-xl text-xs font-bold">বের হন</button>
-            </div>
-
-            <!-- Lobby -->
-            <div id="ludoLobby" class="space-y-3">
-                <div class="bg-indigo-50/70 p-3.5 rounded-2xl text-xs space-y-2.5 border border-indigo-100">
-                    <p class="font-bold text-indigo-900">নতুন গেম রুম তৈরি করুন:</p>
-                    <div class="flex gap-2">
-                        <select id="ludoPlayerCount" class="border border-indigo-200 rounded-xl p-2 text-xs flex-1 bg-white">
-                            <option value="2">২ জন প্লেয়ার</option>
-                            <option value="3">৩ জন প্লেয়ার</option>
-                            <option value="4">৪ জন প্লেয়ার</option>
-                        </select>
-                        <button onclick="createLudoRoom()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl font-bold shadow">তৈরি করুন</button>
+                    <h3 class="text-sm font-bold text-cyan-400 flex items-center gap-2">
+                        <i class="fa-solid fa-location-dot"></i> স্ট্যান্ড জিপিএস লোকেশন (২০০ মিটার রেঞ্জ)
+                    </h3>
+                    <div class="flex items-center space-x-2">
+                        <span class="text-xs text-slate-300">লোকেশন লক:</span>
+                        <input type="checkbox" id="locationLockToggle" class="w-4 h-4 accent-cyan-500 cursor-pointer">
                     </div>
                 </div>
-
-                <div>
-                    <h4 class="text-xs font-bold text-slate-700 mb-2">চলমান গেম রুমসমূহ:</h4>
-                    <div id="ludoRoomsList" class="space-y-2 max-h-44 overflow-y-auto pr-1">
-                        <p class="text-xs text-slate-400 text-center py-2">কোনো রুম নেই।</p>
-                    </div>
+                <p class="text-xs text-slate-400">হাত লেগে যেন সীমানা নষ্ট না হয়, সেজন্য 'লোকেশন লক' অন রাখতে পারেন। বর্তমান লোকেশন স্বয়ংক্রিয়ভাবে সেট করতে নিচের বাটনে চাপুন।</p>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <input type="text" id="adminLat" placeholder="Latitude" class="bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs text-slate-300" readonly>
+                    <input type="text" id="adminLng" placeholder="Longitude" class="bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs text-slate-300" readonly>
                 </div>
-            </div>
-
-            <!-- Active Ludo Board -->
-            <div id="ludoGameArea" class="hidden space-y-3">
-                <div class="flex justify-between items-center bg-slate-100 p-2.5 rounded-2xl text-xs">
-                    <span id="ludoTurnInfo" class="font-bold text-indigo-700">চাল: অপেক্ষা করুন...</span>
-                    <button onclick="leaveLudoRoom()" class="text-[10px] bg-red-500 text-white px-2.5 py-1 rounded-xl font-bold">রুম ত্যাগ</button>
-                </div>
-                
-                <div id="ludoBoardContainer" class="ludo-grid rounded-xl overflow-hidden shadow-md"></div>
-
-                <div class="flex items-center justify-between bg-indigo-50/70 p-3 rounded-2xl border border-indigo-200">
-                    <div>
-                        <p class="text-[10px] text-slate-500">আপনার চাল:</p>
-                        <p id="ludoDiceResult" class="text-sm font-bold text-indigo-900 font-mono">ছক্কা: -</p>
-                    </div>
-                    <button id="rollDiceBtn" onclick="rollLudoDice()" class="bg-amber-500 hover:bg-amber-600 text-white font-bold px-5 py-2.5 rounded-2xl shadow-md active:scale-95 transition flex items-center gap-1.5">
-                        <i class="fas fa-dice text-base"></i> ছক্কা চালুন
+                <div class="flex gap-2">
+                    <button onclick="captureCurrentLocation()" class="bg-cyan-600 hover:bg-cyan-500 text-white font-bold px-4 py-2 rounded-lg text-xs flex items-center gap-1">
+                        <i class="fa-solid fa-crosshairs"></i> আমার বর্তমান জিপিএস লোকেশন সেট করুন
                     </button>
+                    <button onclick="saveStandLocation()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-4 py-2 rounded-lg text-xs">সেভ করুন</button>
                 </div>
-                <div id="ludoPlayersStatus" class="grid grid-cols-2 gap-1.5 text-[10px]"></div>
             </div>
+
+            <!-- Leadership Profile Editor -->
+            <div class="bg-slate-800 p-4 rounded-xl border border-slate-700 space-y-3">
+                <h3 class="text-sm font-bold text-yellow-400 flex items-center gap-2">
+                    <i class="fa-solid fa-user-tie"></i> কমিটি লিডারশিপ প্রোফাইল এডিটর
+                </h3>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <div class="space-y-1">
+                        <label class="text-xs text-slate-300">সভাপতি নাম ও ছবি</label>
+                        <input type="text" id="editPresName" placeholder="নাম" class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-xs text-slate-200">
+                        <input type="text" id="editPresImg" placeholder="ছবির লিংক" class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-xs text-slate-200">
+                    </div>
+                    <div class="space-y-1">
+                        <label class="text-xs text-slate-300">সহ-সভাপতি নাম ও ছবি</label>
+                        <input type="text" id="editVpName" placeholder="নাম" class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-xs text-slate-200">
+                        <input type="text" id="editVpImg" placeholder="ছবির লিংক" class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-xs text-slate-200">
+                    </div>
+                    <div class="space-y-1">
+                        <label class="text-xs text-slate-300">সাংগঠনিক সম্পাদক নাম ও ছবি</label>
+                        <input type="text" id="editSecName" placeholder="নাম" class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-xs text-slate-200">
+                        <input type="text" id="editSecImg" placeholder="ছবির লিংক" class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-xs text-slate-200">
+                    </div>
+                </div>
+                <button onclick="saveLeadership()" class="bg-yellow-500 hover:bg-yellow-400 text-slate-950 font-bold px-4 py-2 rounded-lg text-xs">লিডারশিপ আপডেট করুন</button>
+            </div>
+
+            <!-- Notice Board Editor -->
+            <div class="bg-slate-800 p-4 rounded-xl border border-slate-700 space-y-3">
+                <h3 class="text-sm font-bold text-amber-400 flex items-center gap-2">
+                    <i class="fa-solid fa-pen-to-square"></i> নোটিশ বোর্ড এডিটর
+                </h3>
+                <textarea id="editNoticeText" rows="2" placeholder="নোটিশের বিবরণ লিখুন..." class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-xs text-slate-200 focus:outline-none focus:border-amber-500"></textarea>
+                <input type="text" id="editNoticeImg" placeholder="নোটিশ ছবির লিংক (ঐচ্ছিক)" class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-xs text-slate-200">
+                <button onclick="saveNotice()" class="bg-amber-600 hover:bg-amber-500 text-white font-bold px-4 py-2 rounded-lg text-xs">নোটিশ আপডেট করুন</button>
+            </div>
+
+            <!-- Registered Users Management Table -->
+            <div class="bg-slate-800 p-4 rounded-xl border border-slate-700 space-y-3">
+                <h3 class="text-sm font-bold text-teal-400 flex items-center gap-2">
+                    <i class="fa-solid fa-users"></i> সমস্ত রেজিস্ট্রেশন করা রাইডারদের তালিকা ও স্পেশাল পাওয়ার
+                </h3>
+                <div class="max-h-60 overflow-y-auto">
+                    <table class="w-full text-left text-xs text-slate-200">
+                        <thead class="bg-slate-900 uppercase text-slate-400 border-b border-slate-700">
+                            <tr>
+                                <th class="p-2">নাম</th>
+                                <th class="p-2">ফোন</th>
+                                <th class="p-2">স্পেশাল টাইম / ডিসটেন্স ওভাররাইড</th>
+                                <th class="p-2 text-center">অ্যাকশন</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adminUserTableBody" class="divide-y divide-slate-700/50">
+                            <!-- Users loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
         </div>
     </div>
 
-    <!-- ================= JAVASCRIPT ================= -->
+    <!-- Firebase SDKs (v8 Compat) -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
     <script>
+        // Firebase Configuration provided by user
         const firebaseConfig = {
             apiKey: "AIzaSyB-ZGbRbYN_3ASW59cXQw4aKNvEOWzOodg",
             authDomain: "candrimabaikara-86815.firebaseapp.com",
@@ -365,776 +319,584 @@
             appId: "1:1053142514877:web:044069e4cc68cb06f0cbd4",
             measurementId: "G-T7KNFLE56E"
         };
+
+        // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        let myRiderId = localStorage.getItem('biker_rider_id') || null;
-        let myRiderData = null;
-        let allRiders = {};
-        let serialList = {};
-        let standSettings = { lat: 23.7580, lng: 90.3540, defaultRadius: 200 };
-        let currentUserPos = null;
-        let currentDistance = 99999;
-        let currentLudoRoomId = null;
-        let standLocationLocked = true;
+        // Admin Secret Password
+        const ADMIN_PASSWORD = "692372";
 
-        function updateWallClock() {
-            const now = new Date();
-            document.getElementById('clockTime').innerText = now.toLocaleTimeString('bn-BD', { hour12: true, hour: '2-digit', minute: '2-digit', second: '2-digit' });
-            document.getElementById('clockDate').innerText = now.toLocaleDateString('bn-BD', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' });
-        }
-        setInterval(updateWallClock, 1000);
+        // State variables
+        let standLocation = { lat: 23.8103, lng: 90.4125, locked: true }; // Default Dhaka, overridden by DB
+        let currentUserId = localStorage.getItem('candrima_registered_id') || null;
+        let audioContext = null;
+        let alarmOscillator = null;
+        let alarmInterval = null;
+        let isAlarmPlaying = false;
 
-        // 1-second interval to update countdowns in real-time
+        // Live Clock and Date
         setInterval(() => {
-            renderSerialList();
+            const now = new Date();
+            document.getElementById('liveClock').innerText = now.toLocaleTimeString();
+            document.getElementById('liveDate').innerText = now.toLocaleDateString('bn-BD', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
         }, 1000);
 
-        function calculateDistance(lat1, lon1, lat2, lon2) {
-            const R = 6371e3;
-            const φ1 = lat1 * Math.PI/180, φ2 = lat2 * Math.PI/180;
-            const Δφ = (lat2-lat1) * Math.PI/180, Δλ = (lon2-lon1) * Math.PI/180;
-            const a = Math.sin(Δφ/2)**2 + Math.cos(φ1) * Math.cos(φ2) * Math.sin(Δλ/2)**2;
-            return Math.round(R * (2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a))));
-        }
+        // Load Settings & Data on Start
+        window.addEventListener('DOMContentLoaded', () => {
+            loadSettings();
+            loadLeadership();
+            loadNotice();
+            loadQueue();
+            loadHistory();
+            checkRegistrationLock();
+        });
 
-        function startGPSTracking() {
-            if (!navigator.geolocation) return;
-            navigator.geolocation.watchPosition((pos) => {
-                currentUserPos = { lat: pos.coords.latitude, lng: pos.coords.longitude };
-                currentDistance = calculateDistance(currentUserPos.lat, currentUserPos.lng, standSettings.lat, standSettings.lng);
-                
-                const distEl = document.getElementById('myLiveDistanceDisplay');
-                if (distEl) {
-                    distEl.innerText = `স্ট্যান্ড থেকে আপনার দূরত্ব: ${currentDistance} মিটার`;
-                }
-
-                if (myRiderId) {
-                    db.ref(`riders/${myRiderId}`).update({
-                        currentLat: currentUserPos.lat,
-                        currentLng: currentUserPos.lng,
-                        currentDistance: currentDistance,
-                        lastSeen: Date.now()
-                    });
-                }
-
-                const allowedRadius = (myRiderData && myRiderData.customRadius) ? Number(myRiderData.customRadius) : standSettings.defaultRadius;
-                const badge = document.getElementById('gpsStatusBadge');
-                
-                if (currentDistance <= allowedRadius) {
-                    badge.className = "mt-1.5 inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40";
-                    badge.innerHTML = `<i class="fas fa-check-circle mr-1"></i> স্ট্যান্ডের ভেতরে (${currentDistance} মি.)`;
-                    handleGeofenceInside();
-                } else {
-                    badge.className = "mt-1.5 inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-rose-500/20 text-rose-300 border border-rose-500/40";
-                    badge.innerHTML = `<i class="fas fa-exclamation-circle mr-1"></i> সীমানার বাইরে (${currentDistance} মি.)`;
-                    handleGeofenceOutside();
-                }
-            }, (err) => console.warn(err), { enableHighAccuracy: true, maximumAge: 5000, timeout: 10000 });
-        }
-
-        function handleGeofenceInside() {
-            if (!myRiderId || !myRiderData || myRiderData.suspended) return;
-            const existingEntry = Object.entries(serialList).find(([k, v]) => v.riderId === myRiderId);
-            if (!existingEntry) {
-                db.ref('serials').push({
-                    riderId: myRiderId, 
-                    ownerRiderId: myRiderId, 
-                    name: myRiderData.name, 
-                    photo: myRiderData.photo,
-                    phone: myRiderData.phone,
-                    type: 'auto', 
-                    entryTime: Date.now(), 
-                    onBreak: false, 
-                    breakStartTime: null, 
-                    cancelling: false, 
-                    cancelStartTime: null
+        // Check if user already registered on this device
+        function checkRegistrationLock() {
+            if (currentUserId) {
+                db.ref('users/' + currentUserId).once('value', snapshot => {
+                    if (snapshot.exists()) {
+                        const val = snapshot.val();
+                        document.getElementById('regName').value = val.name;
+                        document.getElementById('regPhone').value = val.phone;
+                        document.getElementById('regName').disabled = true;
+                        document.getElementById('regPhone').disabled = true;
+                        document.getElementById('regPhotoFile').disabled = true;
+                        document.getElementById('regSubmitBtn').disabled = true;
+                        document.getElementById('regSubmitBtn').classList.add('opacity-50', 'cursor-not-allowed');
+                        document.getElementById('regLockMsg').classList.remove('hidden');
+                    } else {
+                        localStorage.removeItem('candrima_registered_id');
+                        currentUserId = null;
+                    }
                 });
-            } else {
-                const [key, item] = existingEntry;
-                if (item.onBreak) db.ref(`serials/${key}`).update({ onBreak: false, breakStartTime: null });
             }
         }
 
-        function handleGeofenceOutside() {
-            if (!myRiderId) return;
-            const existingEntry = Object.entries(serialList).find(([k, v]) => v.riderId === myRiderId);
-            if (existingEntry && !existingEntry[1].onBreak) db.ref(`serials/${existingEntry[0]}`).remove();
+        // Haversine formula to calculate distance in meters
+        function calculateDistance(lat1, lon1, lat2, lon2) {
+            const R = 6371e3; // Earth radius in meters
+            const φ1 = lat1 * Math.PI/180;
+            const φ2 = lat2 * Math.PI/180;
+            const Δφ = (lat2-lat1) * Math.PI/180;
+            const Δλ = (lon2-lon1) * Math.PI/180;
+
+            const a = Math.sin(Δφ/2) * Math.sin(Δφ/2) +
+                      Math.cos(φ1) * Math.cos(φ2) *
+                      Math.sin(Δλ/2) * Math.sin(Δλ/2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+
+            return R * c; // in meters
         }
 
-        function compressImage(file, maxWidth = 300) {
-            return new Promise((resolve) => {
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    const img = new Image();
-                    img.onload = () => {
-                        const canvas = document.createElement('canvas');
-                        let width = img.width;
-                        let height = img.height;
-                        if (width > maxWidth) {
-                            height = Math.round((height * maxWidth) / width);
-                            width = maxWidth;
-                        }
-                        canvas.width = width;
-                        canvas.height = height;
-                        const ctx = canvas.getContext('2d');
-                        ctx.drawImage(img, 0, 0, width, height);
-                        resolve(canvas.toDataURL('image/jpeg', 0.7));
-                    };
-                    img.src = e.target.result;
-                };
-                reader.readAsDataURL(file);
+        // Verify Location (Within 200 meters)
+        function verifyLocationAndExecute(callback) {
+            if (!navigator.geolocation) {
+                alert("আপনার ব্রাউজার জিপিএস সাপোর্ট করে না!");
+                return;
+            }
+            navigator.geolocation.getCurrentPosition(position => {
+                const userLat = position.coords.latitude;
+                const userLng = position.coords.longitude;
+                const distance = calculateDistance(userLat, userLng, standLocation.lat, standLocation.lng);
+                
+                // 200 meters check
+                if (distance > 200) {
+                    alert(`আপনি স্ট্যান্ডের ২০০ মিটার সীমানার বাইরে আছেন! (বর্তমান দূরত্ব: ${Math.round(distance)} মিটার)। এন্ট্রি বা সিরিয়াল কাটতে হলে স্ট্যান্ডের ২০০ মিটারের মধ্যে থাকতে হবে।`);
+                } else {
+                    callback();
+                }
+            }, error => {
+                alert("লোকেশন পারমিশন পাওয়া যায়নি! দয়া করে জিপিএস চালু করুন এবং লোকেশন অনুমতি দিন।");
+            }, { enableHighAccuracy: true });
+        }
+
+        // Load Settings from Firebase
+        function loadSettings() {
+            db.ref('settings/location').on('value', snapshot => {
+                if (snapshot.exists()) {
+                    standLocation = snapshot.val();
+                    document.getElementById('adminLat').value = standLocation.lat;
+                    document.getElementById('adminLng').value = standLocation.lng;
+                    document.getElementById('locationLockToggle').checked = standLocation.locked;
+                }
             });
         }
 
-        async function registerRider() {
+        // Load Leadership
+        function loadLeadership() {
+            db.ref('settings/leadership').on('value', snapshot => {
+                const data = snapshot.val() || {};
+                document.getElementById('presName5') || {};
+                document.getElementById('presName').innerText = data.presName || 'সভাপতি নাম নেই';
+                if(data.presImg) document.getElementById('presImg').src = data.presImg;
+                document.getElementById('vpName').innerText = data.vpName || 'সহ-সভাপতি নাম নেই';
+                if(data.vpImg) document.getElementById('vpImg').src = data.vpImg;
+                document.getElementById('secName').innerText = data.secName || 'সাধারণ সম্পাদক নাম নেই';
+                if(data.secImg) document.getElementById('secImg').src = data.secImg;
+
+                // Fill admin inputs
+                document.getElementById('editPresName').value = data.presName || '';
+                document.getElementById('editPresImg').value = data.presImg || '';
+                document.getElementById('editVpName').value = data.vpName || '';
+                document.getElementById('editVpImg').value = data.vpImg || '';
+                document.getElementById('editSecName').value = data.secName || '';
+                document.getElementById('editSecImg').value = data.secImg || '';
+            });
+        }
+
+        // Load Notice
+        function loadNotice() {
+            db.ref('settings/notice').on('value', snapshot => {
+                const data = snapshot.val() || {};
+                document.getElementById('noticeContent').innerText = data.text || 'কোনো নোটিশ নেই।';
+                const imgContainer = document.getElementById('noticeImgContainer');
+                const imgTag = document.getElementById('noticeImg');
+                if(data.img) {
+                    imgTag.src = data.img;
+                    imgContainer.classList.remove('hidden');
+                } else {
+                    imgContainer.classList.add('hidden');
+                }
+                document.getElementById('editNoticeText').value = data.text || '';
+                document.getElementById('editNoticeImg').value = data.img || '';
+            });
+        }
+
+        // Online Registration Form Submit
+        document.getElementById('onlineRegForm').addEventListener('submit', function(e) {
+            e.preventDefault();
             const name = document.getElementById('regName').value.trim();
             const phone = document.getElementById('regPhone').value.trim();
-            const photoFile = document.getElementById('regPhoto').files[0];
-
-            if (!name || !phone) {
-                alert('দয়া করে নাম এবং ফোন নম্বর দিন।');
-                return;
-            }
-
-            const allowedRadius = standSettings.defaultRadius;
-            if (currentDistance > allowedRadius) {
-                alert(`আপনি স্ট্যান্ডের সীমানার বাইরে (${currentDistance} মি.) আছেন। স্ট্যান্ডের ${allowedRadius} মিটারের মধ্যে থেকে রেজিস্ট্রেশন করতে হবে।`);
-                return;
-            }
-
-            let photoUrl = "https://via.placeholder.com/100?text=Rider";
-            if (photoFile) {
-                photoUrl = await compressImage(photoFile, 200);
-            }
-
-            const btn = document.getElementById('regSubmitBtn');
-            btn.innerText = "রেজিস্ট্রেশন হচ্ছে...";
-            btn.disabled = true;
-
-            const newRef = db.ref('riders').push();
-            myRiderId = newRef.key;
-            localStorage.setItem('biker_rider_id', myRiderId);
-
-            myRiderData = {
-                id: myRiderId,
-                name: name,
-                phone: phone,
-                photo: photoUrl,
-                suspended: false,
-                customRadius: standSettings.defaultRadius,
-                currentLat: currentUserPos ? currentUserPos.lat : 0,
-                currentLng: currentUserPos ? currentUserPos.lng : 0,
-                currentDistance: currentDistance,
-                registeredAt: Date.now()
-            };
-
-            await newRef.set(myRiderData);
-            btn.innerText = "রেজিস্ট্রেশন করুন";
-            btn.disabled = false;
-            checkMyRegistration();
-            alert('সফলভাবে রেজিস্ট্রেশন সম্পন্ন হয়েছে!');
-        }
-
-        function checkMyRegistration() {
-            const formContainer = document.getElementById('regFormContainer');
-            const submitBtn = document.getElementById('regSubmitBtn');
-            const profileContainer = document.getElementById('regProfileContainer');
-
-            if (myRiderId && allRiders[myRiderId]) {
-                myRiderData = allRiders[myRiderId];
-                if(formContainer) formContainer.classList.add('hidden');
-                if(submitBtn) submitBtn.classList.add('hidden');
-                if(profileContainer) profileContainer.classList.remove('hidden');
-
-                document.getElementById('myProfileImg').src = myRiderData.photo || "https://via.placeholder.com/100";
-                document.getElementById('myProfileName').innerText = myRiderData.name;
-                document.getElementById('myProfilePhone').innerText = myRiderData.phone;
-                
-                const statusBadge = document.getElementById('myAccountStatus');
-                if (myRiderData.suspended) {
-                    statusBadge.className = "inline-block text-[10px] px-2 py-0.5 rounded-full bg-rose-100 text-rose-700 font-bold";
-                    statusBadge.innerText = "অ্যাকাউন্ট معطل (Suspended)";
-                } else {
-                    statusBadge.className = "inline-block text-[10px] px-2 py-0.5 rounded-full bg-green-100 text-green-700 font-bold";
-                    statusBadge.innerText = "অ্যাক্টিভ রাইডার";
-                }
-            } else {
-                if(formContainer) formContainer.classList.remove('hidden');
-                if(submitBtn) submitBtn.classList.remove('hidden');
-                if(profileContainer) profileContainer.classList.add('hidden');
-            }
-        }
-
-        // Manual Serial Entry with Geofence Check and Isolated Placeholder Photo
-        async function addManualSerial() {
-            const nameInput = document.getElementById('manualRiderName');
-            const name = nameInput.value.trim();
-            if (!name) {
-                alert('দয়া করে রাইডারের নাম লিখুন।');
-                return;
-            }
-
-            const allowedRadius = standSettings.defaultRadius;
-            if (currentDistance > allowedRadius) {
-                alert(`আপনি স্ট্যান্ডের সীমানার বাইরে (${currentDistance} মি.) আছেন। স্ট্যান্ডের ${allowedRadius} মিটারের মধ্যে থেকে ম্যানুয়াল সিরিয়াল এন্ট্রি দিতে হবে।`);
-                return;
-            }
-
-            await db.ref('serials').push({
-                riderId: 'manual_' + Date.now(),
-                ownerRiderId: null,
-                name: name,
-                photo: 'https://via.placeholder.com/100?text=Manual', // Isolated manual placeholder, never mixes with registered users
-                phone: 'ম্যানুয়াল এন্ট্রি',
-                type: 'manual',
-                entryTime: Date.now(),
-                onBreak: false,
-                breakStartTime: null,
-                cancelling: false,
-                cancelStartTime: null
-            });
-
-            nameInput.value = '';
-            alert('ম্যানুয়াল সিরিয়াল সফলভাবে যুক্ত হয়েছে!');
-        }
-
-        // Firebase Listeners
-        db.ref('settings').on('value', (snap) => {
-            const val = snap.val();
-            if (val) {
-                if (val.standLat) standSettings.lat = val.standLat;
-                if (val.standLng) standSettings.lng = val.standLng;
-                if (val.defaultRadius) standSettings.defaultRadius = val.defaultRadius;
-                if (val.standLocked !== undefined) {
-                    standLocationLocked = val.standLocked;
-                    const toggle = document.getElementById('standLockToggle');
-                    if(toggle) toggle.checked = standLocationLocked;
-                }
-                const coordsEl = document.getElementById('currentStandCoords');
-                if(coordsEl) coordsEl.innerText = `স্ট্যান্ড কোঅর্ডিনেট: ${standSettings.lat.toFixed(4)}, ${standSettings.lng.toFixed(4)} (ব্যাসার্ধ: ${standSettings.defaultRadius} মি.)`;
-            }
-        });
-
-        db.ref('leaders').on('value', (snap) => {
-            const l = snap.val() || {};
-            if (l.president) {
-                document.getElementById('imgPresident').src = l.president.photo || "https://via.placeholder.com/100";
-                document.getElementById('namePresident').innerText = l.president.name || "সভাপতি";
-            }
-            if (l.vp) {
-                document.getElementById('imgVP').src = l.vp.photo || "https://via.placeholder.com/100";
-                document.getElementById('nameVP').innerText = l.vp.name || "সহ-সভাপতি";
-            }
-            if (l.org) {
-                document.getElementById('imgOrg').src = l.org.photo || "https://via.placeholder.com/100";
-                document.getElementById('nameOrg').innerText = l.org.name || "সাংগঠনিক";
-            }
-        });
-
-        db.ref('notice').on('value', (snap) => {
-            const n = snap.val();
-            const textEl = document.getElementById('noticeText');
-            const imgEl = document.getElementById('noticeImage');
-            if (n) {
-                textEl.innerText = n.text || "";
-                if (n.photo) {
-                    imgEl.src = n.photo;
-                    imgEl.classList.remove('hidden');
-                } else {
-                    imgEl.classList.add('hidden');
-                }
-            }
-        });
-
-        db.ref('riders').on('value', (snap) => {
-            allRiders = snap.val() || {};
-            checkMyRegistration();
-            renderAdminRidersList();
-        });
-
-        db.ref('serials').on('value', (snap) => {
-            serialList = snap.val() || {};
-            renderSerialList();
-        });
-
-        function renderSerialList() {
-            const container = document.getElementById('serialListContainer');
-            const countEl = document.getElementById('totalSerialCount');
-            const entries = Object.entries(serialList);
-
-            countEl.innerText = `মোট: ${entries.length} জন`;
-            if (entries.length === 0) {
-                container.innerHTML = `<p class="text-center text-xs text-slate-400 py-6">বর্তমানে সিরিয়ালে কেউ নেই...</p>`;
-                return;
-            }
-
-            let html = '';
-            const now = Date.now();
-            const tenMinutes = 10 * 60 * 1000;
-
-            entries.forEach(([key, item], index) => {
-                const isMyEntry = (myRiderId && item.riderId === myRiderId) || item.type === 'manual';
-                const badgeBg = index === 0 ? 'bg-amber-500 text-white font-bold shadow' : 'bg-slate-100 text-slate-700 font-semibold';
-                
-                // Check 10-minute cancellation countdown logic safely with once() check
-                if (item.cancelling && item.cancelStartTime) {
-                    const elapsed = now - item.cancelStartTime;
-                    const remaining = tenMinutes - elapsed;
-
-                    if (remaining <= 0) {
-                        db.ref(`serials/${key}`).once('value', (snap) => {
-                            if (snap.exists()) {
-                                db.ref('cancelLogs').push({
-                                    name: item.name,
-                                    phone: item.phone || 'ম্যানুয়াল এন্ট্রি',
-                                    cancelledAt: Date.now()
-                                });
-                                db.ref(`serials/${key}`).remove();
-                            }
-                        });
-                        return;
-                    }
-                }
-
-                let actionArea = '';
-                if (isMyEntry) {
-                    if (item.cancelling) {
-                        const remaining = tenMinutes - (now - item.cancelStartTime);
-                        const mins = Math.floor(remaining / 60000);
-                        const secs = Math.floor((remaining % 60000) / 1000);
-                        const timeStr = `${mins}:${secs < 10 ? '0' : ''}${secs}`;
-
-                        actionArea = `
-                            <div class="flex items-center gap-1.5 bg-rose-50 p-1.5 rounded-xl border border-rose-200">
-                                <span class="text-[10px] text-rose-700 font-bold animate-pulse">বাতিল হচ্ছে: ${timeStr}</span>
-                                <button onclick="restoreSerial('${key}')" class="text-[10px] px-2 py-1 rounded-lg font-bold bg-emerald-600 text-white shadow">
-                                    ফিরিয়ে আনুন
-                                </button>
-                            </div>
-                        `;
-                    } else {
-                        actionArea = `
-                            <button onclick="toggleBreak('${key}', ${!item.onBreak})" class="text-[10px] px-2.5 py-1 rounded-xl font-bold ${item.onBreak ? 'bg-emerald-600 text-white' : 'bg-amber-500 text-white'} shadow">
-                                ${item.onBreak ? 'ব্রেক শেষ' : 'ব্রেক'}
-                            </button>
-                            <button onclick="requestCancelSerial('${key}')" class="text-[10px] px-2.5 py-1 rounded-xl font-bold bg-rose-600 text-white shadow">
-                                সিরিয়াল কাটুন
-                            </button>
-                        `;
-                    }
-                }
-
-                html += `
-                    <div class="flex items-center justify-between p-2.5 rounded-2xl border border-slate-200 bg-white shadow-sm hover:border-blue-300 transition">
-                        <div class="flex items-center gap-3">
-                            <span class="w-7 h-7 flex items-center justify-center rounded-xl text-xs ${badgeBg}">${index + 1}</span>
-                            <img src="${item.photo || 'https://via.placeholder.com/100'}" class="w-10 h-10 rounded-full object-cover border border-slate-300 shadow-sm">
-                            <div>
-                                <h4 class="text-xs font-bold text-slate-800 flex items-center gap-1.5">
-                                    ${item.name} ${isMyEntry ? '<span class="text-[9px] bg-blue-100 text-blue-700 px-1.5 py-0.5 rounded-full">আপনার</span>' : ''}
-                                </h4>
-                                <p class="text-[10px] text-slate-500">ফোন: ${item.phone || 'নেই'} • এন্ট্রি: ${new Date(item.entryTime).toLocaleTimeString('bn-BD', {hour: '2-digit', minute:'2-digit'})}</p>
-                            </div>
-                        </div>
-                        <div class="flex items-center gap-1.5">
-                            ${actionArea}
-                        </div>
-                    </div>
-                `;
-            });
-            container.innerHTML = html;
-        }
-
-        async function toggleBreak(key, status) {
-            await db.ref(`serials/${key}`).update({
-                onBreak: status,
-                breakStartTime: status ? Date.now() : null
-            });
-        }
-
-        // Request Cancel with Geofence Check (200m) & 10 min countdown trigger
-        async function requestCancelSerial(key) {
-            const allowedRadius = (myRiderData && myRiderData.customRadius) ? Number(myRiderData.customRadius) : standSettings.defaultRadius;
-            if (currentDistance > allowedRadius) {
-                alert(`আপনি স্ট্যান্ডের সীমানার বাইরে (${currentDistance} মি.) আছেন। স্ট্যান্ডের ${allowedRadius} মিটারের মধ্যে থেকে সিরিয়াল কাটতে হবে।`);
-                return;
-            }
-
-            if (confirm('আপনি কি সিরিয়াল কাটতে চান? ১০ মিনিট সময় দেওয়া হবে, এর মধ্যে ফিরিয়ে না আনলে সিরিয়াল থেকে নাম কেটে যাবে।')) {
-                await db.ref(`serials/${key}`).update({
-                    cancelling: true,
-                    cancelStartTime: Date.now()
-                });
-            }
-        }
-
-        // Restore Serial before 10 minutes expire
-        async function restoreSerial(key) {
-            await db.ref(`serials/${key}`).update({
-                cancelling: false,
-                cancelStartTime: null
-            });
-            alert('আপনার সিরিয়াল সফলভাবে ফিরিয়ে আনা হয়েছে!');
-        }
-
-        // Cancel Log Viewer
-        async function openCancelLogModal() {
-            const modal = document.getElementById('cancelLogModal');
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
-
-            const logContainer = document.getElementById('cancelLogList');
-            logContainer.innerHTML = `<p class="text-center text-slate-400 py-4">লোড হচ্ছে...</p>`;
-
-            db.ref('cancelLogs').once('value', (snap) => {
-                const logs = snap.val() || {};
-                const now = Date.now();
-                const twentyFourHours = 24 * 60 * 60 * 1000;
-                let html = '';
-                let count = 0;
-
-                Object.entries(logs).forEach(([k, log]) => {
-                    if (now - log.cancelledAt <= twentyFourHours) {
-                        count++;
-                        const timeStr = new Date(log.cancelledAt).toLocaleString('bn-BD', {hour: '2-digit', minute:'2-digit', day:'numeric', month:'short'});
-                        html += `
-                            <div class="p-2.5 bg-slate-50 rounded-xl border border-slate-200 flex justify-between items-center">
-                                <div>
-                                    <p class="font-bold text-slate-800">${log.name} <span class="text-[10px] text-slate-500 font-normal">(${log.phone})</span></p>
-                                    <p class="text-[10px] text-rose-600">কাটার সময়: ${timeStr}</p>
-                                </div>
-                            </div>
-                        `;
-                    } else {
-                        db.ref(`cancelLogs/${k}`).remove();
-                    }
-                });
-
-                if (count === 0) {
-                    logContainer.innerHTML = `<p class="text-center text-slate-400 py-4">গত ২৪ ঘণ্টায় কোনো সিরিয়াল কাটার রেকর্ড নেই।</p>`;
-                } else {
-                    logContainer.innerHTML = html;
-                }
-            });
-        }
-
-        // Admin Functions
-        function openAdminLogin() {
-            const modal = document.getElementById('adminLoginModal');
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
-        }
-
-        function verifyAdmin() {
-            const pass = document.getElementById('adminPassInput').value;
-            if (pass === '123456' || pass === 'admin123') {
-                closeModal('adminLoginModal');
-                document.getElementById('adminPassInput').value = '';
-                const dashboard = document.getElementById('adminDashboardModal');
-                dashboard.classList.remove('hidden');
-            } else {
-                alert('ভুল পাসওয়ার্ড! সঠিক পাসওয়ার্ড দিন।');
-            }
-        }
-
-        function closeModal(modalId) {
-            const modal = document.getElementById(modalId);
-            modal.classList.add('hidden');
-            modal.classList.remove('flex');
-        }
-
-        async function setStandLocationFromGPS() {
-            if (standLocationLocked) {
-                alert('স্ট্যান্ড লোকেশন লক করা আছে! পরিবর্তন করতে ওপরের "লোকেশন লক অন" টিক চিহ্ন তুলে দিন।');
-                return;
-            }
-            if (!currentUserPos) {
-                alert('আপনার বর্তমান GPS লোকেশন পাওয়া যায়নি। কিছুক্ষণ অপেক্ষা করুন।');
-                return;
-            }
-            await db.ref('settings').update({
-                standLat: currentUserPos.lat,
-                standLng: currentUserPos.lng
-            });
-            alert('বর্তমান GPS লোকেশন সফলভাবে স্ট্যান্ড হিসেবে সেট হয়েছে!');
-        }
-
-        async function toggleStandLock() {
-            standLocationLocked = document.getElementById('standLockToggle').checked;
-            await db.ref('settings').update({ standLocked: standLocationLocked });
-        }
-
-        async function updateLeaderInfo() {
-            const role = document.getElementById('leaderRoleSelect').value;
-            const name = document.getElementById('leaderNameInput').value.trim();
-            const photoFile = document.getElementById('leaderPhotoInput').files[0];
-
-            if (!name && !photoFile) {
-                alert('নাম অথবা ছবি প্রদান করুন।');
-                return;
-            }
-
-            let photoUrl = null;
-            if (photoFile) {
-                photoUrl = await compressImage(photoFile, 200);
-            }
-
-            db.ref(`leaders/${role}`).once('value', async (snap) => {
-                const current = snap.val() || {};
-                await db.ref(`leaders/${role}`).set({
-                    name: name || current.name || '',
-                    photo: photoUrl || current.photo || 'https://via.placeholder.com/100'
-                });
-                document.getElementById('leaderNameInput').value = '';
-                alert('নেতার তথ্য সফলভাবে আপডেট হয়েছে!');
-            });
-        }
-
-        async function updateNoticeBoard(clearPhoto = false) {
-            const text = document.getElementById('adminNoticeText').value.trim();
-            const photoFile = document.getElementById('adminNoticePhoto').files[0];
-
-            let photoUrl = null;
-            if (photoFile) {
-                photoUrl = await compressImage(photoFile, 600);
-            }
-
-            db.ref('notice').once('value', async (snap) => {
-                const current = snap.val() || {};
-                await db.ref('notice').set({
-                    text: text || current.text || '',
-                    photo: clearPhoto ? null : (photoUrl || current.photo || null)
-                });
-                document.getElementById('adminNoticeText').value = '';
-                alert('নোটিশ বোর্ড আপডেট করা হয়েছে!');
-            });
-        }
-
-        function renderAdminRidersList() {
-            const container = document.getElementById('adminRidersList');
-            const totalRidersEl = document.getElementById('adminTotalRiders');
-            const entries = Object.entries(allRiders);
-
-            totalRidersEl.innerText = `মোট: ${entries.length}`;
-            if (entries.length === 0) {
-                container.innerHTML = `<p class="text-center text-xs text-slate-400 py-3">কোনো রাইডার নিবন্ধিত নেই।</p>`;
-                return;
-            }
-
-            let html = '';
-            entries.forEach(([id, rider]) => {
-                html += `
-                    <div class="bg-white p-3 rounded-2xl border border-slate-200 shadow-sm space-y-2">
-                        <div class="flex items-center justify-between">
-                            <div class="flex items-center gap-2.5">
-                                <img src="${rider.photo || 'https://via.placeholder.com/100'}" class="w-10 h-10 rounded-full object-cover border">
-                                <div>
-                                    <h4 class="text-xs font-bold text-slate-800">${rider.name}</h4>
-                                    <p class="text-[10px] text-slate-500">${rider.phone} • দূরত্ব: ${rider.currentDistance !== undefined ? rider.currentDistance + 'মি.' : 'অজানা'}</p>
-                                </div>
-                            </div>
-                            <span class="text-[10px] px-2 py-0.5 rounded-full font-bold ${rider.suspended ? 'bg-rose-100 text-rose-700' : 'bg-emerald-100 text-emerald-700'}">
-                                ${rider.suspended ? 'معطل' : 'অ্যাক্টিভ'}
-                            </span>
-                        </div>
-                        <div class="flex items-center gap-2 pt-1 border-t border-slate-100">
-                            <div class="flex-1 flex items-center gap-1">
-                                <span class="text-[10px] text-slate-500">ব্যাসার্ধ:</span>
-                                <input type="number" id="rad_${id}" value="${rider.customRadius || standSettings.defaultRadius}" class="w-16 text-[10px] p-1 border rounded-lg text-center">
-                                <button onclick="updateRiderRadius('${id}')" class="bg-blue-600 text-white text-[10px] px-2 py-1 rounded-lg font-bold">সেভ</button>
-                            </div>
-                            <button onclick="toggleSuspendRider('${id}', ${!rider.suspended})" class="text-[10px] px-2.5 py-1 rounded-lg font-bold ${rider.suspended ? 'bg-emerald-600 text-white' : 'bg-amber-500 text-white'}">
-                                ${rider.suspended ? 'অনুমতি দিন' : 'ব্লক/সাময়িক'}
-                            </button>
-                            <button onclick="deleteRider('${id}')" class="text-[10px] px-2 py-1 rounded-lg font-bold bg-rose-600 text-white">মুছুন</button>
-                        </div>
-                    </div>
-                `;
-            });
-            container.innerHTML = html;
-        }
-
-        async function updateRiderRadius(id) {
-            const val = document.getElementById(`rad_${id}`).value;
-            await db.ref(`riders/${id}`).update({ customRadius: Number(val) });
-            alert('রাইডারের ব্যক্তিগত ব্যাসার্ধ আপডেট করা হয়েছে!');
-        }
-
-        async function toggleSuspendRider(id, status) {
-            await db.ref(`riders/${id}`).update({ suspended: status });
-        }
-
-        async function deleteRider(id) {
-            if (confirm('আপনি কি এই রাইডারকে সম্পূর্ণ ডিলিট করতে চান?')) {
-                await db.ref(`riders/${id}`).remove();
-                alert('রাইডার মুছে ফেলা হয়েছে।');
-            }
-        }
-
-        // Online Ludo Game Logic
-        function openLudoModal() {
-            const modal = document.getElementById('ludoModal');
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
-            loadLudoRooms();
-        }
-
-        function loadLudoRooms() {
-            db.ref('ludoRooms').on('value', (snap) => {
-                const rooms = snap.val() || {};
-                const listEl = document.getElementById('ludoRoomsList');
-                let html = '';
-                let count = 0;
-
-                Object.entries(rooms).forEach(([roomId, room]) => {
-                    count++;
-                    html += `
-                        <div class="bg-indigo-50/50 p-2.5 rounded-2xl border border-indigo-100 flex justify-between items-center text-xs">
-                            <div>
-                                <p class="font-bold text-indigo-900">রুম আইডি: ${roomId.slice(-4)}</p>
-                                <p class="text-[10px] text-slate-500">প্লেয়ার: ${Object.keys(room.players || {}).length} / ${room.maxPlayers}</p>
-                            </div>
-                            <button onclick="joinLudoRoom('${roomId}')" class="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-1.5 rounded-xl font-bold shadow">যুক্ত হোন</button>
-                        </div>
-                    `;
-                });
-
-                if (count === 0) {
-                    listEl.innerHTML = `<p class="text-xs text-slate-400 text-center py-2">কোনো রুম নেই। নতুন রুম তৈরি করুন।</p>`;
-                } else {
-                    listEl.innerHTML = html;
-                }
-            });
-        }
-
-        async function createLudoRoom() {
-            const maxPlayers = document.getElementById('ludoPlayerCount').value;
-            const playerName = (myRiderData && myRiderData.name) ? myRiderData.name : ('বাইকার_' + Math.floor(Math.random() * 1000));
-            const playerId = myRiderId || ('guest_' + Date.now());
-
-            const newRoomRef = db.ref('ludoRooms').push();
-            currentLudoRoomId = newRoomRef.key;
-
-            const initialRoomData = {
-                maxPlayers: Number(maxPlayers),
-                host: playerId,
-                turnIndex: 0,
-                status: 'waiting',
-                players: {
-                    [playerId]: { name: playerName, color: 'red', position: 0 }
-                }
-            };
-
-            await newRoomRef.set(initialRoomData);
-            enterLudoGameUI(currentLudoRoomId);
-        }
-
-        async function joinLudoRoom(roomId) {
-            currentLudoRoomId = roomId;
-            const playerName = (myRiderData && myRiderData.name) ? myRiderData.name : ('বাইকার_' + Math.floor(Math.random() * 1000));
-            const playerId = myRiderId || ('guest_' + Date.now());
-
-            db.ref(`ludoRooms/${roomId}`).once('value', async (snap) => {
-                const room = snap.val();
-                if (room && room.players) {
-                    const colors = ['red', 'green', 'yellow', 'blue'];
-                    const existingCount = Object.keys(room.players).length;
-                    if (existingCount >= room.maxPlayers) {
-                        alert('রুমটি পূর্ণ!');
-                        return;
-                    }
-                    const assignedColor = colors[existingCount % colors.length];
-                    await db.ref(`ludoRooms/${roomId}/players/${playerId}`).set({
-                        name: playerName,
-                        color: assignedColor,
-                        position: 0
+            const fileInput = document.getElementById('regPhotoFile');
+
+            verifyLocationAndExecute(() => {
+                // Check duplicate name in queue
+                db.ref('queue').once('value', snapshot => {
+                    let duplicate = false;
+                    snapshot.forEach(child => {
+                        if (child.val().name.toLowerCase() === name.toLowerCase() && child.val().status === 'active') {
+                            duplicate = true;
+                        }
                     });
-                    enterLudoGameUI(roomId);
-                }
-            });
-        }
 
-        function enterLudoGameUI(roomId) {
-            document.getElementById('ludoLobby').classList.add('hidden');
-            document.getElementById('ludoGameArea').classList.remove('hidden');
-            initLudoBoardGrid();
-            listenLudoRoomState(roomId);
-        }
+                    if (duplicate) {
+                        alert("এই নামের রাইডার ইতিমধ্যে সিরিয়ালে আছেন! একই নামে দুইবার সিরিয়াল নেওয়া যাবে না।");
+                        return;
+                    }
 
-        function leaveLudoRoom() {
-            if (currentLudoRoomId) {
-                const playerId = myRiderId || 'guest';
-                db.ref(`ludoRooms/${currentLudoRoomId}/players/${playerId}`).remove();
-            }
-            currentLudoRoomId = null;
-            document.getElementById('ludoGameArea').classList.add('hidden');
-            document.getElementById('ludoLobby').classList.remove('hidden');
-        }
+                    const processRegistration = (photoUrl) => {
+                        const userId = db.ref('users').push().key;
+                        const userData = {
+                            id: userId,
+                            name: name,
+                            phone: phone,
+                            photo: photoUrl || 'https://via.placeholder.com/100',
+                            createdAt: Date.now()
+                        };
 
-        function initLudoBoardGrid() {
-            const board = document.getElementById('ludoBoardContainer');
-            let html = '';
-            for (let r = 0; r < 15; r++) {
-                for (let c = 0; c < 15; c++) {
-                    let bg = '';
-                    if (r < 6 && c < 6) bg = 'bg-red-base';
-                    else if (r < 6 && c > 8) bg = 'bg-green-base';
-                    else if (r > 8 && c < 6) bg = 'bg-yellow-base';
-                    else if (r > 8 && c > 8) bg = 'bg-blue-base';
-                    html += `<div class="ludo-cell ${bg}" id="cell_${r}_${c}"></div>`;
-                }
-            }
-            board.innerHTML = html;
-        }
+                        db.ref('users/' + userId).set(userData).then(() => {
+                            localStorage.setItem('candrima_registered_id', userId);
+                            currentUserId = userId;
 
-        function listenLudoRoomState(roomId) {
-            db.ref(`ludoRooms/${roomId}`).on('value', (snap) => {
-                const room = snap.val();
-                if (!room) return;
+                            // Add to Queue
+                            const queueId = db.ref('queue').push().key;
+                            db.ref('queue/' + queueId).set({
+                                id: queueId,
+                                userId: userId,
+                                name: name,
+                                photo: userData.photo,
+                                type: 'online',
+                                joinedAt: Date.now(),
+                                status: 'active',
+                                breakUntil: 0,
+                                cutTime: 0,
+                                cutBy: ''
+                            }).then(() => {
+                                alert("রেজিস্ট্রেশন এবং সিরিয়ালে নাম এন্ট্রি সফল হয়েছে!");
+                                checkRegistrationLock();
+                                document.getElementById('onlineRegForm').reset();
+                            });
+                        });
+                    };
 
-                const players = room.players || {};
-                let statusHtml = '';
-                const playerId = myRiderId || 'guest';
-                const isMyTurn = Object.keys(players)[room.turnIndex % Object.keys(players).length] === playerId;
-
-                document.getElementById('ludoTurnInfo').innerText = isMyTurn ? 'আপনার চাল!' : 'প্রতিপক্ষের চাল...';
-                document.getElementById('rollDiceBtn').disabled = !isMyTurn;
-
-                Object.entries(players).forEach(([pId, p]) => {
-                    statusHtml += `<div class="p-1.5 rounded-xl bg-white border flex justify-between items-center"><span class="font-bold text-${p.color}-600">${p.name}</span><span>ঘর: ${p.position}</span></div>`;
+                    if (fileInput.files && fileInput.files[0]) {
+                        const reader = new FileReader();
+                        reader.onload = function(uploadEvent) {
+                            processRegistration(uploadEvent.target.result);
+                        };
+                        reader.readAsDataURL(fileInput.files[0]);
+                    } else {
+                        processRegistration('https://via.placeholder.com/100');
+                    }
                 });
-                document.getElementById('ludoPlayersStatus').innerHTML = statusHtml;
+            });
+        });
+
+        // Manual Entry Form Submit
+        document.getElementById('manualEntryForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const name = document.getElementById('manualName').value.trim();
+
+            verifyLocationAndExecute(() => {
+                // Check duplicate name in active queue
+                db.ref('queue').once('value', snapshot => {
+                    let duplicate = false;
+                    snapshot.forEach(child => {
+                        if (child.val().name.toLowerCase() === name.toLowerCase() && child.val().status === 'active') {
+                            duplicate = true;
+                        }
+                    });
+
+                    if (duplicate) {
+                        alert("এই নামের রাইডার ইতিমধ্যে সিরিয়ালে আছেন! একই নামে দুইবার সিরিয়াল নেওয়া যাবে না।");
+                        return;
+                    }
+
+                    const queueId = db.ref('queue').push().key;
+                    db.ref('queue/' + queueId).set({
+                        id: queueId,
+                        userId: 'manual_' + Date.now(),
+                        name: name,
+                        photo: 'https://via.placeholder.com/100',
+                        type: 'manual',
+                        joinedAt: Date.now(),
+                        status: 'active',
+                        breakUntil: 0,
+                        cutTime: 0,
+                        cutBy: ''
+                    }).then(() => {
+                        alert("ম্যানুয়াল সিরিয়াল এন্ট্রি সফল হয়েছে!");
+                        document.getElementById('manualEntryForm').reset();
+                    });
+                });
+            });
+        });
+
+        // Load Queue & Live Timers
+        function loadQueue() {
+            db.ref('queue').on('value', snapshot => {
+                const tbody = document.getElementById('queueTableBody');
+                tbody.innerHTML = '';
+                let items = [];
+                snapshot.forEach(child => {
+                    items.push(child.val());
+                });
+
+                // Sort by joinedAt
+                items.sort((a, b) => a.joinedAt - b.joinedAt);
+                document.getElementById('totalQueueCount').innerText = items.filter(i => i.status === 'active' || i.status === 'cutting').length;
+
+                if (items.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-slate-400">বর্তমানে কোনো সিরিয়াল নেই।</td></tr>`;
+                    return;
+                }
+
+                let activePosition = 0;
+                let topThreeNames = [];
+
+                items.forEach((item, index) => {
+                    if (item.status === 'active' || item.status === 'cutting') {
+                        activePosition++;
+                        if (activePosition <= 3) {
+                            topThreeNames.push({ pos: activePosition, name: item.name });
+                        }
+
+                        const tr = document.createElement('tr');
+                        tr.className = "hover:bg-slate-700/30 transition border-b border-slate-700/50";
+                        
+                        let timeInQueue = Math.floor((Date.now() - item.joinedAt) / 1000);
+                        let hrs = Math.floor(timeInQueue / 3600);
+                        let mins = Math.floor((timeInQueue % 3600) / 60);
+                        let secs = timeInQueue % 60;
+                        let timeStr = `${hrs > 0 ? hrs + ' ঘণ্টা ' : ''}${mins} মিনিট ${secs} সেকেন্ড`;
+
+                        let statusBadge = `<span class="px-2 py-1 bg-emerald-500/20 text-emerald-300 rounded text-xs font-semibold">সক্রিয়</span>`;
+                        let actionBtn = `<button onclick="cutSerial('${item.id}', '${item.name}')" class="bg-rose-600 hover:bg-rose-500 text-white px-3 py-1 rounded text-xs font-bold shadow">সিরিয়াল কাটুন</button>`;
+                        let breakBtn = `<button onclick="takeBreak('${item.id}')" class="bg-amber-600 hover:bg-amber-500 text-white px-2.5 py-1 rounded text-xs font-bold ml-1 shadow">বিরতি (৩০মি)</button>`;
+
+                        if (item.status === 'cutting') {
+                            let cutElapsed = Math.floor((Date.now() - item.cutTime) / 1000);
+                            let remainCut = 600 - cutElapsed; // 10 minutes = 600 seconds
+                            if (remainCut <= 0) {
+                                // Auto remove after 10 mins
+                                db.ref('queue/' + item.id).remove();
+                                return;
+                            }
+                            let rmMin = Math.floor(remainCut / 60);
+                            let rmSec = remainCut % 60;
+                            statusBadge = `<span class="px-2 py-1 bg-rose-500/20 text-rose-300 rounded text-xs font-semibold animate-pulse">কাটা হয়েছে (${rmMin}মি ${rmSec}সে)</span>`;
+                            actionBtn = `<button onclick="restoreSerial('${item.id}')" class="bg-teal-600 hover:bg-teal-500 text-white px-3 py-1 rounded text-xs font-bold shadow">ফিরিয়ে আনুন</button>`;
+                            breakBtn = '';
+                        } else if (item.breakUntil > Date.now()) {
+                            let breakRemain = Math.floor((item.breakUntil - Date.now()) / 1000);
+                            let bmMin = Math.floor(breakRemain / 60);
+                            let bmSec = breakRemain % 60;
+                            statusBadge = `<span class="px-2 py-1 bg-blue-500/20 text-blue-300 rounded text-xs font-semibold">বিরতিতে (${bmMin}মি ${bmSec}সে)</span>`;
+                            breakBtn = `<span class="text-xs text-slate-400">বিরতি চলছে</span>`;
+                        }
+
+                        tr.innerHTML = `
+                            <td class="p-3 font-bold text-yellow-400">#${activePosition}</td>
+                            <td class="p-3 flex items-center gap-2">
+                                <img src="${item.photo}" class="w-8 h-8 rounded-full object-cover border border-slate-600">
+                                <div>
+                                    <div class="font-semibold text-slate-100">${item.name}</div>
+                                    <div class="text-[10px] text-slate-400">টাইপ: ${item.type === 'online' ? 'অনলাইন' : 'ম্যানুয়াল'}</div>
+                                </div>
+                            </td>
+                            <td class="p-3 text-xs text-cyan-300 font-mono">${timeStr}</td>
+                            <td class="p-3">${statusBadge}</td>
+                            <td class="p-3 text-center flex justify-center items-center gap-1">
+                                ${actionBtn}
+                                ${breakBtn}
+                            </td>
+                        `;
+                        tbody.appendChild(tr);
+                    }
+                });
+
+                // Check Alarm condition for Top 3
+                checkTopThreeAlarm(topThreeNames);
             });
         }
 
-        async function rollLudoDice() {
-            if (!currentLudoRoomId) return;
-            const dice = Math.floor(Math.random() * 6) + 1;
-            document.getElementById('ludoDiceResult').innerText = `ছক্কা: ${dice}`;
+        // Cut Serial Action (10-min countdown window)
+        function cutSerial(id, name) {
+            verifyLocationAndExecute(() => {
+                const cutByUserName = prompt("আপনার নাম লিখুন (কে সিরিয়াল কাটছেন):") || "অন্য রাইডার / এডমিন";
+                db.ref('queue/' + id).update({
+                    status: 'cutting',
+                    cutTime: Date.now(),
+                    cutBy: cutByUserName
+                }).then(() => {
+                    // Log to history
+                    const historyId = db.ref('history').push().key;
+                    db.ref('history/' + historyId).set({
+                        text: `${cutByUserName} কর্তক ${name}-এর সিরিয়াল কাটা হয়েছে।`,
+                        time: Date.now()
+                    });
+                });
+            });
+        }
 
-            db.ref(`ludoRooms/${currentLudoRoomId}`).once('value', async (snap) => {
-                const room = snap.val();
-                if (!room) return;
-                const players = room.players || {};
-                const playerIds = Object.keys(players);
-                const myTurnPlayerId = playerIds[room.turnIndex % playerIds.length];
+        // Restore Serial Action
+        function restoreSerial(id) {
+            verifyLocationAndExecute(() => {
+                db.ref('queue/' + id).update({
+                    status: 'active',
+                    cutTime: 0,
+                    cutBy: ''
+                });
+            });
+        }
 
-                const playerId = myRiderId || 'guest';
-                if (myTurnPlayerId === playerId) {
-                    let newPos = players[playerId].position + dice;
-                    if (newPos > 56) newPos = 56;
-                    await db.ref(`ludoRooms/${currentLudoRoomId}/players/${playerId}`).update({ position: newPos });
-                    await db.ref(`ludoRooms/${currentLudoRoomId}`).update({ turnIndex: room.turnIndex + 1 });
+        // Take Break (30 Mins, once per day)
+        function takeBreak(id) {
+            verifyLocationAndExecute(() => {
+                const breakDuration = 30 * 60 * 1000; // 30 minutes
+                db.ref('queue/' + id).update({
+                    breakUntil: Date.now() + breakDuration
+                }).then(() => {
+                    alert("৩০ মিনিটের বিরতি চালু করা হয়েছে। এই সময়ে আপনার সিরিয়াল কাটা যাবে না।");
+                });
+            });
+        }
+
+        // Load 24-Hour History
+        function loadHistory() {
+            db.ref('history').on('value', snapshot => {
+                const container = document.getElementById('historyContainer');
+                container.innerHTML = '';
+                let histList = [];
+                const twentyFourHoursAgo = Date.now() - (24 * 60 * 60 * 1000);
+
+                snapshot.forEach(child => {
+                    const h = child.val();
+                    if (h.time >= twentyFourHoursAgo) {
+                        histList.push(h);
+                    } else {
+                        // Clean old history
+                        db.ref('history/' + child.key).remove();
+                    }
+                });
+
+                histList.sort((a, b) => b.time - a.time);
+
+                if (histList.length === 0) {
+                    container.innerHTML = `<p class="text-xs text-slate-400 text-center py-2">গত ২৪ ঘণ্টায় কোনো হিস্টরি নেই।</p>`;
+                    return;
+                }
+
+                histList.forEach(h => {
+                    const timeFormatted = new Date(h.time).toLocaleTimeString();
+                    const div = document.createElement('div');
+                    div.className = "bg-slate-900/60 p-2.5 rounded-lg border border-slate-700/70 text-xs flex justify-between items-center";
+                    div.innerHTML = `
+                        <span class="text-slate-200"><i class="fa-solid fa-clock-rotate-left text-rose-400 mr-1.5"></i> ${h.text}</span>
+                        <span class="text-slate-400 font-mono">${timeFormatted}</span>
+                    `;
+                    container.appendChild(div);
+                });
+            });
+        }
+
+        // Audio Alarm System for Top 3 Riders
+        function checkTopThreeAlarm(topList) {
+            // If current user is in top 3 (1, 2, or 3), trigger ringtone alarm
+            if (!currentUserId) return;
+            db.ref('users/' + currentUserId).once('value', snapshot => {
+                if (!snapshot.exists()) return;
+                const myName = snapshot.val().name.toLowerCase();
+                const matched = topList.find(t => t.name.toLowerCase() === myName);
+
+                if (matched && !isAlarmPlaying) {
+                    triggerAlarm(`⚠️ সিরিয়াল পজিশন #${matched.pos}!`, `আপনার নাম সিরিয়ালের ${matched.pos} নম্বরে এসেছে!`);
                 }
             });
         }
 
-        // Initialize GPS & Wall Clock on Load
-        window.onload = () => {
-            updateWallClock();
-            startGPSTracking();
-        };
+        function triggerAlarm(title, text) {
+            isAlarmPlaying = true;
+            document.getElementById('alarmTitle').innerText = title;
+            document.getElementById('alarmText').innerText = text;
+            document.getElementById('alarmBanner').classList.remove('hidden');
+
+            // Web Audio API Beep Sound
+            try {
+                window.AudioContext = window.AudioContext || window.webkitAudioContext;
+                audioContext = new AudioContext();
+                alarmInterval = setInterval(() => {
+                    if (!audioContext) return;
+                    const osc = audioContext.createOscillator();
+                    const gain = audioContext.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.value = 880; // A5 note
+                    gain.gain.setValueAtTime(0.5, audioContext.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.0001, audioContext.currentTime + 0.5);
+                    osc.connect(gain);
+                    gain.connect(audioContext.destination);
+                    osc.start();
+                    osc.stop(audioContext.currentTime + 0.5);
+                }, 1000);
+            } catch (e) {
+                console.log("Audio not supported", e);
+            }
+        }
+
+        function stopAlarm() {
+            isAlarmPlaying = false;
+            document.getElementById('alarmBanner').classList.add('hidden');
+            if (alarmInterval) clearInterval(alarmInterval);
+            if (audioContext) {
+                audioContext.close();
+                audioContext = null;
+            }
+        }
+
+        // Admin Panel Flow
+        function openAdminLogin() {
+            document.getElementById('adminLoginModal').classList.remove('hidden');
+        }
+        function closeAdminLogin() {
+            document.getElementById('adminLoginModal').classList.add('hidden');
+            document.getElementById('adminPassInput').value = '';
+        }
+        function verifyAdminPass() {
+            const pass = document.getElementById('adminPassInput').value;
+            if (pass === ADMIN_PASSWORD) {
+                closeAdminLogin();
+                document.getElementById('adminPanelModal').classList.remove('hidden');
+                loadAdminUsersTable();
+            } else {
+                alert("ভুল পাসওয়ার্ড! সঠিক পাসওয়ার্ড দিন।");
+            }
+        }
+        function closeAdminPanel() {
+            document.getElementById('adminPanelModal').classList.add('hidden');
+        }
+
+        // Admin Location Settings
+        function captureCurrentLocation() {
+            if (document.getElementById('locationLockToggle').checked) {
+                alert("লোকেশন লক অন আছে! প্রথমে লোকেশন লক বন্ধ করে তারপর নতুন জিপিএস সেট করুন।");
+                return;
+            }
+            navigator.geolocation.getCurrentPosition(position => {
+                document.getElementById('adminLat').value = position.coords.latitude;
+                document.getElementById('adminLng').value = position.coords.longitude;
+                alert("বর্তমান জিপিএস লোকেশন সফলভাবে ক্যাপচার করা হয়েছে। এখন 'সেভ করুন' এ ক্লিক করুন।");
+            }, error => {
+                alert("জিপিএস লোকেশন নেওয়া যায়নি।");
+            }, { enableHighAccuracy: true });
+        }
+
+        function saveStandLocation() {
+            const lat = parseFloat(document.getElementById('adminLat').value);
+            const lng = parseFloat(document.getElementById('adminLng').value);
+            const locked = document.getElementById('locationLockToggle').checked;
+
+            db.ref('settings/location').set({ lat, lng, locked }).then(() => {
+                alert("স্ট্যান্ডের জিপিএস লোকেশন এবং লক সেটিংস সফলভাবে সেভ হয়েছে!");
+            });
+        }
+
+        // Admin Leadership Save
+        function saveLeadership() {
+            const leadershipData = {
+                presName: document.getElementById('editPresName').value,
+                presImg: document.getElementById('editPresImg').value,
+                vpName: document.getElementById('editVpName').value,
+                vpImg: document.getElementById('editVpImg').value,
+                secName: document.getElementById('editSecName').value,
+                secImg: document.getElementById('editSecImg').value
+            };
+            db.ref('settings/leadership').set(leadershipData).then(() => {
+                alert("লিডারশিপ প্রোফাইল সফলভাবে আপডেট করা হয়েছে!");
+            });
+        }
+
+        // Admin Notice Save
+        function saveNotice() {
+            const noticeData = {
+                text: document.getElementById('editNoticeText').value,
+                img: document.getElementById('editNoticeImg').value
+            };
+            db.ref('settings/notice').set(noticeData).then(() => {
+                alert("নোটিশ বোর্ড সফলভাবে আপডেট করা হয়েছে!");
+            });
+        }
+
+        // Admin User Management Table
+        function loadAdminUsersTable() {
+            db.ref('users').on('value', snapshot => {
+                const tbody = document.getElementById('adminUserTableBody');
+                tbody.innerHTML = '';
+                snapshot.forEach(child => {
+                    const u = child.val();
+                    const tr = document.createElement('tr');
+                    tr.className = "border-b border-slate-700/50 hover:bg-slate-800";
+                    tr.innerHTML = `
+                        <td class="p-2 font-semibold text-slate-100">${u.name}</td>
+                        <td class="p-2 text-slate-300">${u.phone}</td>
+                        <td class="p-2 text-slate-400 text-[11px]">স্ট্যান্ডার্ড (অ্যাডমিন কন্ট্রোল)</td>
+                        <td class="p-2 text-center">
+                            <button onclick="deleteUser('${u.id}')" class="bg-rose-600 hover:bg-rose-500 text-white px-2 py-1 rounded text-[10px] font-bold">ডিলিট</button>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            });
+        }
+
+        function deleteUser(userId) {
+            if (confirm("আপনি কি নিশ্চিতভাবে এই রাইডারকে ডিলিট করতে চান?")) {
+                db.ref('users/' + userId).remove().then(() => {
+                    alert("রাইডার সফলভাবে মুছে ফেলা হয়েছে।");
+                });
+            }
+        }
     </script>
 </body>
 </html>
