@@ -214,6 +214,21 @@
             font-weight: 700;
         }
 
+        /* Samity Live Match Counter Bar */
+        .samity-status-bar {
+            background: #fffbeb;
+            border: 1px solid #fcd34d;
+            border-radius: 8px;
+            padding: 6px 10px;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 11px;
+            color: #78350f;
+            font-weight: 600;
+        }
+
         /* 7-DAY QUOTA GRID */
         .seven-days-grid {
             display: grid;
@@ -271,6 +286,15 @@
         }
         .pending-badge {
             background: #ef4444;
+            color: white;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 10px;
+            display: inline-block;
+        }
+        .winner-badge {
+            background: #2563eb;
             color: white;
             font-size: 10px;
             font-weight: 700;
@@ -452,23 +476,29 @@
         </div>
 
         <!-- ========================================================= -->
-        <!-- SEPARATE TAN SAMITY (WEEKLY 7-DAY QUOTA & PAYMENT) BOX     -->
+        <!-- SEPARATE TAN SAMITY (WEEKLY GAME & DEPOSIT) CARD          -->
         <!-- ========================================================= -->
         <div class="samity-card">
             <div class="samity-header">
                 <h2>🏆 চন্দ্রিমা বাইকার টান সমিতি</h2>
-                <span style="font-size: 11px; font-weight: 700; background: #92400e; color: white; padding: 2px 8px; border-radius: 10px;">সাপ্তাহিক খেলা: শুক্রবার রাত ৯টা</span>
+                <span style="font-size: 11px; font-weight: 700; background: #92400e; color: white; padding: 2px 8px; border-radius: 10px;">সাপ্তাহিক খেলা</span>
+            </div>
+
+            <!-- SAMITY LIVE MATCH COUNTER BAR -->
+            <div class="samity-status-bar" id="samityStatusBar">
+                <span>🎯 খেলা সম্পন্ন: <strong id="cntCompletedGames">০</strong> | বাকি: <strong id="cntRemainingGames">০</strong></span>
+                <span>👥 মোট সদস্য: <span id="cntTotalMembers">০</span> (বিজয়ী: <span id="cntWinners" style="color:var(--primary);">০</span>, অপেক্ষমাণ: <span id="cntWaitings" style="color:#b45309;">০</span>)</span>
             </div>
 
             <div style="font-size: 11px; color: #78350f; background: #fffbeb; padding: 6px 8px; border-radius: 6px; margin-bottom: 8px; border: 1px dashed #f59e0b;">
-                💡 নিয়ম: প্রতিদিন <strong>৳২০০</strong> করে ৭ দিনে মোট <strong>৳১৪০০</strong> পরিশোধ থাকলে শুক্রবার রাত ৯টার খেলায় অংশগ্রহণ করতে পারবেন।
+                💡 নিয়ম: প্রতিদিন <strong>৳২০০</strong> করে ৭ দিনে মোট <strong>৳১৪০০</strong> পরিশোধ থাকতে হবে।
             </div>
 
             <!-- 3 Sub-Tabs inside Tan Samity -->
             <div class="mini-tabs">
-                <div class="mini-tab active" id="tabSamityMembers" onclick="switchSamityTab('members')">👥 সদস্য ও ৭ দিনের কোটা</div>
-                <div class="mini-tab" id="tabSamityPay" onclick="switchSamityTab('pay')">💸 টাকা পাঠান</div>
-                <div class="mini-tab" id="tabSamityReg" onclick="switchSamityTab('reg')">📝 সমিতি রেজিঃ</div>
+                <div class="mini-tab active" id="tabSamityMembers" onclick="switchSamityTab('members')">👥 সদস্য ও হিসাব</div>
+                <div class="mini-tab" id="tabSamityPay" onclick="switchSamityPayTab()">💸 টাকা পাঠান</div>
+                <div class="mini-tab" id="tabSamityReg" onclick="switchSamityRegTab()">📝 সমিতি রেজিঃ</div>
             </div>
 
             <!-- SUB-TAB 1: APPROVED MEMBERS LIST & 7-DAY QUOTA VIEW -->
@@ -482,7 +512,7 @@
                 </div>
             </div>
 
-            <!-- SUB-TAB 2: SEND MONEY / PAYMENT REQUEST (NO TRXID NEEDED) -->
+            <!-- SUB-TAB 2: SEND MONEY / PAYMENT REQUEST -->
             <div id="samityPaySection" style="display: none;">
                 <div style="font-size: 11px; color: #475569; margin-bottom: 6px;">
                     অফিসিয়াল পেমেন্ট নাম্বার: <strong id="assocDefaultPayNum" style="color: #dc2626;">01719592128</strong> (বিকাশ/নগদ)
@@ -501,7 +531,7 @@
                     <img id="samityTargetImg" src="" style="width: 34px; height: 34px; border-radius: 50%; object-fit: cover; border: 1.5px solid #059669;">
                     <div style="font-size: 12px;">
                         <strong id="samityTargetName" style="color: #065f46;">নাম</strong>
-                        <div style="font-size: 10px; color: #047857;">✅ অনুমোদিত সদস্য | বর্তমান জমা: <strong id="samityTargetPaid">৳০</strong> / বাকি: <strong id="samityTargetDue" style="color:#dc2626;">৳১৪০০</strong></div>
+                        <div style="font-size: 10px; color: #047857;">✅ অনুমোদিত সদস্য | বর্তমান জমা: <strong id="samityTargetPaid">৳০</strong></div>
                     </div>
                 </div>
 
@@ -529,27 +559,29 @@
 
             <!-- SUB-TAB 3: SEPARATE TAN SAMITY REGISTRATION -->
             <div id="samityRegSection" style="display: none;">
-                <p style="font-size: 11px; color: #92400e; margin-bottom: 6px; font-weight: 600;">
-                    * এটি শুধুমাত্র "চন্দ্রিমা বাইকার টান সমিতি"-এর জন্য আলাদা রেজিস্ট্রেশন। অ্যাডমিন এপ্রুভ করার পর আপনি সদস্য তালিকায় যুক্ত হবেন।
+                <p id="samityRegNoticeText" style="font-size: 11px; color: #92400e; margin-bottom: 6px; font-weight: 600;">
+                    * এটি শুধুমাত্র "চন্দ্রিমা বাইকার টান সমিতি"-এর জন্য আলাদা রেজিস্ট্রেশন।
                 </p>
-                <div class="form-group">
-                    <label class="form-label">পূর্ণ নাম (বাধ্যতামূলক)</label>
-                    <input type="text" id="samityRegName" class="form-control" placeholder="আপনার পূর্ণ নাম লিখুন">
+                <div id="samityRegFormContainer">
+                    <div class="form-group">
+                        <label class="form-label">পূর্ণ নাম (বাধ্যতামূলক)</label>
+                        <input type="text" id="samityRegName" class="form-control" placeholder="আপনার পূর্ণ নাম লিখুন">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">ফোন নাম্বার (বাধ্যতামূলক)</label>
+                        <input type="tel" id="samityRegPhone" class="form-control" placeholder="১১ ডিজিটের মোবাইল নাম্বার">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">আপনার ছবি (বাধ্যতামূলক)</label>
+                        <input type="file" id="samityRegPhoto" accept="image/*" class="form-control" style="padding: 4px;">
+                    </div>
+                    <button class="btn btn-success btn-block" onclick="registerTanSamityMember()">💾 সমিতিতে রেজিস্ট্রেশনের আবেদন করুন</button>
                 </div>
-                <div class="form-group">
-                    <label class="form-label">ফোন নাম্বার (বাধ্যতামূলক)</label>
-                    <input type="tel" id="samityRegPhone" class="form-control" placeholder="১১ ডিজিটের মোবাইল নাম্বার">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">আপনার ছবি (বাধ্যতামূলক)</label>
-                    <input type="file" id="samityRegPhoto" accept="image/*" class="form-control" style="padding: 4px;">
-                </div>
-                <button class="btn btn-success btn-block" onclick="registerTanSamityMember()">💾 সমিতিতে রেজিস্ট্রেশনের আবেদন করুন</button>
             </div>
         </div>
 
         <!-- ========================================================= -->
-        <!-- BIKE RIDER SERIAL ENTRY BOXES (SEPARATE FROM SAMITY)      -->
+        <!-- BIKE RIDER SERIAL ENTRY BOXES                             -->
         <!-- ========================================================= -->
         <div class="entry-grid">
             <div class="box-card box-online">
@@ -650,7 +682,16 @@
             <!-- DEDICATED TAN SAMITY ADMIN CONTROL BOX                -->
             <!-- ===================================================== -->
             <div class="admin-box" style="background: #fffbeb; border: 2px solid #f59e0b;">
-                <h4 style="color: #b45309; font-size: 15px;">🏆 চন্দ্রিমা বাইকার টান সমিতি কন্ট্রোল (আলাদা ঘর)</h4>
+                <h4 style="color: #b45309; font-size: 15px;">🏆 চন্দ্রিমা বাইকার টান সমিতি কন্ট্রোল</h4>
+
+                <!-- Samity Registration Toggle Switch -->
+                <div class="switch-row" style="background: #fef3c7; border-color: #fcd34d;">
+                    <div>
+                        <strong style="font-size: 12px; color: #92400e;">নতুন সমিতি রেজিস্ট্রেশন ফর্ম অন/অফ (সুইচ)</strong>
+                        <div style="font-size: 10px; color: #78350f;">বন্ধ থাকলে ব্যবহারকারীরা সেকেন্ড রাউন্ডের নোটিশ দেখতে পাবেন।</div>
+                    </div>
+                    <input type="checkbox" id="samityRegToggleSwitch" onchange="toggleSamityRegStatus(this)" style="width: 20px; height: 20px; cursor: pointer;">
+                </div>
 
                 <!-- 1. Samity Pending Registration Approvals -->
                 <div style="margin-bottom: 10px; background: white; padding: 8px; border-radius: 8px; border: 1px solid #fde68a;">
@@ -664,13 +705,13 @@
                     <div id="adminSamityPendingPayList" style="margin-top: 5px;">লোড হচ্ছে...</div>
                 </div>
 
-                <!-- 3. Approved Samity Members with Deposit (+) / Minus (-) & 7-Day Quota Auto-Fill -->
+                <!-- 3. Approved Samity Members with Lock, Winner Badge & Balance Control -->
                 <div style="background: white; padding: 8px; border-radius: 8px; border: 1px solid #fde68a;">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-                        <strong style="font-size: 12px; color: #92400e;">৩. অনুমোদিত সদস্য ও ৭ দিনের কোটা কন্ট্রোল:</strong>
+                        <strong style="font-size: 12px; color: #92400e;">৩. অনুমোদিত সদস্য, ব্যালেন্স ও লটারি স্ট্যাটাস কন্ট্রোল:</strong>
                         <button class="btn btn-dark btn-xs" onclick="resetAllMembersNewWeek()">🔄 নতুন সপ্তাহ শুরু করুন</button>
                     </div>
-                    <p style="font-size: 10px; color: #64748b; margin-bottom: 6px;">* টাকার অংক জমা বা মাইনাস করলে অটোমেটিক ২০০ টাকা করে শনি-শুক্র ৭টি ঘর পূরণ/কমবে।</p>
+                    <p style="font-size: 10px; color: #64748b; margin-bottom: 6px;">* প্রতিটি রো তে লক (🔒) আনলক করে এডিট বা ডিলিট করুন। বিজয়ী নির্ধারণ করুন।</p>
                     <div id="adminSamityApprovedList">লোড হচ্ছে...</div>
                 </div>
             </div>
@@ -687,7 +728,7 @@
                 <div id="adminPaymentNumbersList" style="font-size: 12px; color: #1e293b; margin-top: 5px;"></div>
             </div>
 
-            <!-- SPECIAL POWER PANEL (FOR BIKE SERIAL) -->
+            <!-- SPECIAL POWER PANEL -->
             <div class="admin-box" style="background: #f0fdf4; border-color: #10b981;">
                 <h4 style="color: #047857;">🕵️ বাইক রাইডার স্পেশাল পাওয়ার</h4>
                 <div class="form-group">
@@ -793,7 +834,7 @@
             <input type="hidden" id="samityAdjPhone">
             <div id="samityAdjInfo" style="font-size: 12px; background: #fffbeb; padding: 8px; border-radius: 8px; margin-bottom: 8px; border: 1px solid #fde68a;"></div>
             <div class="form-group">
-                <label class="form-label">টাকার পরিমাণ লিখুন (প্রতি ঘর ৳২০০ করে অটো পূরণ হবে)</label>
+                <label class="form-label">টাকার পরিমাণ লিখুন</label>
                 <input type="number" id="samityAdjAmount" class="form-control" placeholder="২০০ / ৪০০ / ১৪০০">
             </div>
             <div style="display: flex; gap: 6px; margin-top: 10px;">
@@ -881,15 +922,15 @@
 
         let standSettings = { name: "চন্দ্রিমা বাইক স্ট্যান্ড", lat: null, lng: null };
         
-        // Bike Serial Data
         let registeredRiders = {};
         let activeSerials = {};
         let breakLogs = {};
 
-        // Separate Tan Samity Data
+        // Tan Samity State
         let samityApprovedMembers = {};
         let samityPendingMembers = {};
         let samityPendingPayments = {};
+        let samityConfig = { registrationOpen: true };
         let expandedSamityMemberPhone = null;
 
         let paymentNumbers = ["01719592128"];
@@ -903,7 +944,7 @@
 
         const DAYS_LIST = ["শনি", "রবি", "সোম", "মঙ্গল", "বুধ", "বৃহঃ", "শুক্র"];
         const DAILY_QUOTA = 200;
-        const WEEKLY_TOTAL_QUOTA = 1400; // 7 days * 200 = 1400
+        const WEEKLY_TOTAL_QUOTA = 1400;
 
         function playRingtoneBeep() {
             try {
@@ -1150,11 +1191,18 @@
             }
         });
 
-        // Tan Samity Listeners (Completely Separate)
+        // Tan Samity Listeners
+        db.ref('tanSamity/config').on('value', (snap) => {
+            samityConfig = snap.val() || { registrationOpen: true };
+            document.getElementById("samityRegToggleSwitch").checked = samityConfig.registrationOpen !== false;
+            updateSamityRegSectionUI();
+        });
+
         db.ref('tanSamity/approvedMembers').on('value', (snap) => {
             samityApprovedMembers = snap.val() || {};
             renderSamityMembersList();
             renderAdminSamityApprovedList();
+            updateSamityStatusBar();
             autoCheckSamityMember(false);
         });
 
@@ -1221,7 +1269,7 @@
         });
 
         // ==========================================
-        // 8. TAN SAMITY LOGIC (7-DAY QUOTA & PAYMENT)
+        // 8. TAN SAMITY LOGIC (UPDATED WITH NEW FEATURES)
         // ==========================================
         function switchSamityTab(tab) {
             document.getElementById("tabSamityMembers").classList.toggle("active", tab === 'members');
@@ -1233,7 +1281,52 @@
             document.getElementById("samityRegSection").style.display = tab === 'reg' ? 'block' : 'none';
         }
 
-        // Calculate 7 days breakdown from total weeklyPaid (each day = 200 Tk)
+        function switchSamityPayTab() {
+            if (!myLocalRiderPhone || !samityApprovedMembers[myLocalRiderPhone]) {
+                showToast("⚠️ টান সমিতিতে আপনার নম্বর অনুমোদিত না থাকলে টাকা পাঠানোর অপশন কাজ করবে না।", "error");
+            }
+            switchSamityTab('pay');
+        }
+
+        function switchSamityRegTab() {
+            if (samityConfig.registrationOpen === false) {
+                showToast("⚠️ বর্তমানে টান সমিতির খেলা রানিং চলতেছে তাই নতুন রেজিস্ট্রেশন বন্ধ রয়েছে।", "info");
+            }
+            switchSamityTab('reg');
+        }
+
+        function updateSamityRegSectionUI() {
+            const formContainer = document.getElementById("samityRegFormContainer");
+            const noticeText = document.getElementById("samityRegNoticeText");
+            if (samityConfig.registrationOpen === false) {
+                formContainer.style.display = "none";
+                noticeText.innerHTML = `⚠️ বর্তমানে টান সমিতির খেলা রানিং চলতেছে তাই নতুন রেজিস্ট্রেশন বন্ধ রয়েছে। পরবর্তীতে সেকেন্ড রাউন্ডের জন্য প্রস্তুত থাকুন, ধন্যবাদ।`;
+                noticeText.style.color = "#dc2626";
+            } else {
+                formContainer.style.display = "block";
+                noticeText.innerHTML = `* এটি শুধুমাত্র "চন্দ্রিমা বাইকার টান সমিতি"-এর জন্য আলাদা রেজিস্ট্রেশন। অ্যাডমিন এপ্রুভ করার পর আপনি সদস্য তালিকায় যুক্ত হবেন।`;
+                noticeText.style.color = "#92400e";
+            }
+        }
+
+        function updateSamityStatusBar() {
+            const members = Object.values(samityApprovedMembers);
+            const total = members.length;
+            let winners = 0;
+            let waitings = 0;
+
+            members.forEach(m => {
+                if (m.isWinner) winners++;
+                else waitings++;
+            });
+
+            document.getElementById("cntTotalMembers").innerText = total;
+            document.getElementById("cntWinners").innerText = winners;
+            document.getElementById("cntWaitings").innerText = waitings;
+            document.getElementById("cntCompletedGames").innerText = winners;
+            document.getElementById("cntRemainingGames").innerText = Math.max(0, total - winners);
+        }
+
         function calculateSevenDaysQuota(weeklyPaid) {
             let remaining = Math.max(0, Number(weeklyPaid) || 0);
             let days = [];
@@ -1286,15 +1379,17 @@
             document.getElementById("samityTotalMembersCount").innerText = members.length;
 
             if (members.length === 0) {
-                container.innerHTML = `<p style="font-size: 12px; color: #64748b; text-align: center; padding: 10px;">এখনো কোনো অনুমোদিত সদস্য নেই। "সমিতি রেজিঃ" ট্যাব থেকে আবেদন করুন।</p>`;
+                container.innerHTML = `<p style="font-size: 12px; color: #64748b; text-align: center; padding: 10px;">এখনো কোনো অনুমোদিত সদস্য নেই।</p>`;
                 return;
             }
 
             container.innerHTML = members.map((m, index) => {
                 const paid = Number(m.weeklyPaid || 0);
-                const due = Math.max(0, WEEKLY_TOTAL_QUOTA - paid);
-                const isReady = paid >= WEEKLY_TOTAL_QUOTA;
                 const isExpanded = expandedSamityMemberPhone === m.phone;
+                const isWinner = m.isWinner === true;
+
+                // Color coding total amount (Green if >=0, Red if <0)
+                const amtColor = paid < 0 ? '#dc2626' : '#16a34a';
 
                 return `
                     <div class="member-item-card" onclick="toggleMemberQuotaView('${m.phone}')">
@@ -1304,20 +1399,22 @@
                                 <img src="${m.photo || 'https://via.placeholder.com/40'}" style="width: 36px; height: 36px; border-radius: 50%; object-fit: cover; border: 1.5px solid #f59e0b;">
                                 <div>
                                     <div style="font-size: 13px; font-weight: 700; color: #0f172a;">${m.name}</div>
-                                    <div style="font-size: 10px; color: #475569;">📞 ${m.phone} | জমা: <strong style="color:#047857;">৳${paid}</strong> | বাকি: <strong style="color:#dc2626;">৳${due}</strong></div>
+                                    <div style="font-size: 10px; color: #475569;">
+                                        📞 ${m.phone} | টোটাল এমাউন্ট: <strong style="color: ${amtColor};">৳${paid}</strong>
+                                    </div>
                                 </div>
                             </div>
                             <div style="text-align: right;">
-                                ${isReady 
-                                    ? `<span class="ready-badge">✅ খেলায় অংশগ্রহণ করতে প্রস্তুত</span>` 
-                                    : `<span class="pending-badge">⏳ কোটা বাকি (৳${due})</span>`
+                                ${isWinner 
+                                    ? `<span class="winner-badge">🏆 বিজয়ী</span>` 
+                                    : `<span class="pending-badge" style="background:#d97706;">⏳ অপেক্ষমাণ</span>`
                                 }
                                 <div style="font-size: 10px; color: var(--primary); margin-top: 2px;">${isExpanded ? '▲ বন্ধ করুন' : '▼ ৭ দিন দেখুন'}</div>
                             </div>
                         </div>
                         ${isExpanded ? `
                             <div style="margin-top: 8px; padding-top: 6px; border-top: 1px dashed #cbd5e1;">
-                                <div style="font-size: 10px; font-weight: 700; color: #475569; margin-bottom: 3px;">সাপ্তাহিক ৭ দিনের হিসাব (প্রতি ঘর ৳২০০ = মোট ৳১৪০০):</div>
+                                <div style="font-size: 10px; font-weight: 700; color: #475569; margin-bottom: 3px;">সাপ্তাহিক ৭ দিনের হিসাব (প্রতি ঘর ৳২০০):</div>
                                 ${renderSevenDaysGridHTML(paid)}
                             </div>
                         ` : ''}
@@ -1327,6 +1424,11 @@
         }
 
         async function registerTanSamityMember() {
+            if (samityConfig.registrationOpen === false) {
+                showToast("🚫 বর্তমানে টান সমিতির খেলা রানিং থাকায় নতুন রেজিস্ট্রেশন বন্ধ রয়েছে!", "error");
+                return;
+            }
+
             const name = document.getElementById("samityRegName").value.trim();
             const phone = document.getElementById("samityRegPhone").value.trim().replace(/[^0-9]/g, '');
             const photoFile = document.getElementById("samityRegPhoto").files[0];
@@ -1344,7 +1446,7 @@
                 return;
             }
             if (samityPendingMembers[phone]) {
-                showToast("⏳ আপনার আবেদনটি ইতিমধ্যে পেন্ডিং অবস্থায় আছে। অ্যাডমিন এপ্রুভ করার অপেক্ষা করুন।", "info");
+                showToast("⏳ আপনার আবেদনটি ইতিমধ্যে পেন্ডিং অবস্থায় আছে।", "info");
                 return;
             }
 
@@ -1359,7 +1461,7 @@
             document.getElementById("samityRegName").value = "";
             document.getElementById("samityRegPhone").value = "";
             document.getElementById("samityRegPhoto").value = "";
-            showToast("✅ টান সমিতিতে রেজিস্ট্রেশনের আবেদন জমা হয়েছে! অ্যাডমিন এপ্রুভ করলে দেখতে পাবেন।", "success");
+            showToast("✅ টান সমিতিতে রেজিস্ট্রেশনের আবেদন জমা হয়েছে!", "success");
             switchSamityTab('members');
         }
 
@@ -1375,16 +1477,14 @@
             const member = samityApprovedMembers[phone];
             if (member) {
                 const paid = Number(member.weeklyPaid || 0);
-                const due = Math.max(0, WEEKLY_TOTAL_QUOTA - paid);
                 document.getElementById("samityTargetImg").src = member.photo || 'https://via.placeholder.com/40';
                 document.getElementById("samityTargetName").innerText = `${member.name} (${member.phone})`;
                 document.getElementById("samityTargetPaid").innerText = `৳${paid}`;
-                document.getElementById("samityTargetDue").innerText = `৳${due}`;
                 preview.style.display = "flex";
             } else {
                 preview.style.display = "none";
                 if (showErrorToast) {
-                    showToast("❌ এই নম্বরটি সমিতিতে অনুমোদিত নয়! আগে রেজিস্ট্রেশন ও অ্যাপ্রুভ হতে হবে।", "error");
+                    showToast("❌ এই নম্বরটি সমিতিতে অনুমোদিত নয়! সাধারণ দর্শনার্থীরা টাকা পাঠানোর আবেদন করতে পারবেন না।", "error");
                 }
             }
         }
@@ -1402,7 +1502,7 @@
 
             const member = samityApprovedMembers[targetPhone];
             if (!member) {
-                showToast("❌ এই নম্বরটি সমিতিতে অনুমোদিত নয়! অ্যাডমিন অ্যাপ্রুভ করার পর টাকা পাঠান।", "error");
+                showToast("❌ এই নম্বরটি সমিতিতে অনুমোদিত নয়! শুধুমাত্র অনুমোদিত সদস্যরাই টাকা জমা দিতে পারবেন।", "error");
                 return;
             }
 
@@ -1438,7 +1538,7 @@
         }
 
         // ==========================================
-        // 9. BIKE SERIAL ENTRY & ACTIONS
+        // 9. BIKE RIDER ENTRY & ACTIONS
         // ==========================================
         function switchOnlineTab(tab) {
             document.getElementById("tabOnlineEntry").classList.toggle("active", tab === 'entry');
@@ -1807,6 +1907,12 @@
         }
 
         // --- TAN SAMITY ADMIN FUNCTIONS ---
+        async function toggleSamityRegStatus(checkbox) {
+            const isOpen = checkbox.checked;
+            await db.ref('tanSamity/config/registrationOpen').set(isOpen);
+            showToast(isOpen ? "✅ সমিতি রেজিস্ট্রেশন খোলা হয়েছে।" : "🔒 সমিতি রেজিস্ট্রেশন বন্ধ করা হয়েছে।", "info");
+        }
+
         function renderAdminSamityPendingReg() {
             const container = document.getElementById("adminSamityPendingRegList");
             const list = Object.entries(samityPendingMembers);
@@ -1839,6 +1945,8 @@
                 phone: m.phone,
                 photo: m.photo,
                 weeklyPaid: 0,
+                isWinner: false,
+                isLocked: true, // Default locked to prevent accidental touch deletion
                 joinedAt: Date.now()
             });
             await db.ref('tanSamity/pendingMembers/' + phone).remove();
@@ -1890,7 +1998,7 @@
 
             await memberRef.update({ weeklyPaid: newPaid });
             await db.ref('tanSamity/pendingPayments/' + key).update({ status: 'approved' });
-            showToast(`✅ ৳${r.amount} যোগ হয়ে ${mData.name}-এর ৭ দিনের কোটা আপডেট হয়েছে!`, "success");
+            showToast(`✅ ৳${r.amount} যোগ হয়ে ${mData.name}-এর হিসাব আপডেট হয়েছে!`, "success");
         }
 
         async function rejectSamityPayment(key) {
@@ -1908,8 +2016,8 @@
 
             container.innerHTML = list.map((m, idx) => {
                 const paid = Number(m.weeklyPaid || 0);
-                const due = Math.max(0, WEEKLY_TOTAL_QUOTA - paid);
-                const isReady = paid >= WEEKLY_TOTAL_QUOTA;
+                const isWinner = m.isWinner === true;
+                const isLocked = m.isLocked !== false; // Default true
 
                 return `
                     <div style="background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; padding: 8px; margin-bottom: 6px;">
@@ -1919,31 +2027,43 @@
                                 <img src="${m.photo || 'https://via.placeholder.com/30'}" style="width: 30px; height: 30px; border-radius: 50%; object-fit: cover;">
                                 <div>
                                     <strong style="font-size: 12px;">${m.name}</strong> (${m.phone})<br>
-                                    <span style="font-size: 11px; color: #047857; font-weight:700;">জমা: ৳${paid}</span> | 
-                                    <span style="font-size: 11px; color: #dc2626; font-weight:700;">বাকি: ৳${due}</span>
-                                    ${isReady ? `<span class="ready-badge" style="margin-left:4px;">প্রস্তুত</span>` : ''}
+                                    <span style="font-size: 11px; color: ${paid < 0 ? '#dc2626' : '#047857'}; font-weight:700;">টোটাল এমাউন্ট: ৳${paid}</span>
                                 </div>
                             </div>
-                            <div style="display: flex; gap: 4px;">
-                                <button class="btn btn-primary btn-xs" onclick="openSamityAdjustModal('${m.phone}')">💰 জমা / মাইনাস</button>
-                                <button class="btn btn-danger btn-xs" onclick="deleteSamityMember('${m.phone}')">🗑️</button>
+                            <div style="display: flex; gap: 4px; align-items: center;">
+                                <button class="btn ${isWinner ? 'btn-primary' : 'btn-warning'} btn-xs" onclick="toggleSamityWinner('${m.phone}', ${!isWinner})">
+                                    ${isWinner ? '🏆 বিজয়ী (বাদ দিন)' : '⭐ বিজয়ী করুন'}
+                                </button>
+                                <button class="btn btn-info btn-xs" onclick="openSamityAdjustModal('${m.phone}')">💰 জমা/মাইনাস</button>
+                                <button class="btn ${isLocked ? 'btn-dark' : 'btn-danger'} btn-xs" onclick="toggleSamityMemberLock('${m.phone}', ${!isLocked})">
+                                    ${isLocked ? '🔒 লকড' : '🔓 আনলক'}
+                                </button>
+                                <button class="btn btn-danger btn-xs" ${isLocked ? 'disabled style="opacity:0.4; cursor:not-allowed;"' : ''} onclick="deleteSamityMember('${m.phone}', ${isLocked})">🗑️</button>
                             </div>
                         </div>
-                        ${renderSevenDaysGridHTML(paid)}
                     </div>
                 `;
             }).join('');
+        }
+
+        async function toggleSamityWinner(phone, status) {
+            await db.ref('tanSamity/approvedMembers/' + phone).update({ isWinner: status });
+            showToast("✅ লটারি বিজয়ী স্ট্যাটাস আপডেট হয়েছে!", "success");
+        }
+
+        async function toggleSamityMemberLock(phone, lockStatus) {
+            await db.ref('tanSamity/approvedMembers/' + phone).update({ isLocked: lockStatus });
+            showToast(lockStatus ? "🔒 সদস্যকে লক করা হয়েছে।" : "🔓 সদস্যকে আনলক করা হয়েছে।", "info");
         }
 
         function openSamityAdjustModal(phone) {
             const m = samityApprovedMembers[phone];
             if (!m) return;
             const paid = Number(m.weeklyPaid || 0);
-            const due = Math.max(0, WEEKLY_TOTAL_QUOTA - paid);
             document.getElementById("samityAdjPhone").value = phone;
             document.getElementById("samityAdjInfo").innerHTML = `
                 সদস্য: <strong>${m.name}</strong> (${m.phone})<br>
-                বর্তমান জমা: <strong style="color:#047857;">৳${paid}</strong> | বাকি: <strong style="color:#dc2626;">৳${due}</strong>
+                বর্তমান টোটাল এমাউন্ট: <strong style="color:${paid < 0 ? '#dc2626' : '#047857'};">৳${paid}</strong>
             `;
             document.getElementById("samityAdjAmount").value = "";
             document.getElementById("samityAdjustModal").style.display = "block";
@@ -1960,14 +2080,18 @@
             if (!m) return;
 
             let currentPaid = Number(m.weeklyPaid || 0);
-            let newPaid = type === 'add' ? (currentPaid + amt) : Math.max(0, currentPaid - amt);
+            let newPaid = type === 'add' ? (currentPaid + amt) : (currentPaid - amt);
 
             await db.ref('tanSamity/approvedMembers/' + phone).update({ weeklyPaid: newPaid });
             document.getElementById("samityAdjustModal").style.display = "none";
-            showToast(`✅ ${m.name}-এর সাপ্তাহিক জমা আপডেট হয়েছে (মোট: ৳${newPaid})`, "success");
+            showToast(`✅ ${m.name}-এর টোটাল এমাউন্ট আপডেট হয়েছে (মোট: ৳${newPaid})`, "success");
         }
 
-        async function deleteSamityMember(phone) {
+        async function deleteSamityMember(phone, isLocked) {
+            if (isLocked) {
+                showToast("🚫 এই সদস্যটি লক করা আছে। আগে আনলক করুন!", "error");
+                return;
+            }
             if (confirm("আপনি কি নিশ্চিতভাবে এই সদস্যকে টান সমিতি থেকে মুছে ফেলতে চান?")) {
                 await db.ref('tanSamity/approvedMembers/' + phone).remove();
                 showToast("সদস্যকে মুছে ফেলা হয়েছে।", "info");
@@ -1975,13 +2099,14 @@
         }
 
         async function resetAllMembersNewWeek() {
-            if (confirm("নতুন সপ্তাহ শুরু করলে সকলের ৭ দিনের কোটা ৳০ হয়ে যাবে। আপনি কি নিশ্চিত?")) {
+            if (confirm("নতুন সপ্তাহ শুরু করলে সকলের জমানো টাকার হিসাব ও বিজয়ী স্ট্যাটাস রিসেট হয়ে যাবে। আপনি কি নিশ্চিত?")) {
                 const updates = {};
                 Object.keys(samityApprovedMembers).forEach(phone => {
                     updates[phone + '/weeklyPaid'] = 0;
+                    updates[phone + '/isWinner'] = false;
                 });
                 await db.ref('tanSamity/approvedMembers').update(updates);
-                showToast("🔄 নতুন সপ্তাহের জন্য সকলের ৭ দিনের কোটা রিসেট করা হয়েছে!", "success");
+                showToast("🔄 নতুন সপ্তাহের জন্য সকল হিসাব রিসেট করা হয়েছে!", "success");
             }
         }
 
