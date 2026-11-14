@@ -491,7 +491,7 @@
                     <span>👥 মোট সদস্য: <span id="cntTotalMembers">০</span> (বিজয়ী: <span id="cntWinners" style="color:var(--primary);">০</span>, অপেক্ষমাণ: <span id="cntWaitings" style="color:#b45309;">০</span>)</span>
                 </div>
 
-                <div style="font-size: 11px; color: #78350f; background: #fffbeb; padding: 6px 8px; border-radius: 6px; margin-bottom: 8px; border: 1px dashed #f59e0b;">
+                <div id="samityRuleNoticeText" style="font-size: 11px; color: #78350f; background: #fffbeb; padding: 6px 8px; border-radius: 6px; margin-bottom: 8px; border: 1px dashed #f59e0b;">
                     💡 নিয়ম: প্রতিদিন <strong>৳২০০</strong> করে ৭ দিনে মোট <strong>৳১৪০০</strong> পরিশোধ থাকতে হবে।
                 </div>
 
@@ -628,7 +628,7 @@
                         <input type="text" id="manualRiderName" class="form-control" placeholder="শুধুমাত্র নাম দিন">
                     </div>
                     <p style="font-size: 10px; color: #065f46; line-height: 1.3;">
-                        * স্ট্যান্ড সীমানার মধ্যে থাকতে হবে।<br>
+                        * স্ট্যান্ড সীমানার মধ্যে থাকতে হবে。<br>
                         * একই নাম সিরিয়ালে দুইবার চলবে না।
                     </p>
                 </div>
@@ -683,6 +683,18 @@
             <!-- DEDICATED TAN SAMITY ADMIN CONTROL BOX -->
             <div class="admin-box" style="background: #fffbeb; border: 2px solid #f59e0b;">
                 <h4 style="color: #b45309; font-size: 15px;">🏆 চন্দ্রিমা বাইকার টান সমিতি কন্ট্রোল</h4>
+
+                <!-- Daily Quota Amount Config Row with Lock -->
+                <div style="background: #fef3c7; border: 1px solid #fcd34d; padding: 8px; border-radius: 8px; margin-bottom: 8px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                        <strong style="font-size: 12px; color: #92400e;">প্রতিদিনের টান সমিতির টাকার পরিমাণ নির্ধারণ:</strong>
+                        <button class="btn btn-dark btn-xs" id="btnQuotaLock" onclick="toggleQuotaLock()">🔒 লকড</button>
+                    </div>
+                    <div style="display: flex; gap: 6px;">
+                        <input type="number" id="adminDailyQuotaInput" class="form-control" value="200" disabled style="background:#f1f5f9;">
+                        <button class="btn btn-warning btn-xs" id="btnSaveQuota" disabled style="opacity: 0.4; cursor: not-allowed;" onclick="saveDailyQuota()">সেভ করুন</button>
+                    </div>
+                </div>
 
                 <!-- Samity Registration Toggle Switch -->
                 <div class="switch-row" style="background: #fef3c7; border-color: #fcd34d;">
@@ -951,6 +963,7 @@
         let gpsGranted = false, batteryConfirmed = false;
         let isAdminLoggedIn = false;
         let samityResetUnlocked = false; // Safeguard lock for new week reset
+        let quotaUnlocked = false; // Safeguard lock for daily quota edit
 
         let standSettings = { name: "চন্দ্রিমা বাইক স্ট্যান্ড", lat: null, lng: null };
         
@@ -962,7 +975,7 @@
         let samityApprovedMembers = {};
         let samityPendingMembers = {};
         let samityPendingPayments = {};
-        let samityConfig = { registrationOpen: true };
+        let samityConfig = { registrationOpen: true, dailyQuota: 200 };
         let expandedSamityMemberPhone = null;
 
         let paymentNumbers = ["01719592128"];
@@ -975,8 +988,14 @@
         let acknowledgedAlarmKey = "";
 
         const DAYS_LIST = ["শনি", "রবি", "সোম", "মঙ্গল", "বুধ", "বৃহঃ", "শুক্র"];
-        const DAILY_QUOTA = 200;
-        const WEEKLY_TOTAL_QUOTA = 1400;
+
+        function getDailyQuota() {
+            return Number(samityConfig.dailyQuota) || 200;
+        }
+
+        function getWeeklyTotalQuota() {
+            return getDailyQuota() * 7;
+        }
 
         function playRingtoneBeep() {
             try {
@@ -1237,9 +1256,14 @@
 
         // Tan Samity Listeners
         db.ref('tanSamity/config').on('value', (snap) => {
-            samityConfig = snap.val() || { registrationOpen: true };
+            samityConfig = snap.val() || { registrationOpen: true, dailyQuota: 200 };
             document.getElementById("samityRegToggleSwitch").checked = samityConfig.registrationOpen !== false;
+            const quota = getDailyQuota();
+            const totalQuota = getWeeklyTotalQuota();
+            document.getElementById("adminDailyQuotaInput").value = quota;
+            document.getElementById("samityRuleNoticeText").innerHTML = `💡 নিয়ম: প্রতিদিন <strong>৳${quota}</strong> করে ৭ দিনে মোট <strong>৳${totalQuota}</strong> পরিশোধ থাকতে হবে।`;
             updateSamityRegSectionUI();
+            renderSamityMembersList();
         });
 
         db.ref('tanSamity/approvedMembers').on('value', (snap) => {
@@ -1373,11 +1397,12 @@
 
         function calculateSevenDaysQuota(weeklyPaid) {
             let remaining = Math.max(0, Number(weeklyPaid) || 0);
+            const daily = getDailyQuota();
             let days = [];
             for (let i = 0; i < 7; i++) {
-                if (remaining >= DAILY_QUOTA) {
-                    days.push(DAILY_QUOTA);
-                    remaining -= DAILY_QUOTA;
+                if (remaining >= daily) {
+                    days.push(daily);
+                    remaining -= daily;
                 } else if (remaining > 0) {
                     days.push(remaining);
                     remaining = 0;
@@ -1390,12 +1415,13 @@
 
         function renderSevenDaysGridHTML(weeklyPaid) {
             const quotas = calculateSevenDaysQuota(weeklyPaid);
+            const daily = getDailyQuota();
             return `
                 <div class="seven-days-grid">
                     ${DAYS_LIST.map((dayName, idx) => {
                         const val = quotas[idx];
                         let cls = "unpaid";
-                        if (val >= DAILY_QUOTA) cls = "paid";
+                        if (val >= daily) cls = "paid";
                         else if (val > 0) cls = "partial";
                         return `
                             <div class="day-box ${cls}">
@@ -1456,7 +1482,7 @@
                         </div>
                         ${isExpanded ? `
                             <div style="margin-top: 8px; padding-top: 6px; border-top: 1px dashed #cbd5e1;">
-                                <div style="font-size: 10px; font-weight: 700; color: #475569; margin-bottom: 3px;">সাপ্তাহিক ৭ দিনের হিসাব (প্রতি ঘর ৳২০০):</div>
+                                <div style="font-size: 10px; font-weight: 700; color: #475569; margin-bottom: 3px;">সাপ্তাহিক ৭ দিনের হিসাব (প্রতি ঘর ৳${getDailyQuota()}):</div>
                                 ${renderSevenDaysGridHTML(paid)}
                             </div>
                         ` : ''}
@@ -1939,7 +1965,9 @@
             isAdminLoggedIn = false;
             document.getElementById("adminModeBar").style.display = "none";
             samityResetUnlocked = false;
+            quotaUnlocked = false;
             updateSamityResetLockUI();
+            updateQuotaLockUI();
             renderSerialList();
             showToast("অ্যাডমিন মোড বন্ধ করা হয়েছে।", "info");
         }
@@ -1951,6 +1979,47 @@
         }
 
         // --- TAN SAMITY ADMIN ---
+        function toggleQuotaLock() {
+            quotaUnlocked = !quotaUnlocked;
+            updateQuotaLockUI();
+            showToast(quotaUnlocked ? "🔓 টাকার পরিমাণ পরিবর্তনের বাটন আনলক হয়েছে।" : "🔒 টাকার পরিমাণ পরিবর্তনের বাটন লক করা হয়েছে।", "info");
+        }
+
+        function updateQuotaLockUI() {
+            const input = document.getElementById("adminDailyQuotaInput");
+            const saveBtn = document.getElementById("btnSaveQuota");
+            const lockBtn = document.getElementById("btnQuotaLock");
+            if (quotaUnlocked) {
+                input.disabled = false;
+                input.style.background = "#fff";
+                saveBtn.disabled = false;
+                saveBtn.style.opacity = "1";
+                saveBtn.style.cursor = "pointer";
+                lockBtn.innerText = "🔓 আনলকড";
+                lockBtn.className = "btn btn-danger btn-xs";
+            } else {
+                input.disabled = true;
+                input.style.background = "#f1f5f9";
+                saveBtn.disabled = true;
+                saveBtn.style.opacity = "0.4";
+                saveBtn.style.cursor = "not-allowed";
+                lockBtn.innerText = "🔒 লকড";
+                lockBtn.className = "btn btn-dark btn-xs";
+            }
+        }
+
+        async function saveDailyQuota() {
+            const val = Number(document.getElementById("adminDailyQuotaInput").value);
+            if (!val || val <= 0) {
+                showToast("⚠️ সঠিক টাকার পরিমাণ দিন।", "error");
+                return;
+            }
+            await db.ref('tanSamity/config/dailyQuota').set(val);
+            quotaUnlocked = false;
+            updateQuotaLockUI();
+            showToast(`✅ প্রতিদিনের টান সমিতির পরিমাণ ৳${val} সেট করা হয়েছে!`, "success");
+        }
+
         async function toggleSamityRegStatus(checkbox) {
             const isOpen = checkbox.checked;
             await db.ref('tanSamity/config/registrationOpen').set(isOpen);
