@@ -609,6 +609,9 @@
                             <input type="tel" id="regPhone" class="form-control" placeholder="ফোন নাম্বার">
                         </div>
                         <div class="form-group">
+                            <input type="tel" id="regPhoneConfirm" class="form-control" placeholder="ফোন নাম্বারটি পুনরায় দিন">
+                        </div>
+                        <div class="form-group">
                             <input type="file" id="regPhoto" accept="image/*" class="form-control" style="padding: 4px;">
                         </div>
                     </div>
@@ -1620,10 +1623,19 @@
         async function registerNewRider() {
             const name = document.getElementById("regName").value.trim();
             const phone = document.getElementById("regPhone").value.trim().replace(/[^0-9]/g, '');
+            const phoneConfirm = document.getElementById("regPhoneConfirm").value.trim().replace(/[^0-9]/g, '');
             const photoFile = document.getElementById("regPhoto").files[0];
 
-            if (!name || !phone || !photoFile) {
-                showToast("⚠️ নাম, ফোন নাম্বার এবং ছবি তিনটিই বাধ্যতামূলক!", "error");
+            if (!name || !phone || !phoneConfirm || !photoFile) {
+                showToast("⚠️ নাম, ফোন নাম্বার (দুইবার), এবং ছবি সবগুলোই বাধ্যতামূলক!", "error");
+                return;
+            }
+            if (phone !== phoneConfirm) {
+                showToast("❌ দুটি ফোন নাম্বার একই হতে হবে! দয়া করে মিলিয়ে লিখুন।", "error");
+                return;
+            }
+            if (phone.length < 11) {
+                showToast("⚠️ সঠিক ১১ ডিজিটের মোবাইল নাম্বার দিন।", "error");
                 return;
             }
             if (registeredRiders[phone]) {
