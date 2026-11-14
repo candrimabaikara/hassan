@@ -705,11 +705,14 @@
                     <div id="adminSamityPendingPayList" style="margin-top: 5px;">লোড হচ্ছে...</div>
                 </div>
 
-                <!-- 3. Approved Samity Members with Lock, Winner Badge & Balance Control -->
+                <!-- 3. Approved Samity Members with Lock, Winner Badge, Edit & Balance Control -->
                 <div style="background: white; padding: 8px; border-radius: 8px; border: 1px solid #fde68a;">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
                         <strong style="font-size: 12px; color: #92400e;">৩. অনুমোদিত সদস্য, ব্যালেন্স ও লটারি স্ট্যাটাস কন্ট্রোল:</strong>
-                        <button class="btn btn-dark btn-xs" onclick="resetAllMembersNewWeek()">🔄 নতুন সপ্তাহ শুরু করুন</button>
+                        <div style="display: flex; gap: 4px; align-items: center;">
+                            <button class="btn btn-dark btn-xs" id="btnSamityResetLock" onclick="toggleSamityResetLock()">🔒 রিসেট লকড</button>
+                            <button class="btn btn-danger btn-xs" id="btnSamityResetAction" style="opacity: 0.4; cursor: not-allowed;" onclick="resetAllMembersNewWeek()">🔄 নতুন সপ্তাহ</button>
+                        </div>
                     </div>
                     <p style="font-size: 10px; color: #64748b; margin-bottom: 6px;">* প্রতিটি রো তে লক (🔒) আনলক করে এডিট বা ডিলিট করুন। বিজয়ী নির্ধারণ করুন।</p>
                     <div id="adminSamityApprovedList">লোড হচ্ছে...</div>
@@ -845,6 +848,30 @@
         </div>
     </div>
 
+    <!-- SAMITY APPROVED MEMBER EDIT MODAL (FOR MID-GAME REPLACEMENT / EDIT) -->
+    <div class="modal-backdrop" id="samityMemberEditModal" style="z-index: 6000;">
+        <div class="modal-card" style="max-width: 400px;">
+            <h4 style="color: #b45309; margin-bottom: 8px;">✏️ টান সমিতি সদস্য তথ্য পরিবর্তন</h4>
+            <input type="hidden" id="editSamityPhoneKey">
+            <div class="form-group">
+                <label class="form-label">সদস্যের নাম</label>
+                <input type="text" id="editSamityName" class="form-control">
+            </div>
+            <div class="form-group">
+                <label class="form-label">ফোন নাম্বার</label>
+                <input type="tel" id="editSamityPhoneNum" class="form-control">
+            </div>
+            <div class="form-group">
+                <label class="form-label">নতুন ছবি (ঐচ্ছিক - পরিবর্তন করতে চাইলে)</label>
+                <input type="file" id="editSamityPhoto" accept="image/*" class="form-control">
+            </div>
+            <div style="display: flex; gap: 6px; margin-top: 10px;">
+                <button class="btn btn-success" style="flex: 1;" onclick="saveSamityMemberEdit()">💾 সেভ করুন</button>
+                <button class="btn btn-dark" onclick="document.getElementById('samityMemberEditModal').style.display='none'">বাতিল</button>
+            </div>
+        </div>
+    </div>
+
     <!-- RIDER INFO EDIT MODAL -->
     <div class="modal-backdrop" id="riderEditModal" style="z-index: 6000;">
         <div class="modal-card" style="max-width: 400px;">
@@ -923,6 +950,7 @@
         let userLat = null, userLng = null;
         let gpsGranted = false, batteryConfirmed = false;
         let isAdminLoggedIn = false;
+        let samityResetUnlocked = false; // Safeguard lock for new week reset
 
         let standSettings = { name: "চন্দ্রিমা বাইক স্ট্যান্ড", lat: null, lng: null };
         
@@ -1910,6 +1938,8 @@
         function logoutAdminMode() {
             isAdminLoggedIn = false;
             document.getElementById("adminModeBar").style.display = "none";
+            samityResetUnlocked = false;
+            updateSamityResetLockUI();
             renderSerialList();
             showToast("অ্যাডমিন মোড বন্ধ করা হয়েছে।", "info");
         }
@@ -2049,6 +2079,7 @@
                                     ${isWinner ? '🏆 বিজয়ী (বাদ)' : '⭐ বিজয়ী'}
                                 </button>
                                 <button class="btn btn-info btn-xs" onclick="openSamityAdjustModal('${m.phone}')">💰 জমা</button>
+                                <button class="btn btn-primary btn-xs" ${isLocked ? 'disabled style="opacity:0.4; cursor:not-allowed;"' : ''} onclick="openSamityMemberEdit('${m.phone}', ${isLocked})">✏️</button>
                                 <button class="btn ${isLocked ? 'btn-dark' : 'btn-danger'} btn-xs" onclick="toggleSamityMemberLock('${m.phone}', ${!isLocked})">
                                     ${isLocked ? '🔒 লকড' : '🔓 আনলক'}
                                 </button>
@@ -2058,6 +2089,29 @@
                     </div>
                 `;
             }).join('');
+        }
+
+        // --- NEW WEEK RESET LOCK TOGGLE ---
+        function toggleSamityResetLock() {
+            samityResetUnlocked = !samityResetUnlocked;
+            updateSamityResetLockUI();
+            showToast(samityResetUnlocked ? "🔓 নতুন সপ্তাহ রিসেট বাটন আনলক হয়েছে।" : "🔒 নতুন সপ্তাহ রিসেট বাটন লক করা হয়েছে।", "info");
+        }
+
+        function updateSamityResetLockUI() {
+            const lockBtn = document.getElementById("btnSamityResetLock");
+            const actionBtn = document.getElementById("btnSamityResetAction");
+            if (samityResetUnlocked) {
+                lockBtn.innerText = "🔓 আনলকড";
+                lockBtn.className = "btn btn-danger btn-xs";
+                actionBtn.style.opacity = "1";
+                actionBtn.style.cursor = "pointer";
+            } else {
+                lockBtn.innerText = "🔒 রিসেট লকড";
+                lockBtn.className = "btn btn-dark btn-xs";
+                actionBtn.style.opacity = "0.4";
+                actionBtn.style.cursor = "not-allowed";
+            }
         }
 
         async function toggleSamityWinner(phone, status) {
@@ -2101,6 +2155,60 @@
             showToast(`✅ ${m.name}-এর টোটাল এমাউন্ট আপডেট হয়েছে (মোট: ৳${newPaid})`, "success");
         }
 
+        // --- SAMITY MEMBER EDIT (NAME, PHONE, PHOTO) FOR MID-GAME REPLACEMENT ---
+        function openSamityMemberEdit(phone, isLocked) {
+            if (isLocked) {
+                showToast("🚫 এই সদস্যটি লক করা আছে। আগে আনলক করুন!", "error");
+                return;
+            }
+            const m = samityApprovedMembers[phone];
+            if (!m) return;
+            document.getElementById("editSamityPhoneKey").value = phone;
+            document.getElementById("editSamityName").value = m.name;
+            document.getElementById("editSamityPhoneNum").value = m.phone;
+            document.getElementById("editSamityPhoto").value = "";
+            document.getElementById("samityMemberEditModal").style.display = "block";
+        }
+
+        async function saveSamityMemberEdit() {
+            const oldPhone = document.getElementById("editSamityPhoneKey").value;
+            const newName = document.getElementById("editSamityName").value.trim();
+            const newPhone = document.getElementById("editSamityPhoneNum").value.trim().replace(/[^0-9]/g, '');
+            const photoFile = document.getElementById("editSamityPhoto").files[0];
+
+            if (!newName || !newPhone) {
+                showToast("⚠️ নাম এবং ফোন নাম্বার খালি রাখা যাবে না।", "error");
+                return;
+            }
+
+            let photoBase64 = samityApprovedMembers[oldPhone] ? samityApprovedMembers[oldPhone].photo : null;
+            if (photoFile) {
+                photoBase64 = await compressImageToBase64(photoFile, 220);
+            }
+
+            if (newPhone !== oldPhone) {
+                if (samityApprovedMembers[newPhone]) {
+                    showToast("🚫 এই ফোন নাম্বার দিয়ে ইতিমধ্যে অন্য সদস্য রেজিস্টার্ড আছে!", "error");
+                    return;
+                }
+                let data = samityApprovedMembers[oldPhone];
+                data.name = newName;
+                data.phone = newPhone;
+                if (photoBase64) data.photo = photoBase64;
+
+                await db.ref('tanSamity/approvedMembers/' + newPhone).set(data);
+                await db.ref('tanSamity/approvedMembers/' + oldPhone).remove();
+            } else {
+                await db.ref('tanSamity/approvedMembers/' + oldPhone).update({
+                    name: newName,
+                    photo: photoBase64
+                });
+            }
+
+            document.getElementById("samityMemberEditModal").style.display = "none";
+            showToast("✅ সদস্যের তথ্য সফলভাবে আপডেট হয়েছে!", "success");
+        }
+
         async function deleteSamityMember(phone, isLocked) {
             if (isLocked) {
                 showToast("🚫 এই সদস্যটি লক করা আছে। আগে আনলক করুন!", "error");
@@ -2113,6 +2221,10 @@
         }
 
         async function resetAllMembersNewWeek() {
+            if (!samityResetUnlocked) {
+                showToast("⚠️ আগে 'রিসেট লক' বাটনটি আনলক করুন!", "error");
+                return;
+            }
             if (confirm("নতুন সপ্তাহ শুরু করলে সকলের জমানো টাকার হিসাব ও বিজয়ী স্ট্যাটাস রিসেট হয়ে যাবে। আপনি কি নিশ্চিত?")) {
                 const updates = {};
                 Object.keys(samityApprovedMembers).forEach(phone => {
@@ -2120,6 +2232,8 @@
                     updates[phone + '/isWinner'] = false;
                 });
                 await db.ref('tanSamity/approvedMembers').update(updates);
+                samityResetUnlocked = false;
+                updateSamityResetLockUI();
                 showToast("🔄 নতুন সপ্তাহের জন্য সকল হিসাব রিসেট করা হয়েছে!", "success");
             }
         }
@@ -2209,7 +2323,6 @@
                     showToast("🚫 এই ফোন নাম্বার দিয়ে ইতিমধ্যে অন্য রাইডার রেজিস্টার্ড আছে!", "error");
                     return;
                 }
-                // Copy data to new phone key and delete old key
                 let data = registeredRiders[oldPhone];
                 data.name = newName;
                 data.phone = newPhone;
