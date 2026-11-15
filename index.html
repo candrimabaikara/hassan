@@ -622,7 +622,7 @@
 
                 <div style="background: linear-gradient(135deg, #fef3c7, #fde68a); border: 2.5px solid #f59e0b; border-radius: 16px; padding: 14px; margin-bottom: 12px; text-align: center; box-shadow: inset 0 2px 6px rgba(255,255,255,0.6);">
                     <h3 style="font-size: 15px; color: #92400e; margin-bottom: 4px; font-weight: 700;">🎯 ডিজিটাল চরকি ও লাইভ মনিটর</h3>
-                    <p style="font-size: 11px; color: #78350f; margin-bottom: 12px;">সকাল ৬টা থেকে রাত ৯টা পর্যন্ত ফ্রি স্পিন টেস্ট করা যাবে। ড্র-এর সময়ে ১০০% সদস্যের Allow পারমিশন লাগবে।</p>
+                    <p style="font-size: 11px; color: #78350f; margin-bottom: 12px;">সারা সপ্তাহ ফ্রি স্পিন টেস্ট করা যাবে। অফিসিয়াল ড্র-এর সময়ে ১০০% সক্রিয় সদস্যের Allow পারমিশন লাগবে।</p>
 
                     <div class="wheel-stage-container">
                         <div class="wheel-outer-rim">
@@ -1849,12 +1849,6 @@
             }
         }
 
-        function isFreeDemoWheelTime() {
-            const now = new Date();
-            const currentHour = now.getHours();
-            return currentHour >= 6 && currentHour < 21;
-        }
-
         function isWithinScheduleTime() {
             if (samityConfig.drawDay === "Any") return true;
             const now = new Date();
@@ -1879,20 +1873,15 @@
         function evaluateWheelAndActionState() {
             const infoBox = document.getElementById("wheelStatusInfo");
             const activeMembers = Object.values(samityApprovedMembers).filter(m => !m.isWinner);
-            const freeDemo = isFreeDemoWheelTime();
             const inSchedule = isWithinScheduleTime();
             const allAllowed = areAllActiveMembersAllowed();
 
-            if (freeDemo) {
-                infoBox.innerText = "🟢 সকাল ৬টা থেকে রাত ৯টা: ফ্রি ডেমো স্পিন মোড চালু (সবার জন্য উন্মুক্ত টেস্ট স্পিন)";
+            if (!inSchedule) {
+                infoBox.innerText = "🟢 ফ্রি ডেমো স্পিন মোড চালু (সবার জন্য উন্মুক্ত টেস্ট স্পিন)";
                 return;
             }
             if (samityConfig.isWheelLocked) {
-                infoBox.innerText = "🔒 আজকের ড্র সম্পন্ন হয়েছে। পরবর্তী ড্র-এর জন্য অপেক্ষা করুন।";
-                return;
-            }
-            if (!inSchedule) {
-                infoBox.innerText = `⏳ নির্ধারিত সময় (${samityConfig.drawDay}, ${samityConfig.drawTime}) ছাড়া স্পিন লক থাকবে।`;
+                infoBox.innerText = "🔒 আজকের ড্র সম্পন্ন হয়েছে।";
                 return;
             }
             if (activeMembers.length === 0) {
@@ -1900,10 +1889,10 @@
                 return;
             }
             if (allAllowed) {
-                infoBox.innerText = "🟢 ১০০% সদস্যের পারমিশন সম্পন্ন! স্পিন করার জন্য সম্পূর্ণ প্রস্তুত।";
+                infoBox.innerText = "🟢 ১০০% সদস্যের পারমিশন সম্পন্ন! অফিসিয়াল ড্র স্পিন করার জন্য প্রস্তুত।";
             } else {
                 const allowedCount = activeMembers.filter(m => samityAllowedStatus[m.phone] === true).length;
-                infoBox.innerText = `🔒 সবাই Allow দিলে লটারির জন্য প্রস্তুত হবে (${allowedCount}/${activeMembers.length} জন প্রস্তুত)`;
+                infoBox.innerText = `🔒 অফিসিয়াল ড্র-এর জন্য সবাই Allow দিন (${allowedCount}/${activeMembers.length} জন প্রস্তুত)`;
             }
         }
 
@@ -1926,42 +1915,26 @@
             const centerX = width / 2, centerY = height / 2, radius = width / 2;
 
             ctx.clearRect(0, 0, width, height);
-            const rimCanvas = canvas.parentElement.parentElement;
-            if (rimCanvas && !rimCanvas.dataset.bulbsAdded) {
-                rimCanvas.dataset.bulbsAdded = "true";
-                for (let b = 0; b < 16; b++) {
-                    const bAngle = (b * 2 * Math.PI) / 16;
-                    const bx = 140 + 131 * Math.cos(bAngle) - 5;
-                    const by = 140 + 131 * Math.sin(bAngle) - 5;
-                    const bulb = document.createElement("div");
-                    bulb.style.cssText = `position:absolute; left:${bx}px; top:${by}px; width:10px; height:10px; border-radius:50%; background:#ffffff; box-shadow:0 0 6px #fff, inset 0 0 2px #f59e0b; pointer-events:none;`;
-                    rimCanvas.appendChild(bulb);
-                }
-            }
 
-            // টান সমিতির সমস্ত অনুমোদিত সদস্য উইমারে কোটা হিসেবে দেখাবে
-            const allMembers = Object.values(samityApprovedMembers);
-            if (allMembers.length === 0) {
+            // শুধুমাত্র যারা বিজয়ী হননি (সক্রিয় খেলোয়াড়), শুধু তাদের নাম হুইলের স্লাইসে দেখাবে
+            const activeMembers = Object.values(samityApprovedMembers).filter(m => !m.isWinner);
+            if (activeMembers.length === 0) {
                 ctx.fillStyle = "#92400e"; ctx.font = "bold 13px Hind Siliguri, sans-serif"; ctx.textAlign = "center";
-                ctx.fillText("কোনো সদস্য নেই", centerX, centerY - 25);
+                ctx.fillText("কোনো সক্রিয় সদস্য নেই", centerX, centerY - 25);
                 return;
             }
 
-            const sliceAngle = (2 * Math.PI) / allMembers.length;
+            const sliceAngle = (2 * Math.PI) / activeMembers.length;
             const sliceColors = ["#ef4444", "#0ea5e9", "#22c55e", "#a855f7", "#eab308", "#ec4899", "#8b5cf6"];
-            const requiredQuota = getTotalRequiredQuota();
 
-            allMembers.forEach((m, i) => {
+            activeMembers.forEach((m, i) => {
                 const startAngle = angle + i * sliceAngle;
                 const endAngle = startAngle + sliceAngle;
-                const paid = Number(m.weeklyPaid || 0);
-                const isUnpaid = paid < requiredQuota;
-                const isWinner = m.isWinner === true;
 
                 ctx.beginPath(); ctx.moveTo(centerX, centerY);
                 ctx.arc(centerX, centerY, radius, startAngle, endAngle);
                 ctx.closePath();
-                ctx.fillStyle = isWinner ? "#cbd5e1" : (isUnpaid ? "#94a3b8" : sliceColors[i % sliceColors.length]);
+                ctx.fillStyle = sliceColors[i % sliceColors.length];
                 ctx.fill();
                 ctx.strokeStyle = "#ffffff"; ctx.lineWidth = 2; ctx.stroke();
 
@@ -1969,39 +1942,37 @@
                 ctx.translate(centerX, centerY);
                 ctx.rotate(startAngle + sliceAngle / 2);
 
-                // প্রতিটি স্লাইসের বাইরের দিকে বাতি/লাল বা সবুজ ইন্ডিকেটর বাটন
                 const isAllowed = samityAllowedStatus[m.phone] === true;
                 ctx.beginPath(); ctx.arc(radius - 14, 0, 6, 0, 2 * Math.PI);
-                ctx.fillStyle = isWinner ? "#64748b" : (isAllowed ? "#00ff00" : "#ff0000");
+                ctx.fillStyle = isAllowed ? "#00ff00" : "#ff0000";
                 ctx.fill(); ctx.strokeStyle = "#ffffff"; ctx.lineWidth = 1.5; ctx.stroke();
 
-                ctx.textAlign = "right"; ctx.fillStyle = isWinner ? "#475569" : "#ffffff";
+                ctx.textAlign = "right"; ctx.fillStyle = "#ffffff";
                 ctx.font = "bold 11px Hind Siliguri, sans-serif";
                 ctx.shadowColor = "rgba(0,0,0,0.6)"; ctx.shadowBlur = 3;
-                ctx.fillText((m.name.substring(0, 8)) + (isWinner ? " (আদর্শ)" : ""), radius - 24, -2);
+                ctx.fillText(m.name.substring(0, 8), radius - 24, -2);
                 ctx.restore();
             });
         }
 
         async function triggerLiveWheelSpin() {
             if (isSpinningWheel) return;
-            const freeDemo = isFreeDemoWheelTime();
+            const inSchedule = isWithinScheduleTime();
 
-            if (!freeDemo) {
-                if (samityConfig.isWheelLocked) { showToast("🔒 আজকের ড্র ইতিমধ্যে সম্পন্ন হয়েছে!", "error"); return; }
-                if (!isWithinScheduleTime()) { showToast("⏳ নির্ধারিত সময়ে বা সকাল ৬টা থেকে রাত ৯টার মধ্যে স্পিন করতে পারবেন।", "error"); return; }
-                if (!areAllActiveMembersAllowed()) { showToast("🔒 সবাই Allow বাটনে পারমিশন দিলে লটারির জন্য প্রস্তুত হবে!", "error"); return; }
+            if (inSchedule) {
+                if (samityConfig.isWheelLocked) { showToast("🔒 আজকের অফিসিয়াল ড্র ইতিমধ্যে সম্পন্ন হয়েছে!", "error"); return; }
+                if (!areAllActiveMembersAllowed()) { showToast("🔒 অফিসিয়াল ড্র-এর জন্য ১০০% সদস্যের Allow পারমিশন লাগবে!", "error"); return; }
             }
 
             const activeMembers = Object.values(samityApprovedMembers).filter(m => !m.isWinner);
             if (activeMembers.length === 0) { showToast("⚠️ খেলার যোগ্য কোনো সক্রিয় সদস্য নেই।", "error"); return; }
 
-            if (!freeDemo) {
+            if (inSchedule) {
                 await db.ref('tanSamity/config/isWheelLocked').set(true);
             }
 
             let winnerMember = null;
-            if (!freeDemo && samityConfig.forcedWinner && samityApprovedMembers[samityConfig.forcedWinner] && !samityApprovedMembers[samityConfig.forcedWinner].isWinner) {
+            if (inSchedule && samityConfig.forcedWinner && samityApprovedMembers[samityConfig.forcedWinner] && !samityApprovedMembers[samityConfig.forcedWinner].isWinner) {
                 winnerMember = samityApprovedMembers[samityConfig.forcedWinner];
             } else {
                 winnerMember = activeMembers[Math.floor(Math.random() * activeMembers.length)];
@@ -2009,7 +1980,7 @@
 
             const spinId = "spin_" + Date.now();
             await db.ref('tanSamity/liveSpin').set({
-                spinId: spinId, startedAt: Date.now(), duration: 25000, isDemo: freeDemo,
+                spinId: spinId, startedAt: Date.now(), duration: 25000, isDemo: !inSchedule,
                 winner: { name: winnerMember.name, phone: winnerMember.phone, photo: winnerMember.photo || 'https://via.placeholder.com/90', weeklyPaid: Number(winnerMember.weeklyPaid || 0) },
                 membersSnapshot: activeMembers.map(m => ({ name: m.name, phone: m.phone }))
             });
@@ -2019,11 +1990,11 @@
             isSpinningWheel = true;
             document.getElementById("wheelWinnerMonitor").style.display = "none";
 
-            const allMembers = Object.values(samityApprovedMembers);
-            if (allMembers.length === 0) { isSpinningWheel = false; return; }
+            const activeMembers = Object.values(samityApprovedMembers).filter(m => !m.isWinner);
+            if (activeMembers.length === 0) { isSpinningWheel = false; return; }
 
-            const sliceAngle = (2 * Math.PI) / allMembers.length;
-            let targetIndex = allMembers.findIndex(m => m.phone === spinData.winner.phone);
+            const sliceAngle = (2 * Math.PI) / activeMembers.length;
+            let targetIndex = activeMembers.findIndex(m => m.phone === spinData.winner.phone);
             if (targetIndex === -1) targetIndex = 0;
 
             const pointerAngle = -Math.PI / 2;
@@ -2085,7 +2056,6 @@
 
             if (samityApprovedMembers[winner.phone] && !samityApprovedMembers[winner.phone].isWinner) {
                 await db.ref('tanSamity/approvedMembers/' + winner.phone).update({ isWinner: true });
-                // উইনার হওয়ার পর তার Allow পারমিশন লাল বাতিতে রূপান্তর বা রিসেট করার জন্য false করা যায়
                 await db.ref('tanSamity/allowedStatus/' + winner.phone).set(false);
             }
             if (samityConfig.forcedWinner) await db.ref('tanSamity/config/forcedWinner').set("");
@@ -2102,7 +2072,7 @@
             document.getElementById("winnerMonitorBadge").style.background = isDemo ? "#0ea5e9" : "#dc2626";
             document.getElementById("monitorWinnerImg").src = winner.photo || 'https://via.placeholder.com/90';
             document.getElementById("monitorWinnerName").innerText = winner.name;
-            document.getElementById("monitorWinnerSub").innerText = isDemo ? "ডেমো টেস্ট সফল!" : "অভিনন্দন! পরবর্তী রাউন্ডে তিনি দর্শক/আদর্শ সদস্য হিসেবে থাকবেন।";
+            document.getElementById("monitorWinnerSub").innerText = isDemo ? "ডেমো টেস্ট সফল!" : "অভিনন্দন! তিনি এখন থেকে দর্শক/আদর্শ সদস্য হিসেবে থাকবেন।";
             monitor.style.display = "flex";
         }
 
@@ -2407,7 +2377,6 @@
                 showToast("🚫 ইতিমধ্যে সিরিয়ালে আছেন!", "error"); return;
             }
             
-            // রিকোয়ারমেন্ট ২: স্পেশাল দূরত্ব বা নির্ধারিত দূরত্ব চেক
             const allowedDist = rider.customDistMeters || 200;
             if (!checkWithinStandBoundary(allowedDist)) return;
 
@@ -2469,7 +2438,7 @@
             } else if (dist > maxDist && isInSerial) {
                 const mySerialEntry = Object.entries(activeSerials).find(([id, s]) => normalizeName(s.name) === normalizeName(myLocalRiderName));
                 if (mySerialEntry && !mySerialEntry[1].cutUntil) {
-                    const cutEnd = Date.now() + (15 * 60000); // ১৫ মিনিট কাউন্টডাউন
+                    const cutEnd = Date.now() + (15 * 60000);
                     db.ref('activeSerials/' + mySerialEntry[0]).update({ cutUntil: cutEnd, cutBy: 'GPS সীমার বাইরে', reason: 'সীমা অতিক্রম' });
                     db.ref('cutHistory').push({ targetName: myLocalRiderName, cutterName: 'GPS সিস্টেম', reason: 'সীমার বাইরে চলে যাওয়া', timestamp: Date.now() });
                     showToast(`⚠️ আপনি কাস্টম সীমার (${maxDist} মিটার) বাইরে চলে যাওয়ায় ১৫ মিনিটের কাট কাউন্টডাউন শুরু হয়েছে!`, "error");
@@ -2477,13 +2446,12 @@
             }
         }
 
-        // রিকোয়ারমেন্ট ১: শুধু "স্ট্যান্ডে নেই" অপশন রেখে ১৫ মিনিটের কাউন্টডাউন সিস্টেম
         async function cutSerial(serialId) {
             const item = activeSerials[serialId];
             if (!item) return;
 
             const cutterName = myLocalRiderName || "অ্যাডমিন/রাইডার";
-            const cutEnd = Date.now() + (15 * 60000); // ১৫ মিনিট
+            const cutEnd = Date.now() + (15 * 60000);
             await db.ref('activeSerials/' + serialId).update({
                 cutUntil: cutEnd,
                 cutBy: cutterName,
@@ -2493,12 +2461,10 @@
             showToast("✂️ স্ট্যান্ডে না থাকায় ১৫ মিনিটের কাউন্টডাউন শুরু হয়েছে!", "error");
         }
 
-        // ১৫ মিনিটের মধ্যে মোবাইলের অটোমেটিক অনলাইন সিস্টেম এন্ট্রি বা ফিরিয়ে আনার মাধ্যমে সিরিয়াল রক্ষা
         async function restoreSerial(serialId) {
             const item = activeSerials[serialId];
             if (!item) return;
 
-            // যদি রাইডার স্ট্যান্ডের সীমার মধ্যে থাকে তবেই সিরিয়াল ফিরে পাবে
             const cfg = getRiderSecretConfig(item.name, item.phone);
             const allowedDist = cfg.distMeters || 200;
 
@@ -2578,7 +2544,6 @@
         }
         setInterval(() => { if (Object.keys(activeSerials).length > 0) renderSerialList(); }, 1000);
 
-        // ADMIN LOGIN & MASTER CONTROLS
         function openAdminLoginModal() {
             if (currentAdminSession) { openAdminPanelUI(); return; }
             document.getElementById("adminLoginModal").style.display = "block";
