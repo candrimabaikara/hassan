@@ -129,26 +129,26 @@
             background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
             color: #fde047;
             text-align: center;
-            padding: 10px 14px;
+            padding: 12px 14px;
             border-radius: 12px;
             margin-bottom: 8px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.15);
             border: 1px solid rgba(253, 224, 71, 0.3);
             position: relative;
         }
-        .assoc-banner h1 { font-size: 18px; font-weight: 700; display: inline-block; }
+        .assoc-banner h1 { font-size: 18px; font-weight: 700; display: inline-block; position: relative; }
         .assoc-banner p { font-size: 11px; color: #e2e8f0; margin-top: 2px; }
         
-        /* মাস্টার ডট একদম বাম পাশের কর্নারে সেট করা হলো */
+        /* মাস্টার ডট এখন লেখার ঠিক উপরে এবং কালারের সাথে ম্যাচিং করে বসানো হয়েছে */
         .master-dot {
-            position: absolute;
-            top: 6px;
-            left: 10px;
-            font-size: 20px;
+            font-size: 14px;
             color: #fde047;
             cursor: pointer;
             user-select: none;
             transition: color 0.2s;
+            vertical-align: super;
+            margin-left: 4px;
+            display: inline-block;
         }
         .master-dot:hover { color: #ffffff; }
 
@@ -531,9 +531,11 @@
     <div class="container" id="mainApp" style="display: none;">
 
         <div class="assoc-banner">
-            <!-- মাস্টার ডট একদম বাম পাশের কর্নারে সেট করা হলো -->
-            <span class="master-dot" onclick="openMasterAdminPrompt()" title="মাস্টার কন্ট্রোল">•</span>
-            <h1>চন্দ্রিমা যুব উন্নয়ন টান সমিতি</h1>
+            <h1>
+                চন্দ্রিমা যুব উন্নয়ন টান সমিতি
+                <!-- মাস্টার ডট এখন লেখার ঠিক উপরে এবং কালারের সাথে ম্যাচিং করে বসানো হয়েছে -->
+                <span class="master-dot" onclick="openMasterAdminPrompt()" title="মাস্টার কন্ট্রোল">•</span>
+            </h1>
             <p>বাইক রাইডার সিরিয়াল ও সাপ্তাহিক টান সমিতি ব্যবস্থাপনা প্যানেল</p>
         </div>
 
@@ -710,7 +712,6 @@
                     </div>
                 </div>
 
-                <!-- 4 ADMINS PAYMENT SECTION WITH BKASH & NAGAD OPTION -->
                 <div id="samityPaySection" style="display: none;">
                     <p style="font-size: 11px; color: #475569; margin-bottom: 8px;">
                         নিচে নির্দিষ্ট অ্যাডমিনদের বিকাশ/নগদ নম্বর দেওয়া হলো। আপনার পছন্দমতো যেকোনো একজন অ্যাডমিনের কাছে টাকা পাঠিয়ে মাধ্যম (বিকাশ/নগদ) ও নম্বর দিয়ে নিচের তথ্য ফর্ম পূরণ করুন:
@@ -809,7 +810,7 @@
 
                     <div id="onlineEntryForm">
                         <div class="form-group">
-                            <label class="form-label">রেজিস্টার্ড নাম বা নম্বর (২০মাসের মধ্যে থাকলে অটো)</label>
+                            <label class="form-label">রেজিস্টার্ড নাম বা নম্বর</label>
                             <input type="text" id="loginPhone" class="form-control" placeholder="আপনার নাম বা নম্বর দিন">
                         </div>
                     </div>
@@ -844,7 +845,7 @@
                         <input type="text" id="manualRiderName" class="form-control" placeholder="শুধুমাত্র নাম দিন">
                     </div>
                     <p style="font-size: 10px; color: #065f46; line-height: 1.3;">
-                        * ২০০ মিটারের মধ্যে এলে অটো এন্ট্রি হবে。<br>
+                        * কাস্টম সীমার মধ্যে এলে অটো এন্ট্রি হবে。<br>
                         * সীমার বাইরে গেলে অটো সিরিয়াল কাটা যাবে।
                     </p>
                 </div>
@@ -1095,7 +1096,7 @@
                     </div>
                 </div>
 
-                <!-- 11. SINGLE BOX MEMBER MANAGEMENT (WITH DELETE INSTEAD OF SUSPEND) -->
+                <!-- 11. SINGLE BOX MEMBER MANAGEMENT -->
                 <div class="admin-box" id="powerSec11" style="background: white; border: 1px solid #fde68a; margin-bottom: 8px;">
                     <h4>
                         <span id="titlePower11"><span class="power-badge-tag">১১</span> মেম্বার ম্যানেজমেন্ট (টাকা জমা, নাম-ফোন ও ডিলিট)</span>
@@ -1110,40 +1111,16 @@
                     </div>
                 </div>
 
-                <!-- 12. ADMIN 1 PROFILE & PHOTO -->
+                <!-- 12-15 একত্রিত করা হয়েছে: ৪ জন সাব-অ্যাডমিনের প্রোফাইল ও ছবি ম্যানেজমেন্ট -->
                 <div class="admin-box" id="powerSec12" style="background: white; border: 1px solid #fde68a; margin-bottom: 8px;">
                     <h4>
-                        <span id="titlePower12"><span class="power-badge-tag">১২</span> অ্যাডমিন ১ পেমেন্ট প্রোফাইল ও ছবি</span>
+                        <span id="titlePower12"><span class="power-badge-tag">১২</span> ৪ জন সাব-অ্যাডমিনের প্রোফাইল, নাম, নম্বর ও ছবি ম্যানেজমেন্ট</span>
                         <button class="btn btn-dark btn-xs" id="lockPower12" onclick="togglePowerLock(12)">🔒 লকড</button>
                     </h4>
-                    <div id="containerPower12" style="opacity: 0.5; pointer-events: none;" id="adminEditorContainer_admin1"></div>
-                </div>
-
-                <!-- 13. ADMIN 2 PROFILE & PHOTO -->
-                <div class="admin-box" id="powerSec13" style="background: white; border: 1px solid #fde68a; margin-bottom: 8px;">
-                    <h4>
-                        <span id="titlePower13"><span class="power-badge-tag">১৩</span> অ্যাডমিন ২ পেমেন্ট প্রোফাইল ও ছবি</span>
-                        <button class="btn btn-dark btn-xs" id="lockPower13" onclick="togglePowerLock(13)">🔒 লকড</button>
-                    </h4>
-                    <div id="containerPower13" style="opacity: 0.5; pointer-events: none;" id="adminEditorContainer_admin2"></div>
-                </div>
-
-                <!-- 14. ADMIN 3 PROFILE & PHOTO -->
-                <div class="admin-box" id="powerSec14" style="background: white; border: 1px solid #fde68a; margin-bottom: 8px;">
-                    <h4>
-                        <span id="titlePower14"><span class="power-badge-tag">১৪</span> অ্যাডমিন ৩ পেমেন্ট প্রোফাইল ও ছবি</span>
-                        <button class="btn btn-dark btn-xs" id="lockPower14" onclick="togglePowerLock(14)">🔒 লকড</button>
-                    </h4>
-                    <div id="containerPower14" style="opacity: 0.5; pointer-events: none;" id="adminEditorContainer_admin3"></div>
-                </div>
-
-                <!-- 15. ADMIN 4 PROFILE & PHOTO -->
-                <div class="admin-box" id="powerSec15" style="background: white; border: 1px solid #fde68a; margin-bottom: 8px;">
-                    <h4>
-                        <span id="titlePower15"><span class="power-badge-tag">১৫</span> অ্যাডমিন ৪ পেমেন্ট প্রোফাইল ও ছবি</span>
-                        <button class="btn btn-dark btn-xs" id="lockPower15" onclick="togglePowerLock(15)">🔒 লকড</button>
-                    </h4>
-                    <div id="containerPower15" style="opacity: 0.5; pointer-events: none;" id="adminEditorContainer_admin4"></div>
+                    <div id="containerPower12" style="opacity: 0.5; pointer-events: none;">
+                        <p style="font-size: 11px; color: #b45309; margin-bottom: 8px;">* এখান থেকে যেকোনো সাব-অ্যাডমিনের নাম, বিকাশ/নগদ নম্বর এবং প্রোফাইল ছবি আপডেট করতে পারবেন:</p>
+                        <div id="adminFourProfilesUnifiedEditorContainer"></div>
+                    </div>
                 </div>
 
             </div>
@@ -1151,7 +1128,7 @@
             <!-- 16. RIDER SPECIAL POWER -->
             <div class="admin-box" id="powerSec16" style="background: #f0fdf4; border-color: #10b981;">
                 <h4>
-                    <span id="titlePower16"><span class="power-badge-tag">১৬</span> রাইডার স্পেশাল পাওয়ার</span>
+                    <span id="titlePower16"><span class="power-badge-tag">১৬</span> রাইডার স্পেশাল পাওয়ার (দূরত্ব ও সময়)</span>
                     <button class="btn btn-dark btn-xs" id="lockPower16" onclick="togglePowerLock(16)">🔒 লকড</button>
                 </h4>
                 <div id="containerPower16" style="opacity: 0.5; pointer-events: none;">
@@ -1414,9 +1391,9 @@
         let masterPasswordStored = "692372";
         let subAdminCredentials = {
             admin1: { pass: "admin123", assignedPowers: [1, 2, 3, 4, 5, 6, 7] },
-            admin2: { pass: "admin234", assignedPowers: [8, 12, 13] },
-            admin3: { pass: "admin345", assignedPowers: [9, 14, 16] },
-            admin4: { pass: "admin456", assignedPowers: [10, 15, 17, 18, 19, 20, 21, 22] }
+            admin2: { pass: "admin234", assignedPowers: [8, 12] },
+            admin3: { pass: "admin345", assignedPowers: [9, 16] },
+            admin4: { pass: "admin456", assignedPowers: [10, 17, 18, 19, 20, 21, 22] }
         };
 
         let fourAdminProfiles = {
@@ -1573,7 +1550,7 @@
             if (!standSettings.lat || !standSettings.lng) { showToast("⚠️ অ্যাডমিন প্যানেল থেকে স্ট্যান্ডের GPS লোকেশন সেট করুন!", "error"); return false; }
             if (!userLat || !userLng) { showToast("❌ GPS লোকেশন পাওয়া যাচ্ছে না।", "error"); return false; }
             if (getDistanceMeters(userLat, userLng, standSettings.lat, standSettings.lng) > customMaxMeters) {
-                showToast(`🚫 আপনি স্ট্যান্ডের ${customMaxMeters} মিটার সীমানার বাইরে আছেন!`, "error"); return false;
+                showToast(`🚫 আপনি স্ট্যান্ডের অনুমোদিত ${customMaxMeters} মিটার সীমানার বাইরে আছেন!`, "error"); return false;
             }
             return true;
         }
@@ -1660,7 +1637,7 @@
             if (data.fourAdminProfiles) {
                 fourAdminProfiles = data.fourAdminProfiles;
                 renderFourAdminsPaymentCards();
-                renderAdminFourProfilesEditor();
+                renderAdminFourProfilesUnifiedEditor();
             }
         });
 
@@ -2518,6 +2495,9 @@
 
         function getRiderSecretConfig(riderName, phone) {
             let rider = phone ? registeredRiders[phone] : Object.values(registeredRiders).find(r => normalizeName(r.name) === normalizeName(riderName));
+            if (!rider) {
+                rider = Object.values(registeredRiders).find(r => normalizeName(r.name) === normalizeName(riderName));
+            }
             return { cutMin: rider?.customCutMin || 10, distMeters: rider?.customDistMeters || 200, breakMin: rider?.customBreakMin || 30 };
         }
 
@@ -2533,16 +2513,16 @@
 
             if (dist <= maxDist && !isInSerial) {
                 db.ref('activeSerials').push({
-                    name: myLocalRiderName, phone: matchedRider ? matchedRider.phone : '', photo: matchedRider ? matchedRider.photo : '', type: 'auto(200m)', joinedAt: Date.now()
+                    name: myLocalRiderName, phone: matchedRider ? matchedRider.phone : '', photo: matchedRider ? matchedRider.photo : '', type: 'auto('+maxDist+'m)', joinedAt: Date.now()
                 });
-                showToast("🎯 স্ট্যান্ডের সীমানায় (২০০ মিটারের মধ্যে) প্রবেশ করায় স্বয়ংক্রিয়ভাবে সিরিয়াল এন্ট্রি হয়েছে!", "success");
+                showToast(`🎯 স্ট্যান্ডের অনুমোদিত সীমার (${maxDist} মিটারের মধ্যে) ভেতরে থাকায় স্বয়ংক্রিয়ভাবে সিরিয়াল এন্ট্রি হয়েছে!`, "success");
             } else if (dist > maxDist && isInSerial) {
                 const mySerialEntry = Object.entries(activeSerials).find(([id, s]) => normalizeName(s.name) === normalizeName(myLocalRiderName));
                 if (mySerialEntry && !mySerialEntry[1].cutUntil && !mySerialEntry[1].breakCountdownUntil) {
                     const cutEnd = Date.now() + (5 * 60000);
                     db.ref('activeSerials/' + mySerialEntry[0]).update({ cutUntil: cutEnd, cutBy: 'GPS সীমার বাইরে', reason: 'সীমা অতিক্রম' });
                     db.ref('cutHistory').push({ targetName: myLocalRiderName, cutterName: 'GPS সিস্টেম', reason: 'সীমার বাইরে চলে যাওয়া', timestamp: Date.now() });
-                    showToast("⚠️ আপনি স্ট্যান্ড সীমার বাইরে চলে যাওয়ায় ৫ মিনিটের কাট কাউন্টডাউন শুরু হয়েছে!", "error");
+                    showToast(`⚠️ আপনি কাস্টম সীমার (${maxDist} মিটার) বাইরে চলে যাওয়ায় ৫ মিনিটের কাট কাউন্টডাউন শুরু হয়েছে!`, "error");
                 }
             }
         }
@@ -2647,7 +2627,7 @@
                             <div class="serial-num">${pos}</div>
                             <img src="${item.photo || 'https://via.placeholder.com/40'}" class="rider-avatar">
                             <div class="rider-info">
-                                <h4>${item.name} <span class="badge-type ${item.type === 'online' ? 'badge-online' : 'badge-manual'}">${item.type}</span></h4>
+                                <h4>${item.name} <span class="badge-type ${item.type.includes('auto') ? 'badge-online' : 'badge-manual'}">${item.type}</span></h4>
                                 <div class="live-timer">⏱️ ${formatDuration(now - item.joinedAt)}</div>
                             </div>
                         </div>
@@ -2739,7 +2719,7 @@
 
             let allowedPowers = [];
             if (isMaster) {
-                allowedPowers = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22];
+                allowedPowers = [1,2,3,4,5,6,7,8,9,10,11,12,16,17,18,19,20,21,22];
             } else {
                 allowedPowers = subAdminCredentials[currentAdminSession]?.assignedPowers || [];
             }
@@ -2752,7 +2732,7 @@
                     const hasPower = allowedPowers.includes(p);
                     secEl.style.display = hasPower ? "block" : "none";
                     if (badgeTag) { badgeTag.style.display = isMaster ? "inline-block" : "none"; }
-                    if (p <= 15 && hasPower) anySamityPower = true;
+                    if (p <= 12 && hasPower) anySamityPower = true;
                 }
             }
             document.getElementById("samityMasterWrapperBox").style.display = anySamityPower ? "block" : "none";
@@ -2762,7 +2742,7 @@
             renderAdminSamityApprovedListSingleBox();
             renderAdminIndividualWheelPermissions();
             renderAdminRegisteredListsFourCategories();
-            renderAdminFourProfilesEditor();
+            renderAdminFourProfilesUnifiedEditor();
             populateSpecialRiderDropdown();
         }
 
@@ -2770,9 +2750,8 @@
             1: "১. অফিসিয়াল উইনার ওডো সেটআপ", 2: "২. ড্র-এর সময় ও তারিখ নির্ধারণ", 3: "৩. টাকার পারমিশন ও হুইল লক",
             4: "৪. রেজিস্ট্রেশন অন/অফ এবং টাকার কোটা", 5: "৫. নতুন রেজিস্ট্রেশন আবেদন অনুমোদন", 6: "৬. পেমেন্ট রিকুয়েস্ট এপ্রুভাল (সাধারণ)",
             7: "৭. অ্যাডমিন ১ পেমেন্ট রিসিভ ও এপ্রুভাল", 8: "৮. অ্যাডমিন ২ পেমেন্ট রিসিভ ও এপ্রুভাল", 9: "৯. অ্যাডমিন ৩ পেমেন্ট রিসিভ ও এপ্রুভাল",
-            10: "১০. অ্যাডমিন ৪ পেমেন্ট রিসিভ ও এপ্রুভাল", 11: "১১. মেম্বার ম্যানেজমেন্ট ও ডিলিট", 12: "১২. অ্যাডমিন ১ প্রোফাইল ও ছবি",
-            13: "১৩. অ্যাডমিন ২ প্রোফাইল ও ছবি", 14: "১৪. অ্যাডমিন ৩ প্রোফাইল ও ছবি", 15: "১৫. অ্যাডমিন ৪ প্রোফাইল ও ছবি",
-            16: "১৬. রাইডার স্পেশাল পাওয়ার", 17: "১৭. স্ট্যান্ড নাম ও GPS লোকেশন", 18: "১৮. সভাপতি প্যানেল",
+            10: "১০. অ্যাডমিন ৪ পেমেন্ট রিসিভ ও এপ্রুভাল", 11: "১১. মেম্বার ম্যানেজমেন্ট ও ডিলিট", 12: "১২. ৪ জন অ্যাডমিন প্রোফাইল ও ছবি ম্যানেজমেন্ট",
+            16: "১৬. রাইডার স্পেশাল পাওয়ার (দূরত্ব ও সময়)", 17: "১৭. স্ট্যান্ড নাম ও GPS লোকেশন", 18: "১৮. সভাপতি প্যানেল",
             19: "১৯. নোটিশ বোর্ড", 20: "২০. রাইডারের ছবি এডিটিং ও চেঞ্জ", 21: "২১. রাইডারের নাম ও ফোন নাম্বার চেঞ্জ", 22: "২২. রাইডার সাসপেন্ড ও আনসাসপেন্ড"
         };
 
@@ -2783,14 +2762,14 @@
                 const cred = subAdminCredentials[role] || { pass: "", assignedPowers: [] };
                 const assigned = cred.assignedPowers || [];
                 let checkboxesHtml = "";
-                for (let i = 1; i <= 22; i++) {
+                [1,2,3,4,5,6,7,8,9,10,11,12,16,17,18,19,20,21,22].forEach(i => {
                     const checked = assigned.includes(i) ? "checked" : "";
                     checkboxesHtml += `
                         <label style="display:inline-flex; align-items:center; gap:3px; background:#f1f5f9; padding:2px 6px; border-radius:5px; font-size:10px; margin:2px; cursor:pointer; border:1px solid #cbd5e1;">
                             <input type="checkbox" class="power-chk-${role}" value="${i}" ${checked}> ${POWER_DESCRIPTIONS[i]}
                         </label>
                     `;
-                }
+                });
                 html += `
                     <div style="background: white; padding: 8px; border-radius: 8px; margin-bottom: 8px; border: 1px solid #cbd5e1;">
                         <div style="display:flex; justify-content:space-between; align-items:center; gap: 6px; flex-wrap:wrap; margin-bottom:6px;">
@@ -2838,25 +2817,27 @@
 
         async function toggleSamityRegStatus(cb) { await db.ref('tanSamity/config/registrationOpen').set(cb.checked); }
 
-        function renderAdminFourProfilesEditor() {
+        function renderAdminFourProfilesUnifiedEditor() {
+            const container = document.getElementById("adminFourProfilesUnifiedEditorContainer");
+            if (!container) return;
+            let html = "";
             ['admin1', 'admin2', 'admin3', 'admin4'].forEach(role => {
-                const container = document.getElementById(`adminEditorContainer_${role}`);
-                if (!container) return;
                 const p = fourAdminProfiles[role] || { name: "", phone: "", photo: "" };
-                container.innerHTML = `
-                    <div style="background:#fff; border:1px solid #cbd5e1; border-radius:8px; padding:8px;">
+                html += `
+                    <div style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:8px; padding:8px; margin-bottom:8px;">
                         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
                             <strong style="color:var(--primary); font-size:12px;">${role.toUpperCase()} পেমেন্ট প্রোফাইল</strong>
                             <button class="btn btn-success btn-xs" onclick="saveSingleAdminProfile('${role}')">💾 সেভ</button>
                         </div>
-                        <div class="form-group" style="margin-bottom:4px;">
-                            <input type="text" id="editAdminName_${role}" value="${p.name}" class="form-control" placeholder="নাম" style="margin-bottom:3px;">
-                            <input type="tel" id="editAdminPhone_${role}" value="${p.phone}" class="form-control" placeholder="বিকাশ/নগদ নম্বর" style="margin-bottom:3px;">
-                            <input type="file" id="editAdminPhotoFile_${role}" accept="image/*" class="form-control" style="padding:3px;">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 4px;">
+                            <input type="text" id="editAdminName_${role}" value="${p.name}" class="form-control" placeholder="নাম">
+                            <input type="tel" id="editAdminPhone_${role}" value="${p.phone}" class="form-control" placeholder="নম্বর">
                         </div>
+                        <input type="file" id="editAdminPhotoFile_${role}" accept="image/*" class="form-control" style="padding:3px;">
                     </div>
                 `;
             });
+            container.innerHTML = html;
         }
 
         async function saveSingleAdminProfile(role) {
@@ -2948,7 +2929,6 @@
             showToast("পেমেন্ট রিকুয়েস্ট বাতিল করা হয়েছে।", "info");
         }
 
-        // POWER 11: SINGLE BOX MEMBER MANAGEMENT (WITH DELETE OPTION)
         function renderAdminSamityApprovedListSingleBox() {
             const list = Object.values(samityApprovedMembers);
             const container = document.getElementById("adminSingleBoxMemberManagement");
