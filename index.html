@@ -712,7 +712,7 @@
                     </div>
                 </div>
 
-                <!-- UPDATED 4 ADMINS PAYMENT SECTION WITH BKASH & NAGAD OPTION -->
+                <!-- 4 ADMINS PAYMENT SECTION WITH BKASH & NAGAD OPTION -->
                 <div id="samityPaySection" style="display: none;">
                     <p style="font-size: 11px; color: #475569; margin-bottom: 8px;">
                         নিচে ৪ জন নির্দিষ্ট অ্যাডমিনের বিকাশ/নগদ নম্বর দেওয়া হলো। আপনার পছন্দমতো যেকোনো একজন অ্যাডমিনের কাছে টাকা পাঠিয়ে মাধ্যম (বিকাশ/নগদ) ও নম্বর দিয়ে নিচের তথ্য ফর্ম পূরণ করুন:
@@ -817,6 +817,10 @@
                         <div class="form-group">
                             <label class="form-label">রাইডারের নাম (বাধ্যতামূলক)</label>
                             <input type="text" id="regName" class="form-control" placeholder="রাইডারের নাম লিখুন">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">ফোন নাম্বার (বাধ্যতামূলক)</label>
+                            <input type="tel" id="regPhone" class="form-control" placeholder="১১ ডিজিটের মোবাইল নাম্বার">
                         </div>
                         <div class="form-group">
                             <label class="form-label">রাইডারের ছবি (বাধ্যতামূলক)</label>
@@ -2268,22 +2272,31 @@
 
         async function registerNewRider() {
             const name = document.getElementById("regName").value.trim();
+            const phone = document.getElementById("regPhone").value.trim().replace(/[^0-9]/g, '');
             const photoFile = document.getElementById("regPhoto").files[0];
-            if (!name || !photoFile) { showToast("⚠️ নাম ও ছবি দিন।", "error"); return; }
-            if (Object.values(registeredRiders).some(r => normalizeName(r.name) === normalizeName(name))) {
-                showToast("🚫 এই নামের রাইডার ইতিমধ্যে আছে!", "error"); return;
+            
+            if (!name || !phone || !photoFile || phone.length < 11) { 
+                showToast("⚠️ নাম, সঠিক ফোন নাম্বার ও ছবি দিন।", "error"); 
+                return; 
+            }
+            if (Object.values(registeredRiders).some(r => normalizeName(r.name) === normalizeName(name) || r.phone === phone)) {
+                showToast("🚫 এই নাম বা ফোন নাম্বারের রাইডার ইতিমধ্যে আছে!", "error"); 
+                return; 
             }
 
             const riderKey = 'r_' + Date.now();
             const base64Img = await compressImageToBase64(photoFile, 220);
             await db.ref('registeredRiders/' + riderKey).set({
-                name, phone: '', photo: base64Img, createdAt: Date.now(), customCutMin: 10, customDistMeters: 200, customBreakMin: 30, lastLat: userLat, lastLng: userLng, lastActiveTime: Date.now()
+                name, phone, photo: base64Img, createdAt: Date.now(), customCutMin: 10, customDistMeters: 200, customBreakMin: 30, lastLat: userLat, lastLng: userLng, lastActiveTime: Date.now()
             });
 
             localStorage.setItem("myRiderPhone", riderKey);
             localStorage.setItem("myRiderName", name);
             myLocalRiderPhone = riderKey; myLocalRiderName = name;
             document.getElementById("loginPhone").value = name;
+            document.getElementById("regName").value = "";
+            document.getElementById("regPhone").value = "";
+            document.getElementById("regPhoto").value = "";
             showToast("✅ রাইডার রেজিস্ট্রেশন সফল!", "success");
             switchOnlineTab('entry');
         }
@@ -2291,7 +2304,7 @@
         function submitOnlineEntry() {
             const inputVal = document.getElementById("loginPhone").value.trim();
             if (!inputVal) { showToast("⚠️ নাম বা নম্বর দিন।", "error"); return; }
-            let rider = registeredRiders[inputVal] || Object.values(registeredRiders).find(r => normalizeName(r.name) === normalizeName(inputVal));
+            let rider = registeredRiders[inputVal] || Object.values(registeredRiders).find(r => normalizeName(r.name) === normalizeName(inputVal) || r.phone === inputVal);
             if (!rider) { showToast("❌ কোনো রাইডার পাওয়া যায়নি!", "error"); return; }
             if (Object.values(activeSerials).some(s => normalizeName(s.name) === normalizeName(rider.name))) {
                 showToast("🚫 ইতিমধ্যে সিরিয়ালে আছেন!", "error"); return;
@@ -2833,7 +2846,10 @@
                 <div class="reg-rider-row">
                     <div style="display:flex; align-items:center; gap:6px;">
                         <img src="${r.photo || 'https://via.placeholder.com/30'}" style="width:28px; height:28px; border-radius:50%; object-fit:cover;">
-                        <strong>${r.name}</strong>
+                        <div>
+                            <strong>${r.name}</strong>
+                            <div style="font-size:10px; color:#475569;">📞 ${r.phone || 'নম্বর নেই'}</div>
+                        </div>
                     </div>
                     <div style="display:flex; gap:4px;">
                         <button class="btn btn-info btn-xs" onclick="openEditBikeRiderModal('${k}')">✏️ এডিট</button>
