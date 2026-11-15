@@ -1069,7 +1069,7 @@
         }
 
         function getWeeklyTotalQuota() {
-            return getDailyQuota() * 7;
+            return Math.round(getDailyQuota() * 7);
         }
 
         function playRingtoneBeep() {
@@ -1647,7 +1647,7 @@
                 const member = samityApprovedMembers[mySelectedSamityPhone];
                 const mName = member ? member.name : "সদস্য";
                 playWelcomeVoice(mName);
-                showToast(`✅ ${mname}, খেলায় অংশগ্রহণের জন্য আপনাকে সুস্বাগতম!`, "success");
+                showToast(`✅ ${mName}, খেলায় অংশগ্রহণের জন্য আপনাকে সুস্বাগতম!`, "success");
             } else {
                 showToast("আপনার Allow স্ট্যাটাস বাতিল করা হয়েছে।", "info");
             }
@@ -1861,7 +1861,7 @@
             showToast("✅ অফিশিয়াল ড্র সময় সেটিংস সেভ হয়েছে!", "success");
         }
 
-        async function registerSamityMember() {
+        async function registerTanSamityMember() {
             if (samityConfig.registrationOpen === false) {
                 showToast("🚫 বর্তমানে টান সমিতির খেলা রানিং থাকায় নতুন রেজিস্ট্রেশন বন্ধ রয়েছে!", "error");
                 return;
@@ -2131,7 +2131,7 @@
         function takeBreak(serialId) {
             const item = activeSerials[serialId];
             if (!item) return;
-            const nameKey = normalizeName(item.name).replace(/[.#$\[\]]/g, '_');
+            const nameKey = normalizeName(item.name).replace/[.#$\[\]]/g, '_');
             if (breakLogs[nameKey]) {
                 showToast(`🚫 "${item.name}" আজ ইতিমধ্যে একবার বিরতি নিয়েছেন!`, "error");
                 return;
