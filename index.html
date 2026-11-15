@@ -18,7 +18,6 @@
             --warning: #f59e0b;
             --danger: #ef4444;
             --dark: #0f172a;
-            --whatsapp: #25d366;
         }
 
         * {
@@ -33,7 +32,7 @@
             background: linear-gradient(135deg, #e0e7ff 0%, #f0f9ff 50%, #ecfdf5 100%);
             color: var(--dark);
             min-height: 100vh;
-            padding-bottom: 70px;
+            padding-bottom: 20px;
         }
 
         #customToast {
@@ -116,7 +115,6 @@
         .btn-danger { background: linear-gradient(135deg, #dc2626, #ef4444); color: white; }
         .btn-info { background: linear-gradient(135deg, #0284c7, #0ea5e9); color: white; }
         .btn-dark { background: #1e293b; color: white; }
-        .btn-whatsapp { background: var(--whatsapp); color: white; }
         .btn-xs { padding: 4px 8px; font-size: 11px; border-radius: 6px; }
         .btn-block { width: 100%; }
 
@@ -151,102 +149,6 @@
             display: inline-block;
         }
         .master-dot:hover { color: #ffffff; }
-
-        /* WHATSAPP FLOATING DOCK BAR */
-        .whatsapp-dock-bar {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: #075e54;
-            color: white;
-            padding: 8px 12px;
-            display: flex;
-            align-items: center;
-            justify-content: space-around;
-            z-index: 4000;
-            box-shadow: 0 -4px 15px rgba(0,0,0,0.3);
-            border-top: 2px solid var(--whatsapp);
-        }
-        .dock-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            cursor: pointer;
-            font-size: 11px;
-            font-weight: 700;
-            color: #e2e8f0;
-            transition: color 0.2s;
-            position: relative;
-        }
-        .dock-item:hover, .dock-item.active { color: #25d366; }
-        .dock-icon { font-size: 20px; line-height: 1; margin-bottom: 2px; }
-        .badge-notify {
-            background: var(--danger);
-            color: white;
-            font-size: 9px;
-            padding: 1px 5px;
-            border-radius: 10px;
-            position: absolute;
-            top: -2px;
-            right: -6px;
-        }
-
-        /* WHATSAPP DRAWER PANEL */
-        .whatsapp-panel {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: #efeae2;
-            z-index: 4500;
-            flex-direction: column;
-        }
-        .wa-header {
-            background: #008069;
-            color: white;
-            padding: 10px 14px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-        .wa-body {
-            flex: 1;
-            overflow-y: auto;
-            padding: 10px;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-        .wa-footer {
-            background: #f0f2f5;
-            padding: 8px 12px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            border-top: 1px solid #d1d7db;
-        }
-        .wa-contact-item {
-            background: white;
-            border-radius: 10px;
-            padding: 8px 10px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-            border: 1px solid #e2e8f0;
-            margin-bottom: 6px;
-        }
-        .wa-chat-bubble {
-            max-width: 75%;
-            padding: 8px 12px;
-            border-radius: 8px;
-            font-size: 12px;
-            position: relative;
-            word-break: break-word;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
-        }
-        .wa-chat-bubble.incoming { background: white; align-self: flex-start; border-top-left-radius: 0; }
-        .wa-chat-bubble.outgoing { background: #d9fdd3; align-self: flex-end; border-top-right-radius: 0; }
 
         .header-card {
             background: linear-gradient(135deg, #312e81 0%, #4338ca 55%, #0284c7 100%);
@@ -527,7 +429,6 @@
         .serial-item.top-1 { background: linear-gradient(to right, #fef2f2, #fff1f2); border-color: #fca5a5; }
         .serial-item.top-2 { background: linear-gradient(to right, #fffbeb, #fef3c7); border-color: #fcd34d; }
         .serial-item.top-3 { background: linear-gradient(to right, #f0fdf4, #dcfce7); border-color: #86efac; }
-        .serial-item.on-break { background: #f3e8ff; border-color: #d8b4fe; }
         .serial-item.is-cut { background: #fee2e2; border: 1.5px dashed #ef4444; }
 
         .rider-left { display: flex; align-items: center; gap: 8px; }
@@ -940,7 +841,7 @@
                         <input type="text" id="manualRiderName" class="form-control" placeholder="শুধুমাত্র নাম দিন">
                     </div>
                     <p style="font-size: 10px; color: #065f46; line-height: 1.3;">
-                        * কাস্টম সীমার মধ্যে এলে অটো এন্ট্রি হবে。<br>
+                        * সীমার মধ্যে থাকলে অটো এন্ট্রি হবে。<br>
                         * সীমার বাইরে গেলে অটো সিরিয়াল কাটা যাবে।
                     </p>
                 </div>
@@ -979,65 +880,6 @@
         <!-- ADMIN ACCESS AREA -->
         <div style="text-align: center; margin-top: 12px; margin-bottom: 40px;">
             <button class="btn btn-dark btn-xs" onclick="openAdminLoginModal()">🔐 সাব-অ্যাডমিন প্যানেল লগইন</button>
-        </div>
-    </div>
-
-    <!-- WHATSAPP FLOATING DOCK BAR -->
-    <div class="whatsapp-dock-bar">
-        <div class="dock-item" onclick="openWaTab('contacts')">
-            <span class="dock-icon">👥</span>
-            <span>সদস্য ও রাইডার</span>
-        </div>
-        <div class="dock-item" onclick="openWaTab('group')">
-            <span class="dock-icon">💬</span>
-            <span>গ্রুপ চ্যাট</span>
-            <span id="waGroupNotifyBadge" class="badge-notify" style="display:none;">0</span>
-        </div>
-        <div class="dock-item" onclick="openWaTab('inbox')">
-            <span class="dock-icon">📬</span>
-            <span>ইনবক্স চ্যাট</span>
-        </div>
-    </div>
-
-    <!-- WHATSAPP DRAWER PANELS -->
-    <div class="whatsapp-panel" id="waPanelContacts">
-        <div class="wa-header">
-            <strong>👥 সমস্ত সদস্য ও রাইডার তালিকা</strong>
-            <button class="btn btn-danger btn-xs" onclick="closeWaPanel()">✕ বন্ধ</button>
-        </div>
-        <div class="wa-body" id="waContactsListContainer"></div>
-    </div>
-
-    <div class="whatsapp-panel" id="waPanelGroup">
-        <div class="wa-header">
-            <strong>💬 চন্দ্রিমা অফিশিয়াল গ্রুপ চ্যাট</strong>
-            <button class="btn btn-danger btn-xs" onclick="closeWaPanel()">✕ বন্ধ</button>
-        </div>
-        <div class="wa-body" id="waGroupChatMessages"></div>
-        <div class="wa-footer">
-            <input type="file" id="waGroupPhotoInput" accept="image/*" style="display:none" onchange="sendWaGroupPhoto(this)">
-            <button class="btn btn-whatsapp btn-xs" onclick="document.getElementById('waGroupPhotoInput').click()" title="ছবি পাঠান">📷</button>
-            <input type="text" id="waGroupInputText" class="form-control" placeholder="গ্রুপে বার্তা লিখুন...">
-            <button id="btnGroupMic" class="btn btn-warning btn-xs" onclick="toggleGroupVoiceRecord()" title="ভয়েস রেকর্ড করুন">🎤</button>
-            <button class="btn btn-success btn-xs" onclick="sendWaGroupMessage()">➤ পাঠান</button>
-        </div>
-    </div>
-
-    <div class="whatsapp-panel" id="waPanelInbox">
-        <div class="wa-header">
-            <div style="display:flex; align-items:center; gap:6px;">
-                <button class="btn btn-dark btn-xs" onclick="openWaTab('contacts')">← ব্যাক</button>
-                <strong id="waInboxTitle">ব্যক্তিগত ইনবক্স</strong>
-            </div>
-            <button class="btn btn-danger btn-xs" onclick="closeWaPanel()">✕ বন্ধ</button>
-        </div>
-        <div class="wa-body" id="waInboxMessages"></div>
-        <div class="wa-footer">
-            <input type="file" id="waInboxPhotoInput" accept="image/*" style="display:none" onchange="sendWaInboxPhoto(this)">
-            <button class="btn btn-whatsapp btn-xs" onclick="document.getElementById('waInboxPhotoInput').click()" title="ছবি পাঠান">📷</button>
-            <input type="text" id="waInboxInputText" class="form-control" placeholder="মেসেজ লিখুন...">
-            <button id="btnInboxMic" class="btn btn-warning btn-xs" onclick="toggleInboxVoiceRecord()" title="ভয়েস রেকর্ড করুন">🎤</button>
-            <button class="btn btn-success btn-xs" onclick="sendWaInboxMessage()">➤ পাঠান</button>
         </div>
     </div>
 
@@ -1374,30 +1216,6 @@
         </div>
     </div>
 
-    <!-- MODAL FOR CUT REASON -->
-    <div class="modal-backdrop" id="cutReasonModal" style="z-index: 6200;">
-        <div class="modal-card" style="max-width: 360px;">
-            <h4 style="color: #dc2626; margin-bottom: 8px;">✂️ সিরিয়াল কাটার কারণ নির্বাচন করুন</h4>
-            <input type="hidden" id="cutReasonSerialId">
-            <p style="font-size: 11px; color: #475569; margin-bottom: 10px;">রাইডার স্ট্যান্ডে না থাকার সঠিক কারণটি মার্ক করুন:</p>
-            <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px;">
-                <label style="background:#f1f5f9; padding:8px; border-radius:8px; font-size:12px; cursor:pointer; border:1px solid #cbd5e1;">
-                    <input type="radio" name="cutReasonGroup" value="notAtStand" checked> 🔴 স্ট্যান্ডে নেই (সরাসরি কাটা যাবে)
-                </label>
-                <label style="background:#fef9c3; padding:8px; border-radius:8px; font-size:12px; cursor:pointer; border:1px solid #fde047;">
-                    <input type="radio" name="cutReasonGroup" value="khabar"> 🍽️ খাবার খেতে গেছেন (৩০ মিনিটের সময় পাবেন)
-                </label>
-                <label style="background:#e0f2fe; padding:8px; border-radius:8px; font-size:12px; cursor:pointer; border:1px solid #bae6fd;">
-                    <input type="radio" name="cutReasonGroup" value="namaz"> 🕌 নামাজ পড়তে গেছেন (৩০ মিনিটের সময় পাবেন)
-                </label>
-            </div>
-            <div style="display: flex; gap: 6px;">
-                <button class="btn btn-danger" style="flex: 1;" onclick="submitCutWithReason()">নিশ্চিত করুন</button>
-                <button class="btn btn-dark" onclick="document.getElementById('cutReasonModal').style.display='none'">বাতিল</button>
-            </div>
-        </div>
-    </div>
-
     <!-- MODAL FOR ADJUST MONEY -->
     <div class="modal-backdrop" id="samityAdjustModal" style="z-index: 6000;">
         <div class="modal-card" style="max-width: 380px;">
@@ -1548,16 +1366,6 @@
         let myLocalRiderPhone = localStorage.getItem("myRiderPhone") || "";
         let myLocalRiderName = localStorage.getItem("myRiderName") || "";
         let myLockedSamityPhone = localStorage.getItem("lockedSamityPhone") || "";
-
-        let activeInboxTargetPhone = "";
-        let unreadGroupMsgCount = 0;
-        let lastGroupMsgTimestamp = localStorage.getItem("lastGroupMsgTs") || Date.now();
-
-        // AUDIO RECORDING VARIABLES
-        let mediaRecorder = null;
-        let audioChunks = [];
-        let isRecordingGroup = false;
-        let isRecordingInbox = false;
 
         let audioCtx = null;
         let alarmInterval = null;
@@ -1725,6 +1533,12 @@
             if (userLat && userLng) badge.innerText = `📍 দূরত্ব: ${getDistanceMeters(userLat, userLng, standSettings.lat, standSettings.lng)} মিটার`;
         }
 
+        function getMyCustomDistanceLimit() {
+            if (!myLocalRiderName) return 200;
+            const rider = Object.values(registeredRiders).find(r => normalizeName(r.name) === normalizeName(myLocalRiderName));
+            return rider?.customDistMeters || 200;
+        }
+
         function checkWithinStandBoundary(customMaxMeters = 200) {
             if (!standSettings.lat || !standSettings.lng) { showToast("⚠️ অ্যাডমিন প্যানেল থেকে স্ট্যান্ডের GPS লোকেশন সেট করুন!", "error"); return false; }
             if (!userLat || !userLng) { showToast("❌ GPS লোকেশন পাওয়া যাচ্ছে না।", "error"); return false; }
@@ -1754,261 +1568,6 @@
         }
 
         function normalizeName(name) { return (name || "").trim().toLowerCase().replace(/\s+/g, ' '); }
-
-        // --- WHATSAPP CHAT, CALL & VOICE RECORDING ---
-        function openWaTab(tab) {
-            document.getElementById("waPanelContacts").style.display = tab === 'contacts' ? 'flex' : 'none';
-            document.getElementById("waPanelGroup").style.display = tab === 'group' ? 'flex' : 'none';
-            document.getElementById("waPanelInbox").style.display = tab === 'inbox' ? 'flex' : 'none';
-
-            if (tab === 'contacts') renderWaContactsList();
-            if (tab === 'group') {
-                unreadGroupMsgCount = 0;
-                document.getElementById("waGroupNotifyBadge").style.display = "none";
-                scrollWaChatToBottom('waGroupChatMessages');
-            }
-        }
-
-        function closeWaPanel() {
-            document.getElementById("waPanelContacts").style.display = 'none';
-            document.getElementById("waPanelGroup").style.display = 'none';
-            document.getElementById("waPanelInbox").style.display = 'none';
-        }
-
-        function renderWaContactsList() {
-            const container = document.getElementById("waContactsListContainer");
-            const samityMembers = Object.values(samityApprovedMembers);
-            const riders = Object.values(registeredRiders);
-
-            let html = `<div style="font-size:11px; font-weight:700; color:#075e54; margin-bottom:4px;">🏆 টান সমিতি সদস্যবৃন্দ:</div>`;
-            if (samityMembers.length === 0) html += `<div style="font-size:11px; color:#64748b; padding:4px;">কোনো সদস্য নেই।</div>`;
-            samityMembers.forEach(m => {
-                html += waContactCardHTML(m.name, m.phone, m.photo);
-            });
-
-            html += `<div style="font-size:11px; font-weight:700; color:#075e54; margin-top:8px; margin-bottom:4px;">🏍️ রেজিস্টার্ড বাইক রাইডারগণ:</div>`;
-            if (riders.length === 0) html += `<div style="font-size:11px; color:#64748b; padding:4px;">কোনো রাইডার নেই।</div>`;
-            riders.forEach(r => {
-                html += waContactCardHTML(r.name, r.phone || r.id, r.photo);
-            });
-
-            container.innerHTML = html;
-        }
-
-        function waContactCardHTML(name, phone, photo) {
-            return `
-                <div class="wa-contact-item">
-                    <div style="display:flex; align-items:center; gap:8px;">
-                        <img src="${photo || 'https://via.placeholder.com/35'}" style="width:36px; height:36px; border-radius:50%; object-fit:cover; border:1.5px solid #25d366;">
-                        <div>
-                            <div style="font-size:12px; font-weight:700; color:#0f172a;">${name}</div>
-                            <div style="font-size:10px; color:#64748b;">📞 ${phone || 'নম্বর নেই'}</div>
-                        </div>
-                    </div>
-                    <div style="display:flex; gap:4px;">
-                        <a href="tel:${phone}" class="btn btn-success btn-xs" title="কল দিন">📞 কল</a>
-                        <button class="btn btn-primary btn-xs" onclick="openWaInbox('${phone}', '${name}')">💬 মেসেজ</button>
-                    </div>
-                </div>
-            `;
-        }
-
-        function openWaInbox(phone, name) {
-            if (!phone) { showToast("এই ইউজারের কোনো ফোন নম্বর নেই।", "error"); return; }
-            activeInboxTargetPhone = phone;
-            document.getElementById("waInboxTitle").innerText = `${name} (${phone})`;
-            document.getElementById("waPanelContacts").style.display = 'none';
-            document.getElementById("waPanelInbox").style.display = 'flex';
-            loadWaInboxMessages();
-        }
-
-        function getChatInboxKey(p1, p2) {
-            return [p1, p2].sort().join('_');
-        }
-
-        function sendWaGroupMessage() {
-            const input = document.getElementById("waGroupInputText");
-            const text = input.value.trim();
-            if (!text) return;
-            const senderName = myLocalRiderName || "সদস্য";
-            db.ref('whatsappGroupChat').push({
-                sender: senderName, phone: myLocalRiderPhone || 'unknown', text: text, type: 'text', timestamp: Date.now()
-            });
-            input.value = "";
-        }
-
-        function sendWaGroupPhoto(input) {
-            const file = input.files[0];
-            if (!file) return;
-            compressImageToBase64(file, 300).then(base64 => {
-                const senderName = myLocalRiderName || "সদস্য";
-                db.ref('whatsappGroupChat').push({
-                    sender: senderName, phone: myLocalRiderPhone || 'unknown', photo: base64, type: 'photo', timestamp: Date.now()
-                });
-                input.value = "";
-            });
-        }
-
-        function sendWaInboxMessage() {
-            const input = document.getElementById("waInboxInputText");
-            const text = input.value.trim();
-            if (!text || !activeInboxTargetPhone) return;
-            const chatKey = getChatInboxKey(myLocalRiderPhone || 'user', activeInboxTargetPhone);
-            const senderName = myLocalRiderName || "সদস্য";
-            db.ref('whatsappInbox/' + chatKey).push({
-                sender: senderName, senderPhone: myLocalRiderPhone || 'user', text: text, type: 'text', timestamp: Date.now()
-            });
-            input.value = "";
-        }
-
-        function sendWaInboxPhoto(input) {
-            const file = input.files[0];
-            if (!file || !activeInboxTargetPhone) return;
-            compressImageToBase64(file, 300).then(base64 => {
-                const chatKey = getChatInboxKey(myLocalRiderPhone || 'user', activeInboxTargetPhone);
-                const senderName = myLocalRiderName || "সদস্য";
-                db.ref('whatsappInbox/' + chatKey).push({
-                    sender: senderName, senderPhone: myLocalRiderPhone || 'user', photo: base64, type: 'photo', timestamp: Date.now()
-                });
-                input.value = "";
-            });
-        }
-
-        // --- VOICE RECORDING LOGIC ---
-        function toggleGroupVoiceRecord() {
-            const btn = document.getElementById("btnGroupMic");
-            if (!isRecordingGroup) {
-                startAudioRecording((audioBase64) => {
-                    const senderName = myLocalRiderName || "সদস্য";
-                    db.ref('whatsappGroupChat').push({
-                        sender: senderName, phone: myLocalRiderPhone || 'unknown', audio: audioBase64, type: 'audio', timestamp: Date.now()
-                    });
-                    showToast("🎙️ ভয়েস মেসেজ পাঠানো হয়েছে!", "success");
-                });
-                isRecordingGroup = true;
-                btn.style.background = "#dc2626";
-                btn.innerText = "⏹️";
-                showToast("🎙️ ভয়েস রেকর্ড হচ্ছে... থামতে আবার ক্লিক করুন।", "info");
-            } else {
-                stopAudioRecording();
-                isRecordingGroup = false;
-                btn.style.background = "#f59e0b";
-                btn.innerText = "🎤";
-            }
-        }
-
-        function toggleInboxVoiceRecord() {
-            const btn = document.getElementById("btnInboxMic");
-            if (!activeInboxTargetPhone) { showToast("আগে কাউকে ইনবক্সে সিলেক্ট করুন।", "error"); return; }
-            if (!isRecordingInbox) {
-                startAudioRecording((audioBase64) => {
-                    const chatKey = getChatInboxKey(myLocalRiderPhone || 'user', activeInboxTargetPhone);
-                    const senderName = myLocalRiderName || "সদস্য";
-                    db.ref('whatsappInbox/' + chatKey).push({
-                        sender: senderName, senderPhone: myLocalRiderPhone || 'user', audio: audioBase64, type: 'audio', timestamp: Date.now()
-                    });
-                    showToast("🎙️ ইনবক্সে ভয়েস মেসেজ পাঠানো হয়েছে!", "success");
-                });
-                isRecordingInbox = true;
-                btn.style.background = "#dc2626";
-                btn.innerText = "⏹️";
-                showToast("🎙️ ভয়েস রেকর্ড হচ্ছে... থামতে আবার ক্লিক করুন।", "info");
-            } else {
-                stopAudioRecording();
-                isRecordingInbox = false;
-                btn.style.background = "#f59e0b";
-                btn.innerText = "🎤";
-            }
-        }
-
-        let currentActiveRecorder = null;
-        function startAudioRecording(onCompleteCallback) {
-            audioChunks = [];
-            navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
-                currentActiveRecorder = new MediaRecorder(stream);
-                currentActiveRecorder.ondataavailable = e => { if (e.data.size > 0) audioChunks.push(e.data); };
-                currentActiveRecorder.onstop = () => {
-                    const blob = new Blob(audioChunks, { type: 'audio/webm' });
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        onCompleteCallback(e.target.result);
-                        stream.getTracks().forEach(track => track.stop());
-                    };
-                    reader.readAsDataURL(blob);
-                };
-                currentActiveRecorder.start();
-            }).catch(err => {
-                showToast("❌ মাইক্রোফোন পারমিশন পাওয়া যায়নি!", "error");
-            });
-        }
-
-        function stopAudioRecording() {
-            if (currentActiveRecorder && currentActiveRecorder.state !== 'inactive') {
-                currentActiveRecorder.stop();
-            }
-        }
-        // ----------------------------------------
-
-        function loadWaInboxMessages() {
-            const container = document.getElementById("waInboxMessages");
-            if (!activeInboxTargetPhone) return;
-            const chatKey = getChatInboxKey(myLocalRiderPhone || 'user', activeInboxTargetPhone);
-            db.ref('whatsappInbox/' + chatKey).on('value', snap => {
-                const msgs = snap.val() || {};
-                let html = "";
-                Object.values(msgs).forEach(m => {
-                    const isMe = m.senderPhone === (myLocalRiderPhone || 'user');
-                    let content = "";
-                    if (m.type === 'photo') content = `<img src="${m.photo}" style="max-width:180px; border-radius:6px;">`;
-                    else if (m.type === 'audio') content = `<audio controls src="${m.audio}" style="max-width:200px; height:32px;"></audio>`;
-                    else content = m.text;
-
-                    html += `
-                        <div class="wa-chat-bubble ${isMe ? 'outgoing' : 'incoming'}">
-                            <div style="font-size:9px; font-weight:700; color:#075e54; margin-bottom:2px;">${m.sender}</div>
-                            <div>${content}</div>
-                            <div style="font-size:8px; color:#64748b; text-align:right; margin-top:2px;">${new Date(m.timestamp).toLocaleTimeString('bn-BD', {hour:'2-digit', minute:'2-digit'})}</div>
-                        </div>
-                    `;
-                });
-                container.innerHTML = html || `<div style="text-align:center; color:#64748b; font-size:11px; margin-top:20px;">কোনো মেসেজ নেই। কথা শুরু করুন!</div>`;
-                scrollWaChatToBottom('waInboxMessages');
-            });
-        }
-
-        db.ref('whatsappGroupChat').on('child_added', snap => {
-            const m = snap.val();
-            const container = document.getElementById("waGroupChatMessages");
-            const isMe = m.phone === (myLocalRiderPhone || 'unknown');
-            let content = "";
-            if (m.type === 'photo') content = `<img src="${m.photo}" style="max-width:180px; border-radius:6px;">`;
-            else if (m.type === 'audio') content = `<audio controls src="${m.audio}" style="max-width:200px; height:32px;"></audio>`;
-            else content = m.text;
-            
-            const div = document.createElement('div');
-            div.className = `wa-chat-bubble ${isMe ? 'outgoing' : 'incoming'}`;
-            div.innerHTML = `
-                <div style="font-size:9px; font-weight:700; color:#075e54; margin-bottom:2px;">${m.sender}</div>
-                <div>${content}</div>
-                <div style="font-size:8px; color:#64748b; text-align:right; margin-top:2px;">${new Date(m.timestamp).toLocaleTimeString('bn-BD', {hour:'2-digit', minute:'2-digit'})}</div>
-            `;
-            container.appendChild(div);
-            scrollWaChatToBottom('waGroupChatMessages');
-
-            if (!isMe && m.timestamp > Number(lastGroupMsgTimestamp)) {
-                unreadGroupMsgCount++;
-                const badge = document.getElementById("waGroupNotifyBadge");
-                badge.innerText = unreadGroupMsgCount;
-                badge.style.display = "inline-block";
-                showToast(`💬 গ্রুপে নতুন মেসেজ: ${m.sender}`, "info");
-            }
-        });
-
-        function scrollWaChatToBottom(elementId) {
-            const el = document.getElementById(elementId);
-            if (el) el.scrollTop = el.scrollHeight;
-        }
-        // ----------------------------------------
 
         // FIREBASE SYNC LISTENERS
         db.ref('standConfig').on('value', (snap) => {
@@ -2062,6 +1621,7 @@
             renderSamityMembersList();
             renderDualPaymentLists();
             evaluateWheelAndActionState();
+            if (!isSpinningWheel) drawWheel(currentWheelAngle);
         });
 
         db.ref('tanSamity/approvedMembers').on('value', (snap) => {
@@ -2089,6 +1649,7 @@
             liveSpinState = snap.val();
             if (!liveSpinState) {
                 document.getElementById("wheelWinnerMonitor").style.display = "none";
+                if (!isSpinningWheel) drawWheel(currentWheelAngle);
                 return;
             }
             const now = Date.now();
@@ -2378,27 +1939,29 @@
                 }
             }
 
-            const members = Object.values(samityApprovedMembers).filter(m => !m.isWinner);
-            if (members.length === 0) {
+            // টান সমিতির সমস্ত অনুমোদিত সদস্য উইমারে কোটা হিসেবে দেখাবে
+            const allMembers = Object.values(samityApprovedMembers);
+            if (allMembers.length === 0) {
                 ctx.fillStyle = "#92400e"; ctx.font = "bold 13px Hind Siliguri, sans-serif"; ctx.textAlign = "center";
-                ctx.fillText("কোনো সক্রিয় সদস্য নেই", centerX, centerY - 25);
+                ctx.fillText("কোনো সদস্য নেই", centerX, centerY - 25);
                 return;
             }
 
-            const sliceAngle = (2 * Math.PI) / members.length;
-            const sliceColors = ["#ef4444", "#0ea5e9", "#22c55e", "#a855f7"];
+            const sliceAngle = (2 * Math.PI) / allMembers.length;
+            const sliceColors = ["#ef4444", "#0ea5e9", "#22c55e", "#a855f7", "#eab308", "#ec4899", "#8b5cf6"];
             const requiredQuota = getTotalRequiredQuota();
 
-            members.forEach((m, i) => {
+            allMembers.forEach((m, i) => {
                 const startAngle = angle + i * sliceAngle;
                 const endAngle = startAngle + sliceAngle;
                 const paid = Number(m.weeklyPaid || 0);
                 const isUnpaid = paid < requiredQuota;
+                const isWinner = m.isWinner === true;
 
                 ctx.beginPath(); ctx.moveTo(centerX, centerY);
                 ctx.arc(centerX, centerY, radius, startAngle, endAngle);
                 ctx.closePath();
-                ctx.fillStyle = isUnpaid ? "#94a3b8" : sliceColors[i % sliceColors.length];
+                ctx.fillStyle = isWinner ? "#cbd5e1" : (isUnpaid ? "#94a3b8" : sliceColors[i % sliceColors.length]);
                 ctx.fill();
                 ctx.strokeStyle = "#ffffff"; ctx.lineWidth = 2; ctx.stroke();
 
@@ -2406,15 +1969,16 @@
                 ctx.translate(centerX, centerY);
                 ctx.rotate(startAngle + sliceAngle / 2);
 
+                // প্রতিটি স্লাইসের বাইরের দিকে বাতি/লাল বা সবুজ ইন্ডিকেটর বাটন
                 const isAllowed = samityAllowedStatus[m.phone] === true;
-                ctx.beginPath(); ctx.arc(radius - 14, 0, 5.5, 0, 2 * Math.PI);
-                ctx.fillStyle = isAllowed ? "#00ff00" : "#ff0000";
+                ctx.beginPath(); ctx.arc(radius - 14, 0, 6, 0, 2 * Math.PI);
+                ctx.fillStyle = isWinner ? "#64748b" : (isAllowed ? "#00ff00" : "#ff0000");
                 ctx.fill(); ctx.strokeStyle = "#ffffff"; ctx.lineWidth = 1.5; ctx.stroke();
 
-                ctx.textAlign = "right"; ctx.fillStyle = "#ffffff";
+                ctx.textAlign = "right"; ctx.fillStyle = isWinner ? "#475569" : "#ffffff";
                 ctx.font = "bold 11px Hind Siliguri, sans-serif";
                 ctx.shadowColor = "rgba(0,0,0,0.6)"; ctx.shadowBlur = 3;
-                ctx.fillText(m.name.substring(0, 9), radius - 24, -2);
+                ctx.fillText((m.name.substring(0, 8)) + (isWinner ? " (আদর্শ)" : ""), radius - 24, -2);
                 ctx.restore();
             });
         }
@@ -2429,8 +1993,8 @@
                 if (!areAllActiveMembersAllowed()) { showToast("🔒 সবাই Allow বাটনে পারমিশন দিলে লটারির জন্য প্রস্তুত হবে!", "error"); return; }
             }
 
-            const members = Object.values(samityApprovedMembers).filter(m => !m.isWinner);
-            if (members.length === 0) { showToast("⚠️ কোনো সক্রিয় সদস্য নেই।", "error"); return; }
+            const activeMembers = Object.values(samityApprovedMembers).filter(m => !m.isWinner);
+            if (activeMembers.length === 0) { showToast("⚠️ খেলার যোগ্য কোনো সক্রিয় সদস্য নেই।", "error"); return; }
 
             if (!freeDemo) {
                 await db.ref('tanSamity/config/isWheelLocked').set(true);
@@ -2440,14 +2004,14 @@
             if (!freeDemo && samityConfig.forcedWinner && samityApprovedMembers[samityConfig.forcedWinner] && !samityApprovedMembers[samityConfig.forcedWinner].isWinner) {
                 winnerMember = samityApprovedMembers[samityConfig.forcedWinner];
             } else {
-                winnerMember = members[Math.floor(Math.random() * members.length)];
+                winnerMember = activeMembers[Math.floor(Math.random() * activeMembers.length)];
             }
 
             const spinId = "spin_" + Date.now();
             await db.ref('tanSamity/liveSpin').set({
                 spinId: spinId, startedAt: Date.now(), duration: 25000, isDemo: freeDemo,
                 winner: { name: winnerMember.name, phone: winnerMember.phone, photo: winnerMember.photo || 'https://via.placeholder.com/90', weeklyPaid: Number(winnerMember.weeklyPaid || 0) },
-                membersSnapshot: members.map(m => ({ name: m.name, phone: m.phone }))
+                membersSnapshot: activeMembers.map(m => ({ name: m.name, phone: m.phone }))
             });
         }
 
@@ -2455,11 +2019,11 @@
             isSpinningWheel = true;
             document.getElementById("wheelWinnerMonitor").style.display = "none";
 
-            const members = Object.values(samityApprovedMembers).filter(m => !m.isWinner);
-            if (members.length === 0) { isSpinningWheel = false; return; }
+            const allMembers = Object.values(samityApprovedMembers);
+            if (allMembers.length === 0) { isSpinningWheel = false; return; }
 
-            const sliceAngle = (2 * Math.PI) / members.length;
-            let targetIndex = members.findIndex(m => m.phone === spinData.winner.phone);
+            const sliceAngle = (2 * Math.PI) / allMembers.length;
+            let targetIndex = allMembers.findIndex(m => m.phone === spinData.winner.phone);
             if (targetIndex === -1) targetIndex = 0;
 
             const pointerAngle = -Math.PI / 2;
@@ -2521,6 +2085,8 @@
 
             if (samityApprovedMembers[winner.phone] && !samityApprovedMembers[winner.phone].isWinner) {
                 await db.ref('tanSamity/approvedMembers/' + winner.phone).update({ isWinner: true });
+                // উইনার হওয়ার পর তার Allow পারমিশন লাল বাতিতে রূপান্তর বা রিসেট করার জন্য false করা যায়
+                await db.ref('tanSamity/allowedStatus/' + winner.phone).set(false);
             }
             if (samityConfig.forcedWinner) await db.ref('tanSamity/config/forcedWinner').set("");
 
@@ -2536,7 +2102,7 @@
             document.getElementById("winnerMonitorBadge").style.background = isDemo ? "#0ea5e9" : "#dc2626";
             document.getElementById("monitorWinnerImg").src = winner.photo || 'https://via.placeholder.com/90';
             document.getElementById("monitorWinnerName").innerText = winner.name;
-            document.getElementById("monitorWinnerSub").innerText = isDemo ? "ডেমো টেস্ট সফল!" : "অভিনন্দন!";
+            document.getElementById("monitorWinnerSub").innerText = isDemo ? "ডেমো টেস্ট সফল!" : "অভিনন্দন! পরবর্তী রাউন্ডে তিনি দর্শক/আদর্শ সদস্য হিসেবে থাকবেন।";
             monitor.style.display = "flex";
         }
 
@@ -2555,58 +2121,36 @@
             if (!container) return;
             const allMembers = Object.values(samityApprovedMembers);
             if (allMembers.length === 0) {
-                container.innerHTML = `<span style="font-size:11px; color:#64748b;">কোনো সক্রিয় সদস্য নেই।</span>`;
+                container.innerHTML = `<span style="font-size:11px; color:#64748b;">কোনো সদস্য নেই।</span>`;
                 return;
             }
 
-            const nonWinners = allMembers.filter(m => !m.isWinner);
-            const winners = allMembers.filter(m => m.isWinner);
-
-            let html = `<div style="font-size:11px; font-weight:700; color:#15803d; margin-bottom:4px;">🟢 বাকি সদস্যগণ (খেলবে):</div>`;
-            nonWinners.forEach((m, idx) => {
+            let html = `<div style="font-size:11px; font-weight:700; color:#15803d; margin-bottom:4px;">🟢 সদস্যবৃন্দের Allow পারমিশন:</div>`;
+            allMembers.forEach((m, idx) => {
                 const isAllowed = samityAllowedStatus[m.phone] === true;
                 html += `
-                    <div class="perm-member-row">
+                    <div class="perm-member-row ${m.isWinner ? 'is-winner-row' : ''}">
                         <div style="display:flex; align-items:center; gap:6px;">
                             <strong style="font-size:11px;">${idx + 1}.</strong>
                             <img src="${m.photo || 'https://via.placeholder.com/28'}" style="width:26px; height:26px; border-radius:50%; object-fit:cover;">
                             <div>
-                                <div style="font-size:12px; font-weight:700;">${m.name}</div>
+                                <div style="font-size:12px; font-weight:700;">${m.name} ${m.isWinner ? '<span class="winner-badge" style="font-size:9px;">(বিজয়ী/দর্শক)</span>' : ''}</div>
                                 <div style="font-size:10px; color:#475569;">${m.phone}</div>
                             </div>
                         </div>
                         <button class="btn ${isAllowed ? 'btn-success' : 'btn-danger'} btn-xs" onclick="toggleSingleMemberWheelAllow('${m.phone}')">
-                            ${isAllowed ? '✅ Allow দেওয়া আছে' : '🔴 Allow দিন'}
+                            ${isAllowed ? '✅ গ্রীন (Allow)' : '🔴 লাল (বাতি)'}
                         </button>
                     </div>
                 `;
             });
-
-            if (winners.length > 0) {
-                html += `<div style="font-size:11px; font-weight:700; color:#475569; margin-top:8px; margin-bottom:4px;">🏆 ইতিমধ্যে বিজয়ী হয়েছেন:</div>`;
-                winners.forEach((m, idx) => {
-                    html += `
-                        <div class="perm-member-row is-winner-row">
-                            <div style="display:flex; align-items:center; gap:6px;">
-                                <strong style="font-size:11px;">${idx + 1}.</strong>
-                                <img src="${m.photo || 'https://via.placeholder.com/28'}" style="width:26px; height:26px; border-radius:50%; object-fit:cover;">
-                                <div>
-                                    <div style="font-size:12px; font-weight:700;">${m.name}</div>
-                                    <div style="font-size:10px; color:#64748b;">${m.phone}</div>
-                                </div>
-                            </div>
-                            <span class="winner-badge">🏆 বিজয়ী</span>
-                        </div>
-                    `;
-                });
-            }
             container.innerHTML = html;
         }
 
         async function toggleSingleMemberWheelAllow(phone) {
             const current = samityAllowedStatus[phone] === true;
             await db.ref('tanSamity/allowedStatus/' + phone).set(!current);
-            showToast(!current ? "✅ সদস্যকে Allow দেওয়া হয়েছে!" : "⚠️ সদস্যের Allow বাতিল করা হয়েছে।", "info");
+            showToast(!current ? "✅ গ্রীন বাতি (Allow) দেওয়া হয়েছে!" : "🔴 লাল বাতি করা হয়েছে।", "info");
         }
 
         async function adminResetRoundPermissions() {
@@ -2710,7 +2254,7 @@
                                 </div>
                             </div>
                             <div style="text-align: right;">
-                                ${m.isWinner ? `<span class="winner-badge">🏆 বিজয়ী</span>` : `<span class="pending-badge">⏳ অপেক্ষমাণ</span>`}
+                                ${m.isWinner ? `<span class="winner-badge">🏆 বিজয়ী (দর্শক)</span>` : `<span class="pending-badge">⏳ খেলোয়াড়</span>`}
                                 <div style="font-size: 10px; color: var(--primary); margin-top: 2px;">${isExpanded ? '▲ বন্ধ' : '▼ ৭ দিন'}</div>
                             </div>
                         </div>
@@ -2839,7 +2383,7 @@
             const riderKey = 'r_' + Date.now();
             const base64Img = await compressImageToBase64(photoFile, 220);
             await db.ref('registeredRiders/' + riderKey).set({
-                name, phone, photo: base64Img, createdAt: Date.now(), customCutMin: 10, customDistMeters: 200, customBreakMin: 30, isSuspended: false
+                name, phone, photo: base64Img, createdAt: Date.now(), customCutMin: 15, customDistMeters: 200, isSuspended: false
             });
 
             localStorage.setItem("myRiderPhone", riderKey);
@@ -2862,7 +2406,10 @@
             if (Object.values(activeSerials).some(s => normalizeName(s.name) === normalizeName(rider.name))) {
                 showToast("🚫 ইতিমধ্যে সিরিয়ালে আছেন!", "error"); return;
             }
-            if (!checkWithinStandBoundary(rider.customDistMeters || 200)) return;
+            
+            // রিকোয়ারমেন্ট ২: স্পেশাল দূরত্ব বা নির্ধারিত দূরত্ব চেক
+            const allowedDist = rider.customDistMeters || 200;
+            if (!checkWithinStandBoundary(allowedDist)) return;
 
             myLocalRiderPhone = rider.phone || rider.id; myLocalRiderName = rider.name;
             localStorage.setItem("myRiderPhone", myLocalRiderPhone);
@@ -2882,7 +2429,9 @@
             if (Object.values(activeSerials).some(s => normalizeName(s.name) === normalizeName(name))) {
                 showToast("🚫 ইতিমধ্যে সিরিয়ালে আছেন!", "error"); return;
             }
-            if (!checkWithinStandBoundary(matchedRider ? matchedRider.customDistMeters : 200)) return;
+
+            const allowedDist = matchedRider ? (matchedRider.customDistMeters || 200) : 200;
+            if (!checkWithinStandBoundary(allowedDist)) return;
 
             myLocalRiderName = name;
             localStorage.setItem("myRiderName", name);
@@ -2899,7 +2448,7 @@
             if (!rider) {
                 rider = Object.values(registeredRiders).find(r => normalizeName(r.name) === normalizeName(riderName));
             }
-            return { cutMin: rider?.customCutMin || 10, distMeters: rider?.customDistMeters || 200, breakMin: rider?.customBreakMin || 30 };
+            return { cutMin: rider?.customCutMin || 15, distMeters: rider?.customDistMeters || 200 };
         }
 
         function checkAutoBoundaryGeofence() {
@@ -2919,52 +2468,50 @@
                 showToast(`🎯 স্ট্যান্ডের অনুমোদিত সীমার (${maxDist} মিটারের মধ্যে) ভেতরে থাকায় স্বয়ংক্রিয়ভাবে সিরিয়াল এন্ট্রি হয়েছে!`, "success");
             } else if (dist > maxDist && isInSerial) {
                 const mySerialEntry = Object.entries(activeSerials).find(([id, s]) => normalizeName(s.name) === normalizeName(myLocalRiderName));
-                if (mySerialEntry && !mySerialEntry[1].cutUntil && !mySerialEntry[1].breakCountdownUntil) {
-                    const cutEnd = Date.now() + (5 * 60000);
+                if (mySerialEntry && !mySerialEntry[1].cutUntil) {
+                    const cutEnd = Date.now() + (15 * 60000); // ১৫ মিনিট কাউন্টডাউন
                     db.ref('activeSerials/' + mySerialEntry[0]).update({ cutUntil: cutEnd, cutBy: 'GPS সীমার বাইরে', reason: 'সীমা অতিক্রম' });
                     db.ref('cutHistory').push({ targetName: myLocalRiderName, cutterName: 'GPS সিস্টেম', reason: 'সীমার বাইরে চলে যাওয়া', timestamp: Date.now() });
-                    showToast(`⚠️ আপনি কাস্টম সীমার (${maxDist} মিটার) বাইরে চলে যাওয়ায় ৫ মিনিটের কাট কাউন্টডাউন শুরু হয়েছে!`, "error");
+                    showToast(`⚠️ আপনি কাস্টম সীমার (${maxDist} মিটার) বাইরে চলে যাওয়ায় ১৫ মিনিটের কাট কাউন্টডাউন শুরু হয়েছে!`, "error");
                 }
             }
         }
 
-        function openCutReasonModal(serialId) {
-            document.getElementById("cutReasonSerialId").value = serialId;
-            document.getElementById("cutReasonModal").style.display = "block";
-        }
-
-        async function submitCutWithReason() {
-            const serialId = document.getElementById("cutReasonSerialId").value;
-            const reason = document.querySelector('input[name="cutReasonGroup"]:checked').value;
+        // রিকোয়ারমেন্ট ১: শুধু "স্ট্যান্ডে নেই" অপশন রেখে ১৫ মিনিটের কাউন্টডাউন সিস্টেম
+        async function cutSerial(serialId) {
             const item = activeSerials[serialId];
             if (!item) return;
-            document.getElementById("cutReasonModal").style.display = "none";
 
-            let cutterName = myLocalRiderName || "অ্যাডমিন/রাইডার";
-            if (reason === 'notAtStand') {
-                db.ref('activeSerials/' + serialId).remove();
-                db.ref('cutHistory').push({ targetName: item.name, cutterName, reason: 'স্ট্যান্ডে নেই', timestamp: Date.now() });
-                showToast("✅ রাইডার স্ট্যান্ডে না থাকায় সিরিয়াল কেটে দেওয়া হয়েছে!", "success");
-            } else {
-                const breakTimeUntil = Date.now() + (30 * 60000);
-                db.ref('activeSerials/' + serialId).update({
-                    breakCountdownUntil: breakTimeUntil,
-                    breakReason: reason === 'namaz' ? 'নামাজ' : 'খাবার'
-                });
-                db.ref('cutHistory').push({ targetName: item.name, cutterName, reason: reason === 'namaz' ? 'নামাজ পড়তে গেছেন (৩০ মি)' : 'খাবার খেতে গেছেন (৩০ মি)', timestamp: Date.now() });
-                showToast(`⏳ ${reason === 'namaz' ? 'নামাজ' : 'খাবার'} খাওয়ার জন্য ৩০ মিনিট সময় দেওয়া হলো।`, "info");
+            const cutterName = myLocalRiderName || "অ্যাডমিন/রাইডার";
+            const cutEnd = Date.now() + (15 * 60000); // ১৫ মিনিট
+            await db.ref('activeSerials/' + serialId).update({
+                cutUntil: cutEnd,
+                cutBy: cutterName,
+                reason: 'স্ট্যান্ডে নেই'
+            });
+            await db.ref('cutHistory').push({ targetName: item.name, cutterName, reason: 'স্ট্যান্ডে নেই (১৫ মিনিট কাউন্টডাউন)', timestamp: Date.now() });
+            showToast("✂️ স্ট্যান্ডে না থাকায় ১৫ মিনিটের কাউন্টডাউন শুরু হয়েছে!", "error");
+        }
+
+        // ১৫ মিনিটের মধ্যে মোবাইলের অটোমেটিক অনলাইন সিস্টেম এন্ট্রি বা ফিরিয়ে আনার মাধ্যমে সিরিয়াল রক্ষা
+        async function restoreSerial(serialId) {
+            const item = activeSerials[serialId];
+            if (!item) return;
+
+            // যদি রাইডার স্ট্যান্ডের সীমার মধ্যে থাকে তবেই সিরিয়াল ফিরে পাবে
+            const cfg = getRiderSecretConfig(item.name, item.phone);
+            const allowedDist = cfg.distMeters || 200;
+
+            if (userLat && userLng && standSettings.lat && standSettings.lng) {
+                const dist = getDistanceMeters(userLat, userLng, standSettings.lat, standSettings.lng);
+                if (dist > allowedDist) {
+                    showToast(`🚫 আপনি স্ট্যান্ডের সীমার (${allowedDist} মিটার) বাইরে আছেন! সিরিয়াল ফিরিয়ে আনা সম্ভব নয়।`, "error");
+                    return;
+                }
             }
-        }
 
-        function cutSerial(serialId) {
-            const item = activeSerials[serialId];
-            if (!item) return;
-            openCutReasonModal(serialId);
-        }
-
-        function restoreSerial(serialId) {
-            db.ref('activeSerials/' + serialId).update({ cutUntil: null, cutBy: null, breakCountdownUntil: null, breakReason: null, reason: null });
-            showToast("✅ সিরিয়াল ফিরিয়ে আনা হয়েছে!", "success");
+            await db.ref('activeSerials/' + serialId).update({ cutUntil: null, cutBy: null, reason: null });
+            showToast("✅ সফলভাবে ১৫ মিনিটের মধ্যে ফিরে আসায় সিরিয়াল ফিরিয়ে আনা হয়েছে!", "success");
         }
 
         function checkCutCountdowns() {
@@ -2972,10 +2519,6 @@
             Object.entries(activeSerials).forEach(([id, item]) => {
                 if (item.cutUntil && now >= item.cutUntil) {
                     db.ref('activeSerials/' + id).remove();
-                }
-                if (item.breakCountdownUntil && now >= item.breakCountdownUntil) {
-                    db.ref('activeSerials/' + id).remove();
-                    db.ref('cutHistory').push({ targetName: item.name, cutterName: 'টাইমআউট', reason: `${item.breakReason || 'বিরতি'}র সময় শেষ`, timestamp: Date.now() });
                 }
             });
         }
@@ -3001,25 +2544,21 @@
             container.innerHTML = sorted.map((item, index) => {
                 const pos = index + 1;
                 const isCut = item.cutUntil && now < item.cutUntil;
-                const isBreak = item.breakCountdownUntil && now < item.breakCountdownUntil;
                 const isMyAccount = myLocalRiderName && normalizeName(item.name) === normalizeName(myLocalRiderName);
 
-                if (pos <= 3 && isMyAccount && !isCut && !isBreak) {
+                if (pos <= 3 && isMyAccount && !isCut) {
                     startAlarmSound(`🚨 আপনি এখন ${pos} নম্বর সিরিয়ালে!`, `প্রস্তুত হন।`, `${item.id}_pos_${pos}`);
                 }
 
                 let cls = "serial-item" + (pos === 1 ? " top-1" : (pos === 2 ? " top-2" : (pos === 3 ? " top-3" : "")));
-                if (isCut || isBreak) cls += " is-cut";
+                if (isCut) cls += " is-cut";
 
                 let actionBtns = "";
                 if (isCut) {
                     const remSec = Math.ceil((item.cutUntil - now) / 1000);
-                    actionBtns = `<span style="font-size:11px; color:#dc2626; font-weight:700;">✂️ কাট কাউন্টডাউন (${remSec}সেঃ)</span> <button class="btn btn-success btn-xs" onclick="restoreSerial('${item.id}')">🔄 ফিরিয়ে আনুন</button>`;
-                } else if (isBreak) {
-                    const remMin = Math.ceil((item.breakCountdownUntil - now) / 60000);
-                    actionBtns = `<span style="font-size:11px; color:#0284c7; font-weight:700;">⏳ ${item.breakReason || 'বিরতি'} (${remMin}মিঃ বাকি)</span> <button class="btn btn-success btn-xs" onclick="restoreSerial('${item.id}')">↩️ ফিরে এসেছি</button>`;
+                    actionBtns = `<span style="font-size:11px; color:#dc2626; font-weight:700;">✂️ ১৫ মিঃ কাউন্টডাউন (${remSec}সেঃ)</span> <button class="btn btn-success btn-xs" onclick="restoreSerial('${item.id}')">🔄 সিরিয়াল ফিরিয়ে নিন</button>`;
                 } else {
-                    actionBtns = `<button class="btn btn-danger btn-xs" onclick="cutSerial('${item.id}')">✂️ কাটুন</button>`;
+                    actionBtns = `<button class="btn btn-danger btn-xs" onclick="cutSerial('${item.id}')">✂️ স্ট্যান্ডে নেই (কাট)</button>`;
                 }
 
                 return `
@@ -3527,9 +3066,8 @@
         function loadSelectedRiderSpecialValues() {
             const r = registeredRiders[document.getElementById("specialRiderSelect").value];
             if (!r) return;
-            document.getElementById("quickSpCutMin").value = r.customCutMin || 10;
+            document.getElementById("quickSpCutMin").value = r.customCutMin || 15;
             document.getElementById("quickSpDist").value = r.customDistMeters || 200;
-            document.getElementById("quickSpBreakMin").value = r.customBreakMin || 30;
         }
 
         async function saveQuickSpecialPower() {
@@ -3537,8 +3075,7 @@
             if (!k) return;
             await db.ref('registeredRiders/' + k).update({
                 customCutMin: Number(document.getElementById("quickSpCutMin").value),
-                customDistMeters: Number(document.getElementById("quickSpDist").value),
-                customBreakMin: Number(document.getElementById("quickSpBreakMin").value)
+                customDistMeters: Number(document.getElementById("quickSpDist").value)
             });
             showToast("✅ স্পেশাল পাওয়ার সেভ হয়েছে!", "success");
         }
