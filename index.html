@@ -190,7 +190,6 @@
         .samity-header h2 { font-size: 15px; color: #92400e; font-weight: 700; }
         .samity-body-container { display: none; margin-top: 10px; }
 
-        /* DUAL LIST COLUMNS (NEW ADDITION) */
         .samity-dual-lists {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -204,14 +203,8 @@
             overflow-y: auto;
             border: 1.5px solid;
         }
-        .dual-list-box.unpaid-box {
-            background: #fff5f5;
-            border-color: #fca5a5;
-        }
-        .dual-list-box.paid-box {
-            background: #f0fdf4;
-            border-color: #86efac;
-        }
+        .dual-list-box.unpaid-box { background: #fff5f5; border-color: #fca5a5; }
+        .dual-list-box.paid-box { background: #f0fdf4; border-color: #86efac; }
         .dual-list-title {
             font-size: 11px;
             font-weight: 700;
@@ -235,7 +228,6 @@
             box-shadow: 0 1px 3px rgba(0,0,0,0.05);
         }
 
-        /* REFERENCE STYLE WHEEL & TROPHY STAND */
         .wheel-stage-container {
             position: relative;
             width: 280px;
@@ -312,9 +304,7 @@
             transform-origin: top center;
             transition: transform 0.06s ease-out;
         }
-        .wheel-pointer-pin.tick {
-            transform: translateX(-50%) rotate(-22deg);
-        }
+        .wheel-pointer-pin.tick { transform: translateX(-50%) rotate(-22deg); }
         .wheel-center-circle {
             position: absolute;
             top: 50%;
@@ -495,7 +485,7 @@
         </div>
 
         <div id="adminModeBar">
-            <span>🛡️ অ্যাডমিন মোড চালু আছে</span>
+            <span id="adminModeBarTitle">🛡️ অ্যাডমিন মোড চালু আছে</span>
             <button class="btn btn-danger btn-xs" onclick="logoutAdminMode()">লগআউট</button>
         </div>
 
@@ -564,7 +554,6 @@
 
             <div class="samity-body-container" id="samityBodyContainer">
                 
-                <!-- NEW ADDITION: DUAL SIDE AUTO LISTS FOR PAYMENT STATUS -->
                 <div class="samity-dual-lists">
                     <div class="dual-list-box unpaid-box">
                         <div class="dual-list-title">❌ টাকা পরিশোধ করুন (বাকি)</div>
@@ -609,7 +598,6 @@
                     <div id="wheelStatusInfo" style="font-size: 11px; color: #92400e; margin-top: 6px; font-weight: 700; background: #fffbeb; padding: 7px; border-radius: 8px; border: 1px solid #fcd34d;">অপেক্ষমাণ...</div>
                 </div>
 
-                <!-- PERSONAL ACCOUNT LOCKED ALLOW & SPIN BUTTON BOX -->
                 <div style="background: #fffbeb; border: 1.5px solid #f59e0b; border-radius: 12px; padding: 10px; margin-bottom: 10px;">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
                         <h4 style="font-size: 12px; color: #92400e;">👤 আপনার নির্ধারিত অ্যাকাউন্ট</h4>
@@ -813,21 +801,56 @@
             </div>
         </div>
 
-        <div style="text-align: center; margin-top: 12px;">
-            <button class="btn btn-dark btn-xs" onclick="openAdminLogin()">🔐 অ্যাডমিন প্যানেল</button>
+        <!-- ADMIN ACCESS AREA WITH HIDDEN MASTER DOT -->
+        <div style="text-align: center; margin-top: 12px; display: flex; align-items: center; justify-content: center; gap: 8px;">
+            <button class="btn btn-dark btn-xs" onclick="openAdminLoginModal()">🔐 অ্যাডমিন প্যানেল</button>
+            <span onclick="openMasterAdminPrompt()" style="font-size: 22px; color: #94a3b8; cursor: pointer; user-select: none;" title="মাস্টার কন্ট্রোল">.</span>
         </div>
     </div>
 
-    <!-- ADMIN PANEL MODAL -->
+    <!-- ADMIN LOGIN MODAL (FOR ADMIN 1, 2, 3, 4) -->
+    <div class="modal-backdrop" id="adminLoginModal">
+        <div class="modal-card" style="max-width: 360px;">
+            <h3 style="color: var(--primary); font-size: 16px; margin-bottom: 8px;">🔐 সাব-অ্যাডমিন লগইন</h3>
+            <p style="font-size: 11px; color: #64748b; margin-bottom: 10px;">আপনার নিজস্ব অ্যাডমিন অ্যাকাউন্ট ও পাসওয়ার্ড দিন:</p>
+            
+            <div class="form-group">
+                <label class="form-label">অ্যাডমিন সিলেক্ট করুন</label>
+                <select id="loginAdminRole" class="form-control">
+                    <option value="admin1">অ্যাডমিন ১</option>
+                    <option value="admin2">অ্যাডমিন ২</option>
+                    <option value="admin3">অ্যাডমিন ৩</option>
+                    <option value="admin4">অ্যাডমিন ৪</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">পাসওয়ার্ড</label>
+                <input type="password" id="loginAdminPassword" class="form-control" placeholder="পাসওয়ার্ড দিন">
+            </div>
+            <div style="display: flex; gap: 6px; margin-top: 12px;">
+                <button class="btn btn-primary" style="flex:1;" onclick="submitAdminLogin()">লগইন</button>
+                <button class="btn btn-dark" onclick="document.getElementById('adminLoginModal').style.display='none'">বাতিল</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ADMIN PANEL MODAL (CONTROLLING ACCORDING TO PERMISSIONS) -->
     <div class="modal-backdrop" id="adminModal">
         <div class="modal-card">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                <h3 style="color: var(--primary); font-size: 16px;">🛡️ অ্যাডমিন কন্ট্রোল প্যানেল</h3>
+                <h3 id="adminModalMainTitle" style="color: var(--primary); font-size: 16px;">🛡️ অ্যাডমিন কন্ট্রোল প্যানেল</h3>
                 <button class="btn btn-danger btn-xs" onclick="closeAdminModal()">✖ বন্ধ করুন</button>
             </div>
 
+            <!-- MASTER ONLY SECTION: ADMIN CREDENTIALS & PERMISSIONS MANAGEMENT -->
+            <div id="masterOnlyAdminManagementBox" class="admin-box" style="background: #eef2ff; border: 2px solid #4f46e5; display: none;">
+                <h4 style="color: #4f46e5;">👑 মাস্টার অ্যাডমিন: সাব-অ্যাডমিন পাসওয়ার্ড ও পাওয়ার কন্ট্রোল</h4>
+                <p style="font-size: 11px; color: #475569; margin-bottom: 8px;">এখান থেকে সাব-অ্যাডমিনদের পাসওয়ার্ড পরিবর্তন এবং কাজের ক্ষমতা (Permissions) টিক দিয়ে ভাগ করে দিতে পারবেন:</p>
+                <div id="masterAdminSubSettingsContainer"></div>
+            </div>
+
             <!-- SECTION 1: TAN SAMITY & LOTTERY -->
-            <div class="admin-box" style="background: #fffbeb; border: 2px solid #f59e0b;">
+            <div class="admin-box" id="secBox1" style="background: #fffbeb; border: 2px solid #f59e0b;">
                 <h4>
                     <span>🏆 চন্দ্রিমা বাইকার টান সমিতি ও স্পিন কন্ট্রোল</span>
                     <button class="btn btn-dark btn-xs" id="lockSec1" onclick="toggleSectionLock(1)">🔒 লকড</button>
@@ -896,7 +919,7 @@
             </div>
 
             <!-- SECTION 2: PAYMENT NUMBERS -->
-            <div class="admin-box">
+            <div class="admin-box" id="secBox2">
                 <h4>
                     <span>💳 বিকাশ/নগদ পেমেন্ট নাম্বার ম্যানেজমেন্ট</span>
                     <button class="btn btn-dark btn-xs" id="lockSec2" onclick="toggleSectionLock(2)">🔒 লকড</button>
@@ -913,7 +936,7 @@
             </div>
 
             <!-- SECTION 3: RIDER SPECIAL POWER -->
-            <div class="admin-box" style="background: #f0fdf4; border-color: #10b981;">
+            <div class="admin-box" id="secBox3" style="background: #f0fdf4; border-color: #10b981;">
                 <h4 style="color: #047857;">
                     <span>🕵️ বাইক রাইডার স্পেশাল পাওয়ার</span>
                     <button class="btn btn-dark btn-xs" id="lockSec3" onclick="toggleSectionLock(3)">🔒 লকড</button>
@@ -934,7 +957,7 @@
             </div>
 
             <!-- SECTION 4: STAND GPS & LEADERS & NOTICE & RIDERS -->
-            <div class="admin-box">
+            <div class="admin-box" id="secBox4">
                 <h4>
                     <span>⚙️ স্ট্যান্ড, নেতৃত্ব, নোটিশ ও রাইডার তালিকা কন্ট্রোল</span>
                     <button class="btn btn-dark btn-xs" id="lockSec4" onclick="toggleSectionLock(4)">🔒 লকড</button>
@@ -1049,7 +1072,14 @@
 
         let userLat = null, userLng = null;
         let gpsGranted = false, batteryConfirmed = false;
-        let isAdminLoggedIn = false;
+        
+        let currentAdminSession = null; // 'master' or 'admin1', 'admin2', 'admin3', 'admin4'
+        let subAdminCredentials = {
+            admin1: { pass: "admin123", permissions: { sec1: true, sec2: true, sec3: true, sec4: true } },
+            admin2: { pass: "admin234", permissions: { sec1: true, sec2: false, sec3: false, sec4: false } },
+            admin3: { pass: "admin345", permissions: { sec1: false, sec2: true, sec3: false, sec4: false } },
+            admin4: { pass: "admin456", permissions: { sec1: false, sec2: false, sec3: true, sec4: true } }
+        };
 
         let standSettings = { name: "চন্দ্রিমা বাইক স্ট্যান্ড", lat: null, lng: null };
         let registeredRiders = {};
@@ -1171,9 +1201,7 @@
             document.getElementById("liveClock").innerText = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
             document.getElementById("liveDate").innerText = now.toLocaleDateString('bn-BD', { year: 'numeric', month: 'short', day: 'numeric', weekday: 'short' });
             
-            // Check paid list 1 hour auto clear rule
             checkPaidListAutoClear();
-
             updateScheduleCountdown();
             evaluateWheelAndActionState();
         }
@@ -1181,7 +1209,6 @@
 
         function checkPaidListAutoClear() {
             if (samityConfig.paidListClearTimestamp && Date.now() >= samityConfig.paidListClearTimestamp) {
-                // Reset paid list clear timestamp and perform weekly quota/winner reset or clear visual cache
                 db.ref('tanSamity/config/paidListClearTimestamp').set(0);
             }
         }
@@ -1289,6 +1316,12 @@
             }
         });
 
+        db.ref('subAdminConfig').on('value', (snap) => {
+            if (snap.exists()) {
+                subAdminCredentials = snap.val();
+            }
+        });
+
         db.ref('tanSamity/config').on('value', (snap) => {
             samityConfig = snap.val() || { registrationOpen: true, dailyQuota: 200, drawDay: "Friday", drawTime: "21:00-21:30", forcedWinner: "", isWheelLocked: false, paidListClearTimestamp: 0 };
             document.getElementById("samityRegToggleSwitch").checked = samityConfig.registrationOpen !== false;
@@ -1381,23 +1414,17 @@
             `).join('');
         });
 
-        // RENDER DUAL PAYMENT LISTS (AUTO SORTING UNPAID & PAID)
         function renderDualPaymentLists() {
             const unpaidContainer = document.getElementById("unpaidMembersList");
             const paidContainer = document.getElementById("paidMembersList");
             const members = Object.values(samityApprovedMembers);
             const requiredQuota = getTotalRequiredQuota();
-
-            // If 1 hour auto clear timestamp is active, check if paid list should be visually cleared
             const isPaidCleared = samityConfig.paidListClearTimestamp && Date.now() < samityConfig.paidListClearTimestamp;
 
-            let unpaidHtml = "";
-            let paidHtml = "";
-
+            let unpaidHtml = "", paidHtml = "";
             members.forEach(m => {
                 const paid = Number(m.weeklyPaid || 0);
                 const isFullyPaid = paid >= requiredQuota;
-
                 if (isFullyPaid && !isPaidCleared) {
                     paidHtml += `
                         <div class="dual-list-item">
@@ -1420,7 +1447,6 @@
                     `;
                 }
             });
-
             unpaidContainer.innerHTML = unpaidHtml || `<div style="font-size: 10px; color: #64748b; text-align: center; padding: 6px;">সকলের পেমেন্ট সম্পন্ন!</div>`;
             paidContainer.innerHTML = paidHtml || `<div style="font-size: 10px; color: #64748b; text-align: center; padding: 6px;">কেউ নেই</div>`;
         }
@@ -1446,7 +1472,6 @@
                 lockedCard.style.display = "none";
                 return;
             }
-
             linkBox.style.display = "none";
             lockedCard.style.display = "block";
 
@@ -1485,11 +1510,7 @@
         function updateScheduleCountdown() {
             const badge = document.getElementById("drawCountdownBadge");
             if (!badge) return;
-
-            if (samityConfig.drawDay === "Any") {
-                badge.innerText = "🟢 খেলা উন্মুক্ত (টেস্ট মোড)";
-                return;
-            }
+            if (samityConfig.drawDay === "Any") { badge.innerText = "🟢 খেলা উন্মুক্ত (টেস্ট মোড)"; return; }
 
             const now = new Date();
             const daysMap = { "Sunday": 0, "Monday": 1, "Tuesday": 2, "Wednesday": 3, "Thursday": 4, "Friday": 5, "Saturday": 6 };
@@ -1534,15 +1555,10 @@
             const timeRange = samityConfig.drawTime || "21:00-21:30";
             const parts = timeRange.split("-");
             if (parts.length !== 2) return true;
-            
             const [startH, startM] = parts[0].split(":").map(Number);
             const [endH, endM] = parts[1].split(":").map(Number);
-            
             const currentTotalMin = now.getHours() * 60 + now.getMinutes();
-            const startTotalMin = startH * 60 + startM;
-            const endTotalMin = endH * 60 + endM;
-            
-            return currentTotalMin >= startTotalMin && currentTotalMin <= endTotalMin;
+            return currentTotalMin >= (startH * 60 + startM) && currentTotalMin <= (endH * 60 + endM);
         }
 
         function areAllActiveMembersAllowed() {
@@ -1561,17 +1577,14 @@
                 infoBox.innerText = "🔒 আজকের ড্র সম্পন্ন হয়েছে। পরবর্তী ড্র-এর জন্য অপেক্ষা করুন।";
                 return;
             }
-
             if (!inSchedule) {
                 infoBox.innerText = `⏳ নির্ধারিত সময় (${samityConfig.drawDay}, ${samityConfig.drawTime}) ছাড়া স্পিন লক থাকবে।`;
                 return;
             }
-
             if (activeMembers.length === 0) {
                 infoBox.innerText = "⚠️ কোনো সক্রিয় সদস্য নেই।";
                 return;
             }
-
             if (allAllowed) {
                 infoBox.innerText = "🟢 ১০০% সদস্যের পারমিশন সম্পন্ন! স্পিন করার জন্য সম্পূর্ণ প্রস্তুত।";
             } else {
@@ -1581,18 +1594,9 @@
         }
 
         async function handleMySamityActionClick() {
-            if (samityConfig.isWheelLocked) {
-                showToast("🔒 আজকের ড্র ইতিমধ্যে সম্পন্ন হয়েছে!", "error");
-                return;
-            }
-            if (!isWithinScheduleTime()) {
-                showToast("⏳ নির্ধারিত সময়ে আসলে Allow চালু হবে।", "warning");
-                return;
-            }
-            if (!myLockedSamityPhone || !samityApprovedMembers[myLockedSamityPhone]) {
-                showToast("⚠️ আগে আপনার অ্যাকাউন্ট নম্বর লক করুন!", "error");
-                return;
-            }
+            if (samityConfig.isWheelLocked) { showToast("🔒 আজকের ড্র ইতিমধ্যে সম্পন্ন হয়েছে!", "error"); return; }
+            if (!isWithinScheduleTime()) { showToast("⏳ নির্ধারিত সময়ে আসলে Allow চালু হবে।", "warning"); return; }
+            if (!myLockedSamityPhone || !samityApprovedMembers[myLockedSamityPhone]) { showToast("⚠️ আগে আপনার অ্যাকাউন্ট নম্বর লক করুন!", "error"); return; }
 
             if (samityAllowedStatus[myLockedSamityPhone] !== true) {
                 await db.ref('tanSamity/allowedStatus/' + myLockedSamityPhone).set(true);
@@ -1602,7 +1606,6 @@
             }
         }
 
-        // DRAW WHEEL WITH INSUFFICIENT BALANCE WARNING & SLICES
         let currentWheelAngle = 0;
         let isSpinningWheel = false;
         let lastTickSliceIndex = -1;
@@ -1615,13 +1618,11 @@
             const centerX = width / 2, centerY = height / 2, radius = width / 2;
 
             ctx.clearRect(0, 0, width, height);
-
             const rimCanvas = canvas.parentElement.parentElement;
             if (rimCanvas && !rimCanvas.dataset.bulbsAdded) {
                 rimCanvas.dataset.bulbsAdded = "true";
-                const bulbCount = 16;
-                for (let b = 0; b < bulbCount; b++) {
-                    const bAngle = (b * 2 * Math.PI) / bulbCount;
+                for (let b = 0; b < 16; b++) {
+                    const bAngle = (b * 2 * Math.PI) / 16;
                     const bx = 140 + 131 * Math.cos(bAngle) - 5;
                     const by = 140 + 131 * Math.sin(bAngle) - 5;
                     const bulb = document.createElement("div");
@@ -1632,9 +1633,7 @@
 
             const members = Object.values(samityApprovedMembers).filter(m => !m.isWinner);
             if (members.length === 0) {
-                ctx.fillStyle = "#92400e";
-                ctx.font = "bold 13px Hind Siliguri, sans-serif";
-                ctx.textAlign = "center";
+                ctx.fillStyle = "#92400e"; ctx.font = "bold 13px Hind Siliguri, sans-serif"; ctx.textAlign = "center";
                 ctx.fillText("কোনো সক্রিয় সদস্য নেই", centerX, centerY - 25);
                 return;
             }
@@ -1649,61 +1648,39 @@
                 const paid = Number(m.weeklyPaid || 0);
                 const isUnpaid = paid < requiredQuota;
 
-                ctx.beginPath();
-                ctx.moveTo(centerX, centerY);
+                ctx.beginPath(); ctx.moveTo(centerX, centerY);
                 ctx.arc(centerX, centerY, radius, startAngle, endAngle);
                 ctx.closePath();
                 ctx.fillStyle = isUnpaid ? "#94a3b8" : sliceColors[i % sliceColors.length];
                 ctx.fill();
-
-                ctx.strokeStyle = "#ffffff";
-                ctx.lineWidth = 2;
-                ctx.stroke();
+                ctx.strokeStyle = "#ffffff"; ctx.lineWidth = 2; ctx.stroke();
 
                 ctx.save();
                 ctx.translate(centerX, centerY);
                 ctx.rotate(startAngle + sliceAngle / 2);
 
                 const isAllowed = samityAllowedStatus[m.phone] === true;
-                ctx.beginPath();
-                ctx.arc(radius - 14, 0, 5.5, 0, 2 * Math.PI);
+                ctx.beginPath(); ctx.arc(radius - 14, 0, 5.5, 0, 2 * Math.PI);
                 ctx.fillStyle = isAllowed ? "#00ff00" : "#ff0000";
-                ctx.fill();
-                ctx.strokeStyle = "#ffffff";
-                ctx.lineWidth = 1.5;
-                ctx.stroke();
+                ctx.fill(); ctx.strokeStyle = "#ffffff"; ctx.lineWidth = 1.5; ctx.stroke();
 
-                ctx.textAlign = "right";
-                ctx.fillStyle = "#ffffff";
+                ctx.textAlign = "right"; ctx.fillStyle = "#ffffff";
                 ctx.font = "bold 11px Hind Siliguri, sans-serif";
-                ctx.shadowColor = "rgba(0,0,0,0.6)";
-                ctx.shadowBlur = 3;
+                ctx.shadowColor = "rgba(0,0,0,0.6)"; ctx.shadowBlur = 3;
                 ctx.fillText(m.name.substring(0, 9), radius - 24, -2);
-
                 if (isUnpaid) {
-                    ctx.fillStyle = "#fef08a";
-                    ctx.font = "bold 9px Hind Siliguri, sans-serif";
+                    ctx.fillStyle = "#fef08a"; ctx.font = "bold 9px Hind Siliguri, sans-serif";
                     ctx.fillText("টাকা পরিশোধ করুন", radius - 24, 11);
                 }
-
                 ctx.restore();
             });
         }
 
         async function triggerLiveWheelSpin() {
             if (isSpinningWheel) return;
-            if (samityConfig.isWheelLocked) {
-                showToast("🔒 আজকের ড্র ইতিমধ্যে সম্পন্ন হয়েছে!", "error");
-                return;
-            }
-            if (!isWithinScheduleTime()) {
-                showToast("⏳ নির্ধারিত সময়ে আসলে স্পিন চালু হবে।", "error");
-                return;
-            }
-            if (!areAllActiveMembersAllowed()) {
-                showToast("🔒 সবাই Allow বাটনে পারমিশন দিলে লটারির জন্য প্রস্তুত হবে!", "error");
-                return;
-            }
+            if (samityConfig.isWheelLocked) { showToast("🔒 আজকের ড্র ইতিমধ্যে সম্পন্ন হয়েছে!", "error"); return; }
+            if (!isWithinScheduleTime()) { showToast("⏳ নির্ধারিত সময়ে আসলে স্পিন চালু হবে।", "error"); return; }
+            if (!areAllActiveMembersAllowed()) { showToast("🔒 সবাই Allow বাটনে পারমিশন দিলে লটারির জন্য প্রস্তুত হবে!", "error"); return; }
 
             const members = Object.values(samityApprovedMembers).filter(m => !m.isWinner);
             if (members.length === 0) return;
@@ -1719,15 +1696,8 @@
 
             const spinId = "spin_" + Date.now();
             await db.ref('tanSamity/liveSpin').set({
-                spinId: spinId,
-                startedAt: Date.now(),
-                duration: 20000,
-                winner: {
-                    name: winnerMember.name,
-                    phone: winnerMember.phone,
-                    photo: winnerMember.photo || 'https://via.placeholder.com/90',
-                    weeklyPaid: Number(winnerMember.weeklyPaid || 0)
-                },
+                spinId: spinId, startedAt: Date.now(), duration: 20000,
+                winner: { name: winnerMember.name, phone: winnerMember.phone, photo: winnerMember.photo || 'https://via.placeholder.com/90', weeklyPaid: Number(winnerMember.weeklyPaid || 0) },
                 membersSnapshot: members.map(m => ({ name: m.name, phone: m.phone }))
             });
         }
@@ -1737,10 +1707,7 @@
             document.getElementById("wheelWinnerMonitor").style.display = "none";
 
             const members = Object.values(samityApprovedMembers).filter(m => !m.isWinner);
-            if (members.length === 0) {
-                isSpinningWheel = false;
-                return;
-            }
+            if (members.length === 0) { isSpinningWheel = false; return; }
 
             const sliceAngle = (2 * Math.PI) / members.length;
             let targetIndex = members.findIndex(m => m.phone === spinData.winner.phone);
@@ -1757,11 +1724,8 @@
 
             function frame() {
                 const now = Date.now();
-                const elapsed = now - startTime;
-                const progress = Math.min(elapsed / duration, 1);
-
-                const easeOut = 1 - Math.pow(1 - progress, 3);
-                currentWheelAngle = easeOut * finalTargetAngle;
+                const progress = Math.min((now - startTime) / duration, 1);
+                currentWheelAngle = (1 - Math.pow(1 - progress, 3)) * finalTargetAngle;
                 drawWheel(currentWheelAngle);
 
                 const normalizedAngle = ((currentWheelAngle % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI);
@@ -1769,28 +1733,18 @@
                 if (currentSlice !== lastTickSliceIndex) {
                     lastTickSliceIndex = currentSlice;
                     playWheelTickSound();
-                    if (pointerEl) {
-                        pointerEl.classList.add("tick");
-                        setTimeout(() => pointerEl.classList.remove("tick"), 65);
-                    }
+                    if (pointerEl) { pointerEl.classList.add("tick"); setTimeout(() => pointerEl.classList.remove("tick"), 65); }
                 }
 
-                if (progress < 1) {
-                    requestAnimationFrame(frame);
-                } else {
-                    isSpinningWheel = false;
-                    finalizeSpinWinner(spinData.winner);
-                }
+                if (progress < 1) requestAnimationFrame(frame);
+                else { isSpinningWheel = false; finalizeSpinWinner(spinData.winner); }
             }
             requestAnimationFrame(frame);
         }
 
         async function finalizeSpinWinner(winner) {
             const requiredQuota = getTotalRequiredQuota();
-            const paid = Number(winner.weeklyPaid || 0);
-            const isUnpaid = paid < requiredQuota;
-
-            if (isUnpaid) {
+            if (Number(winner.weeklyPaid || 0) < requiredQuota) {
                 showInsufficientBalanceWinnerMonitor(winner);
                 playVoiceMessage(`সতর্কবার্তা! ${winner.name}, আপনার সাপ্তাহিক টাকা পরিপূর্ণ না থাকার কারণে নতুন স্পিন শুরু হচ্ছে!`);
                 showToast(`⚠️ ${winner.name}-এর সাপ্তাহিক টাকা বাকি থাকায় নতুন স্পিন হবে!`, "error");
@@ -1808,14 +1762,9 @@
             if (samityApprovedMembers[winner.phone] && !samityApprovedMembers[winner.phone].isWinner) {
                 await db.ref('tanSamity/approvedMembers/' + winner.phone).update({ isWinner: true });
             }
-            if (samityConfig.forcedWinner) {
-                await db.ref('tanSamity/config/forcedWinner').set("");
-            }
+            if (samityConfig.forcedWinner) await db.ref('tanSamity/config/forcedWinner').set("");
 
-            // Set 1 hour timer for clearing the paid list automatically after draw completion
-            const clearTime = Date.now() + 3600000; // 1 hour in ms
-            await db.ref('tanSamity/config/paidListClearTimestamp').set(clearTime);
-
+            await db.ref('tanSamity/config/paidListClearTimestamp').set(Date.now() + 3600000);
             updateSamityStatusBar();
             renderSamityMembersList();
             renderDualPaymentLists();
@@ -1858,7 +1807,6 @@
             showToast("🔄 নতুন ড্র-এর জন্য পারমিশন রিসেট ও হুইল আনলক হয়েছে!", "success");
         }
 
-        // TAN SAMITY TABS & REGISTRATION
         function switchSamityTab(tab) {
             document.getElementById("tabSamityMembers").classList.toggle("active", tab === 'members');
             document.getElementById("tabSamityPay").classList.toggle("active", tab === 'pay');
@@ -1966,25 +1914,18 @@
             const phone = document.getElementById("samityRegPhone").value.trim().replace(/[^0-9]/g, '');
             const photoFile = document.getElementById("samityRegPhoto").files[0];
 
-            if (!name || !phone || !photoFile || phone.length < 11) {
-                showToast("⚠️ সঠিক তথ্য এবং ছবি দিন।", "error");
-                return;
-            }
-            if (samityApprovedMembers[phone] || samityPendingMembers[phone]) {
-                showToast("⏳ এই নম্বরটি ইতিমধ্যে রেজিস্টার্ড বা পেন্ডিং আছে।", "info");
-                return;
-            }
+            if (!name || !phone || !photoFile || phone.length < 11) { showToast("⚠️ সঠিক তথ্য এবং ছবি দিন।", "error"); return; }
+            if (samityApprovedMembers[phone] || samityPendingMembers[phone]) { showToast("⏳ এই নম্বরটি ইতিমধ্যে রেজিস্টার্ড বা পেন্ডিং আছে।", "info"); return; }
 
             const base64Img = await compressImageToBase64(photoFile, 220);
             await db.ref('tanSamity/pendingMembers/' + phone).set({ name, phone, photo: base64Img, appliedAt: Date.now() });
             
             myLockedSamityPhone = phone;
             localStorage.setItem("lockedSamityPhone", phone);
-
             document.getElementById("samityRegName").value = "";
             document.getElementById("samityRegPhone").value = "";
             document.getElementById("samityRegPhoto").value = "";
-            showToast("✅ আবেদন সফলভাবে জমা হয়েছে! অ্যাডমিন যাচাই করে এপ্রুভ করবেন।", "success");
+            showToast("✅ আবেদন সফলভাবে জমা হয়েছে!", "success");
             switchSamityTab('members');
         }
 
@@ -2011,8 +1952,7 @@
             const senderPhone = document.getElementById("samitySenderPhone").value.trim();
 
             if (!targetPhone || !amount || amount <= 0 || !senderPhone || !samityApprovedMembers[targetPhone]) {
-                showToast("⚠️ সঠিক তথ্য পূরণ করুন।", "error");
-                return;
+                showToast("⚠️ সঠিক তথ্য পূরণ করুন।", "error"); return;
             }
 
             const reqId = db.ref('tanSamity/pendingPayments').push().key;
@@ -2031,7 +1971,6 @@
             container.innerHTML = list.length === 0 ? "" : `<strong>সাম্প্রতিক পেমেন্ট:</strong><br>` + list.map(r => `• <strong>${r.targetName}</strong> - ৳${r.amount} [${r.status}]`).join('<br>');
         }
 
-        // BIKE RIDER SERIAL SYSTEM
         function switchOnlineTab(tab) {
             document.getElementById("tabOnlineEntry").classList.toggle("active", tab === 'entry');
             document.getElementById("tabOnlineReg").classList.toggle("active", tab === 'reg');
@@ -2104,11 +2043,7 @@
 
         function getRiderSecretConfig(riderName, phone) {
             let rider = phone ? registeredRiders[phone] : Object.values(registeredRiders).find(r => normalizeName(r.name) === normalizeName(riderName));
-            return {
-                cutMin: rider?.customCutMin || 10,
-                distMeters: rider?.customDistMeters || 200,
-                breakMin: rider?.customBreakMin || 30
-            };
+            return { cutMin: rider?.customCutMin || 10, distMeters: rider?.customDistMeters || 200, breakMin: rider?.customBreakMin || 30 };
         }
 
         function takeBreak(serialId) {
@@ -2125,9 +2060,9 @@
         function cutSerial(serialId) {
             const item = activeSerials[serialId];
             if (!item) return;
-            if (isAdminLoggedIn) {
+            if (currentAdminSession) {
                 if (confirm(`🛡️ অ্যাডমিন পাওয়ার: "${item.name}"-এর সিরিয়াল কাটবেন?`)) {
-                    db.ref('cutHistory').push({ targetName: item.name, cutterName: "🛡️ অ্যাডমিন", timestamp: Date.now() });
+                    db.ref('cutHistory').push({ targetName: item.name, cutterName: `🛡️ ${currentAdminSession.toUpperCase()}`, timestamp: Date.now() });
                     db.ref('activeSerials/' + serialId).remove();
                     showToast("✅ সিরিয়াল কাটা হয়েছে!", "success");
                 }
@@ -2198,23 +2133,118 @@
         }
         setInterval(() => { if (Object.keys(activeSerials).length > 0) renderSerialList(); }, 1000);
 
-        // ADMIN PANEL
-        function openAdminLogin() {
-            if (isAdminLoggedIn) { document.getElementById("adminModal").style.display = "block"; return; }
-            if (prompt("🔐 অ্যাডমিন পাসওয়ার্ড দিন:") === "692372") {
-                isAdminLoggedIn = true;
-                document.getElementById("adminModeBar").style.display = "flex";
-                document.getElementById("adminModal").style.display = "block";
-                renderAdminSamityPendingReg();
-                renderAdminSamityPendingPayments();
-                renderAdminSamityApprovedList();
-                renderAdminRegisteredList();
-                renderAdminPaymentNumbersList();
-                populateSpecialRiderDropdown();
-            } else { showToast("❌ ভুল পাসওয়ার্ড!", "error"); }
+        // ADMIN LOGIN & PERMISSION CONTROLS
+        function openAdminLoginModal() {
+            if (currentAdminSession) { openAdminPanelUI(); return; }
+            document.getElementById("adminLoginModal").style.display = "block";
         }
 
-        function logoutAdminMode() { isAdminLoggedIn = false; document.getElementById("adminModeBar").style.display = "none"; showToast("অ্যাডমিন মোড বন্ধ।", "info"); }
+        function openMasterAdminPrompt() {
+            const pass = prompt("👑 মাস্টার অ্যাডমিন পাসওয়ার্ড দিন:");
+            if (pass === "master_692372") {
+                currentAdminSession = "master";
+                document.getElementById("adminModeBar").style.display = "flex";
+                document.getElementById("adminModeBarTitle").innerText = "👑 মাস্টার অ্যাডমিন মোড (ফুল কন্ট্রোল)";
+                openAdminPanelUI();
+            } else if (pass !== null) {
+                showToast("❌ ভুল মাস্টার পাসওয়ার্ড!", "error");
+            }
+        }
+
+        function submitAdminLogin() {
+            const role = document.getElementById("loginAdminRole").value;
+            const pass = document.getElementById("loginAdminPassword").value.trim();
+
+            if (subAdminCredentials[role] && subAdminCredentials[role].pass === pass) {
+                currentAdminSession = role;
+                document.getElementById("adminLoginModal").style.display = "none";
+                document.getElementById("adminModeBar").style.display = "flex";
+                document.getElementById("adminModeBarTitle").innerText = `🛡️ ${role.toUpperCase()} মোড চালু আছে`;
+                openAdminPanelUI();
+                showToast(`✅ ${role.toUpperCase()} হিসেবে সফলভাবে লগইন হয়েছে!`, "success");
+            } else {
+                showToast("❌ ভুল পাসওয়ার্ড!", "error");
+            }
+        }
+
+        function logoutAdminMode() {
+            currentAdminSession = null;
+            document.getElementById("adminModeBar").style.display = "none";
+            document.getElementById("adminModal").style.display = "none";
+            showToast("অ্যাডমিন প্যানেল থেকে লগআউট করা হয়েছে।", "info");
+        }
+
+        function openAdminPanelUI() {
+            if (!currentAdminSession) return;
+            document.getElementById("adminModal").style.display = "block";
+
+            const isMaster = (currentAdminSession === "master");
+            const masterBox = document.getElementById("masterOnlyAdminManagementBox");
+            masterBox.style.display = isMaster ? "block" : "none";
+
+            if (isMaster) {
+                renderMasterAdminSubSettings();
+            }
+
+            // Apply permissions for sub-admins
+            const perms = isMaster ? { sec1: true, sec2: true, sec3: true, sec4: true } : (subAdminCredentials[currentAdminSession]?.permissions || { sec1: false, sec2: false, sec3: false, sec4: false });
+
+            document.getElementById("secBox1").style.display = perms.sec1 ? "block" : "none";
+            document.getElementById("secBox2").style.display = perms.sec2 ? "block" : "none";
+            document.getElementById("secBox3").style.display = perms.sec3 ? "block" : "none";
+            document.getElementById("secBox4").style.display = perms.sec4 ? "block" : "none";
+
+            renderAdminSamityPendingReg();
+            renderAdminSamityPendingPayments();
+            renderAdminSamityApprovedList();
+            renderAdminRegisteredList();
+            renderAdminPaymentNumbersList();
+            populateSpecialRiderDropdown();
+        }
+
+        function renderMasterAdminSubSettings() {
+            const container = document.getElementById("masterAdminSubSettingsContainer");
+            let html = "";
+            ['admin1', 'admin2', 'admin3', 'admin4'].forEach(role => {
+                const cred = subAdminCredentials[role] || { pass: "", permissions: {} };
+                html += `
+                    <div style="background: white; padding: 8px; border-radius: 8px; margin-bottom: 6px; border: 1px solid #cbd5e1;">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+                            <strong>${role.toUpperCase()} পাসওয়ার্ড:</strong>
+                            <input type="text" id="masterPass_${role}" value="${cred.pass}" class="form-control" style="width:120px; display:inline-block; padding:3px 6px;">
+                            <button class="btn btn-primary btn-xs" onclick="updateSubAdminPass('${role}')">সেভ</button>
+                        </div>
+                        <div style="font-size:11px; color:#475569; display:flex; gap:10px; flex-wrap:wrap; margin-top:4px;">
+                            <label><input type="checkbox" id="perm_${role}_sec1" ${cred.permissions.sec1 ? 'checked' : ''} onchange="updateSubAdminPerm('${role}')"> সমিতি কন্ট্রোল</label>
+                            <label><input type="checkbox" id="perm_${role}_sec2" ${cred.permissions.sec2 ? 'checked' : ''} onchange="updateSubAdminPerm('${role}')"> পেমেন্ট নাম্বার</label>
+                            <label><input type="checkbox" id="perm_${role}_sec3" ${cred.permissions.sec3 ? 'checked' : ''} onchange="updateSubAdminPerm('${role}')"> রাইডার পাওয়ার</label>
+                            <label><input type="checkbox" id="perm_${role}_sec4" ${cred.permissions.sec4 ? 'checked' : ''} onchange="updateSubAdminPerm('${role}')"> স্ট্যান্ড ও নোটিশ</label>
+                        </div>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        }
+
+        async function updateSubAdminPass(role) {
+            const newPass = document.getElementById(`masterPass_${role}`).value.trim();
+            if (!newPass) { showToast("পাসওয়ার্ড খালি রাখা যাবে না।", "error"); return; }
+            subAdminCredentials[role].pass = newPass;
+            await db.ref('subAdminConfig').set(subAdminCredentials);
+            showToast(`✅ ${role.toUpperCase()} এর পাসওয়ার্ড আপডেট হয়েছে!`, "success");
+        }
+
+        async function updateSubAdminPerm(role) {
+            subAdminCredentials[role].permissions = {
+                sec1: document.getElementById(`perm_${role}_sec1`).checked,
+                sec2: document.getElementById(`perm_${role}_sec2`).checked,
+                sec3: document.getElementById(`perm_${role}_sec3`).checked,
+                sec4: document.getElementById(`perm_${role}_sec4`).checked
+            };
+            await db.ref('subAdminConfig').set(subAdminCredentials);
+            showToast(`✅ ${role.toUpperCase()} এর পারমিশন আপডেট হয়েছে!`, "success");
+        }
+
         function closeAdminModal() { document.getElementById("adminModal").style.display = "none"; }
 
         async function saveDailyQuota() {
@@ -2259,7 +2289,7 @@
         }
 
         async function rejectSamityMember(phone) {
-            if (confirm("আপনি কি নিশ্চিতভাবে এই আবেদনটি ডিলিট (বাতিল) করতে চান?")) {
+            if (confirm("আপনি কি নিশ্চিতভাবে এই আবেদনটি ডিলিট করতে চান?")) {
                 await db.ref('tanSamity/pendingMembers/' + phone).remove();
                 showToast("আবেদনটি বাতিল করা হয়েছে।", "info");
             }
@@ -2305,7 +2335,7 @@
                         </div>
                     </div>
                     <div style="display:flex; gap:4px;">
-                        <button class="btn btn-info btn-xs" title="তথ্য ও সদস্য পরিবর্তন করুন" onclick="openEditSamityMemberModal('${m.phone}')">✏️ এডিট</button>
+                        <button class="btn btn-info btn-xs" onclick="openEditSamityMemberModal('${m.phone}')">✏️ এডিট</button>
                         <button class="btn btn-warning btn-xs" onclick="openSamityAdjustModal('${m.phone}')">টাকা</button>
                         <button class="btn btn-danger btn-xs" onclick="deleteSamityApprovedMember('${m.phone}')">🗑️</button>
                     </div>
@@ -2331,22 +2361,13 @@
 
             const oldMember = samityApprovedMembers[oldPhone];
             if (!oldMember || !newName || !newPhone || newPhone.length < 11) {
-                showToast("⚠️ সঠিক নাম এবং ১১ ডিজিটের ফোন নম্বর দিন।", "error");
-                return;
+                showToast("⚠️ সঠিক নাম এবং ১১ ডিজিটের ফোন নম্বর দিন।", "error"); return;
             }
 
             let finalPhoto = oldMember.photo || '';
-            if (photoFile) {
-                finalPhoto = await compressImageToBase64(photoFile, 220);
-            }
+            if (photoFile) finalPhoto = await compressImageToBase64(photoFile, 220);
 
-            const updatedMemberObj = {
-                ...oldMember,
-                name: newName,
-                phone: newPhone,
-                photo: finalPhoto
-            };
-
+            const updatedMemberObj = { ...oldMember, name: newName, phone: newPhone, photo: finalPhoto };
             if (oldPhone !== newPhone) {
                 await db.ref('tanSamity/approvedMembers/' + newPhone).set(updatedMemberObj);
                 await db.ref('tanSamity/approvedMembers/' + oldPhone).remove();
@@ -2357,9 +2378,8 @@
             } else {
                 await db.ref('tanSamity/approvedMembers/' + oldPhone).update(updatedMemberObj);
             }
-
             document.getElementById("samityEditMemberModal").style.display = "none";
-            showToast("✅ সদস্যের তথ্য ও অ্যাকাউন্ট সফলভাবে প্রতিস্থাপন করা হয়েছে!", "success");
+            showToast("✅ সদস্যের তথ্য সফলভাবে প্রতিস্থাপন করা হয়েছে!", "success");
         }
 
         async function deleteSamityApprovedMember(phone) {
@@ -2389,7 +2409,7 @@
         }
 
         async function resetAllMembersNewWeek() {
-            if (confirm("নতুন সপ্তাহ শুরু করলে সকলের জমানো টাকা ও বিজয়ী স্ট্যাটাস রিসেট হয়ে যাবে এবং স্পিন আনলক হবে। নিশ্চিত?")) {
+            if (confirm("নতুন সপ্তাহ শুরু করলে সকলের জমানো টাকা ও বিজয়ী স্ট্যাটাস রিসেট হয়ে যাবে। নিশ্চিত?")) {
                 const updates = {};
                 Object.keys(samityApprovedMembers).forEach(phone => { updates[phone + '/weeklyPaid'] = 0; updates[phone + '/isWinner'] = false; });
                 await db.ref('tanSamity/approvedMembers').update(updates);
