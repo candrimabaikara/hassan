@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>চন্দ্রিমা যুব উন্নয়ন টান সমিতি - বাইক রাইডার সিরিয়াল ও সমিতি ম্যানেজমেন্ট</title>
+    <title>চন্দ্রিমা যুব উন্নয়ন টান সমিতি - বাইক রাইডার সিরিয়াল ও চ্যাট সিস্টেম</title>
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
     
     <!-- Firebase SDK v9 Compat -->
@@ -18,7 +18,7 @@
             --warning: #f59e0b;
             --danger: #ef4444;
             --dark: #0f172a;
-            --card-bg: #ffffff;
+            --whatsapp: #25d366;
         }
 
         * {
@@ -33,7 +33,7 @@
             background: linear-gradient(135deg, #e0e7ff 0%, #f0f9ff 50%, #ecfdf5 100%);
             color: var(--dark);
             min-height: 100vh;
-            padding-bottom: 40px;
+            padding-bottom: 70px;
         }
 
         #customToast {
@@ -116,6 +116,7 @@
         .btn-danger { background: linear-gradient(135deg, #dc2626, #ef4444); color: white; }
         .btn-info { background: linear-gradient(135deg, #0284c7, #0ea5e9); color: white; }
         .btn-dark { background: #1e293b; color: white; }
+        .btn-whatsapp { background: var(--whatsapp); color: white; }
         .btn-xs { padding: 4px 8px; font-size: 11px; border-radius: 6px; }
         .btn-block { width: 100%; }
 
@@ -139,7 +140,6 @@
         .assoc-banner h1 { font-size: 18px; font-weight: 700; display: inline-block; position: relative; }
         .assoc-banner p { font-size: 11px; color: #e2e8f0; margin-top: 2px; }
         
-        /* মাস্টার ডট এখন লেখার ঠিক উপরে এবং কালারের সাথে ম্যাচিং করে বসানো হয়েছে */
         .master-dot {
             font-size: 14px;
             color: #fde047;
@@ -151,6 +151,100 @@
             display: inline-block;
         }
         .master-dot:hover { color: #ffffff; }
+
+        /* WHATSAPP FLOATING DOCK BAR (আড়াআড়ি লম্বা ডক বার) */
+        .whatsapp-dock-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #075e54;
+            color: white;
+            padding: 8px 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            z-index: 4000;
+            box-shadow: 0 -4px 15px rgba(0,0,0,0.3);
+            border-top: 2px solid var(--whatsapp);
+        }
+        .dock-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            font-size: 11px;
+            font-weight: 700;
+            color: #e2e8f0;
+            transition: color 0.2s;
+        }
+        .dock-item:hover, .dock-item.active { color: #25d366; }
+        .dock-icon { font-size: 20px; line-height: 1; margin-bottom: 2px; }
+        .badge-notify {
+            background: var(--danger);
+            color: white;
+            font-size: 9px;
+            padding: 1px 5px;
+            border-radius: 10px;
+            position: absolute;
+            top: 2px;
+            right: calc(50% - 20px);
+        }
+
+        /* WHATSAPP DRAWER PANEL */
+        .whatsapp-panel {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: #efeae2;
+            z-index: 4500;
+            flex-direction: column;
+        }
+        .wa-header {
+            background: #008069;
+            color: white;
+            padding: 10px 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .wa-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .wa-footer {
+            background: #f0f2f5;
+            padding: 8px 12px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            border-top: 1px solid #d1d7db;
+        }
+        .wa-contact-item {
+            background: white;
+            border-radius: 10px;
+            padding: 8px 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            border: 1px solid #e2e8f0;
+        }
+        .wa-chat-bubble {
+            max-width: 75%;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            position: relative;
+            word-break: break-word;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+        .wa-chat-bubble.incoming { background: white; align-self: flex-start; border-top-left-radius: 0; }
+        .wa-chat-bubble.outgoing { background: #d9fdd3; align-self: flex-end; border-top-right-radius: 0; }
 
         .header-card {
             background: linear-gradient(135deg, #312e81 0%, #4338ca 55%, #0284c7 100%);
@@ -533,7 +627,6 @@
         <div class="assoc-banner">
             <h1>
                 চন্দ্রিমা যুব উন্নয়ন টান সমিতি
-                <!-- মাস্টার ডট এখন লেখার ঠিক উপরে এবং কালারের সাথে ম্যাচিং করে বসানো হয়েছে -->
                 <span class="master-dot" onclick="openMasterAdminPrompt()" title="মাস্টার কন্ট্রোল">•</span>
             </h1>
             <p>বাইক রাইডার সিরিয়াল ও সাপ্তাহিক টান সমিতি ব্যবস্থাপনা প্যানেল</p>
@@ -882,8 +975,65 @@
         </div>
 
         <!-- ADMIN ACCESS AREA -->
-        <div style="text-align: center; margin-top: 12px;">
+        <div style="text-align: center; margin-top: 12px; margin-bottom: 40px;">
             <button class="btn btn-dark btn-xs" onclick="openAdminLoginModal()">🔐 সাব-অ্যাডমিন প্যানেল লগইন</button>
+        </div>
+    </div>
+
+    <!-- WHATSAPP FLOATING DOCK BAR (আড়াআড়ি ডক বার) -->
+    <div class="whatsapp-dock-bar">
+        <div class="dock-item" onclick="openWaTab('contacts')">
+            <span class="dock-icon">👥</span>
+            <span>সদস্য ও রাইডার</span>
+        </div>
+        <div class="dock-item" onclick="openWaTab('group')">
+            <span class="dock-icon">💬</span>
+            <span>গ্রুপ চ্যাট</span>
+            <span id="waGroupNotifyBadge" class="badge-notify" style="display:none;">0</span>
+        </div>
+        <div class="dock-item" onclick="openWaTab('inbox')">
+            <span class="dock-icon">📬</span>
+            <span>ইনবক্স চ্যাট</span>
+        </div>
+    </div>
+
+    <!-- WHATSAPP DRAWER PANELS -->
+    <div class="whatsapp-panel" id="waPanelContacts">
+        <div class="wa-header">
+            <strong>👥 সমস্ত সদস্য ও রাইডার তালিকা</strong>
+            <button class="btn btn-danger btn-xs" onclick="closeWaPanel()">✕ বন্ধ</button>
+        </div>
+        <div class="wa-body" id="waContactsListContainer"></div>
+    </div>
+
+    <div class="whatsapp-panel" id="waPanelGroup">
+        <div class="wa-header">
+            <strong>💬 চন্দ্রিমা অফিশিয়াল গ্রুপ চ্যাট</strong>
+            <button class="btn btn-danger btn-xs" onclick="closeWaPanel()">✕ বন্ধ</button>
+        </div>
+        <div class="wa-body" id="waGroupChatMessages"></div>
+        <div class="wa-footer">
+            <input type="file" id="waGroupPhotoInput" accept="image/*" style="display:none" onchange="sendWaGroupPhoto(this)">
+            <button class="btn btn-whatsapp btn-xs" onclick="document.getElementById('waGroupPhotoInput').click()" title="ছবি পাঠান">📷</button>
+            <input type="text" id="waGroupInputText" class="form-control" placeholder="গ্রুপে বার্তা লিখুন...">
+            <button class="btn btn-success btn-xs" onclick="sendWaGroupMessage()">➤ পাঠান</button>
+        </div>
+    </div>
+
+    <div class="whatsapp-panel" id="waPanelInbox">
+        <div class="wa-header">
+            <div style="display:flex; align-items:center; gap:6px;">
+                <button class="btn btn-dark btn-xs" onclick="openWaTab('contacts')">← ব্যাক</button>
+                <strong id="waInboxTitle">ব্যক্তিগত ইনবক্স</strong>
+            </div>
+            <button class="btn btn-danger btn-xs" onclick="closeWaPanel()">✕ বন্ধ</button>
+        </div>
+        <div class="wa-body" id="waInboxMessages"></div>
+        <div class="wa-footer">
+            <input type="file" id="waInboxPhotoInput" accept="image/*" style="display:none" onchange="sendWaInboxPhoto(this)">
+            <button class="btn btn-whatsapp btn-xs" onclick="document.getElementById('waInboxPhotoInput').click()" title="ছবি পাঠান">📷</button>
+            <input type="text" id="waInboxInputText" class="form-control" placeholder="মেসেজ লিখুন...">
+            <button class="btn btn-success btn-xs" onclick="sendWaInboxMessage()">➤ পাঠান</button>
         </div>
     </div>
 
@@ -963,7 +1113,6 @@
             <div class="admin-box" id="samityMasterWrapperBox" style="background: #fffbeb; border: 2px solid #f59e0b;">
                 <h4 style="color: #b45309;">🏆 চন্দ্রিমা বাইকার টান সমিতি কন্ট্রোল সমূহ</h4>
                 
-                <!-- 1. OFFICIAL WINNER & SETUP -->
                 <div class="admin-box" id="powerSec1" style="background: #fef3c7; border: 1px solid #fcd34d; margin-bottom: 8px;">
                     <h4>
                         <span id="titlePower1"><span class="power-badge-tag">১</span> অফিসিয়াল উইনার ওডো সেটআপ</span>
@@ -978,7 +1127,6 @@
                     </div>
                 </div>
 
-                <!-- 2. DRAW DATE & TIME -->
                 <div class="admin-box" id="powerSec2" style="background: #fef3c7; border: 1px solid #fcd34d; margin-bottom: 8px;">
                     <h4>
                         <span id="titlePower2"><span class="power-badge-tag">২</span> ড্র-এর সময় ও তারিখ নির্ধারণ</span>
@@ -997,7 +1145,6 @@
                     </div>
                 </div>
 
-                <!-- 3. WHEEL PERMISSIONS & LOCK -->
                 <div class="admin-box" id="powerSec3" style="background: #fef3c7; border: 1px solid #fcd34d; margin-bottom: 8px;">
                     <h4>
                         <span id="titlePower3"><span class="power-badge-tag">৩</span> টাকার পারমিশন ও হুইল লক</span>
@@ -1012,7 +1159,6 @@
                     </div>
                 </div>
 
-                <!-- 4. QUOTA & REG SWITCH -->
                 <div class="admin-box" id="powerSec4" style="background: #fef3c7; border: 1px solid #fcd34d; margin-bottom: 8px;">
                     <h4>
                         <span id="titlePower4"><span class="power-badge-tag">৪</span> রেজিস্ট্রেশন অন/অফ এবং টাকার অংক</span>
@@ -1030,7 +1176,6 @@
                     </div>
                 </div>
 
-                <!-- 5. NEW REG APPROVAL -->
                 <div class="admin-box" id="powerSec5" style="background: white; border: 1px solid #fde68a; margin-bottom: 8px;">
                     <h4>
                         <span id="titlePower5"><span class="power-badge-tag">৫</span> নতুন রেজিস্ট্রেশন আবেদন অনুমোদন</span>
@@ -1041,7 +1186,6 @@
                     </div>
                 </div>
 
-                <!-- 6. PAYMENT APPROVAL GENERAL -->
                 <div class="admin-box" id="powerSec6" style="background: white; border: 1px solid #fde68a; margin-bottom: 8px;">
                     <h4>
                         <span id="titlePower6"><span class="power-badge-tag">৬</span> পেমেন্ট রিকুয়েস্ট এপ্রুভাল (স্ক্রিনশটসহ)</span>
@@ -1052,7 +1196,6 @@
                     </div>
                 </div>
 
-                <!-- 7. PAYMENT APPROVAL ADMIN 1 -->
                 <div class="admin-box" id="powerSec7" style="background: white; border: 1px solid #fde68a; margin-bottom: 8px;">
                     <h4>
                         <span id="titlePower7"><span class="power-badge-tag">৭</span> অ্যাডমিন ১ পেমেন্ট রিসিভ ও এপ্রুভাল</span>
@@ -1063,7 +1206,6 @@
                     </div>
                 </div>
 
-                <!-- 8. PAYMENT APPROVAL ADMIN 2 -->
                 <div class="admin-box" id="powerSec8" style="background: white; border: 1px solid #fde68a; margin-bottom: 8px;">
                     <h4>
                         <span id="titlePower8"><span class="power-badge-tag">৮</span> অ্যাডমিন ২ পেমেন্ট রিসিভ ও এপ্রুভাল</span>
@@ -1074,7 +1216,6 @@
                     </div>
                 </div>
 
-                <!-- 9. PAYMENT APPROVAL ADMIN 3 -->
                 <div class="admin-box" id="powerSec9" style="background: white; border: 1px solid #fde68a; margin-bottom: 8px;">
                     <h4>
                         <span id="titlePower9"><span class="power-badge-tag">৯</span> অ্যাডমিন ৩ পেমেন্ট রিসিভ ও এপ্রুভাল</span>
@@ -1085,7 +1226,6 @@
                     </div>
                 </div>
 
-                <!-- 10. PAYMENT APPROVAL ADMIN 4 -->
                 <div class="admin-box" id="powerSec10" style="background: white; border: 1px solid #fde68a; margin-bottom: 8px;">
                     <h4>
                         <span id="titlePower10"><span class="power-badge-tag">১০</span> অ্যাডমিন ৪ পেমেন্ট রিসিভ ও এপ্রুভাল</span>
@@ -1096,7 +1236,6 @@
                     </div>
                 </div>
 
-                <!-- 11. SINGLE BOX MEMBER MANAGEMENT -->
                 <div class="admin-box" id="powerSec11" style="background: white; border: 1px solid #fde68a; margin-bottom: 8px;">
                     <h4>
                         <span id="titlePower11"><span class="power-badge-tag">১১</span> মেম্বার ম্যানেজমেন্ট (টাকা জমা, নাম-ফোন ও ডিলিট)</span>
@@ -1106,26 +1245,22 @@
                         <div style="display: flex; justify-content: flex-end; margin-bottom: 6px;">
                             <button class="btn btn-danger btn-xs" onclick="resetAllMembersNewWeek()">🔄 সম্পূর্ণ নতুন সপ্তাহ রিসেট (সব মুছে যাবে)</button>
                         </div>
-                        <p style="font-size: 10px; color: #b45309; margin-bottom: 4px;">* এখানে রিসেট করলে সব সদস্যের জমানো টাকার হিস্ট্রি ও ডেটা স্থায়ীভাবে মুছে নতুন সপ্তাহ শুরু হবে।</p>
                         <div id="adminSingleBoxMemberManagement" style="background:#fffbeb; padding:6px; border-radius:8px; border:1px solid #fcd34d; max-height:220px; overflow-y:auto;"></div>
                     </div>
                 </div>
 
-                <!-- 12-15 একত্রিত করা হয়েছে: ৪ জন সাব-অ্যাডমিনের প্রোফাইল ও ছবি ম্যানেজমেন্ট -->
                 <div class="admin-box" id="powerSec12" style="background: white; border: 1px solid #fde68a; margin-bottom: 8px;">
                     <h4>
-                        <span id="titlePower12"><span class="power-badge-tag">১২</span> ৪ জন সাব-অ্যাডমিনের প্রোফাইল, নাম, নম্বর ও ছবি ম্যানেজমেন্ট</span>
+                        <span id="titlePower12"><span class="power-badge-tag">১২</span> ৪ জন সাব-অ্যাডমিনের প্রোফাইল ও ছবি ম্যানেজমেন্ট</span>
                         <button class="btn btn-dark btn-xs" id="lockPower12" onclick="togglePowerLock(12)">🔒 লকড</button>
                     </h4>
                     <div id="containerPower12" style="opacity: 0.5; pointer-events: none;">
-                        <p style="font-size: 11px; color: #b45309; margin-bottom: 8px;">* এখান থেকে যেকোনো সাব-অ্যাডমিনের নাম, বিকাশ/নগদ নম্বর এবং প্রোফাইল ছবি আপডেট করতে পারবেন:</p>
                         <div id="adminFourProfilesUnifiedEditorContainer"></div>
                     </div>
                 </div>
 
             </div>
 
-            <!-- 16. RIDER SPECIAL POWER -->
             <div class="admin-box" id="powerSec16" style="background: #f0fdf4; border-color: #10b981;">
                 <h4>
                     <span id="titlePower16"><span class="power-badge-tag">১৬</span> রাইডার স্পেশাল পাওয়ার (দূরত্ব ও সময়)</span>
@@ -1146,7 +1281,6 @@
                 </div>
             </div>
 
-            <!-- 17. STAND NAME & GPS -->
             <div class="admin-box" id="powerSec17">
                 <h4>
                     <span id="titlePower17"><span class="power-badge-tag">১৭</span> স্ট্যান্ডের নাম ও GPS লোকেশন</span>
@@ -1169,7 +1303,6 @@
                 </div>
             </div>
 
-            <!-- 18. LEADERS PANEL -->
             <div class="admin-box" id="powerSec18">
                 <h4>
                     <span id="titlePower18"><span class="power-badge-tag">১৮</span> সভাপতি প্যানেল</span>
@@ -1180,10 +1313,8 @@
                         <label class="form-label">সভাপতি, সহ-সভাপতি ও সাংগঠনিক সম্পাদক নাম ও ছবি</label>
                         <input type="text" id="admPresName" class="form-control" placeholder="সভাপতির নাম" style="margin-bottom:3px;">
                         <input type="file" id="admPresPhoto" accept="image/*" class="form-control" style="padding:3px; margin-bottom:6px;">
-                        
                         <input type="text" id="admVpName" class="form-control" placeholder="সহ-সভাপতির নাম" style="margin-bottom:3px;">
                         <input type="file" id="admVpPhoto" accept="image/*" class="form-control" style="padding:3px; margin-bottom:6px;">
-                        
                         <input type="text" id="admSecName" class="form-control" placeholder="সাংগঠনিক সম্পাদকের নাম" style="margin-bottom:3px;">
                         <input type="file" id="admSecPhoto" accept="image/*" class="form-control" style="padding:3px; margin-bottom:6px;">
                         <button class="btn btn-success btn-block" onclick="saveLeadersInfo()">💾 সেভ করুন</button>
@@ -1191,7 +1322,6 @@
                 </div>
             </div>
 
-            <!-- 19. NOTICE BOARD -->
             <div class="admin-box" id="powerSec19">
                 <h4>
                     <span id="titlePower19"><span class="power-badge-tag">১৯</span> নোটিশ বোর্ড</span>
@@ -1207,7 +1337,6 @@
                 </div>
             </div>
 
-            <!-- 20. RIDER PHOTO EDIT -->
             <div class="admin-box" id="powerSec20">
                 <h4>
                     <span id="titlePower20"><span class="power-badge-tag">২০</span> রাইডারের ছবি এডিটিং ও চেঞ্জ</span>
@@ -1218,7 +1347,6 @@
                 </div>
             </div>
 
-            <!-- 21. RIDER NAME & PHONE EDIT -->
             <div class="admin-box" id="powerSec21">
                 <h4>
                     <span id="titlePower21"><span class="power-badge-tag">২১</span> রাইডারের নাম ও ফোন নাম্বার চেঞ্জ</span>
@@ -1229,7 +1357,6 @@
                 </div>
             </div>
 
-            <!-- 22. RIDER SUSPEND & UNSUSPEND -->
             <div class="admin-box" id="powerSec22">
                 <h4>
                     <span id="titlePower22"><span class="power-badge-tag">২২</span> রাইডার সাসপেন্ড ও আনসাসপেন্ড</span>
@@ -1249,7 +1376,6 @@
             <h4 style="color: #dc2626; margin-bottom: 8px;">✂️ সিরিয়াল কাটার কারণ নির্বাচন করুন</h4>
             <input type="hidden" id="cutReasonSerialId">
             <p style="font-size: 11px; color: #475569; margin-bottom: 10px;">রাইডার স্ট্যান্ডে না থাকার সঠিক কারণটি মার্ক করুন:</p>
-            
             <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px;">
                 <label style="background:#f1f5f9; padding:8px; border-radius:8px; font-size:12px; cursor:pointer; border:1px solid #cbd5e1;">
                     <input type="radio" name="cutReasonGroup" value="notAtStand" checked> 🔴 স্ট্যান্ডে নেই (সরাসরি কাটা যাবে)
@@ -1261,7 +1387,6 @@
                     <input type="radio" name="cutReasonGroup" value="namaz"> 🕌 নামাজ পড়তে গেছেন (৩০ মিনিটের সময় পাবেন)
                 </label>
             </div>
-
             <div style="display: flex; gap: 6px;">
                 <button class="btn btn-danger" style="flex: 1;" onclick="submitCutWithReason()">নিশ্চিত করুন</button>
                 <button class="btn btn-dark" onclick="document.getElementById('cutReasonModal').style.display='none'">বাতিল</button>
@@ -1420,6 +1545,10 @@
         let myLocalRiderName = localStorage.getItem("myRiderName") || "";
         let myLockedSamityPhone = localStorage.getItem("lockedSamityPhone") || "";
 
+        let activeInboxTargetPhone = "";
+        let unreadGroupMsgCount = 0;
+        let lastGroupMsgTimestamp = localStorage.getItem("lastGroupMsgTs") || Date.now();
+
         let audioCtx = null;
         let alarmInterval = null;
         let acknowledgedAlarmKey = "";
@@ -1576,38 +1705,178 @@
 
         function normalizeName(name) { return (name || "").trim().toLowerCase().replace(/\s+/g, ' '); }
 
-        function toggleHistoryDropdown() {
-            const content = document.getElementById("cutHistoryContainer");
-            const isVisible = content.style.display === "block";
-            content.style.display = isVisible ? "none" : "block";
-            document.getElementById("historyToggleArrow").innerText = isVisible ? "▼ খুলুন" : "▲ বন্ধ করুন";
-        }
-        function toggleSamityCardCollapse() {
-            const body = document.getElementById("samityBodyContainer");
-            const isVisible = body.style.display === "block";
-            body.style.display = isVisible ? "none" : "block";
-            document.getElementById("samityToggleArrow").innerText = isVisible ? "▼ খুলুন" : "▲ বন্ধ করুন";
-            if (!isVisible) drawWheel(currentWheelAngle);
-        }
+        // --- WHATSAPP CHAT & CALL FUNCTIONS ---
+        function openWaTab(tab) {
+            document.getElementById("waPanelContacts").style.display = tab === 'contacts' ? 'flex' : 'none';
+            document.getElementById("waPanelGroup").style.display = tab === 'group' ? 'flex' : 'none';
+            document.getElementById("waPanelInbox").style.display = tab === 'inbox' ? 'flex' : 'none';
 
-        function togglePowerLock(powerNum) {
-            const container = document.getElementById(`containerPower${powerNum}`);
-            const btn = document.getElementById(`lockPower${powerNum}`);
-            const isLocked = container.style.pointerEvents === "none";
-            if (isLocked) {
-                container.style.opacity = "1";
-                container.style.pointerEvents = "auto";
-                btn.innerText = "🔓 আনলকড";
-                btn.className = "btn btn-danger btn-xs";
-                showToast(`পাওয়ার ${powerNum} আনলক করা হয়েছে।`, "info");
-            } else {
-                container.style.opacity = "0.5";
-                container.style.pointerEvents = "none";
-                btn.innerText = "🔒 লকড";
-                btn.className = "btn btn-dark btn-xs";
-                showToast(`পাওয়ার ${powerNum} লক করা হয়েছে।`, "success");
+            if (tab === 'contacts') renderWaContactsList();
+            if (tab === 'group') {
+                unreadGroupMsgCount = 0;
+                document.getElementById("waGroupNotifyBadge").style.display = "none";
+                scrollWaChatToBottom('waGroupChatMessages');
             }
         }
+
+        function closeWaPanel() {
+            document.getElementById("waPanelContacts").style.display = 'none';
+            document.getElementById("waPanelGroup").style.display = 'none';
+            document.getElementById("waPanelInbox").style.display = 'none';
+        }
+
+        function renderWaContactsList() {
+            const container = document.getElementById("waContactsListContainer");
+            const samityMembers = Object.values(samityApprovedMembers);
+            const riders = Object.values(registeredRiders);
+
+            let html = `<div style="font-size:11px; font-weight:700; color:#075e54; margin-bottom:4px;">🏆 টান সমিতি সদস্যবৃন্দ:</div>`;
+            if (samityMembers.length === 0) html += `<div style="font-size:11px; color:#64748b; padding:4px;">কোনো সদস্য নেই।</div>`;
+            samityMembers.forEach(m => {
+                html += waContactCardHTML(m.name, m.phone, m.photo);
+            });
+
+            html += `<div style="font-size:11px; font-weight:700; color:#075e54; margin-top:8px; margin-bottom:4px;">🏍️ রেজিস্টার্ড বাইক রাইডারগণ:</div>`;
+            if (riders.length === 0) html += `<div style="font-size:11px; color:#64748b; padding:4px;">কোনো রাইডার নেই।</div>`;
+            riders.forEach(r => {
+                html += waContactCardHTML(r.name, r.phone || r.id, r.photo);
+            });
+
+            container.innerHTML = html;
+        }
+
+        function waContactCardHTML(name, phone, photo) {
+            return `
+                <div class="wa-contact-item">
+                    <div style="display:flex; align-items:center; gap:8px;">
+                        <img src="${photo || 'https://via.placeholder.com/35'}" style="width:36px; height:36px; border-radius:50%; object-fit:cover; border:1.5px solid #25d366;">
+                        <div>
+                            <div style="font-size:12px; font-weight:700; color:#0f172a;">${name}</div>
+                            <div style="font-size:10px; color:#64748b;">📞 ${phone || 'নম্বর নেই'}</div>
+                        </div>
+                    </div>
+                    <div style="display:flex; gap:4px;">
+                        <a href="tel:${phone}" class="btn btn-success btn-xs" title="কল দিন">📞 কল</a>
+                        <button class="btn btn-primary btn-xs" onclick="openWaInbox('${phone}', '${name}')">💬 মেসেজ</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function openWaInbox(phone, name) {
+            if (!phone) { showToast("এই ইউজারের কোনো ফোন নম্বর নেই।", "error"); return; }
+            activeInboxTargetPhone = phone;
+            document.getElementById("waInboxTitle").innerText = `${name} (${phone})`;
+            document.getElementById("waPanelContacts").style.display = 'none';
+            document.getElementById("waPanelInbox").style.display = 'flex';
+            loadWaInboxMessages();
+        }
+
+        function getChatInboxKey(p1, p2) {
+            return [p1, p2].sort().join('_');
+        }
+
+        function sendWaGroupMessage() {
+            const input = document.getElementById("waGroupInputText");
+            const text = input.value.trim();
+            if (!text) return;
+            const senderName = myLocalRiderName || "সদস্য";
+            db.ref('whatsappGroupChat').push({
+                sender: senderName, phone: myLocalRiderPhone || 'unknown', text: text, type: 'text', timestamp: Date.now()
+            });
+            input.value = "";
+        }
+
+        function sendWaGroupPhoto(input) {
+            const file = input.files[0];
+            if (!file) return;
+            compressImageToBase64(file, 300).then(base64 => {
+                const senderName = myLocalRiderName || "সদস্য";
+                db.ref('whatsappGroupChat').push({
+                    sender: senderName, phone: myLocalRiderPhone || 'unknown', photo: base64, type: 'photo', timestamp: Date.now()
+                });
+                input.value = "";
+            });
+        }
+
+        function sendWaInboxMessage() {
+            const input = document.getElementById("waInboxInputText");
+            const text = input.value.trim();
+            if (!text || !activeInboxTargetPhone) return;
+            const chatKey = getChatInboxKey(myLocalRiderPhone || 'user', activeInboxTargetPhone);
+            const senderName = myLocalRiderName || "সদস্য";
+            db.ref('whatsappInbox/' + chatKey).push({
+                sender: senderName, senderPhone: myLocalRiderPhone || 'user', text: text, type: 'text', timestamp: Date.now()
+            });
+            input.value = "";
+        }
+
+        function sendWaInboxPhoto(input) {
+            const file = input.files[0];
+            if (!file || !activeInboxTargetPhone) return;
+            compressImageToBase64(file, 300).then(base64 => {
+                const chatKey = getChatInboxKey(myLocalRiderPhone || 'user', activeInboxTargetPhone);
+                const senderName = myLocalRiderName || "সদস্য";
+                db.ref('whatsappInbox/' + chatKey).push({
+                    sender: senderName, senderPhone: myLocalRiderPhone || 'user', photo: base64, type: 'photo', timestamp: Date.now()
+                });
+                input.value = "";
+            });
+        }
+
+        function loadWaInboxMessages() {
+            const container = document.getElementById("waInboxMessages");
+            if (!activeInboxTargetPhone) return;
+            const chatKey = getChatInboxKey(myLocalRiderPhone || 'user', activeInboxTargetPhone);
+            db.ref('whatsappInbox/' + chatKey).on('value', snap => {
+                const msgs = snap.val() || {};
+                let html = "";
+                Object.values(msgs).forEach(m => {
+                    const isMe = m.senderPhone === (myLocalRiderPhone || 'user');
+                    let content = m.type === 'photo' ? `<img src="${m.photo}" style="max-width:180px; border-radius:6px;">` : m.text;
+                    html += `
+                        <div class="wa-chat-bubble ${isMe ? 'outgoing' : 'incoming'}">
+                            <div style="font-size:9px; font-weight:700; color:#075e54; margin-bottom:2px;">${m.sender}</div>
+                            <div>${content}</div>
+                            <div style="font-size:8px; color:#64748b; text-align:right; margin-top:2px;">${new Date(m.timestamp).toLocaleTimeString('bn-BD', {hour:'2-digit', minute:'2-digit'})}</div>
+                        </div>
+                    `;
+                });
+                container.innerHTML = html || `<div style="text-align:center; color:#64748b; font-size:11px; margin-top:20px;">কোনো মেসেজ নেই। কথা শুরু করুন!</div>`;
+                scrollWaChatToBottom('waInboxMessages');
+            });
+        }
+
+        db.ref('whatsappGroupChat').on('child_added', snap => {
+            const m = snap.val();
+            const container = document.getElementById("waGroupChatMessages");
+            const isMe = m.phone === (myLocalRiderPhone || 'unknown');
+            let content = m.type === 'photo' ? `<img src="${m.photo}" style="max-width:180px; border-radius:6px;">` : m.text;
+            
+            const div = document.createElement('div');
+            div.className = `wa-chat-bubble ${isMe ? 'outgoing' : 'incoming'}`;
+            div.innerHTML = `
+                <div style="font-size:9px; font-weight:700; color:#075e54; margin-bottom:2px;">${m.sender}</div>
+                <div>${content}</div>
+                <div style="font-size:8px; color:#64748b; text-align:right; margin-top:2px;">${new Date(m.timestamp).toLocaleTimeString('bn-BD', {hour:'2-digit', minute:'2-digit'})}</div>
+            `;
+            container.appendChild(div);
+            scrollWaChatToBottom('waGroupChatMessages');
+
+            if (!isMe && m.timestamp > Number(lastGroupMsgTimestamp)) {
+                unreadGroupMsgCount++;
+                const badge = document.getElementById("waGroupNotifyBadge");
+                badge.innerText = unreadGroupMsgCount;
+                badge.style.display = "inline-block";
+                showToast(`💬 গ্রুপে নতুন মেসেজ: ${m.sender}`, "info");
+            }
+        });
+
+        function scrollWaChatToBottom(elementId) {
+            const el = document.getElementById(elementId);
+            if (el) el.scrollTop = el.scrollHeight;
+        }
+        // ----------------------------------------
 
         // FIREBASE SYNC LISTENERS
         db.ref('standConfig').on('value', (snap) => {
