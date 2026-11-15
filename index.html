@@ -129,14 +129,28 @@
             background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
             color: #fde047;
             text-align: center;
-            padding: 10px;
+            padding: 10px 14px;
             border-radius: 12px;
             margin-bottom: 8px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.15);
             border: 1px solid rgba(253, 224, 71, 0.3);
+            position: relative;
         }
-        .assoc-banner h1 { font-size: 18px; font-weight: 700; }
+        .assoc-banner h1 { font-size: 18px; font-weight: 700; display: inline-block; }
         .assoc-banner p { font-size: 11px; color: #e2e8f0; margin-top: 2px; }
+        
+        /* Master dot matched nicely inside banner header */
+        .master-dot {
+            position: absolute;
+            top: 10px;
+            right: 14px;
+            font-size: 20px;
+            color: #312e81; /* Matches dark blue gradient background */
+            cursor: pointer;
+            user-select: none;
+            transition: color 0.2s;
+        }
+        .master-dot:hover { color: #1e1b4b; }
 
         .header-card {
             background: linear-gradient(135deg, #312e81 0%, #4338ca 55%, #0284c7 100%);
@@ -443,6 +457,25 @@
         .switch-row { display: flex; align-items: center; justify-content: space-between; background: #fff1f2; padding: 8px 10px; border-radius: 8px; border: 1px solid #fecdd3; margin-bottom: 8px; }
         .reg-rider-row { display: flex; align-items: center; justify-content: space-between; background: white; padding: 8px; border-radius: 8px; border: 1px solid #e2e8f0; margin-bottom: 6px; gap: 6px; flex-wrap: wrap; }
         .special-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin: 8px 0; }
+        
+        .admin-pay-card {
+            background: #fff;
+            border: 1px solid #cbd5e1;
+            border-radius: 10px;
+            padding: 8px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .admin-pay-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--primary);
+            flex-shrink: 0;
+        }
     </style>
 </head>
 <body>
@@ -482,6 +515,8 @@
         <div class="assoc-banner">
             <h1>চন্দ্রিমা যুব উন্নয়ন টান সমিতি</h1>
             <p>বাইক রাইডার সিরিয়াল ও সাপ্তাহিক টান সমিতি ব্যবস্থাপনা প্যানেল</p>
+            <!-- Hidden master control dot matched to background gradient -->
+            <span class="master-dot" onclick="openMasterAdminPrompt()" title="মাস্টার কন্ট্রোল">•</span>
         </div>
 
         <div id="adminModeBar">
@@ -656,13 +691,18 @@
                     </div>
                 </div>
 
+                <!-- UPDATED 4 ADMINS PAYMENT SECTION -->
                 <div id="samityPaySection" style="display: none;">
-                    <div style="font-size: 11px; color: #475569; margin-bottom: 6px;">
-                        অফিসিয়াল পেমেন্ট নাম্বার: <strong id="assocDefaultPayNum" style="color: #dc2626;">01719592128</strong> (বিকাশ/নগদ)
+                    <p style="font-size: 11px; color: #475569; margin-bottom: 8px;">
+                        নিচে ৪ জন নির্দিষ্ট অ্যাডমিনের বিকাশ/নগদ নম্বর দেওয়া হলো। আপনার পছন্দমতো যেকোনো একজন অ্যাডমিনের কাছে টাকা পাঠিয়ে নিচের তথ্য ফর্ম পূরণ করুন:
+                    </p>
+
+                    <div id="fourAdminsPaymentCardsContainer" style="margin-bottom: 10px;">
+                        <!-- Dynamically populated from Firebase -->
                     </div>
 
                     <div class="form-group">
-                        <label class="form-label">১. কার অ্যাকাউন্টে টাকা জমা হবে? (রেজিস্টার্ড ফোন নাম্বার দিন)</label>
+                        <label class="form-label">১. কার অ্যাকাউন্টে টাকা জমা হবে? (আপনার রেজিস্টার্ড ফোন নম্বর দিন)</label>
                         <div style="display: flex; gap: 6px;">
                             <input type="tel" id="samityTargetPhone" class="form-control" placeholder="নিজের বা অন্য সদস্যের নম্বর (017XXXXXXXX)" oninput="autoCheckSamityMember()">
                             <button class="btn btn-info btn-xs" onclick="autoCheckSamityMember(true)">চেক</button>
@@ -679,10 +719,12 @@
 
                     <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; margin-bottom: 8px;">
                         <div>
-                            <label class="form-label">মাধ্যম</label>
-                            <select id="samityPayMethod" class="form-control">
-                                <option value="bKash">বিকাশ</option>
-                                <option value="Nagad">নগদ</option>
+                            <label class="form-label">কোন অ্যাডমিনকে?</label>
+                            <select id="samitySelectedAdminRole" class="form-control">
+                                <option value="admin1">অ্যাডমিন ১</option>
+                                <option value="admin2">অ্যাডমিন ২</option>
+                                <option value="admin3">অ্যাডমিন ৩</option>
+                                <option value="admin4">অ্যাডমিন ৪</option>
                             </select>
                         </div>
                         <div>
@@ -801,14 +843,13 @@
             </div>
         </div>
 
-        <!-- ADMIN ACCESS AREA WITH HIDDEN MASTER DOT -->
-        <div style="text-align: center; margin-top: 12px; display: flex; align-items: center; justify-content: center; gap: 8px;">
-            <button class="btn btn-dark btn-xs" onclick="openAdminLoginModal()">🔐 অ্যাডমিন প্যানেল</button>
-            <span onclick="openMasterAdminPrompt()" style="font-size: 22px; color: #94a3b8; cursor: pointer; user-select: none;" title="মাস্টার কন্ট্রোল">.</span>
+        <!-- ADMIN ACCESS AREA -->
+        <div style="text-align: center; margin-top: 12px;">
+            <button class="btn btn-dark btn-xs" onclick="openAdminLoginModal()">🔐 সাব-অ্যাডমিন প্যানেল লগইন</button>
         </div>
     </div>
 
-    <!-- ADMIN LOGIN MODAL (FOR ADMIN 1, 2, 3, 4) -->
+    <!-- ADMIN LOGIN MODAL -->
     <div class="modal-backdrop" id="adminLoginModal">
         <div class="modal-card" style="max-width: 360px;">
             <h3 style="color: var(--primary); font-size: 16px; margin-bottom: 8px;">🔐 সাব-অ্যাডমিন লগইন</h3>
@@ -834,7 +875,23 @@
         </div>
     </div>
 
-    <!-- ADMIN PANEL MODAL (CONTROLLING ACCORDING TO PERMISSIONS) -->
+    <!-- MASTER ADMIN LOGIN / PASSWORD CHANGE MODAL -->
+    <div class="modal-backdrop" id="masterLoginModal" style="z-index: 5500;">
+        <div class="modal-card" style="max-width: 360px;">
+            <h3 style="color: #1e1b4b; font-size: 16px; margin-bottom: 8px;">👑 মাস্টার অ্যাডমিন কন্ট্রোল</h3>
+            <p style="font-size: 11px; color: #64748b; margin-bottom: 10px;">মাস্টার পাসওয়ার্ড দিয়ে প্রবেশ করুন:</p>
+            <div class="form-group">
+                <label class="form-label">মাস্টার পাসওয়ার্ড</label>
+                <input type="password" id="inputMasterPassword" class="form-control" placeholder="মাস্টার পাসওয়ার্ড দিন">
+            </div>
+            <div style="display: flex; gap: 6px; margin-top: 12px;">
+                <button class="btn btn-primary" style="flex:1;" onclick="verifyMasterPassword()">প্রবেশ করুন</button>
+                <button class="btn btn-dark" onclick="document.getElementById('masterLoginModal').style.display='none'">বাতিল</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ADMIN PANEL MODAL -->
     <div class="modal-backdrop" id="adminModal">
         <div class="modal-card">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
@@ -842,10 +899,17 @@
                 <button class="btn btn-danger btn-xs" onclick="closeAdminModal()">✖ বন্ধ করুন</button>
             </div>
 
-            <!-- MASTER ONLY SECTION: ADMIN CREDENTIALS & PERMISSIONS MANAGEMENT -->
+            <!-- MASTER ONLY SECTION: MASTER PASSWORD CHANGE & PERMISSIONS MANAGEMENT -->
             <div id="masterOnlyAdminManagementBox" class="admin-box" style="background: #eef2ff; border: 2px solid #4f46e5; display: none;">
-                <h4 style="color: #4f46e5;">👑 মাস্টার অ্যাডমিন: সাব-অ্যাডমিন পাসওয়ার্ড ও পাওয়ার কন্ট্রোল</h4>
-                <p style="font-size: 11px; color: #475569; margin-bottom: 8px;">এখান থেকে সাব-অ্যাডমিনদের পাসওয়ার্ড পরিবর্তন এবং কাজের ক্ষমতা (Permissions) টিক দিয়ে ভাগ করে দিতে পারবেন:</p>
+                <h4 style="color: #4f46e5;">👑 মাস্টার অ্যাডমিন: পাসওয়ার্ড পরিবর্তন ও পাওয়ার অ্যাসাইন</h4>
+                <div style="background: #fff; padding: 8px; border-radius: 8px; margin-bottom: 10px; border: 1px solid #cbd5e1;">
+                    <strong style="font-size: 12px; color: #1e1b4b; display: block; margin-bottom: 4px;">মাস্টার পাসওয়ার্ড পরিবর্তন করুন:</strong>
+                    <div style="display: flex; gap: 6px;">
+                        <input type="text" id="newMasterPasswordInput" class="form-control" placeholder="নতুন মাস্টার পাসওয়ার্ড দিন">
+                        <button class="btn btn-primary btn-xs" onclick="saveNewMasterPassword()">সেভ</button>
+                    </div>
+                </div>
+                <p style="font-size: 11px; color: #475569; margin-bottom: 8px;">এখানে ১, ২, ৩, ৪ নম্বর দিয়ে কোন অ্যাডমিন কোন সেকশন বা পাওয়ার পাবে তা নাম্বার দিয়ে নির্ধারণ করুন:</p>
                 <div id="masterAdminSubSettingsContainer"></div>
             </div>
 
@@ -918,20 +982,17 @@
                 </div>
             </div>
 
-            <!-- SECTION 2: PAYMENT NUMBERS -->
+            <!-- SECTION 2: 4 ADMINS PAYMENT PROFILES SETUP -->
             <div class="admin-box" id="secBox2">
                 <h4>
-                    <span>💳 বিকাশ/নগদ পেমেন্ট নাম্বার ম্যানেজমেন্ট</span>
+                    <span>💳 ৪ জন অ্যাডমিনের বিকাশ/নগদ পেমেন্ট প্রোফাইল ম্যানেজমেন্ট</span>
                     <button class="btn btn-dark btn-xs" id="lockSec2" onclick="toggleSectionLock(2)">🔒 লকড</button>
                 </h4>
                 <div id="containerSec2" style="opacity: 0.5; pointer-events: none; transition: 0.2s;">
-                    <div class="form-group">
-                        <div style="display: flex; gap: 6px;">
-                            <input type="text" id="admNewPayNum" class="form-control" placeholder="017XXXXXXXX (বিকাশ/নগদ)">
-                            <button class="btn btn-success btn-xs" onclick="addPaymentNumber()">যোগ করুন</button>
-                        </div>
+                    <p style="font-size: 11px; color: #475569; margin-bottom: 8px;">এখানে চারজন অ্যাডমিনের নাম, ছবি ও বিকাশ/নগদ নম্বর সেট করুন:</p>
+                    <div id="adminFourProfilesEditorContainer">
+                        <!-- Rendered by JS -->
                     </div>
-                    <div id="adminPaymentNumbersList" style="font-size: 12px; color: #1e293b; margin-top: 5px;"></div>
                 </div>
             </div>
 
@@ -1074,11 +1135,20 @@
         let gpsGranted = false, batteryConfirmed = false;
         
         let currentAdminSession = null; // 'master' or 'admin1', 'admin2', 'admin3', 'admin4'
+        let masterPasswordStored = "692372";
         let subAdminCredentials = {
-            admin1: { pass: "admin123", permissions: { sec1: true, sec2: true, sec3: true, sec4: true } },
-            admin2: { pass: "admin234", permissions: { sec1: true, sec2: false, sec3: false, sec4: false } },
-            admin3: { pass: "admin345", permissions: { sec1: false, sec2: true, sec3: false, sec4: false } },
-            admin4: { pass: "admin456", permissions: { sec1: false, sec2: false, sec3: true, sec4: true } }
+            admin1: { pass: "admin123", assignedPowerNum: 1 },
+            admin2: { pass: "admin234", assignedPowerNum: 2 },
+            admin3: { pass: "admin345", assignedPowerNum: 3 },
+            admin4: { pass: "admin456", assignedPowerNum: 4 }
+        };
+
+        // 4 Admins payment profiles
+        let fourAdminProfiles = {
+            admin1: { name: "অ্যাডমিন ১", phone: "01719592128", photo: "https://via.placeholder.com/80?text=Admin1" },
+            admin2: { name: "অ্যাডমিন ২", phone: "01810000000", photo: "https://via.placeholder.com/80?text=Admin2" },
+            admin3: { name: "অ্যাডমিন ৩", phone: "01910000000", photo: "https://via.placeholder.com/80?text=Admin3" },
+            admin4: { name: "অ্যাডমিন ৪", phone: "01310000000", photo: "https://via.placeholder.com/80?text=Admin4" }
         };
 
         let standSettings = { name: "চন্দ্রিমা বাইক স্ট্যান্ড", lat: null, lng: null };
@@ -1095,7 +1165,6 @@
         let lastHandledSpinId = "";
         let expandedSamityMemberPhone = null;
 
-        let paymentNumbers = ["01719592128"];
         let myLocalRiderPhone = localStorage.getItem("myRiderPhone") || "";
         let myLocalRiderName = localStorage.getItem("myRiderName") || "";
         let myLockedSamityPhone = localStorage.getItem("lockedSamityPhone") || "";
@@ -1309,16 +1378,22 @@
             if (data.notice) {
                 document.getElementById("displayNoticeText").innerText = data.notice.text || "কোনো নতুন নোটিশ নেই।";
             }
-            if (data.paymentNumbers) {
-                paymentNumbers = data.paymentNumbers;
-                document.getElementById("assocDefaultPayNum").innerText = paymentNumbers.join(", ");
-                renderAdminPaymentNumbersList();
+            if (data.fourAdminProfiles) {
+                fourAdminProfiles = data.fourAdminProfiles;
+                renderFourAdminsPaymentCards();
+                renderAdminFourProfilesEditor();
             }
         });
 
         db.ref('subAdminConfig').on('value', (snap) => {
             if (snap.exists()) {
                 subAdminCredentials = snap.val();
+            }
+        });
+
+        db.ref('masterPasswordConfig').on('value', (snap) => {
+            if (snap.exists()) {
+                masterPasswordStored = snap.val();
             }
         });
 
@@ -1413,6 +1488,25 @@
                 </div>
             `).join('');
         });
+
+        function renderFourAdminsPaymentCards() {
+            const container = document.getElementById("fourAdminsPaymentCardsContainer");
+            if (!container) return;
+            let html = "";
+            ['admin1', 'admin2', 'admin3', 'admin4'].forEach(role => {
+                const p = fourAdminProfiles[role] || { name: role, phone: "", photo: "" };
+                html += `
+                    <div class="admin-pay-card">
+                        <img src="${p.photo || 'https://via.placeholder.com/50'}" class="admin-pay-avatar" alt="${p.name}">
+                        <div style="flex:1;">
+                            <strong style="font-size: 13px; color: var(--dark);">${p.name}</strong>
+                            <div style="font-size: 11px; color: #0284c7; font-weight: 700;">📞 ${p.phone} (বিকাশ / নগদ)</div>
+                        </div>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        }
 
         function renderDualPaymentLists() {
             const unpaidContainer = document.getElementById("unpaidMembersList");
@@ -1947,7 +2041,7 @@
 
         async function submitSamityPayment() {
             const targetPhone = document.getElementById("samityTargetPhone").value.trim().replace(/[^0-9]/g, '');
-            const method = document.getElementById("samityPayMethod").value;
+            const selectedAdminRole = document.getElementById("samitySelectedAdminRole").value;
             const amount = Number(document.getElementById("samityPayAmount").value);
             const senderPhone = document.getElementById("samitySenderPhone").value.trim();
 
@@ -1958,17 +2052,17 @@
             const reqId = db.ref('tanSamity/pendingPayments').push().key;
             await db.ref('tanSamity/pendingPayments/' + reqId).set({
                 id: reqId, targetPhone, targetName: samityApprovedMembers[targetPhone].name,
-                targetPhoto: samityApprovedMembers[targetPhone].photo || '', method, amount, senderPhone, timestamp: Date.now(), status: 'pending'
+                targetPhoto: samityApprovedMembers[targetPhone].photo || '', adminRole: selectedAdminRole, amount, senderPhone, timestamp: Date.now(), status: 'pending'
             });
             document.getElementById("samityPayAmount").value = "";
             document.getElementById("samitySenderPhone").value = "";
-            showToast("📤 পেমেন্ট তথ্য পাঠানো হয়েছে!", "success");
+            showToast("📤 পেমেন্ট তথ্য নির্দিষ্ট অ্যাডমিনের কাছে পাঠানো হয়েছে!", "success");
         }
 
         function renderSamityRecentRequests() {
             const container = document.getElementById("samityRecentRequests");
             const list = Object.values(samityPendingPayments).slice(-4).reverse();
-            container.innerHTML = list.length === 0 ? "" : `<strong>সাম্প্রতিক পেমেন্ট:</strong><br>` + list.map(r => `• <strong>${r.targetName}</strong> - ৳${r.amount} [${r.status}]`).join('<br>');
+            container.innerHTML = list.length === 0 ? "" : `<strong>সাম্প্রতিক পেমেন্ট:</strong><br>` + list.map(r => `• <strong>${r.targetName}</strong> - ৳${r.amount} [${r.adminRole.toUpperCase()} - ${r.status}]`).join('<br>');
         }
 
         function switchOnlineTab(tab) {
@@ -2133,22 +2227,38 @@
         }
         setInterval(() => { if (Object.keys(activeSerials).length > 0) renderSerialList(); }, 1000);
 
-        // ADMIN LOGIN & PERMISSION CONTROLS
+        // SUB-ADMIN LOGIN & MASTER CONTROLS
         function openAdminLoginModal() {
             if (currentAdminSession) { openAdminPanelUI(); return; }
             document.getElementById("adminLoginModal").style.display = "block";
         }
 
         function openMasterAdminPrompt() {
-            const pass = prompt("👑 মাস্টার অ্যাডমিন পাসওয়ার্ড দিন:");
-            if (pass === "master_692372") {
+            document.getElementById("inputMasterPassword").value = "";
+            document.getElementById("masterLoginModal").style.display = "block";
+        }
+
+        function verifyMasterPassword() {
+            const pass = document.getElementById("inputMasterPassword").value.trim();
+            if (pass === masterPasswordStored) {
                 currentAdminSession = "master";
+                document.getElementById("masterLoginModal").style.display = "none";
                 document.getElementById("adminModeBar").style.display = "flex";
                 document.getElementById("adminModeBarTitle").innerText = "👑 মাস্টার অ্যাডমিন মোড (ফুল কন্ট্রোল)";
                 openAdminPanelUI();
-            } else if (pass !== null) {
+                showToast("✅ মাস্টার অ্যাডমিন হিসেবে প্রবেশ সফল হয়েছে!", "success");
+            } else {
                 showToast("❌ ভুল মাস্টার পাসওয়ার্ড!", "error");
             }
+        }
+
+        async function saveNewMasterPassword() {
+            const newPass = document.getElementById("newMasterPasswordInput").value.trim();
+            if (!newPass) { showToast("নতুন পাসওয়ার্ড খালি রাখা যাবে না।", "error"); return; }
+            masterPasswordStored = newPass;
+            await db.ref('masterPasswordConfig').set(newPass);
+            document.getElementById("newMasterPasswordInput").value = "";
+            showToast("✅ মাস্টার পাসওয়ার্ড সফলভাবে পরিবর্তিত হয়েছে!", "success");
         }
 
         function submitAdminLogin() {
@@ -2186,19 +2296,29 @@
                 renderMasterAdminSubSettings();
             }
 
-            // Apply permissions for sub-admins
-            const perms = isMaster ? { sec1: true, sec2: true, sec3: true, sec4: true } : (subAdminCredentials[currentAdminSession]?.permissions || { sec1: false, sec2: false, sec3: false, sec4: false });
+            // Power mapping by assigned number:
+            // 1: Section 1 (Samity), 2: Section 2 (4 Admins payment profiles), 3: Section 3 (Rider Special Power), 4: Section 4 (Stand & Notice)
+            let allowedSecs = { sec1: true, sec2: true, sec3: true, sec4: true };
+            if (!isMaster) {
+                const assignedNum = Number(subAdminCredentials[currentAdminSession]?.assignedPowerNum) || 1;
+                allowedSecs = {
+                    sec1: assignedNum === 1,
+                    sec2: assignedNum === 2,
+                    sec3: assignedNum === 3,
+                    sec4: assignedNum === 4
+                };
+            }
 
-            document.getElementById("secBox1").style.display = perms.sec1 ? "block" : "none";
-            document.getElementById("secBox2").style.display = perms.sec2 ? "block" : "none";
-            document.getElementById("secBox3").style.display = perms.sec3 ? "block" : "none";
-            document.getElementById("secBox4").style.display = perms.sec4 ? "block" : "none";
+            document.getElementById("secBox1").style.display = allowedSecs.sec1 ? "block" : "none";
+            document.getElementById("secBox2").style.display = allowedSecs.sec2 ? "block" : "none";
+            document.getElementById("secBox3").style.display = allowedSecs.sec3 ? "block" : "none";
+            document.getElementById("secBox4").style.display = allowedSecs.sec4 ? "block" : "none";
 
             renderAdminSamityPendingReg();
             renderAdminSamityPendingPayments();
             renderAdminSamityApprovedList();
             renderAdminRegisteredList();
-            renderAdminPaymentNumbersList();
+            renderAdminFourProfilesEditor();
             populateSpecialRiderDropdown();
         }
 
@@ -2206,19 +2326,15 @@
             const container = document.getElementById("masterAdminSubSettingsContainer");
             let html = "";
             ['admin1', 'admin2', 'admin3', 'admin4'].forEach(role => {
-                const cred = subAdminCredentials[role] || { pass: "", permissions: {} };
+                const cred = subAdminCredentials[role] || { pass: "", assignedPowerNum: 1 };
                 html += `
                     <div style="background: white; padding: 8px; border-radius: 8px; margin-bottom: 6px; border: 1px solid #cbd5e1;">
-                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+                        <div style="display:flex; justify-content:space-between; align-items:center; gap: 6px; flex-wrap:wrap;">
                             <strong>${role.toUpperCase()} পাসওয়ার্ড:</strong>
-                            <input type="text" id="masterPass_${role}" value="${cred.pass}" class="form-control" style="width:120px; display:inline-block; padding:3px 6px;">
-                            <button class="btn btn-primary btn-xs" onclick="updateSubAdminPass('${role}')">সেভ</button>
-                        </div>
-                        <div style="font-size:11px; color:#475569; display:flex; gap:10px; flex-wrap:wrap; margin-top:4px;">
-                            <label><input type="checkbox" id="perm_${role}_sec1" ${cred.permissions.sec1 ? 'checked' : ''} onchange="updateSubAdminPerm('${role}')"> সমিতি কন্ট্রোল</label>
-                            <label><input type="checkbox" id="perm_${role}_sec2" ${cred.permissions.sec2 ? 'checked' : ''} onchange="updateSubAdminPerm('${role}')"> পেমেন্ট নাম্বার</label>
-                            <label><input type="checkbox" id="perm_${role}_sec3" ${cred.permissions.sec3 ? 'checked' : ''} onchange="updateSubAdminPerm('${role}')"> রাইডার পাওয়ার</label>
-                            <label><input type="checkbox" id="perm_${role}_sec4" ${cred.permissions.sec4 ? 'checked' : ''} onchange="updateSubAdminPerm('${role}')"> স্ট্যান্ড ও নোটিশ</label>
+                            <input type="text" id="masterPass_${role}" value="${cred.pass}" class="form-control" style="width:110px; display:inline-block; padding:3px 6px;">
+                            <label style="font-size:11px;">পাওয়ার নম্বর (1-4):</label>
+                            <input type="number" min="1" max="4" id="masterPower_${role}" value="${cred.assignedPowerNum || 1}" class="form-control" style="width:60px; display:inline-block; padding:3px 6px;">
+                            <button class="btn btn-primary btn-xs" onclick="updateSubAdminCreds('${role}')">সেভ</button>
                         </div>
                     </div>
                 `;
@@ -2226,23 +2342,14 @@
             container.innerHTML = html;
         }
 
-        async function updateSubAdminPass(role) {
+        async function updateSubAdminCreds(role) {
             const newPass = document.getElementById(`masterPass_${role}`).value.trim();
+            const newPower = Number(document.getElementById(`masterPower_${role}`).value) || 1;
             if (!newPass) { showToast("পাসওয়ার্ড খালি রাখা যাবে না।", "error"); return; }
             subAdminCredentials[role].pass = newPass;
+            subAdminCredentials[role].assignedPowerNum = newPower;
             await db.ref('subAdminConfig').set(subAdminCredentials);
-            showToast(`✅ ${role.toUpperCase()} এর পাসওয়ার্ড আপডেট হয়েছে!`, "success");
-        }
-
-        async function updateSubAdminPerm(role) {
-            subAdminCredentials[role].permissions = {
-                sec1: document.getElementById(`perm_${role}_sec1`).checked,
-                sec2: document.getElementById(`perm_${role}_sec2`).checked,
-                sec3: document.getElementById(`perm_${role}_sec3`).checked,
-                sec4: document.getElementById(`perm_${role}_sec4`).checked
-            };
-            await db.ref('subAdminConfig').set(subAdminCredentials);
-            showToast(`✅ ${role.toUpperCase()} এর পারমিশন আপডেট হয়েছে!`, "success");
+            showToast(`✅ ${role.toUpperCase()} এর তথ্য ও পাওয়ার আপডেট হয়েছে!`, "success");
         }
 
         function closeAdminModal() { document.getElementById("adminModal").style.display = "none"; }
@@ -2266,6 +2373,39 @@
         }
 
         async function toggleSamityRegStatus(cb) { await db.ref('tanSamity/config/registrationOpen').set(cb.checked); }
+
+        function renderAdminFourProfilesEditor() {
+            const container = document.getElementById("adminFourProfilesEditorContainer");
+            if (!container) return;
+            let html = "";
+            ['admin1', 'admin2', 'admin3', 'admin4'].forEach(role => {
+                const p = fourAdminProfiles[role] || { name: "", phone: "", photo: "" };
+                html += `
+                    <div style="background:#fff; border:1px solid #cbd5e1; border-radius:8px; padding:8px; margin-bottom:6px;">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+                            <strong style="color:var(--primary); font-size:12px;">${role.toUpperCase()} প্রোফাইল</strong>
+                            <button class="btn btn-success btn-xs" onclick="saveSingleAdminProfile('${role}')">💾 সেভ</button>
+                        </div>
+                        <div class="form-group" style="margin-bottom:4px;">
+                            <input type="text" id="editAdminName_${role}" value="${p.name}" class="form-control" placeholder="নাম (যেমন: অ্যাডমিন ১)" style="margin-bottom:3px;">
+                            <input type="tel" id="editAdminPhone_${role}" value="${p.phone}" class="form-control" placeholder="বিকাশ/নগদ নম্বর (017XXXXXXXX)" style="margin-bottom:3px;">
+                            <input type="text" id="editAdminPhoto_${role}" value="${p.photo}" class="form-control" placeholder="ছবির লিংক (URL / Base64)">
+                        </div>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        }
+
+        async function saveSingleAdminProfile(role) {
+            const name = document.getElementById(`editAdminName_${role}`).value.trim();
+            const phone = document.getElementById(`editAdminPhone_${role}`).value.trim();
+            const photo = document.getElementById(`editAdminPhoto_${role}`).value.trim();
+            
+            fourAdminProfiles[role] = { name, phone, photo };
+            await db.ref('standConfig/fourAdminProfiles').set(fourAdminProfiles);
+            showToast(`✅ ${role.toUpperCase()} এর পেমেন্ট প্রোফাইল সেভ হয়েছে!`, "success");
+        }
 
         function renderAdminSamityPendingReg() {
             const list = Object.entries(samityPendingMembers);
@@ -2299,7 +2439,7 @@
             const list = Object.entries(samityPendingPayments).filter(([k, r]) => r.status === 'pending');
             document.getElementById("adminSamityPendingPayList").innerHTML = list.length === 0 ? "কোনো পেন্ডিং পেমেন্ট নেই।" : list.map(([key, r]) => `
                 <div class="reg-rider-row">
-                    <span>${r.targetName} - ৳${r.amount} (${r.method})</span>
+                    <span>${r.targetName} - ৳${r.amount} (${r.adminRole ? r.adminRole.toUpperCase() : 'অ্যাডমিন'})</span>
                     <div>
                         <button class="btn btn-success btn-xs" onclick="approveSamityPayment('${key}')">এপ্রুভ</button>
                         <button class="btn btn-danger btn-xs" onclick="rejectSamityPayment('${key}')">ডিলিট</button>
@@ -2430,19 +2570,6 @@
                     <button class="btn btn-danger btn-xs" onclick="db.ref('registeredRiders/${k}').remove()">ডিলিট</button>
                 </div>
             `).join('');
-        }
-
-        function addPaymentNumber() {
-            const num = document.getElementById("admNewPayNum").value.trim();
-            if (num && !paymentNumbers.includes(num)) {
-                paymentNumbers.push(num);
-                db.ref('standConfig/paymentNumbers').set(paymentNumbers);
-                document.getElementById("admNewPayNum").value = "";
-                showToast("✅ নাম্বার যোগ হয়েছে!", "success");
-            }
-        }
-        function renderAdminPaymentNumbersList() {
-            document.getElementById("adminPaymentNumbersList").innerHTML = paymentNumbers.map(n => `<div>📞 ${n}</div>`).join('');
         }
 
         function populateSpecialRiderDropdown() {
