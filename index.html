@@ -177,6 +177,7 @@
             font-weight: 700;
             color: #e2e8f0;
             transition: color 0.2s;
+            position: relative;
         }
         .dock-item:hover, .dock-item.active { color: #25d366; }
         .dock-icon { font-size: 20px; line-height: 1; margin-bottom: 2px; }
@@ -187,8 +188,8 @@
             padding: 1px 5px;
             border-radius: 10px;
             position: absolute;
-            top: 2px;
-            right: calc(50% - 20px);
+            top: -2px;
+            right: -6px;
         }
 
         /* WHATSAPP DRAWER PANEL */
@@ -233,6 +234,7 @@
             justify-content: space-between;
             box-shadow: 0 1px 3px rgba(0,0,0,0.05);
             border: 1px solid #e2e8f0;
+            margin-bottom: 6px;
         }
         .wa-chat-bubble {
             max-width: 75%;
@@ -1650,6 +1652,46 @@
             if (myLocalRiderName) document.getElementById("loginPhone").value = myLocalRiderName;
             renderLockedSamityAccountUI();
             drawWheel(0);
+        }
+
+        function toggleSamityCardCollapse() {
+            const bodyContainer = document.getElementById("samityBodyContainer");
+            const arrow = document.getElementById("samityToggleArrow");
+            if (bodyContainer.style.display === "block") {
+                bodyContainer.style.display = "none";
+                arrow.innerText = "▼ খুলুন";
+            } else {
+                bodyContainer.style.display = "block";
+                arrow.innerText = "▲ বন্ধ করুন";
+            }
+        }
+
+        function toggleHistoryDropdown() {
+            const content = document.getElementById("cutHistoryContainer");
+            const arrow = document.getElementById("historyToggleArrow");
+            if (content.style.display === "block") {
+                content.style.display = "none";
+                arrow.innerText = "▼ খুলুন";
+            } else {
+                content.style.display = "block";
+                arrow.innerText = "▲ বন্ধ করুন";
+            }
+        }
+
+        function togglePowerLock(powerNo) {
+            const container = document.getElementById(`containerPower${powerNo}`);
+            const btn = document.getElementById(`lockPower${powerNo}`);
+            if (container.style.opacity === "1" || container.style.opacity === "") {
+                container.style.opacity = "0.5";
+                container.style.pointerEvents = "none";
+                btn.innerText = "🔒 লকড";
+                btn.className = "btn btn-dark btn-xs";
+            } else {
+                container.style.opacity = "1";
+                container.style.pointerEvents = "auto";
+                btn.innerText = "🔓 আনলকড";
+                btn.className = "btn btn-success btn-xs";
+            }
         }
 
         function updateLiveClock() {
