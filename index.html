@@ -152,7 +152,7 @@
         }
         .master-dot:hover { color: #ffffff; }
 
-        /* WHATSAPP FLOATING DOCK BAR (আড়াআড়ি লম্বা ডক বার) */
+        /* WHATSAPP FLOATING DOCK BAR */
         .whatsapp-dock-bar {
             position: fixed;
             bottom: 0;
@@ -980,7 +980,7 @@
         </div>
     </div>
 
-    <!-- WHATSAPP FLOATING DOCK BAR (আড়াআড়ি ডক বার) -->
+    <!-- WHATSAPP FLOATING DOCK BAR -->
     <div class="whatsapp-dock-bar">
         <div class="dock-item" onclick="openWaTab('contacts')">
             <span class="dock-icon">👥</span>
@@ -1016,6 +1016,7 @@
             <input type="file" id="waGroupPhotoInput" accept="image/*" style="display:none" onchange="sendWaGroupPhoto(this)">
             <button class="btn btn-whatsapp btn-xs" onclick="document.getElementById('waGroupPhotoInput').click()" title="ছবি পাঠান">📷</button>
             <input type="text" id="waGroupInputText" class="form-control" placeholder="গ্রুপে বার্তা লিখুন...">
+            <button id="btnGroupMic" class="btn btn-warning btn-xs" onclick="toggleGroupVoiceRecord()" title="ভয়েস রেকর্ড করুন">🎤</button>
             <button class="btn btn-success btn-xs" onclick="sendWaGroupMessage()">➤ পাঠান</button>
         </div>
     </div>
@@ -1033,6 +1034,7 @@
             <input type="file" id="waInboxPhotoInput" accept="image/*" style="display:none" onchange="sendWaInboxPhoto(this)">
             <button class="btn btn-whatsapp btn-xs" onclick="document.getElementById('waInboxPhotoInput').click()" title="ছবি পাঠান">📷</button>
             <input type="text" id="waInboxInputText" class="form-control" placeholder="মেসেজ লিখুন...">
+            <button id="btnInboxMic" class="btn btn-warning btn-xs" onclick="toggleInboxVoiceRecord()" title="ভয়েস রেকর্ড করুন">🎤</button>
             <button class="btn btn-success btn-xs" onclick="sendWaInboxMessage()">➤ পাঠান</button>
         </div>
     </div>
@@ -1113,7 +1115,7 @@
             <div class="admin-box" id="samityMasterWrapperBox" style="background: #fffbeb; border: 2px solid #f59e0b;">
                 <h4 style="color: #b45309;">🏆 চন্দ্রিমা বাইকার টান সমিতি কন্ট্রোল সমূহ</h4>
                 
-                <div class="admin-box" id="powerSec1" style="background: #fef3c7; border: 1px solid #fcd34d; margin-bottom: 8px;">
+                <div class="admin-box" id="powerSec1" style="background: #fef3c7; border: 1.5px solid #fcd34d; margin-bottom: 8px;">
                     <h4>
                         <span id="titlePower1"><span class="power-badge-tag">১</span> অফিসিয়াল উইনার ওডো সেটআপ</span>
                         <button class="btn btn-dark btn-xs" id="lockPower1" onclick="togglePowerLock(1)">🔒 লকড</button>
@@ -1127,7 +1129,7 @@
                     </div>
                 </div>
 
-                <div class="admin-box" id="powerSec2" style="background: #fef3c7; border: 1px solid #fcd34d; margin-bottom: 8px;">
+                <div class="admin-box" id="powerSec2" style="background: #fef3c7; border: 1.5px solid #fcd34d; margin-bottom: 8px;">
                     <h4>
                         <span id="titlePower2"><span class="power-badge-tag">২</span> ড্র-এর সময় ও তারিখ নির্ধারণ</span>
                         <button class="btn btn-dark btn-xs" id="lockPower2" onclick="togglePowerLock(2)">🔒 লকড</button>
@@ -1145,7 +1147,7 @@
                     </div>
                 </div>
 
-                <div class="admin-box" id="powerSec3" style="background: #fef3c7; border: 1px solid #fcd34d; margin-bottom: 8px;">
+                <div class="admin-box" id="powerSec3" style="background: #fef3c7; border: 1.5px solid #fcd34d; margin-bottom: 8px;">
                     <h4>
                         <span id="titlePower3"><span class="power-badge-tag">৩</span> টাকার পারমিশন ও হুইল লক</span>
                         <button class="btn btn-dark btn-xs" id="lockPower3" onclick="togglePowerLock(3)">🔒 লকড</button>
@@ -1159,7 +1161,7 @@
                     </div>
                 </div>
 
-                <div class="admin-box" id="powerSec4" style="background: #fef3c7; border: 1px solid #fcd34d; margin-bottom: 8px;">
+                <div class="admin-box" id="powerSec4" style="background: #fef3c7; border: 1.5px solid #fcd34d; margin-bottom: 8px;">
                     <h4>
                         <span id="titlePower4"><span class="power-badge-tag">৪</span> রেজিস্ট্রেশন অন/অফ এবং টাকার অংক</span>
                         <button class="btn btn-dark btn-xs" id="lockPower4" onclick="togglePowerLock(4)">🔒 লকড</button>
@@ -1549,6 +1551,12 @@
         let unreadGroupMsgCount = 0;
         let lastGroupMsgTimestamp = localStorage.getItem("lastGroupMsgTs") || Date.now();
 
+        // AUDIO RECORDING VARIABLES
+        let mediaRecorder = null;
+        let audioChunks = [];
+        let isRecordingGroup = false;
+        let isRecordingInbox = false;
+
         let audioCtx = null;
         let alarmInterval = null;
         let acknowledgedAlarmKey = "";
@@ -1705,7 +1713,7 @@
 
         function normalizeName(name) { return (name || "").trim().toLowerCase().replace(/\s+/g, ' '); }
 
-        // --- WHATSAPP CHAT & CALL FUNCTIONS ---
+        // --- WHATSAPP CHAT, CALL & VOICE RECORDING ---
         function openWaTab(tab) {
             document.getElementById("waPanelContacts").style.display = tab === 'contacts' ? 'flex' : 'none';
             document.getElementById("waPanelGroup").style.display = tab === 'group' ? 'flex' : 'none';
@@ -1824,6 +1832,81 @@
             });
         }
 
+        // --- VOICE RECORDING LOGIC ---
+        function toggleGroupVoiceRecord() {
+            const btn = document.getElementById("btnGroupMic");
+            if (!isRecordingGroup) {
+                startAudioRecording((audioBase64) => {
+                    const senderName = myLocalRiderName || "সদস্য";
+                    db.ref('whatsappGroupChat').push({
+                        sender: senderName, phone: myLocalRiderPhone || 'unknown', audio: audioBase64, type: 'audio', timestamp: Date.now()
+                    });
+                    showToast("🎙️ ভয়েস মেসেজ পাঠানো হয়েছে!", "success");
+                });
+                isRecordingGroup = true;
+                btn.style.background = "#dc2626";
+                btn.innerText = "⏹️";
+                showToast("🎙️ ভয়েস রেকর্ড হচ্ছে... থামতে আবার ক্লিক করুন।", "info");
+            } else {
+                stopAudioRecording();
+                isRecordingGroup = false;
+                btn.style.background = "#f59e0b";
+                btn.innerText = "🎤";
+            }
+        }
+
+        function toggleInboxVoiceRecord() {
+            const btn = document.getElementById("btnInboxMic");
+            if (!activeInboxTargetPhone) { showToast("আগে কাউকে ইনবক্সে সিলেক্ট করুন।", "error"); return; }
+            if (!isRecordingInbox) {
+                startAudioRecording((audioBase64) => {
+                    const chatKey = getChatInboxKey(myLocalRiderPhone || 'user', activeInboxTargetPhone);
+                    const senderName = myLocalRiderName || "সদস্য";
+                    db.ref('whatsappInbox/' + chatKey).push({
+                        sender: senderName, senderPhone: myLocalRiderPhone || 'user', audio: audioBase64, type: 'audio', timestamp: Date.now()
+                    });
+                    showToast("🎙️ ইনবক্সে ভয়েস মেসেজ পাঠানো হয়েছে!", "success");
+                });
+                isRecordingInbox = true;
+                btn.style.background = "#dc2626";
+                btn.innerText = "⏹️";
+                showToast("🎙️ ভয়েস রেকর্ড হচ্ছে... থামতে আবার ক্লিক করুন।", "info");
+            } else {
+                stopAudioRecording();
+                isRecordingInbox = false;
+                btn.style.background = "#f59e0b";
+                btn.innerText = "🎤";
+            }
+        }
+
+        let currentActiveRecorder = null;
+        function startAudioRecording(onCompleteCallback) {
+            audioChunks = [];
+            navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
+                currentActiveRecorder = new MediaRecorder(stream);
+                currentActiveRecorder.ondataavailable = e => { if (e.data.size > 0) audioChunks.push(e.data); };
+                currentActiveRecorder.onstop = () => {
+                    const blob = new Blob(audioChunks, { type: 'audio/webm' });
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        onCompleteCallback(e.target.result);
+                        stream.getTracks().forEach(track => track.stop());
+                    };
+                    reader.readAsDataURL(blob);
+                };
+                currentActiveRecorder.start();
+            }).catch(err => {
+                showToast("❌ মাইক্রোফোন পারমিশন পাওয়া যায়নি!", "error");
+            });
+        }
+
+        function stopAudioRecording() {
+            if (currentActiveRecorder && currentActiveRecorder.state !== 'inactive') {
+                currentActiveRecorder.stop();
+            }
+        }
+        // ----------------------------------------
+
         function loadWaInboxMessages() {
             const container = document.getElementById("waInboxMessages");
             if (!activeInboxTargetPhone) return;
@@ -1833,7 +1916,11 @@
                 let html = "";
                 Object.values(msgs).forEach(m => {
                     const isMe = m.senderPhone === (myLocalRiderPhone || 'user');
-                    let content = m.type === 'photo' ? `<img src="${m.photo}" style="max-width:180px; border-radius:6px;">` : m.text;
+                    let content = "";
+                    if (m.type === 'photo') content = `<img src="${m.photo}" style="max-width:180px; border-radius:6px;">`;
+                    else if (m.type === 'audio') content = `<audio controls src="${m.audio}" style="max-width:200px; height:32px;"></audio>`;
+                    else content = m.text;
+
                     html += `
                         <div class="wa-chat-bubble ${isMe ? 'outgoing' : 'incoming'}">
                             <div style="font-size:9px; font-weight:700; color:#075e54; margin-bottom:2px;">${m.sender}</div>
@@ -1851,7 +1938,10 @@
             const m = snap.val();
             const container = document.getElementById("waGroupChatMessages");
             const isMe = m.phone === (myLocalRiderPhone || 'unknown');
-            let content = m.type === 'photo' ? `<img src="${m.photo}" style="max-width:180px; border-radius:6px;">` : m.text;
+            let content = "";
+            if (m.type === 'photo') content = `<img src="${m.photo}" style="max-width:180px; border-radius:6px;">`;
+            else if (m.type === 'audio') content = `<audio controls src="${m.audio}" style="max-width:200px; height:32px;"></audio>`;
+            else content = m.text;
             
             const div = document.createElement('div');
             div.className = `wa-chat-bubble ${isMe ? 'outgoing' : 'incoming'}`;
