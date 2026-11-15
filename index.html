@@ -400,10 +400,8 @@
                     <h3 style="font-size: 15px; color: #92400e; margin-bottom: 4px; font-weight: 700;">🎯 ডিজিটাল চরকি ও লটারি ড্র</h3>
                     <p style="font-size: 11px; color: #78350f; margin-bottom: 10px;">প্রতি শুক্রবার রাত ৯:০০ টা থেকে ৯:৩০ টার মধ্যে ১০০% সদস্যের 'অ্যালাউ' পারমিশন সাপেক্ষে মূল ড্র অনুষ্ঠিত হবে।</p>
 
-                    <!-- Redesigned Wheel Frame with Gold Border & Fancy Arrow -->
                     <div style="position: relative; width: 230px; height: 230px; margin: 0 auto 12px; background: #fff; border-radius: 50%; padding: 6px; box-shadow: 0 8px 20px rgba(146, 64, 14, 0.25); border: 4px solid #d97706;">
                         <canvas id="wheelCanvas" width="214" height="214" style="width: 100%; height: 100%; border-radius: 50%;"></canvas>
-                        <!-- Premium Red Pointer Arrow -->
                         <div style="position: absolute; top: -12px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 9px solid transparent; border-right: 9px solid transparent; border-bottom: 20px solid #dc2626; filter: drop-shadow(0 2px 3px rgba(0,0,0,0.3)); z-index: 10;"></div>
                     </div>
 
@@ -963,7 +961,7 @@
 
         // SECTION LOCK/UNLOCK SYSTEM FOR ADMIN
         function toggleSectionLock(secNum) {
-            const container = document.getElementById(`containerSec4_${secNum}` || `containerSec${secNum}`);
+            const container = document.getElementById(`containerSec${secNum}`);
             const btn = document.getElementById(`lockSec${secNum}`);
             const isLocked = container.style.pointerEvents === "none";
             if (isLocked) {
@@ -971,13 +969,13 @@
                 container.style.pointerEvents = "auto";
                 btn.innerText = "🔓 আনলকড";
                 btn.className = "btn btn-danger btn-xs";
-                showToast(`সেকশন ${secNum} আনলক করা হয়েছে। কাজ শেষে আবার লক করুন।`, "info");
+                showToast(`সেকশন ${secNum} আনলক করা হয়েছে।`, "info");
             } else {
                 container.style.opacity = "0.5";
                 container.style.pointerEvents = "none";
                 btn.innerText = "🔒 লকড";
                 btn.className = "btn btn-dark btn-xs";
-                showToast(`সেকশন ${secNum} নিরাপদে লক করা হয়েছে।`, "success");
+                showToast(`সেকশন ${secNum} লক করা হয়েছে।`, "success");
             }
         }
 
@@ -1232,7 +1230,6 @@
             return true;
         }
 
-        // REDESIGNED WHEEL WITH ELEGANT COLORS & PATTERNS
         function drawWheel(currentAngle = 0, highlightName = null) {
             const canvas = document.getElementById("wheelCanvas");
             if (!canvas) return;
@@ -1274,7 +1271,6 @@
                 ctx.restore();
             });
 
-            // Center decorative golden knob
             ctx.beginPath();
             ctx.arc(centerX, centerY, 16, 0, 2 * Math.PI);
             ctx.fillStyle = "#b45309"; ctx.fill();
@@ -1333,7 +1329,6 @@
             renderSamityMembersList();
         }
 
-        // REGISTRATION & PAYMENT
         async function registerTanSamityMember() {
             if (samityConfig.registrationOpen === false) { showToast("🚫 রেজিস্ট্রেশন বন্ধ রয়েছে!", "error"); return; }
             const name = document.getElementById("samityRegName").value.trim();
@@ -1401,7 +1396,6 @@
             container.innerHTML = list.length === 0 ? "" : `<strong>সাম্প্রতিক পেমেন্ট:</strong><br>` + list.map(r => `• <strong>${r.targetName}</strong> - ৳${r.amount} [${r.status}]`).join('<br>');
         }
 
-        // BIKE SERIAL LOGIC
         function switchOnlineTab(tab) {
             document.getElementById("tabOnlineEntry").classList.toggle("active", tab === 'entry');
             document.getElementById("tabOnlineReg").classList.toggle("active", tab === 'reg');
@@ -1652,7 +1646,7 @@
 
         function renderAdminSamityApprovedList() {
             const list = Object.values(samityApprovedMembers);
-            document.getElementById("adminAdminSamityApprovedList" || "adminSamityApprovedList").innerHTML = list.length === 0 ? "সদস্য নেই।" : list.map(m => `
+            document.getElementById("adminSamityApprovedList").innerHTML = list.length === 0 ? "সদস্য নেই।" : list.map(m => `
                 <div class="reg-rider-row">
                     <span>${m.name} (৳${m.weeklyPaid || 0})</span>
                     <div>
@@ -1754,7 +1748,7 @@
         async function saveLeadersInfo() {
             const updates = {};
             if (document.getElementById("admPresName").value) updates['leaders/presName'] = document.getElementById("admPresName").value;
-            if (document.getElementById("admVpName").value) updates['leaders/vpName'] = document.getElementById("admPresName").value ? document.getElementById("admPresName").value : ""; // fixed key mapping
+            if (document.getElementById("admVpName").value) updates['leaders/vpName'] = document.getElementById("admVpName").value;
             if (document.getElementById("admSecName").value) updates['leaders/secName'] = document.getElementById("admSecName").value;
             await db.ref('standConfig').update(updates);
             showToast("✅ নেতৃবৃন্দের তথ্য সেভ হয়েছে!", "success");
