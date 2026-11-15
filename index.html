@@ -190,6 +190,51 @@
         .samity-header h2 { font-size: 15px; color: #92400e; font-weight: 700; }
         .samity-body-container { display: none; margin-top: 10px; }
 
+        /* DUAL LIST COLUMNS (NEW ADDITION) */
+        .samity-dual-lists {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+        .dual-list-box {
+            border-radius: 10px;
+            padding: 8px;
+            max-height: 240px;
+            overflow-y: auto;
+            border: 1.5px solid;
+        }
+        .dual-list-box.unpaid-box {
+            background: #fff5f5;
+            border-color: #fca5a5;
+        }
+        .dual-list-box.paid-box {
+            background: #f0fdf4;
+            border-color: #86efac;
+        }
+        .dual-list-title {
+            font-size: 11px;
+            font-weight: 700;
+            padding-bottom: 4px;
+            margin-bottom: 6px;
+            border-bottom: 1px dashed;
+            text-align: center;
+        }
+        .unpaid-box .dual-list-title { color: #991b1b; border-color: #fca5a5; }
+        .paid-box .dual-list-title { color: #166534; border-color: #86efac; }
+        
+        .dual-list-item {
+            background: white;
+            border-radius: 8px;
+            padding: 6px;
+            margin-bottom: 5px;
+            font-size: 11px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
         /* REFERENCE STYLE WHEEL & TROPHY STAND */
         .wheel-stage-container {
             position: relative;
@@ -284,7 +329,6 @@
             box-shadow: inset 0 2px 4px rgba(255,255,255,0.7), 0 2px 6px rgba(0,0,0,0.4);
         }
 
-        /* WINNER MONITOR OVERLAY INSIDE WHEEL */
         #wheelWinnerMonitor {
             display: none;
             position: absolute;
@@ -520,11 +564,26 @@
 
             <div class="samity-body-container" id="samityBodyContainer">
                 
+                <!-- NEW ADDITION: DUAL SIDE AUTO LISTS FOR PAYMENT STATUS -->
+                <div class="samity-dual-lists">
+                    <div class="dual-list-box unpaid-box">
+                        <div class="dual-list-title">❌ টাকা পরিশোধ করুন (বাকি)</div>
+                        <div id="unpaidMembersList">
+                            <div style="font-size: 10px; color: #991b1b; text-align: center; padding: 6px;">লোড হচ্ছে...</div>
+                        </div>
+                    </div>
+                    <div class="dual-list-box paid-box">
+                        <div class="dual-list-title">✅ টাকা পরিশোধ করেছেন</div>
+                        <div id="paidMembersList">
+                            <div style="font-size: 10px; color: #166534; text-align: center; padding: 6px;">কেউ নেই</div>
+                        </div>
+                    </div>
+                </div>
+
                 <div style="background: linear-gradient(135deg, #fef3c7, #fde68a); border: 2.5px solid #f59e0b; border-radius: 16px; padding: 14px; margin-bottom: 12px; text-align: center; box-shadow: inset 0 2px 6px rgba(255,255,255,0.6);">
                     <h3 style="font-size: 15px; color: #92400e; margin-bottom: 4px; font-weight: 700;">🎯 ডিজিটাল চরকি ও লাইভ মনিটর</h3>
                     <p style="font-size: 11px; color: #78350f; margin-bottom: 12px;">নির্ধারিত সময়ে ১০০% সদস্যের 'Allow' পারমিশন (সবুজ বাতি) জ্বললে স্পিন প্রস্তুত হবে।</p>
 
-                    <!-- REFERENCE WHEEL & STAND (SPIN BUTTON MOVED TO USER CARD) -->
                     <div class="wheel-stage-container">
                         <div class="wheel-outer-rim">
                             <div id="wheelPointerPin" class="wheel-pointer-pin"></div>
@@ -534,7 +593,6 @@
                                 
                                 <div class="wheel-center-circle"></div>
 
-                                <!-- LIVE WINNER MONITOR INSIDE WHEEL -->
                                 <div id="wheelWinnerMonitor">
                                     <span id="winnerMonitorBadge" style="font-size: 9px; background: #dc2626; color: #fde047; padding: 2px 6px; border-radius: 8px; font-weight: 700; margin-bottom: 3px;">🎉 আজকের উইনার 🎉</span>
                                     <img id="monitorWinnerImg" src="https://via.placeholder.com/90" alt="Winner">
@@ -543,7 +601,6 @@
                                 </div>
                             </div>
                         </div>
-                        <!-- Trophy Stand Base -->
                         <div class="wheel-stand-neck"></div>
                         <div class="wheel-stand-base-top"></div>
                         <div class="wheel-stand-base-bottom"></div>
@@ -761,7 +818,7 @@
         </div>
     </div>
 
-    <!-- ADMIN PANEL MODAL WITH ALL FEATURE LOCK BUTTONS -->
+    <!-- ADMIN PANEL MODAL -->
     <div class="modal-backdrop" id="adminModal">
         <div class="modal-card">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
@@ -940,7 +997,7 @@
         </div>
     </div>
 
-    <!-- MODAL FOR REPLACING/EDITING SAMITY MEMBER (PEN ICON) -->
+    <!-- MODAL FOR REPLACING/EDITING SAMITY MEMBER -->
     <div class="modal-backdrop" id="samityEditMemberModal" style="z-index: 6500;">
         <div class="modal-card" style="max-width: 400px;">
             <h4 style="color: var(--primary); margin-bottom: 6px;">✏️ সদস্যের তথ্য পরিবর্তন / রিপ্লেস</h4>
@@ -1002,7 +1059,7 @@
         let samityApprovedMembers = {};
         let samityPendingMembers = {};
         let samityPendingPayments = {};
-        let samityConfig = { registrationOpen: true, dailyQuota: 200, drawDay: "Friday", drawTime: "21:00-21:30", forcedWinner: "", isWheelLocked: false };
+        let samityConfig = { registrationOpen: true, dailyQuota: 200, drawDay: "Friday", drawTime: "21:00-21:30", forcedWinner: "", isWheelLocked: false, paidListClearTimestamp: 0 };
         let samityAllowedStatus = {};
         let liveSpinState = null;
         let lastHandledSpinId = "";
@@ -1113,10 +1170,21 @@
             const now = new Date();
             document.getElementById("liveClock").innerText = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
             document.getElementById("liveDate").innerText = now.toLocaleDateString('bn-BD', { year: 'numeric', month: 'short', day: 'numeric', weekday: 'short' });
+            
+            // Check paid list 1 hour auto clear rule
+            checkPaidListAutoClear();
+
             updateScheduleCountdown();
             evaluateWheelAndActionState();
         }
         setInterval(updateLiveClock, 1000); updateLiveClock();
+
+        function checkPaidListAutoClear() {
+            if (samityConfig.paidListClearTimestamp && Date.now() >= samityConfig.paidListClearTimestamp) {
+                // Reset paid list clear timestamp and perform weekly quota/winner reset or clear visual cache
+                db.ref('tanSamity/config/paidListClearTimestamp').set(0);
+            }
+        }
 
         function getDistanceMeters(lat1, lon1, lat2, lon2) {
             const R = 6371000;
@@ -1222,7 +1290,7 @@
         });
 
         db.ref('tanSamity/config').on('value', (snap) => {
-            samityConfig = snap.val() || { registrationOpen: true, dailyQuota: 200, drawDay: "Friday", drawTime: "21:00-21:30", forcedWinner: "", isWheelLocked: false };
+            samityConfig = snap.val() || { registrationOpen: true, dailyQuota: 200, drawDay: "Friday", drawTime: "21:00-21:30", forcedWinner: "", isWheelLocked: false, paidListClearTimestamp: 0 };
             document.getElementById("samityRegToggleSwitch").checked = samityConfig.registrationOpen !== false;
             document.getElementById("adminDailyQuotaInput").value = samityConfig.dailyQuota || 200;
             document.getElementById("adminDrawDay").value = samityConfig.drawDay || "Friday";
@@ -1230,6 +1298,7 @@
             document.getElementById("samityRuleNoticeText").innerHTML = `💡 নিয়ম: প্রতিদিন <strong>৳${samityConfig.dailyQuota || 200}</strong> করে ৭ দিনে মোট <strong>৳${(samityConfig.dailyQuota || 200)*7}</strong> পরিশোধ থাকতে হবে।`;
             updateSamityRegSectionUI();
             renderSamityMembersList();
+            renderDualPaymentLists();
             evaluateWheelAndActionState();
         });
 
@@ -1237,6 +1306,7 @@
             samityApprovedMembers = snap.val() || {};
             renderSamityMembersList();
             renderAdminSamityApprovedList();
+            renderDualPaymentLists();
             updateSamityStatusBar();
             autoCheckSamityMember(false);
             renderLockedSamityAccountUI();
@@ -1310,6 +1380,50 @@
                 </div>
             `).join('');
         });
+
+        // RENDER DUAL PAYMENT LISTS (AUTO SORTING UNPAID & PAID)
+        function renderDualPaymentLists() {
+            const unpaidContainer = document.getElementById("unpaidMembersList");
+            const paidContainer = document.getElementById("paidMembersList");
+            const members = Object.values(samityApprovedMembers);
+            const requiredQuota = getTotalRequiredQuota();
+
+            // If 1 hour auto clear timestamp is active, check if paid list should be visually cleared
+            const isPaidCleared = samityConfig.paidListClearTimestamp && Date.now() < samityConfig.paidListClearTimestamp;
+
+            let unpaidHtml = "";
+            let paidHtml = "";
+
+            members.forEach(m => {
+                const paid = Number(m.weeklyPaid || 0);
+                const isFullyPaid = paid >= requiredQuota;
+
+                if (isFullyPaid && !isPaidCleared) {
+                    paidHtml += `
+                        <div class="dual-list-item">
+                            <div style="display:flex; align-items:center; gap:5px;">
+                                <img src="${m.photo || 'https://via.placeholder.com/30'}" style="width:24px; height:24px; border-radius:50%; object-fit:cover;">
+                                <strong>${m.name}</strong>
+                            </div>
+                            <span style="color: #166534; font-weight:700;">৳${paid} (পরিশোধিত)</span>
+                        </div>
+                    `;
+                } else {
+                    unpaidHtml += `
+                        <div class="dual-list-item">
+                            <div style="display:flex; align-items:center; gap:5px;">
+                                <img src="${m.photo || 'https://via.placeholder.com/30'}" style="width:24px; height:24px; border-radius:50%; object-fit:cover;">
+                                <strong style="color: #991b1b;">${m.name}</strong>
+                            </div>
+                            <span style="color: #dc2626;">৳${paid}/${requiredQuota}</span>
+                        </div>
+                    `;
+                }
+            });
+
+            unpaidContainer.innerHTML = unpaidHtml || `<div style="font-size: 10px; color: #64748b; text-align: center; padding: 6px;">সকলের পেমেন্ট সম্পন্ন!</div>`;
+            paidContainer.innerHTML = paidHtml || `<div style="font-size: 10px; color: #64748b; text-align: center; padding: 6px;">কেউ নেই</div>`;
+        }
 
         function bindMySamityAccount() {
             const phone = document.getElementById("inputLinkSamityPhone").value.trim().replace(/[^0-9]/g, '');
@@ -1579,7 +1693,7 @@
         async function triggerLiveWheelSpin() {
             if (isSpinningWheel) return;
             if (samityConfig.isWheelLocked) {
-                showToast("🔒 আজকের ড্র ইতিমধ্যে সম্পন্ন ও লক করা হয়েছে!", "error");
+                showToast("🔒 আজকের ড্র ইতিমধ্যে সম্পন্ন হয়েছে!", "error");
                 return;
             }
             if (!isWithinScheduleTime()) {
@@ -1677,19 +1791,16 @@
             const isUnpaid = paid < requiredQuota;
 
             if (isUnpaid) {
-                // INSUFFICIENT BALANCE PENALTY: SHOW SPECIAL WARNING ON MONITOR & UNLOCK SPIN
                 showInsufficientBalanceWinnerMonitor(winner);
                 playVoiceMessage(`সতর্কবার্তা! ${winner.name}, আপনার সাপ্তাহিক টাকা পরিপূর্ণ না থাকার কারণে নতুন স্পিন শুরু হচ্ছে!`);
                 showToast(`⚠️ ${winner.name}-এর সাপ্তাহিক টাকা বাকি থাকায় নতুন স্পিন হবে!`, "error");
 
-                // Automatically unlock wheel and reset liveSpin so admin/users can spin again
                 await db.ref('tanSamity/config/isWheelLocked').set(false);
                 await db.ref('tanSamity/liveSpin').remove();
                 lastHandledSpinId = "";
                 return;
             }
 
-            // Normal successful win
             showWheelWinnerMonitor(winner);
             playVoiceMessage(`অভিনন্দন ${winner.name}, আপনি আজকের চন্দ্রিমা বাইকার টান সমিতির লটারি বিজয়ী হয়েছেন!`);
             showToast(`🏆 আজকের উইনার: ${winner.name}!`, "success");
@@ -1700,8 +1811,14 @@
             if (samityConfig.forcedWinner) {
                 await db.ref('tanSamity/config/forcedWinner').set("");
             }
+
+            // Set 1 hour timer for clearing the paid list automatically after draw completion
+            const clearTime = Date.now() + 3600000; // 1 hour in ms
+            await db.ref('tanSamity/config/paidListClearTimestamp').set(clearTime);
+
             updateSamityStatusBar();
             renderSamityMembersList();
+            renderDualPaymentLists();
         }
 
         function showWheelWinnerMonitor(winner) {
@@ -1734,7 +1851,7 @@
         async function adminResetRoundPermissions() {
             await db.ref('tanSamity/allowedStatus').remove();
             await db.ref('tanSamity/liveSpin').remove();
-            await db.ref('tanSamity/config').update({ isWheelLocked: false });
+            await db.ref('tanSamity/config').update({ isWheelLocked: false, paidListClearTimestamp: 0 });
             lastHandledSpinId = "";
             document.getElementById("wheelWinnerMonitor").style.display = "none";
             drawWheel(0);
@@ -1997,7 +2114,7 @@
         function takeBreak(serialId) {
             const item = activeSerials[serialId];
             if (!item) return;
-            const nameKey = normalizeName(item.name).replace(/[.#$\[\]]/g, '_');
+            const nameKey = normalizeName(item.name).replace(/[^a-z0-9]/g, '_');
             if (breakLogs[nameKey]) { showToast("🚫 আজ একবার বিরতি নিয়েছেন!", "error"); return; }
             const cfg = getRiderSecretConfig(item.name, item.phone);
             db.ref('breakLogs/' + getTodayDateKey() + '/' + nameKey).set(true);
@@ -2276,7 +2393,7 @@
                 const updates = {};
                 Object.keys(samityApprovedMembers).forEach(phone => { updates[phone + '/weeklyPaid'] = 0; updates[phone + '/isWinner'] = false; });
                 await db.ref('tanSamity/approvedMembers').update(updates);
-                await db.ref('tanSamity/config').update({ isWheelLocked: false });
+                await db.ref('tanSamity/config').update({ isWheelLocked: false, paidListClearTimestamp: 0 });
                 await db.ref('tanSamity/allowedStatus').remove();
                 await db.ref('tanSamity/liveSpin').remove();
                 lastHandledSpinId = "";
