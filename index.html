@@ -420,7 +420,6 @@
             <p id="alarmDesc" style="font-size: 12px; margin: 3px 0 8px;">দয়া করে দ্রুত প্রস্তুত হন।</p>
             <div style="display: flex; gap: 8px; justify-content: center;">
                 <button class="btn btn-warning btn-xs" onclick="stopMyAlarm()">🔕 অ্যালার্ম বন্ধ করুন</button>
-                <button class="btn btn-dark btn-xs" onclick="cutMyOwnSerialFromAlarm()">✂️ আমার সিরিয়াল কাটুন</button>
             </div>
         </div>
 
@@ -596,19 +595,19 @@
 
                     <div id="onlineEntryForm">
                         <div class="form-group">
-                            <label class="form-label">রেজিস্টার্ড ফোন নাম্বার</label>
-                            <input type="tel" id="loginPhone" class="form-control" placeholder="017XXXXXXXX">
+                            <label class="form-label">রেজিস্টার্ড নাম বা নম্বর</label>
+                            <input type="text" id="loginPhone" class="form-control" placeholder="আপনার নাম বা নম্বর দিন">
                         </div>
                     </div>
 
+                    <!-- Updated Rider Registration Form (Phone number removed as requested) -->
                     <div id="onlineRegForm" style="display: none;">
                         <div class="form-group">
-                            <input type="text" id="regName" class="form-control" placeholder="রাইডারের নাম">
+                            <label class="form-label">রাইডারের নাম (বাধ্যতামূলক)</label>
+                            <input type="text" id="regName" class="form-control" placeholder="রাইডারের নাম লিখুন">
                         </div>
                         <div class="form-group">
-                            <input type="tel" id="regPhone" class="form-control" placeholder="ফোন নাম্বার">
-                        </div>
-                        <div class="form-group">
+                            <label class="form-label">রাইডারের ছবি (বাধ্যতামূলক)</label>
                             <input type="file" id="regPhoto" accept="image/*" class="form-control" style="padding: 4px;">
                         </div>
                     </div>
@@ -894,8 +893,8 @@
                 <input type="text" id="editRiderName" class="form-control">
             </div>
             <div class="form-group">
-                <label class="form-label">ফোন নাম্বার</label>
-                <input type="tel" id="editRiderPhoneNum" class="form-control">
+                <label class="form-label">ফোন নাম্বার / আইডি</label>
+                <input type="text" id="editRiderPhoneNum" class="form-control">
             </div>
             <div class="form-group">
                 <label class="form-label">নতুন ছবি (ঐচ্ছিক)</label>
@@ -962,8 +961,8 @@
         let userLat = null, userLng = null;
         let gpsGranted = false, batteryConfirmed = false;
         let isAdminLoggedIn = false;
-        let samityResetUnlocked = false; // Safeguard lock for new week reset
-        let quotaUnlocked = false; // Safeguard lock for daily quota edit
+        let samityResetUnlocked = false; 
+        let quotaUnlocked = false; 
 
         let standSettings = { name: "চন্দ্রিমা বাইক স্ট্যান্ড", lat: null, lng: null };
         
@@ -980,8 +979,8 @@
 
         let paymentNumbers = ["01719592128"];
         
-        let myLocalRiderName = localStorage.getItem("myRiderName") || "";
         let myLocalRiderPhone = localStorage.getItem("myRiderPhone") || "";
+        let myLocalRiderName = localStorage.getItem("myRiderName") || "";
 
         let audioCtx = null;
         let alarmInterval = null;
@@ -1092,8 +1091,8 @@
             document.getElementById("stepAllow").classList.add("done");
             document.getElementById("gatekeeper").style.display = "none";
             document.getElementById("mainApp").style.display = "block";
-            if (myLocalRiderPhone) {
-                document.getElementById("loginPhone").value = myLocalRiderPhone;
+            if (myLocalRiderName) {
+                document.getElementById("loginPhone").value = myLocalRiderName;
             }
         }
 
@@ -1612,33 +1611,29 @@
             document.getElementById("tabOnlineEntry").classList.toggle("active", tab === 'entry');
             document.getElementById("tabOnlineReg").classList.toggle("active", tab === 'reg');
             document.getElementById("onlineEntryForm").style.display = tab === 'entry' ? 'block' : 'none';
-            document.getElementById("onlineRegForm").style.display = tab === 'reg' ? 'none' : 'block';
+            document.getElementById("onlineRegForm").style.display = tab === 'reg' ? 'block' : 'none';
             document.getElementById("btnOnlineSubmit").style.display = tab === 'entry' ? 'inline-flex' : 'none';
             document.getElementById("btnRegSubmit").style.display = tab === 'reg' ? 'inline-flex' : 'none';
         }
 
         async function registerNewRider() {
             const name = document.getElementById("regName").value.trim();
-            const phone = document.getElementById("regPhone").value.trim().replace(/[^0-9]/g, '');
             const photoFile = document.getElementById("regPhoto").files[0];
 
-            if (!name || !phone || !photoFile) {
-                showToast("⚠️ নাম, ফোন নাম্বার এবং ছবি তিনটিই বাধ্যতামূলক!", "error");
+            if (!name || !photoFile) {
+                showToast("⚠️ রাইডারের নাম এবং ছবি দুটিই বাধ্যতামূলক!", "error");
                 return;
             }
-            if (phone.length < 11) {
-                showToast("⚠️ সঠিক ১১ ডিজিটের মোবাইল নাম্বার দিন।", "error");
-                return;
-            }
-            if (registeredRiders[phone]) {
-                showToast("🚫 এই নাম্বার দিয়ে ইতিমধ্যে অ্যাকাউন্ট রয়েছে!", "error");
+            if (Object.values(registeredRiders).some(r => normalizeName(r.name) === normalizeName(name))) {
+                showToast("🚫 এই নামের রাইডার ইতিমধ্যে রেজিস্ট্রেশন করা আছে!", "error");
                 return;
             }
 
+            const riderKey = 'r_' + Date.now() + '_' + Math.floor(Math.random() * 1000);
             const base64Img = await compressImageToBase64(photoFile, 220);
-            await db.ref('registeredRiders/' + phone).set({
+            await db.ref('registeredRiders/' + riderKey).set({
                 name: name,
-                phone: phone,
+                phone: '',
                 photo: base64Img,
                 createdAt: Date.now(),
                 customCutMin: 10,
@@ -1649,11 +1644,11 @@
                 lastActiveTime: Date.now()
             });
 
-            localStorage.setItem("myRiderPhone", phone);
+            localStorage.setItem("myRiderPhone", riderKey);
             localStorage.setItem("myRiderName", name);
-            myLocalRiderPhone = phone;
+            myLocalRiderPhone = riderKey;
             myLocalRiderName = name;
-            document.getElementById("loginPhone").value = phone;
+            document.getElementById("loginPhone").value = name;
 
             showToast("✅ বাইক রাইডার রেজিস্ট্রেশন সম্পন্ন হয়েছে!", "success");
             switchOnlineTab('entry');
@@ -1665,14 +1660,20 @@
         }
 
         function submitOnlineEntry() {
-            const phone = document.getElementById("loginPhone").value.trim().replace(/[^0-9]/g, '');
-            if (!phone) {
-                showToast("⚠️ রেজিস্টার্ড ফোন নাম্বার দিন।", "error");
+            const inputVal = document.getElementById("loginPhone").value.trim();
+            if (!inputVal) {
+                showToast("⚠️ আপনার রেজিস্টার্ড নাম বা নম্বর দিন।", "error");
                 return;
             }
-            const rider = registeredRiders[phone];
+
+            let rider = registeredRiders[inputVal];
             if (!rider) {
-                showToast("❌ এই নাম্বারে কোনো রাইডার রেজিস্ট্রেশন নেই!", "error");
+                const targetName = normalizeName(inputVal);
+                rider = Object.values(registeredRiders).find(r => normalizeName(r.name) === targetName);
+            }
+
+            if (!rider) {
+                showToast("❌ এই নামে বা নম্বরে কোনো রাইডার রেজিস্ট্রেশন নেই!", "error");
                 return;
             }
             if (isNameAlreadyInActiveSerial(rider.name)) {
@@ -1683,12 +1684,13 @@
             const allowedDist = rider.customDistMeters || 200;
             if (!checkWithinStandBoundary(allowedDist)) return;
 
-            localStorage.setItem("myRiderPhone", phone);
+            const rKey = rider.phone || rider.id || normalizeName(rider.name);
+            localStorage.setItem("myRiderPhone", rKey);
             localStorage.setItem("myRiderName", rider.name);
-            myLocalRiderPhone = phone;
+            myLocalRiderPhone = rKey;
             myLocalRiderName = rider.name;
 
-            db.ref('registeredRiders/' + phone).update({
+            db.ref('registeredRiders/' + rKey).update({
                 lastLat: userLat,
                 lastLng: userLng,
                 lastActiveTime: Date.now()
@@ -1696,7 +1698,7 @@
 
             db.ref('activeSerials').push({
                 name: rider.name,
-                phone: phone,
+                phone: rider.phone || '',
                 photo: rider.photo,
                 type: 'online',
                 joinedAt: Date.now(),
@@ -1823,19 +1825,6 @@
             }
             db.ref('activeSerials/' + serialId).update({ cutUntil: null, cutBy: null });
             showToast(`✅ ${item.name}-এর সিরিয়াল ফিরিয়ে আনা হয়েছে!`, "success");
-        }
-
-        function cutMyOwnSerialFromAlarm() {
-            const sorted = getSortedSerials();
-            const myItem = sorted.find(item => normalizeName(item.name) === normalizeName(myLocalRiderName));
-            if (myItem) {
-                if (!isAdminLoggedIn) {
-                    const myCfg = getRiderSecretConfig(myLocalRiderName, myLocalRiderPhone);
-                    if (!checkWithinStandBoundary(myCfg.distMeters)) return;
-                }
-                stopMyAlarm();
-                cutSerial(myItem.id);
-            }
         }
 
         function getSortedSerials() {
@@ -2311,43 +2300,43 @@
             }
         }
 
-        // --- RIDER ADMIN CONTROLS (WITH EDIT PHOTO, NAME, PHONE) ---
+        // --- RIDER ADMIN CONTROLS ---
         function renderAdminRegisteredList() {
             const container = document.getElementById("adminRegisteredList");
-            const list = Object.values(registeredRiders);
+            const list = Object.entries(registeredRiders);
 
             if (list.length === 0) {
                 container.innerHTML = `<p style="font-size: 12px; color: #64748b;">কোনো রাইডার নেই।</p>`;
                 return;
             }
 
-            container.innerHTML = list.map(r => `
+            container.innerHTML = list.map(([key, r]) => `
                 <div class="reg-rider-row">
                     <div style="display: flex; align-items: center; gap: 8px;">
                         <img src="${r.photo || 'https://via.placeholder.com/40'}" style="width: 34px; height: 34px; border-radius: 50%; object-fit: cover;">
                         <div>
                             <strong style="font-size: 13px;">${r.name}</strong>
-                            <div style="font-size: 11px; color: #475569;">📞 ${r.phone}</div>
+                            <div style="font-size: 11px; color: #475569;">📞 ${r.phone || 'আইডি: ' + key.substring(0, 8)}</div>
                         </div>
                     </div>
                     <div style="display: flex; gap: 4px; margin-left: auto;">
-                        <button class="btn btn-info btn-xs" onclick="viewRiderLiveLocation('${r.phone}')">📍 লোকেশন</button>
-                        <button class="btn btn-primary btn-xs" onclick="openRiderBasicEdit('${r.phone}')">✏️ এডিট</button>
-                        <button class="btn btn-danger btn-xs" onclick="deleteRegisteredRider('${r.phone}')">🗑️</button>
+                        <button class="btn btn-info btn-xs" onclick="viewRiderLiveLocation('${key}')">📍 লোকেশন</button>
+                        <button class="btn btn-primary btn-xs" onclick="openRiderBasicEdit('${key}')">✏️ এডিট</button>
+                        <button class="btn btn-danger btn-xs" onclick="deleteRegisteredRider('${key}')">🗑️</button>
                     </div>
                 </div>
             `).join('');
         }
 
-        async function deleteRegisteredRider(phone) {
+        async function deleteRegisteredRider(key) {
             if (confirm("আপনি কি নিশ্চিতভাবে এই রাইডারকে ডিলিট করতে চান?")) {
-                await db.ref('registeredRiders/' + phone).remove();
+                await db.ref('registeredRiders/' + key).remove();
                 showToast("রাইডার ডিলিট করা হয়েছে।", "info");
             }
         }
 
-        function viewRiderLiveLocation(phone) {
-            const r = registeredRiders[phone];
+        function viewRiderLiveLocation(key) {
+            const r = registeredRiders[key];
             if (!r) return;
             const modalDetails = document.getElementById("riderLocDetails");
             let timeStr = r.lastActiveTime ? new Date(r.lastActiveTime).toLocaleString('bn-BD') : "তথ্য নেই";
@@ -2357,7 +2346,7 @@
             }
             modalDetails.innerHTML = `
                 👤 <strong>রাইডার:</strong> ${r.name}<br>
-                📞 <strong>নম্বর:</strong> ${r.phone}<br>
+                📞 <strong>আইডি/নম্বর:</strong> ${r.phone || key}<br>
                 ⏱️ <strong>শেষ সক্রিয়:</strong> ${timeStr}<br>
                 📍 <strong>GPS:</strong> ${r.lastLat ? r.lastLat.toFixed(5) + ', ' + r.lastLng.toFixed(5) : 'নেই'}<br>
                 📏 <strong>দূরত্ব:</strong> ${distText}
@@ -2365,50 +2354,38 @@
             document.getElementById("riderLocModal").style.display = "block";
         }
 
-        function openRiderBasicEdit(phone) {
-            const r = registeredRiders[phone];
+        function openRiderBasicEdit(key) {
+            const r = registeredRiders[key];
             if (!r) return;
-            document.getElementById("editRiderPhoneKey").value = phone;
+            document.getElementById("editRiderPhoneKey").value = key;
             document.getElementById("editRiderName").value = r.name;
-            document.getElementById("editRiderPhoneNum").value = r.phone;
+            document.getElementById("editRiderPhoneNum").value = r.phone || key;
             document.getElementById("editRiderPhoto").value = "";
             document.getElementById("riderEditModal").style.display = "block";
         }
 
         async function saveRiderBasicEdit() {
-            const oldPhone = document.getElementById("editRiderPhoneKey").value;
+            const oldKey = document.getElementById("editRiderPhoneKey").value;
             const newName = document.getElementById("editRiderName").value.trim();
-            const newPhone = document.getElementById("editRiderPhoneNum").value.trim().replace(/[^0-9]/g, '');
+            const newPhoneVal = document.getElementById("editRiderPhoneNum").value.trim();
             const photoFile = document.getElementById("editRiderPhoto").files[0];
 
-            if (!newName || !newPhone) {
-                showToast("⚠️ নাম এবং ফোন নাম্বার খালি রাখা যাবে না।", "error");
+            if (!newName) {
+                showToast("⚠️ রাইডারের নাম খালি রাখা যাবে না।", "error");
                 return;
             }
 
-            let photoBase64 = registeredRiders[oldPhone] ? registeredRiders[oldPhone].photo : null;
+            let photoBase64 = registeredRiders[oldKey] ? registeredRiders[oldKey].photo : null;
             if (photoFile) {
                 photoBase64 = await compressImageToBase64(photoFile, 220);
             }
 
-            if (newPhone !== oldPhone) {
-                if (registeredRiders[newPhone]) {
-                    showToast("🚫 এই ফোন নাম্বার দিয়ে ইতিমধ্যে অন্য রাইডার রেজিস্টার্ড আছে!", "error");
-                    return;
-                }
-                let data = registeredRiders[oldPhone];
-                data.name = newName;
-                data.phone = newPhone;
-                if (photoBase64) data.photo = photoBase64;
+            let data = registeredRiders[oldKey];
+            data.name = newName;
+            data.phone = newPhoneVal;
+            if (photoBase64) data.photo = photoBase64;
 
-                await db.ref('registeredRiders/' + newPhone).set(data);
-                await db.ref('registeredRiders/' + oldPhone).remove();
-            } else {
-                await db.ref('registeredRiders/' + oldPhone).update({
-                    name: newName,
-                    photo: photoBase64
-                });
-            }
+            await db.ref('registeredRiders/' + oldKey).set(data);
 
             document.getElementById("riderEditModal").style.display = "none";
             showToast("✅ রাইডারের তথ্য সফলভাবে আপডেট হয়েছে!", "success");
@@ -2447,16 +2424,16 @@
             if (!select) return;
             const currentVal = select.value;
             let opts = `<option value="">-- রাইডার বেছে নিন --</option>`;
-            Object.values(registeredRiders).forEach(r => {
-                opts += `<option value="${r.phone}">${r.name} (${r.phone})</option>`;
+            Object.entries(registeredRiders).forEach(([key, r]) => {
+                opts += `<option value="${key}">${r.name} (${r.phone || 'আইডি'})</option>`;
             });
             select.innerHTML = opts;
             select.value = currentVal;
         }
 
         function loadSelectedRiderSpecialValues() {
-            const phone = document.getElementById("specialRiderSelect").value;
-            const r = registeredRiders[phone];
+            const key = document.getElementById("specialRiderSelect").value;
+            const r = registeredRiders[key];
             if (!r) return;
             document.getElementById("quickSpCutMin").value = r.customCutMin || 10;
             document.getElementById("quickSpDist").value = r.customDistMeters || 200;
@@ -2464,8 +2441,8 @@
         }
 
         async function saveQuickSpecialPower() {
-            const phone = document.getElementById("specialRiderSelect").value;
-            if (!phone || !registeredRiders[phone]) {
+            const key = document.getElementById("specialRiderSelect").value;
+            if (!key || !registeredRiders[key]) {
                 showToast("⚠️ আগে তালিকা থেকে একজন রাইডার বেছে নিন!", "error");
                 return;
             }
@@ -2473,12 +2450,12 @@
             const distMeters = Number(document.getElementById("quickSpDist").value) || 200;
             const breakMin = Number(document.getElementById("quickSpBreakMin").value) || 30;
 
-            await db.ref('registeredRiders/' + phone).update({
+            await db.ref('registeredRiders/' + key).update({
                 customCutMin: cutMin,
                 customDistMeters: distMeters,
                 customBreakMin: breakMin
             });
-            showToast(`✅ ${registeredRiders[phone].name}-এর বিশেষ সেটিংস সেভ হয়েছে!`, "success");
+            showToast(`✅ ${registeredRiders[key].name}-এর বিশেষ সেটিংস সেভ হয়েছে!`, "success");
         }
 
         function toggleGpsSetButton() {
