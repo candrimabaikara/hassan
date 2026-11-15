@@ -622,7 +622,7 @@
 
                 <div style="background: linear-gradient(135deg, #fef3c7, #fde68a); border: 2.5px solid #f59e0b; border-radius: 16px; padding: 14px; margin-bottom: 12px; text-align: center; box-shadow: inset 0 2px 6px rgba(255,255,255,0.6);">
                     <h3 style="font-size: 15px; color: #92400e; margin-bottom: 4px; font-weight: 700;">🎯 ডিজিটাল চরকি ও লাইভ মনিটর</h3>
-                    <p style="font-size: 11px; color: #78350f; margin-bottom: 12px;">নির্ধারিত সময়ে ১০০% সদস্যের 'Allow' পারমিশন (সবুজ বাতি) জ্বললে স্পিন প্রস্তুত হবে।</p>
+                    <p style="font-size: 11px; color: #78350f; margin-bottom: 12px;">সকাল ৬টা থেকে রাত ৯টা পর্যন্ত ফ্রি স্পিন টেস্ট করা যাবে। ড্র-এর সময়ে ১০০% সদস্যের Allow পারমিশন লাগবে।</p>
 
                     <div class="wheel-stage-container">
                         <div class="wheel-outer-rim">
@@ -634,9 +634,9 @@
                                 <div class="wheel-center-circle"></div>
 
                                 <div id="wheelWinnerMonitor">
-                                    <span id="winnerMonitorBadge" style="font-size: 9px; background: #dc2626; color: #fde047; padding: 2px 6px; border-radius: 8px; font-weight: 700; margin-bottom: 3px;">🎉 আজকের উইনার 🎉</span>
+                                    <span id="winnerMonitorBadge" style="font-size: 9px; background: #dc2626; color: #fde047; padding: 2px 6px; border-radius: 8px; font-weight: 700; margin-bottom: 3px;">🎉 উইনার 🎉</span>
                                     <img id="monitorWinnerImg" src="https://via.placeholder.com/90" alt="Winner">
-                                    <div id="monitorWinnerName" style="font-size: 13px; font-weight: 800; color: #fde047; line-height: 1.2;">বিজয়ীর নাম</div>
+                                    <div id="monitorWinnerName" style="font-size: 13px; font-weight: 800; color: #fde047; line-height: 1.2;">নাম</div>
                                     <div id="monitorWinnerSub" style="font-size: 10px; color: #cbd5e1; margin-top: 2px;">অভিনন্দন!</div>
                                 </div>
                             </div>
@@ -644,6 +644,10 @@
                         <div class="wheel-stand-neck"></div>
                         <div class="wheel-stand-base-top"></div>
                         <div class="wheel-stand-base-bottom"></div>
+                    </div>
+
+                    <div style="display: flex; gap: 6px; justify-content: center; margin-bottom: 8px;">
+                        <button class="btn btn-success btn-block" style="font-size: 13px; padding: 10px; font-weight: 800;" onclick="triggerLiveWheelSpin()">🎡 SPIN (স্পিন ঘুরান)</button>
                     </div>
 
                     <div id="wheelStatusInfo" style="font-size: 11px; color: #92400e; margin-top: 6px; font-weight: 700; background: #fffbeb; padding: 7px; border-radius: 8px; border: 1px solid #fcd34d;">অপেক্ষমাণ...</div>
@@ -675,10 +679,7 @@
                             <span id="myDotIndicator" style="width: 14px; height: 14px; border-radius: 50%; background: #ef4444; display: inline-block; box-shadow: 0 0 6px rgba(0,0,0,0.3);"></span>
                         </div>
 
-                        <div style="display: flex; gap: 6px;">
-                            <button id="btnMySamityMainAction" class="btn btn-danger btn-block" style="font-size: 12px; padding: 8px; flex: 1;" onclick="handleMySamityActionClick()">🔴 অংশগ্রহণ করতে Allow দিন</button>
-                            <button id="btnUserSpin" class="btn btn-success" style="font-size: 13px; padding: 8px 16px; font-weight: 800; display: none;" onclick="triggerLiveWheelSpin()">🎡 SPIN</button>
-                        </div>
+                        <button id="btnMySamityMainAction" class="btn btn-danger btn-block" style="font-size: 12px; padding: 8px;" onclick="handleMySamityActionClick()">🔴 ড্র-এর জন্য Allow দিন</button>
                     </div>
                 </div>
 
@@ -713,9 +714,7 @@
                         নিচে নির্দিষ্ট অ্যাডমিনদের বিকাশ/নগদ নম্বর দেওয়া হলো। আপনার পছন্দমতো যেকোনো একজন অ্যাডমিনের কাছে টাকা পাঠিয়ে মাধ্যম (বিকাশ/নগদ) ও নম্বর দিয়ে নিচের তথ্য ফর্ম পূরণ করুন:
                     </p>
 
-                    <div id="fourAdminsPaymentCardsContainer" style="margin-bottom: 10px;">
-                        <!-- Dynamically populated from Firebase -->
-                    </div>
+                    <div id="fourAdminsPaymentCardsContainer" style="margin-bottom: 10px;"></div>
 
                     <div class="form-group">
                         <label class="form-label">১. কার অ্যাকাউন্টে টাকা জমা হবে? (আপনার রেজিস্টার্ড ফোন নম্বর দিন)</label>
@@ -946,7 +945,7 @@
 
             <!-- MASTER ONLY SECTION -->
             <div id="masterOnlyAdminManagementBox" class="admin-box" style="background: #eef2ff; border: 2px solid #4f46e5; display: none;">
-                <h4 style="color: #4f46e5;">👑 মাস্টার অ্যাডমিন: মাস্টার পাসওয়ার্ড পরিবর্তন ও ৪ জন সাব-অ্যাডমিন ম্যানেজমেন্ট</h4>
+                <h4 style="color: #4f46e5;">👑 মাস্টার অ্যাডমিন: পাসওয়ার্ড ও ৪ জন সাব-অ্যাডমিন ম্যানেজমেন্ট</h4>
                 <div style="background: #fff; padding: 8px; border-radius: 8px; margin-bottom: 10px; border: 1px solid #cbd5e1;">
                     <strong style="font-size: 12px; color: #1e1b4b; display: block; margin-bottom: 4px;">মাস্টার পাসওয়ার্ড পরিবর্তন করুন:</strong>
                     <div style="display: flex; gap: 6px;">
@@ -957,7 +956,7 @@
                 <div id="masterSubAdminBoxesContainer"></div>
             </div>
 
-            <!-- SAMITY SECTIONS (POWERS 1 TO 22 RE-INDEXED) -->
+            <!-- SAMITY SECTIONS -->
             <div class="admin-box" id="samityMasterWrapperBox" style="background: #fffbeb; border: 2px solid #f59e0b;">
                 <h4 style="color: #b45309;">🏆 চন্দ্রিমা বাইকার টান সমিতি কন্ট্রোল সমূহ</h4>
                 
@@ -1013,7 +1012,7 @@
                 <!-- 4. QUOTA & REG SWITCH -->
                 <div class="admin-box" id="powerSec4" style="background: #fef3c7; border: 1px solid #fcd34d; margin-bottom: 8px;">
                     <h4>
-                        <span id="titlePower4"><span class="power-badge-tag">৪</span> রেজিস্ট্রেশন অন/অফ এবং টাকার অংক বাড়ানো-কমানো</span>
+                        <span id="titlePower4"><span class="power-badge-tag">৪</span> রেজিস্ট্রেশন অন/অফ এবং টাকার অংক</span>
                         <button class="btn btn-dark btn-xs" id="lockPower4" onclick="togglePowerLock(4)">🔒 লকড</button>
                     </h4>
                     <div id="containerPower4" style="opacity: 0.5; pointer-events: none;">
@@ -1094,16 +1093,17 @@
                     </div>
                 </div>
 
-                <!-- 11. SINGLE BOX MEMBER MANAGEMENT -->
+                <!-- 11. SINGLE BOX MEMBER MANAGEMENT (WITH DELETE INSTEAD OF SUSPEND) -->
                 <div class="admin-box" id="powerSec11" style="background: white; border: 1px solid #fde68a; margin-bottom: 8px;">
                     <h4>
-                        <span id="titlePower11"><span class="power-badge-tag">১১</span> মেম্বার ম্যানেজমেন্ট (টাকা জমা, নাম-ফোন ও স্ট্যাটাস)</span>
+                        <span id="titlePower11"><span class="power-badge-tag">১১</span> মেম্বার ম্যানেজমেন্ট (টাকা জমা, নাম-ফোন ও ডিলিট)</span>
                         <button class="btn btn-dark btn-xs" id="lockPower11" onclick="togglePowerLock(11)">🔒 লকড</button>
                     </h4>
                     <div id="containerPower11" style="opacity: 0.5; pointer-events: none;">
                         <div style="display: flex; justify-content: flex-end; margin-bottom: 6px;">
-                            <button class="btn btn-danger btn-xs" onclick="resetAllMembersNewWeek()">🔄 নতুন সপ্তাহ রিসেট</button>
+                            <button class="btn btn-danger btn-xs" onclick="resetAllMembersNewWeek()">🔄 সম্পূর্ণ নতুন সপ্তাহ রিসেট (সব মুছে যাবে)</button>
                         </div>
+                        <p style="font-size: 10px; color: #b45309; margin-bottom: 4px;">* এখানে রিসেট করলে সব সদস্যের জমানো টাকার হিস্ট্রি ও ডেটা স্থায়ীভাবে মুছে নতুন সপ্তাহ শুরু হবে।</p>
                         <div id="adminSingleBoxMemberManagement" style="background:#fffbeb; padding:6px; border-radius:8px; border:1px solid #fcd34d; max-height:220px; overflow-y:auto;"></div>
                     </div>
                 </div>
@@ -1114,9 +1114,7 @@
                         <span id="titlePower12"><span class="power-badge-tag">১২</span> অ্যাডমিন ১ পেমেন্ট প্রোফাইল ও ছবি</span>
                         <button class="btn btn-dark btn-xs" id="lockPower12" onclick="togglePowerLock(12)">🔒 লকড</button>
                     </h4>
-                    <div id="containerPower12" style="opacity: 0.5; pointer-events: none;" id="adminEditorContainer_admin1">
-                        <!-- Rendered via JS -->
-                    </div>
+                    <div id="containerPower12" style="opacity: 0.5; pointer-events: none;" id="adminEditorContainer_admin1"></div>
                 </div>
 
                 <!-- 13. ADMIN 2 PROFILE & PHOTO -->
@@ -1665,15 +1663,11 @@
         });
 
         db.ref('subAdminConfig').on('value', (snap) => {
-            if (snap.exists()) {
-                subAdminCredentials = snap.val();
-            }
+            if (snap.exists()) { subAdminCredentials = snap.val(); }
         });
 
         db.ref('masterPasswordConfig').on('value', (snap) => {
-            if (snap.exists()) {
-                masterPasswordStored = snap.val();
-            }
+            if (snap.exists()) { masterPasswordStored = snap.val(); }
         });
 
         db.ref('tanSamity/config').on('value', (snap) => {
@@ -1719,7 +1713,7 @@
             }
             const now = Date.now();
             const elapsed = now - liveSpinState.startedAt;
-            const duration = liveSpinState.duration || 20000;
+            const duration = liveSpinState.duration || 25000;
 
             if (elapsed < duration && liveSpinState.spinId !== lastHandledSpinId) {
                 lastHandledSpinId = liveSpinState.spinId;
@@ -1864,24 +1858,13 @@
             dot.style.background = isAllowed ? "#22c55e" : "#ef4444";
             dot.style.boxShadow = isAllowed ? "0 0 8px #22c55e" : "0 0 8px #ef4444";
 
-            const activeMembers = Object.values(samityApprovedMembers).filter(m => !m.isWinner && !m.isSuspended);
-            const allAllowed = activeMembers.length > 0 && activeMembers.every(m => samityAllowedStatus[m.phone] === true);
             const actionBtn = document.getElementById("btnMySamityMainAction");
-            const spinBtn = document.getElementById("btnUserSpin");
-
-            if (allAllowed) {
-                actionBtn.style.display = "none";
-                spinBtn.style.display = "block";
+            if (isAllowed) {
+                actionBtn.className = "btn btn-info btn-block";
+                actionBtn.innerText = "✅ আপনি Allow দিয়েছেন";
             } else {
-                spinBtn.style.display = "none";
-                actionBtn.style.display = "block";
-                if (isAllowed) {
-                    actionBtn.className = "btn btn-info btn-block";
-                    actionBtn.innerText = "✅ আপনি Allow দিয়েছেন (অন্যদের জন্য অপেক্ষা করুন)";
-                } else {
-                    actionBtn.className = "btn btn-danger btn-block";
-                    actionBtn.innerText = "🔴 অংশগ্রহণ করতে Allow দিন";
-                }
+                actionBtn.className = "btn btn-danger btn-block";
+                actionBtn.innerText = "🔴 ড্র-এর জন্য Allow দিন";
             }
             evaluateWheelAndActionState();
         }
@@ -1925,6 +1908,13 @@
             }
         }
 
+        function isFreeDemoWheelTime() {
+            const now = new Date();
+            const currentHour = now.getHours();
+            // সকাল ৬:০০ টা থেকে রাত ৯:০০ টা পর্যন্ত (6 to 21) ফ্রি টেস্ট মোড
+            return currentHour >= 6 && currentHour < 21;
+        }
+
         function isWithinScheduleTime() {
             if (samityConfig.drawDay === "Any") return true;
             const now = new Date();
@@ -1941,17 +1931,22 @@
         }
 
         function areAllActiveMembersAllowed() {
-            const activeMembers = Object.values(samityApprovedMembers).filter(m => !m.isWinner && !m.isSuspended);
+            const activeMembers = Object.values(samityApprovedMembers).filter(m => !m.isWinner);
             if (activeMembers.length === 0) return false;
             return activeMembers.every(m => samityAllowedStatus[m.phone] === true);
         }
 
         function evaluateWheelAndActionState() {
             const infoBox = document.getElementById("wheelStatusInfo");
-            const activeMembers = Object.values(samityApprovedMembers).filter(m => !m.isWinner && !m.isSuspended);
+            const activeMembers = Object.values(samityApprovedMembers).filter(m => !m.isWinner);
+            const freeDemo = isFreeDemoWheelTime();
             const inSchedule = isWithinScheduleTime();
             const allAllowed = areAllActiveMembersAllowed();
 
+            if (freeDemo) {
+                infoBox.innerText = "🟢 সকাল ৬টা থেকে রাত ৯টা: ফ্রি ডেমো স্পিন মোড চালু (সবার জন্য উন্মুক্ত টেস্ট স্পিন)";
+                return;
+            }
             if (samityConfig.isWheelLocked) {
                 infoBox.innerText = "🔒 আজকের ড্র সম্পন্ন হয়েছে। পরবর্তী ড্র-এর জন্য অপেক্ষা করুন।";
                 return;
@@ -1973,16 +1968,10 @@
         }
 
         async function handleMySamityActionClick() {
-            if (samityConfig.isWheelLocked) { showToast("🔒 আজকের ড্র ইতিমধ্যে সম্পন্ন হয়েছে!", "error"); return; }
-            if (!isWithinScheduleTime()) { showToast("⏳ নির্ধারিত সময়ে আসলে Allow চালু হবে।", "warning"); return; }
             if (!myLockedSamityPhone || !samityApprovedMembers[myLockedSamityPhone]) { showToast("⚠️ আগে আপনার অ্যাকাউন্ট নম্বর লক করুন!", "error"); return; }
-
-            if (samityAllowedStatus[myLockedSamityPhone] !== true) {
-                await db.ref('tanSamity/allowedStatus/' + myLockedSamityPhone).set(true);
-                const member = samityApprovedMembers[myLockedSamityPhone];
-                playVoiceMessage(`আসসালামু আলাইকুম ${member.name}, খেলায় অংশগ্রহণ করার জন্য আপনাকে সুস্বাগতম!`);
-                showToast("✅ আপনার Allow পারমিশন গৃহীত হয়েছে!", "success");
-            }
+            const current = samityAllowedStatus[myLockedSamityPhone] === true;
+            await db.ref('tanSamity/allowedStatus/' + myLockedSamityPhone).set(!current);
+            showToast(!current ? "✅ আপনার Allow পারমিশন গৃহীত হয়েছে!" : "⚠️ আপনার Allow বাতিল করা হয়েছে।", "info");
         }
 
         let currentWheelAngle = 0;
@@ -2010,7 +1999,7 @@
                 }
             }
 
-            const members = Object.values(samityApprovedMembers).filter(m => !m.isWinner && !m.isSuspended);
+            const members = Object.values(samityApprovedMembers).filter(m => !m.isWinner);
             if (members.length === 0) {
                 ctx.fillStyle = "#92400e"; ctx.font = "bold 13px Hind Siliguri, sans-serif"; ctx.textAlign = "center";
                 ctx.fillText("কোনো সক্রিয় সদস্য নেই", centerX, centerY - 25);
@@ -2047,27 +2036,29 @@
                 ctx.font = "bold 11px Hind Siliguri, sans-serif";
                 ctx.shadowColor = "rgba(0,0,0,0.6)"; ctx.shadowBlur = 3;
                 ctx.fillText(m.name.substring(0, 9), radius - 24, -2);
-                if (isUnpaid) {
-                    ctx.fillStyle = "#fef08a"; ctx.font = "bold 9px Hind Siliguri, sans-serif";
-                    ctx.fillText("টাকা পরিশোধ করুন", radius - 24, 11);
-                }
                 ctx.restore();
             });
         }
 
         async function triggerLiveWheelSpin() {
             if (isSpinningWheel) return;
-            if (samityConfig.isWheelLocked) { showToast("🔒 আজকের ড্র ইতিমধ্যে সম্পন্ন হয়েছে!", "error"); return; }
-            if (!isWithinScheduleTime()) { showToast("⏳ নির্ধারিত সময়ে আসলে স্পিন চালু হবে।", "error"); return; }
-            if (!areAllActiveMembersAllowed()) { showToast("🔒 সবাই Allow বাটনে পারমিশন দিলে লটারির জন্য প্রস্তুত হবে!", "error"); return; }
+            const freeDemo = isFreeDemoWheelTime();
 
-            const members = Object.values(samityApprovedMembers).filter(m => !m.isWinner && !m.isSuspended);
-            if (members.length === 0) return;
+            if (!freeDemo) {
+                if (samityConfig.isWheelLocked) { showToast("🔒 আজকের ড্র ইতিমধ্যে সম্পন্ন হয়েছে!", "error"); return; }
+                if (!isWithinScheduleTime()) { showToast("⏳ নির্ধারিত সময়ে বা সকাল ৬টা থেকে রাত ৯টার মধ্যে স্পিন করতে পারবেন।", "error"); return; }
+                if (!areAllActiveMembersAllowed()) { showToast("🔒 সবাই Allow বাটনে পারমিশন দিলে লটারির জন্য প্রস্তুত হবে!", "error"); return; }
+            }
 
-            await db.ref('tanSamity/config/isWheelLocked').set(true);
+            const members = Object.values(samityApprovedMembers).filter(m => !m.isWinner);
+            if (members.length === 0) { showToast("⚠️ কোনো সক্রিয় সদস্য নেই।", "error"); return; }
+
+            if (!freeDemo) {
+                await db.ref('tanSamity/config/isWheelLocked').set(true);
+            }
 
             let winnerMember = null;
-            if (samityConfig.forcedWinner && samityApprovedMembers[samityConfig.forcedWinner] && !samityApprovedMembers[samityConfig.forcedWinner].isWinner) {
+            if (!freeDemo && samityConfig.forcedWinner && samityApprovedMembers[samityConfig.forcedWinner] && !samityApprovedMembers[samityConfig.forcedWinner].isWinner) {
                 winnerMember = samityApprovedMembers[samityConfig.forcedWinner];
             } else {
                 winnerMember = members[Math.floor(Math.random() * members.length)];
@@ -2075,7 +2066,7 @@
 
             const spinId = "spin_" + Date.now();
             await db.ref('tanSamity/liveSpin').set({
-                spinId: spinId, startedAt: Date.now(), duration: 20000,
+                spinId: spinId, startedAt: Date.now(), duration: 25000, isDemo: freeDemo,
                 winner: { name: winnerMember.name, phone: winnerMember.phone, photo: winnerMember.photo || 'https://via.placeholder.com/90', weeklyPaid: Number(winnerMember.weeklyPaid || 0) },
                 membersSnapshot: members.map(m => ({ name: m.name, phone: m.phone }))
             });
@@ -2085,7 +2076,7 @@
             isSpinningWheel = true;
             document.getElementById("wheelWinnerMonitor").style.display = "none";
 
-            const members = Object.values(samityApprovedMembers).filter(m => !m.isWinner && !m.isSuspended);
+            const members = Object.values(samityApprovedMembers).filter(m => !m.isWinner);
             if (members.length === 0) { isSpinningWheel = false; return; }
 
             const sliceAngle = (2 * Math.PI) / members.length;
@@ -2093,11 +2084,13 @@
             if (targetIndex === -1) targetIndex = 0;
 
             const pointerAngle = -Math.PI / 2;
-            const extraSpins = 14 * 2 * Math.PI;
-            const targetSliceCenter = targetIndex * sliceAngle + sliceAngle / 2;
+            const extraSpins = 16 * 2 * Math.PI;
+            // র্যান্ডম অফসেট যাতে নির্দিষ্ট কোনো দাগে সবসময় না থেমে যেকোনো জায়গায় থামতে পারে
+            const randomOffset = (Math.random() - 0.5) * (sliceAngle * 0.7);
+            const targetSliceCenter = targetIndex * sliceAngle + sliceAngle / 2 + randomOffset;
             const finalTargetAngle = extraSpins + (pointerAngle - targetSliceCenter);
 
-            const duration = spinData.duration || 20000;
+            const duration = spinData.duration || 25000;
             const startTime = spinData.startedAt;
             const pointerEl = document.getElementById("wheelPointerPin");
 
@@ -2116,12 +2109,22 @@
                 }
 
                 if (progress < 1) requestAnimationFrame(frame);
-                else { isSpinningWheel = false; finalizeSpinWinner(spinData.winner); }
+                else { isSpinningWheel = false; finalizeSpinWinner(spinData); }
             }
             requestAnimationFrame(frame);
         }
 
-        async function finalizeSpinWinner(winner) {
+        async function finalizeSpinWinner(spinData) {
+            const winner = spinData.winner;
+            const isDemo = spinData.isDemo;
+
+            if (isDemo) {
+                showWheelWinnerMonitor(winner, true);
+                playVoiceMessage(`ডেমো স্পিন টেস্ট সফল! বিজয়ী হয়েছেন ${winner.name}`);
+                showToast(`🎉 [ডেমো টেস্ট] বিজয়ী: ${winner.name}`, "success");
+                return;
+            }
+
             const requiredQuota = getTotalRequiredQuota();
             if (Number(winner.weeklyPaid || 0) < requiredQuota) {
                 showInsufficientBalanceWinnerMonitor(winner);
@@ -2134,7 +2137,7 @@
                 return;
             }
 
-            showWheelWinnerMonitor(winner);
+            showWheelWinnerMonitor(winner, false);
             playVoiceMessage(`অভিনন্দন ${winner.name}, আপনি আজকের চন্দ্রিমা বাইকার টান সমিতির লটারি বিজয়ী হয়েছেন!`);
             showToast(`🏆 আজকের উইনার: ${winner.name}!`, "success");
 
@@ -2149,13 +2152,13 @@
             renderDualPaymentLists();
         }
 
-        function showWheelWinnerMonitor(winner) {
+        function showWheelWinnerMonitor(winner, isDemo = false) {
             const monitor = document.getElementById("wheelWinnerMonitor");
-            document.getElementById("winnerMonitorBadge").innerText = "🎉 আজকের উইনার 🎉";
-            document.getElementById("winnerMonitorBadge").style.background = "#dc2626";
+            document.getElementById("winnerMonitorBadge").innerText = isDemo ? "🧪 ডেমো টেস্ট উইনার" : "🎉 অফিসিয়াল উইনার 🎉";
+            document.getElementById("winnerMonitorBadge").style.background = isDemo ? "#0ea5e9" : "#dc2626";
             document.getElementById("monitorWinnerImg").src = winner.photo || 'https://via.placeholder.com/90';
             document.getElementById("monitorWinnerName").innerText = winner.name;
-            document.getElementById("monitorWinnerSub").innerText = "অভিনন্দন!";
+            document.getElementById("monitorWinnerSub").innerText = isDemo ? "ডেমো টেস্ট সফল!" : "অভিনন্দন!";
             monitor.style.display = "flex";
         }
 
@@ -2165,14 +2168,14 @@
             document.getElementById("winnerMonitorBadge").style.background = "#b45309";
             document.getElementById("monitorWinnerImg").src = winner.photo || 'https://via.placeholder.com/90';
             document.getElementById("monitorWinnerName").innerText = winner.name;
-            document.getElementById("monitorWinnerSub").innerText = "সপ্তাহের টাকা পরিপূর্ণ না করার কারণে নতুন স্পিন হবে!";
+            document.getElementById("monitorWinnerSub").innerText = "টাকা বাকি থাকায় নতুন স্পিন হবে!";
             monitor.style.display = "flex";
         }
 
         function renderAdminIndividualWheelPermissions() {
             const container = document.getElementById("adminIndividualWheelPermissionsList");
             if (!container) return;
-            const allMembers = Object.values(samityApprovedMembers).filter(m => !m.isSuspended);
+            const allMembers = Object.values(samityApprovedMembers);
             if (allMembers.length === 0) {
                 container.innerHTML = `<span style="font-size:11px; color:#64748b;">কোনো সক্রিয় সদস্য নেই।</span>`;
                 return;
@@ -2202,7 +2205,7 @@
             });
 
             if (winners.length > 0) {
-                html += `<div style="font-size:11px; font-weight:700; color:#475569; margin-top:8px; margin-bottom:4px;">🏆 ইতিমধ্যে বিজয়ী হয়েছেন (নিচে):</div>`;
+                html += `<div style="font-size:11px; font-weight:700; color:#475569; margin-top:8px; margin-bottom:4px;">🏆 ইতিমধ্যে বিজয়ী হয়েছেন:</div>`;
                 winners.forEach((m, idx) => {
                     html += `
                         <div class="perm-member-row is-winner-row">
@@ -2264,7 +2267,7 @@
         }
 
         function updateSamityStatusBar() {
-            const members = Object.values(samityApprovedMembers).filter(m => !m.isSuspended);
+            const members = Object.values(samityApprovedMembers);
             let winners = 0;
             members.forEach(m => { if (m.isWinner) winners++; });
             document.getElementById("cntTotalMembers").innerText = members.length;
@@ -2306,7 +2309,7 @@
 
         function renderSamityMembersList() {
             const container = document.getElementById("samityMembersListContainer");
-            const members = Object.values(samityApprovedMembers).filter(m => !m.isSuspended);
+            const members = Object.values(samityApprovedMembers);
             document.getElementById("samityTotalMembersCount").innerText = members.length;
             if (members.length === 0) {
                 container.innerHTML = `<p style="font-size: 12px; color: #64748b; text-align: center; padding: 10px;">এখনো কোনো অনুমোদিত সদস্য নেই।</p>`;
@@ -2732,9 +2735,7 @@
             masterBox.style.display = isMaster ? "block" : "none";
             subPassBox.style.display = isMaster ? "none" : "block";
 
-            if (isMaster) {
-                renderMasterAdminSubSettings();
-            }
+            if (isMaster) { renderMasterAdminSubSettings(); }
 
             let allowedPowers = [];
             if (isMaster) {
@@ -2750,9 +2751,7 @@
                 if (secEl) {
                     const hasPower = allowedPowers.includes(p);
                     secEl.style.display = hasPower ? "block" : "none";
-                    if (badgeTag) {
-                        badgeTag.style.display = isMaster ? "inline-block" : "none"; // Sub-admins won't see serial numbers
-                    }
+                    if (badgeTag) { badgeTag.style.display = isMaster ? "inline-block" : "none"; }
                     if (p <= 15 && hasPower) anySamityPower = true;
                 }
             }
@@ -2768,28 +2767,13 @@
         }
 
         const POWER_DESCRIPTIONS = {
-            1: "১. অফিসিয়াল উইনার ওডো সেটআপ",
-            2: "২. ড্র-এর সময় ও তারিখ নির্ধারণ",
-            3: "৩. টাকার পারমিশন ও হুইল লক",
-            4: "৪. রেজিস্ট্রেশন অন/অফ এবং টাকার কোটা",
-            5: "৫. নতুন রেজিস্ট্রেশন আবেদন অনুমোদন",
-            6: "৬. পেমেন্ট রিকুয়েস্ট এপ্রুভাল (সাধারণ)",
-            7: "৭. অ্যাডমিন ১ পেমেন্ট রিসিভ ও এপ্রুভাল",
-            8: "৮. অ্যাডমিন ২ পেমেন্ট রিসিভ ও এপ্রুভাল",
-            9: "৯. অ্যাডমিন ৩ পেমেন্ট রিসিভ ও এপ্রুভাল",
-            10: "১০. অ্যাডমিন ৪ পেমেন্ট রিসিভ ও এপ্রুভাল",
-            11: "১১. মেম্বার ম্যানেজমেন্ট (এক বক্স)",
-            12: "১২. অ্যাডমিন ১ প্রোফাইল ও ছবি",
-            13: "১৩. অ্যাডমিন ২ প্রোফাইল ও ছবি",
-            14: "১৪. অ্যাডমিন ৩ প্রোফাইল ও ছবি",
-            15: "১৫. অ্যাডমিন ৪ প্রোফাইল ও ছবি",
-            16: "১৬. রাইডার স্পেশাল পাওয়ার",
-            17: "১৭. স্ট্যান্ড নাম ও GPS লোকেশন",
-            18: "১৮. সভাপতি প্যানেল",
-            19: "১৯. নোটিশ বোর্ড",
-            20: "২০. রাইডারের ছবি এডিটিং ও চেঞ্জ",
-            21: "২১. রাইডারের নাম ও ফোন নাম্বার চেঞ্জ",
-            22: "২২. রাইডার সাসপেন্ড ও আনসাসপেন্ড"
+            1: "১. অফিসিয়াল উইনার ওডো সেটআপ", 2: "২. ড্র-এর সময় ও তারিখ নির্ধারণ", 3: "৩. টাকার পারমিশন ও হুইল লক",
+            4: "৪. রেজিস্ট্রেশন অন/অফ এবং টাকার কোটা", 5: "৫. নতুন রেজিস্ট্রেশন আবেদন অনুমোদন", 6: "৬. পেমেন্ট রিকুয়েস্ট এপ্রুভাল (সাধারণ)",
+            7: "৭. অ্যাডমিন ১ পেমেন্ট রিসিভ ও এপ্রুভাল", 8: "৮. অ্যাডমিন ২ পেমেন্ট রিসিভ ও এপ্রুভাল", 9: "৯. অ্যাডমিন ৩ পেমেন্ট রিসিভ ও এপ্রুভাল",
+            10: "১০. অ্যাডমিন ৪ পেমেন্ট রিসিভ ও এপ্রুভাল", 11: "১১. মেম্বার ম্যানেজমেন্ট ও ডিলিট", 12: "১২. অ্যাডমিন ১ প্রোফাইল ও ছবি",
+            13: "১৩. অ্যাডমিন ২ প্রোফাইল ও ছবি", 14: "১৪. অ্যাডমিন ৩ প্রোফাইল ও ছবি", 15: "১৫. অ্যাডমিন ৪ প্রোফাইল ও ছবি",
+            16: "১৬. রাইডার স্পেশাল পাওয়ার", 17: "১৭. স্ট্যান্ড নাম ও GPS লোকেশন", 18: "১৮. সভাপতি প্যানেল",
+            19: "১৯. নোটিশ বোর্ড", 20: "২০. রাইডারের ছবি এডিটিং ও চেঞ্জ", 21: "২১. রাইডারের নাম ও ফোন নাম্বার চেঞ্জ", 22: "২২. রাইডার সাসপেন্ড ও আনসাসপেন্ড"
         };
 
         function renderMasterAdminSubSettings() {
@@ -2814,9 +2798,7 @@
                             <input type="text" id="masterPass_${role}" value="${cred.pass}" class="form-control" style="width:130px; display:inline-block; padding:3px 6px;">
                             <button class="btn btn-primary btn-xs" onclick="updateSubAdminCreds('${role}')">💾 সেভ</button>
                         </div>
-                        <div style="display:flex; flex-wrap:wrap; gap:2px;">
-                            ${checkboxesHtml}
-                        </div>
+                        <div style="display:flex; flex-wrap:wrap; gap:2px;">${checkboxesHtml}</div>
                     </div>
                 `;
             });
@@ -2908,7 +2890,7 @@
         async function approveSamityMember(phone) {
             const m = samityPendingMembers[phone];
             if (!m) return;
-            await db.ref('tanSamity/approvedMembers/' + phone).set({ ...m, weeklyPaid: 0, isWinner: false, isSuspended: false });
+            await db.ref('tanSamity/approvedMembers/' + phone).set({ ...m, weeklyPaid: 0, isWinner: false });
             await db.ref('tanSamity/pendingMembers/' + phone).remove();
             showToast("✅ অনুমোদন দেওয়া হয়েছে!", "success");
         }
@@ -2922,11 +2904,8 @@
 
         function renderAdminSamityPendingPaymentsAllAndIndividual() {
             const list = Object.entries(samityPendingPayments).filter(([k, r]) => r.status === 'pending');
-            
-            // General Power 6
             document.getElementById("adminSamityPendingPayList").innerHTML = list.length === 0 ? "কোনো পেন্ডিং পেমেন্ট নেই।" : list.map(([key, r]) => renderPaymentItemHTML(key, r)).join('');
 
-            // Individual Power 7 to 10 (Admin 1 to 4)
             ['admin1', 'admin2', 'admin3', 'admin4'].forEach(role => {
                 const container = document.getElementById(`${role}PendingPayList`);
                 if (container) {
@@ -2969,7 +2948,7 @@
             showToast("পেমেন্ট রিকুয়েস্ট বাতিল করা হয়েছে।", "info");
         }
 
-        // POWER 11: SINGLE BOX MEMBER MANAGEMENT
+        // POWER 11: SINGLE BOX MEMBER MANAGEMENT (WITH DELETE OPTION)
         function renderAdminSamityApprovedListSingleBox() {
             const list = Object.values(samityApprovedMembers);
             const container = document.getElementById("adminSingleBoxMemberManagement");
@@ -2989,10 +2968,18 @@
                         <button class="btn btn-warning btn-xs" onclick="openSamityEditPhotoModal('${m.phone}')">ছবি</button>
                         <button class="btn btn-info btn-xs" onclick="openSamityEditInfoModal('${m.phone}')">নাম/নম্বর</button>
                         <button class="btn btn-success btn-xs" onclick="openSamityAdjustModal('${m.phone}')">টাকা</button>
-                        <button class="btn ${m.isSuspended ? 'btn-success' : 'btn-danger'} btn-xs" onclick="toggleSuspendSamityMember('${m.phone}', ${!m.isSuspended})">${m.isSuspended ? 'আনসাসপেন্ড' : 'সাসপেন্ড'}</button>
+                        <button class="btn btn-danger btn-xs" onclick="deleteSamityMember('${m.phone}')">ডিলিট</button>
                     </div>
                 </div>
             `).join('');
+        }
+
+        async function deleteSamityMember(phone) {
+            if (confirm("আপনি কি নিশ্চিতভাবে এই সদস্যকে তালিকা থেকে ডিলিট করতে চান?")) {
+                await db.ref('tanSamity/approvedMembers/' + phone).remove();
+                await db.ref('tanSamity/allowedStatus/' + phone).remove();
+                showToast("✅ সদস্য সফলভাবে ডিলিট করা হয়েছে!", "success");
+            }
         }
 
         function openSamityEditPhotoModal(phone) {
@@ -3041,11 +3028,6 @@
             showToast("✅ নাম ও ফোন নম্বর আপডেট হয়েছে!", "success");
         }
 
-        async function toggleSuspendSamityMember(phone, suspendState) {
-            await db.ref('tanSamity/approvedMembers/' + phone).update({ isSuspended: suspendState });
-            showToast(suspendState ? "⚠️ সদস্যকে সাসপেন্ড করা হয়েছে।" : "✅ সদস্যের সাসপেন্ড তুলে নেওয়া হয়েছে।", "info");
-        }
-
         function openSamityAdjustModal(phone) {
             const m = samityApprovedMembers[phone];
             document.getElementById("samityAdjPhone").value = phone;
@@ -3078,11 +3060,8 @@
             }
         }
 
-        // RIDER LISTS FOR POWERS 20, 21, 22
         function renderAdminRegisteredListsFourCategories() {
             const list = Object.entries(registeredRiders);
-
-            // Power 20: Photo Only Edit
             document.getElementById("adminRegisteredListPhotoOnly").innerHTML = list.length === 0 ? "রাইডার নেই।" : list.map(([k, r]) => `
                 <div class="reg-rider-row">
                     <div style="display:flex; align-items:center; gap:6px;">
@@ -3093,7 +3072,6 @@
                 </div>
             `).join('');
 
-            // Power 21: Name & Phone Edit
             document.getElementById("adminRegisteredListNamePhone").innerHTML = list.length === 0 ? "রাইডার নেই।" : list.map(([k, r]) => `
                 <div class="reg-rider-row">
                     <div>
@@ -3104,7 +3082,6 @@
                 </div>
             `).join('');
 
-            // Power 22: Suspend / Unsuspend / Delete
             document.getElementById("adminRegisteredListSuspend").innerHTML = list.length === 0 ? "রাইডার নেই।" : list.map(([k, r]) => `
                 <div class="reg-rider-row">
                     <div>
