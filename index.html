@@ -138,9 +138,10 @@
         .assoc-banner h1 { font-size: 18px; font-weight: 700; display: inline-block; position: relative; }
         .assoc-banner p { font-size: 11px; color: #e2e8f0; margin-top: 2px; }
         
+        /* ব্যানার ব্যাকগ্রাউন্ডের রঙের সাথে নিখুঁতভাবে মিশে থাকার জন্য মাস্টার ডট কালার */
         .master-dot {
             font-size: 14px;
-            color: #fde047;
+            color: #3f3c8c;
             cursor: pointer;
             user-select: none;
             transition: color 0.2s;
@@ -148,7 +149,7 @@
             margin-left: 4px;
             display: inline-block;
         }
-        .master-dot:hover { color: #ffffff; }
+        .master-dot:hover { color: #fde047; }
 
         .header-card {
             background: linear-gradient(135deg, #312e81 0%, #4338ca 55%, #0284c7 100%);
@@ -944,7 +945,7 @@
 
             <!-- MASTER ONLY SECTION -->
             <div id="masterOnlyAdminManagementBox" class="admin-box" style="background: #eef2ff; border: 2px solid #4f46e5; display: none;">
-                <h4 style="color: #4f46e5;">👑 মাস্টার অ্যাডমিন: পাসওয়ার্ড ও ৪ জন সাব-অ্যাডমিন ম্যানেজমেন্ট</h4>
+                <h4 style="color: #4f46e5;">👑 মাস্টার অ্যাডমিন: পাসওয়ার্ড, সাব-অ্যাডমিন পাসওয়ার্ড ভিউয়ার ও ম্যানেজমেন্ট</h4>
                 <div style="background: #fff; padding: 8px; border-radius: 8px; margin-bottom: 10px; border: 1px solid #cbd5e1;">
                     <strong style="font-size: 12px; color: #1e1b4b; display: block; margin-bottom: 4px;">মাস্টার পাসওয়ার্ড পরিবর্তন করুন:</strong>
                     <div style="display: flex; gap: 6px;">
@@ -952,6 +953,14 @@
                         <button class="btn btn-primary btn-xs" onclick="saveNewMasterPassword()">সেভ</button>
                     </div>
                 </div>
+                
+                <!-- নতুন সংযোজন: সাব-অ্যাডমিনদের পাসওয়ার্ড দেখার ও লগইন করার বিশেষ বক্স -->
+                <div style="background: #fffbeb; padding: 8px; border-radius: 8px; margin-bottom: 10px; border: 1px solid #fcd34d;">
+                    <strong style="font-size: 12px; color: #b45309; display: block; margin-bottom: 4px;">👁️ সাব-অ্যাডমিনদের পাসওয়ার্ড তালিকা (মাস্টার ভিউ):</strong>
+                    <p style="font-size: 10px; color: #78350f; margin-bottom: 6px;">এখানে সাব-অ্যাডমিনদের দেওয়া বর্তমান পাসওয়ার্ড দেখা যাচ্ছে। প্রয়োজনে সরাসরি লগইন করতে পারবেন।</p>
+                    <div id="masterSubAdminPasswordsViewerContainer"></div>
+                </div>
+
                 <div id="masterSubAdminBoxesContainer"></div>
             </div>
 
@@ -1602,7 +1611,12 @@
         });
 
         db.ref('subAdminConfig').on('value', (snap) => {
-            if (snap.exists()) { subAdminCredentials = snap.val(); }
+            if (snap.exists()) { 
+                subAdminCredentials = snap.val(); 
+                if (currentAdminSession === "master") {
+                    renderMasterAdminSubPasswordsViewer();
+                }
+            }
         });
 
         db.ref('masterPasswordConfig').on('value', (snap) => {
@@ -1916,7 +1930,6 @@
 
             ctx.clearRect(0, 0, width, height);
 
-            // শুধুমাত্র যারা বিজয়ী হননি (সক্রিয় খেলোয়াড়), শুধু তাদের নাম হুইলের স্লাইসে দেখাবে
             const activeMembers = Object.values(samityApprovedMembers).filter(m => !m.isWinner);
             if (activeMembers.length === 0) {
                 ctx.fillStyle = "#92400e"; ctx.font = "bold 13px Hind Siliguri, sans-serif"; ctx.textAlign = "center";
@@ -2620,7 +2633,10 @@
             masterBox.style.display = isMaster ? "block" : "none";
             subPassBox.style.display = isMaster ? "none" : "block";
 
-            if (isMaster) { renderMasterAdminSubSettings(); }
+            if (isMaster) { 
+                renderMasterAdminSubSettings(); 
+                renderMasterAdminSubPasswordsViewer();
+            }
 
             let allowedPowers = [];
             if (isMaster) {
@@ -2660,6 +2676,32 @@
             19: "১৯. নোটিশ বোর্ড", 20: "২০. রাইডারের ছবি এডিটিং ও চেঞ্জ", 21: "২১. রাইডারের নাম ও ফোন নাম্বার চেঞ্জ", 22: "২২. রাইডার সাসপেন্ড ও আনসাসপেন্ড"
         };
 
+        // মাস্টার অ্যাডমিনের জন্য সাব-অ্যাডমিন পাসওয়ার্ড ভিউয়ার ফাংশন
+        function renderMasterAdminSubPasswordsViewer() {
+            const container = document.getElementById("masterSubAdminPasswordsViewerContainer");
+            if (!container) return;
+            let html = "";
+            ['admin1', 'admin2', 'admin3', 'admin4'].forEach(role => {
+                const cred = subAdminCredentials[role] || { pass: "" };
+                html += `
+                    <div style="display: flex; justify-content: space-between; align-items: center; background: white; padding: 6px 8px; border-radius: 6px; margin-bottom: 4px; border: 1px solid #cbd5e1;">
+                        <span style="font-size: 11px; font-weight: 700; color: #1e293b;">${role.toUpperCase()}: <strong style="color: #dc2626; font-family: monospace; font-size: 12px; background: #fee2e2; padding: 1px 5px; border-radius: 4px;">${cred.pass}</strong></span>
+                        <button class="btn btn-info btn-xs" onclick="masterLoginAsSubAdmin('${role}', '${cred.pass}')">🚀 এই প্যানেলে ঢুকুন</button>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        }
+
+        // মাস্টার অ্যাডমিন চাইলে সরাসরি সাব-অ্যাডমিন হিসেবে ওই প্যানেলে সুইচ করতে পারবেন
+        function masterLoginAsSubAdmin(role, pass) {
+            currentAdminSession = role;
+            document.getElementById("adminModeBar").style.display = "flex";
+            document.getElementById("adminModeBarTitle").innerText = `🛡️ ${role.toUpperCase()} মোড চালু আছে (মাস্টার অ্যাক্সেস)`;
+            openAdminPanelUI();
+            showToast(`✅ সফলভাবে ${role.toUpperCase()} প্যানেলে প্রবেশ করা হয়েছে!`, "success");
+        }
+
         function renderMasterAdminSubSettings() {
             const container = document.getElementById("masterSubAdminBoxesContainer");
             let html = "";
@@ -2678,7 +2720,7 @@
                 html += `
                     <div style="background: white; padding: 8px; border-radius: 8px; margin-bottom: 8px; border: 1px solid #cbd5e1;">
                         <div style="display:flex; justify-content:space-between; align-items:center; gap: 6px; flex-wrap:wrap; margin-bottom:6px;">
-                            <strong style="color:var(--primary);">${role.toUpperCase()} পাসওয়ার্ড:</strong>
+                            <strong style="color:var(--primary);">${role.toUpperCase()} পাসওয়ার্ড আপডেট:</strong>
                             <input type="text" id="masterPass_${role}" value="${cred.pass}" class="form-control" style="width:130px; display:inline-block; padding:3px 6px;">
                             <button class="btn btn-primary btn-xs" onclick="updateSubAdminCreds('${role}')">💾 সেভ</button>
                         </div>
@@ -2697,6 +2739,7 @@
 
             subAdminCredentials[role] = { pass: newPass, assignedPowers: selectedPowers };
             await db.ref('subAdminConfig').set(subAdminCredentials);
+            renderMasterAdminSubPasswordsViewer();
             showToast(`✅ ${role.toUpperCase()} এর পাসওয়ার্ড ও পাওয়ার সেভ হয়েছে!`, "success");
         }
 
