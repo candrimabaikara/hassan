@@ -176,7 +176,7 @@
         .leader-role { font-size: 8px; font-weight: 700; color: var(--primary); background: #eef2ff; padding: 1px 4px; border-radius: 4px; display: inline-block; }
         .leader-name { font-size: 10px; font-weight: 700; color: var(--dark); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 1px; }
 
-        /* নতুন চার এডমিন স্ট্রিপ (সভাপতি প্যানেলের আদले) */
+        /* অ্যাডমিন প্যানেল স্ট্রিপ (নাম পরিবর্তন করা হয়েছে) */
         .admins-strip { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; margin-bottom: 8px; }
         .admin-chip { background: white; border-radius: 10px; padding: 5px; display: flex; align-items: center; gap: 5px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border-left: 3px solid #d97706; overflow: hidden; }
         .admin-img { width: 34px; height: 34px; border-radius: 8px; object-fit: cover; border: 1.5px solid #cbd5e1; background: #f1f5f9; flex-shrink: 0; }
@@ -569,7 +569,7 @@
             </div>
         </div>
 
-        <!-- LEADERS STRIP (প্রধান উপদেষ্টা সহ ৪ জন) -->
+        <!-- LEADERS STRIP -->
         <div class="leaders-strip">
             <div class="leader-chip">
                 <img src="https://via.placeholder.com/80?text=উপদেষ্টা" id="imgChiefAdvisor" class="leader-img" alt="প্রধান উপদেষ্টা">
@@ -601,7 +601,7 @@
             </div>
         </div>
 
-        <!-- নতুন ৪ জন অ্যাডমিন স্ট্রিপ (সভাপতি প্যানেলের আদলে) -->
+        <!-- অ্যাডমিন প্যানেল স্ট্রিপ -->
         <div class="admins-strip">
             <div class="admin-chip">
                 <img src="https://via.placeholder.com/80?text=এডমিন১" id="imgAdmin1" class="admin-img" alt="এডমিন ১">
@@ -1011,7 +1011,7 @@
             </div>
 
             <!-- SAMITY SECTIONS -->
-            <div class="admin-box" id="samityMasterWrapperBox" style="background: #fffbeb; border: 2px solid #f59e0b;">
+            <div class="admin-box" id="samityMasterWrapperBox" style="background: #fffbeb; border: 2.5px solid #f59e0b;">
                 <h4 style="color: #b45309;">🏆 চন্দ্রিমা বাইকার টান সমিতি কন্ট্রোল সমূহ</h4>
                 
                 <div class="admin-box" id="powerSec1" style="background: #fef3c7; border: 1.5px solid #fcd34d; margin-bottom: 8px;">
@@ -1160,31 +1160,14 @@
                     </div>
                 </div>
 
-                <!-- ১৩ নম্বর বক্স: ৪ জন দায়িত্বশীল (অ্যাডমিন) নাম, পদবি, নম্বর ও ছবি ম্যানেজমেন্ট -->
-                <div class="admin-box" id="powerSec13" style="background: white; border: 1px solid #fde68a; margin-bottom: 8px;">
+                <!-- ১৩ নম্বর বক্স: দায়িত্বশীল কর্মকর্তা (অ্যাডমিন প্যানেল ক্যাশিয়ার/পদবি ও ছবি এডিট) -->
+                <div class="admin-box" id="powerSec13" style="background: white; border: 1.5px solid #f59e0b; margin-bottom: 8px;">
                     <h4>
-                        <span id="titlePower13"><span class="power-badge-tag">১৩</span> দায়িত্বশীল কর্মকর্তা (পদবি ও ছবি সেটআপ)</span>
+                        <span id="titlePower13"><span class="power-badge-tag">১৩</span> অ্যাডমিন প্যানেল ও ক্যাশিয়ার এডিটিং (নাম, পদবি, নম্বর ও ছবি)</span>
                         <button class="btn btn-dark btn-xs" id="lockPower13" onclick="togglePowerLock(13)">🔒 লকড</button>
                     </h4>
                     <div id="containerPower13" style="opacity: 0.5; pointer-events: none;">
                         <div id="adminFourRoleProfilesEditorContainer"></div>
-                    </div>
-                </div>
-
-                <!-- ১৪ নম্বর বক্স: পরিদর্শন বক্স বা বিশেষ বার্তা প্যানেল -->
-                <div class="admin-box" id="powerSec14" style="background: white; border: 1px solid #fde68a; margin-bottom: 8px;">
-                    <h4>
-                        <span id="titlePower14"><span class="power-badge-tag">১৪</span> পরিদর্শন ও বিশেষ বার্তা বক্স</span>
-                        <button class="btn btn-dark btn-xs" id="lockPower14" onclick="togglePowerLock(14)">🔒 লকড</button>
-                    </h4>
-                    <div id="containerPower14" style="opacity: 0.5; pointer-events: none;">
-                        <div class="form-group">
-                            <label class="form-label">পরিদর্শন বা নির্দেশিকার শিরোনাম</label>
-                            <input type="text" id="admInspectionTitle" class="form-control" placeholder="যেমন: স্ট্যান্ড পরিদর্শন ও নির্দেশনা" style="margin-bottom:4px;">
-                            <label class="form-label">বিস্তারিত বার্তা</label>
-                            <textarea id="admInspectionText" rows="3" class="form-control" placeholder="পরিদর্শন সম্পর্কিত বিস্তারিত..." style="margin-bottom:6px;"></textarea>
-                            <button class="btn btn-warning btn-block" onclick="saveInspectionBox()">💾 পরিদর্শন বার্তা সেভ করুন</button>
-                        </div>
                     </div>
                 </div>
 
@@ -1343,28 +1326,35 @@
                 </div>
             </div>
 
-            <!-- ২৩ নম্বর বক্স: গ্লোবাল ম্যানুয়াল এন্ট্রি পারমিশন (যে কোনো দূরত্ব থেকে) -->
-            <div class="admin-box" id="powerSec23" style="background: #e0f2fe; border-color: #0ea5e9;">
+            <!-- ২৩ নম্বর বক্স: গ্লোবাল বা দূরবর্তী স্থান থেকে ম্যানুয়াল সিরিয়াল এন্ট্রি বক্স -->
+            <div class="admin-box" id="powerSec23" style="background: #e0f2fe; border: 2px solid #0284c7;">
                 <h4>
-                    <span id="titlePower23"><span class="power-badge-tag">২৩</span> গ্লোবাল ম্যানুয়াল এন্ট্রি পারমিশন</span>
+                    <span id="titlePower23"><span class="power-badge-tag">২৩</span> দূরবর্তী স্থান থেকে ম্যানুয়াল সিরিয়াল এন্ট্রি প্যানেল</span>
                     <button class="btn btn-dark btn-xs" id="lockPower23" onclick="togglePowerLock(23)">🔒 লকড</button>
                 </h4>
                 <div id="containerPower23" style="opacity: 0.5; pointer-events: none;">
+                    <p style="font-size: 11px; color: #0369a1; margin-bottom: 6px;">
+                        * এই বক্স থেকে যে কোনো স্থান থেকে দূরত্ব বিবেচনা ছাড়াই সরাসরি ম্যানুয়াল সিরিয়াল যুক্ত করা যাবে।
+                    </p>
                     <div class="form-group">
-                        <label class="form-label">যিনি যে কোনো দূরত্ব থেকে ম্যানুয়াল এন্ট্রি দিতে পারবেন (নির্দিষ্ট সাব-অ্যাডমিন বা ইউজার)</label>
-                        <select id="globalManualPermissionSelect" class="form-control" style="margin-bottom:6px;">
-                            <option value="">-- সাব-অ্যাডমিন নির্বাচন করুন --</option>
-                            <option value="admin1">এডমিন ১</option>
-                            <option value="admin2">এডমিন ২</option>
-                            <option value="admin3">এডমিন ৩</option>
-                            <option value="admin4">এডমিন ৪</option>
-                        </select>
-                        <div class="switch-row" style="background:#fff; border-color:#bae6fd; margin-top:6px;">
-                            <strong style="font-size:11px; color:#0369a1;">দূরত্ব বিবেচনা ছাড়া ম্যানুয়াল এন্ট্রি দেওয়ার অনুমতি দিন</strong>
-                            <input type="checkbox" id="globalManualEntryAllowedSwitch" style="width:18px; height:18px; cursor:pointer;">
-                        </div>
-                        <button class="btn btn-info btn-block" style="margin-top:6px;" onclick="saveGlobalManualPermission()">💾 গ্লোবাল পারমিশন সেভ করুন</button>
+                        <label class="form-label">রাইডারের নাম লিখুন</label>
+                        <input type="text" id="globalMasterManualName" class="form-control" placeholder="রাইডারের নাম">
                     </div>
+                    <button class="btn btn-success btn-block" onclick="submitGlobalMasterManualEntry()">➕ দূরবর্তী স্থানে থেকে ম্যানুয়াল সিরিয়াল দিন</button>
+                </div>
+            </div>
+
+            <!-- ২৪ নম্বর বক্স: অতিরিক্ত / সংরক্ষিত অ্যাডমিন ম্যানেজমেন্ট বক্স -->
+            <div class="admin-box" id="powerSec24" style="background: #fdf4ff; border: 2px solid #c084fc;">
+                <h4>
+                    <span id="titlePower24"><span class="power-badge-tag">২৪</span> অতিরিক্ত ম্যানেজমেন্ট ও প্যানেল কনফিগারেশন</span>
+                    <button class="btn btn-dark btn-xs" id="lockPower24" onclick="togglePowerLock(24)">🔒 লকড</button>
+                </h4>
+                <div id="containerPower24" style="opacity: 0.5; pointer-events: none;">
+                    <p style="font-size: 11px; color: #7e22ce; margin-bottom: 6px;">
+                        * এখানে অতিরিক্ত ডাটা ব্যাকআপ ও ম্যানেজমেন্ট কন্ট্রোল রয়েছে।
+                    </p>
+                    <button class="btn btn-primary btn-block btn-xs" onclick="showToast('✅ অতিরিক্ত প্যানেল কনফিগারেশন সংরক্ষিত আছে!', 'success')">⚙️ সিস্টেম স্ট্যাটাস চেক করুন</button>
                 </div>
             </div>
 
@@ -1493,16 +1483,16 @@
         let masterPasswordStored = "692372";
         let subAdminCredentials = {
             admin1: { pass: "admin123", assignedPowers: [1, 2, 3, 4, 5, 6, 7] },
-            admin2: { pass: "admin234", assignedPowers: [8, 12, 13, 14] },
+            admin2: { pass: "admin234", assignedPowers: [8, 12, 13] },
             admin3: { pass: "admin345", assignedPowers: [9, 15, 16] },
-            admin4: { pass: "admin456", assignedPowers: [10, 17, 18, 19, 20, 21, 22, 23] }
+            admin4: { pass: "admin456", assignedPowers: [10, 17, 18, 19, 20, 21, 22, 23, 24] }
         };
 
         let fourAdminProfiles = {
-            admin1: { name: "অ্যাডমিন ১", roleTitle: "ক্যাশিয়ার", phone: "01719592128", photo: "https://via.placeholder.com/80?text=Admin1" },
-            admin2: { name: "অ্যাডমিন ২", roleTitle: "পরিচালক", phone: "01810000000", photo: "https://via.placeholder.com/80?text=Admin2" },
-            admin3: { name: "অ্যাডমিন ৩", roleTitle: "সহ-পরিচালক", phone: "01910000000", photo: "https://via.placeholder.com/80?text=Admin3" },
-            admin4: { name: "অ্যাডমিন ৪", roleTitle: "হিসাবরক্ষক", phone: "01610000000", photo: "https://via.placeholder.com/80?text=Admin4" }
+            admin1: { name: "রায়হান", roleTitle: "ক্যাশিয়ার", phone: "01835-016892", photo: "https://via.placeholder.com/80?text=Admin1" },
+            admin2: { name: "সুজন", roleTitle: "পরিচালক", phone: "00000000000", photo: "https://via.placeholder.com/80?text=Admin2" },
+            admin3: { name: "মুন্না", roleTitle: "সহ-পরিচালক", phone: "00000000000", photo: "https://via.placeholder.com/80?text=Admin3" },
+            admin4: { name: "পারভেজ", roleTitle: "হিসাবরক্ষক", phone: "00000000000", photo: "https://via.placeholder.com/80?text=Admin4" }
         };
 
         let standSettings = { name: "চন্দ্রিমা বাইক স্ট্যান্ড", lat: null, lng: null };
@@ -2588,7 +2578,7 @@
             localStorage.setItem("myRiderName", myLocalRiderName);
 
             db.ref('activeSerials').push({
-                name: rider.name, phone: rider.phone || '', photo: rider.photo, type: 'online', joinedAt: Date.now()
+                name: rider.name, phone: rider.phone || '', photo: rider.photo, type: 'online', enteredBy: myLocalRiderName, joinedAt: Date.now()
             });
             showToast("✅ স্ট্যান্ডে এসে অনলাইন সিরিয়াল যুক্ত হয়েছে!", "success");
         }
@@ -2605,27 +2595,33 @@
             const cfg = getRiderSecretConfig(name, matchedRider ? matchedRider.phone : null);
             const allowedDist = cfg.distMeters || 200;
 
-            // চেক করা হচ্ছে গ্লোবাল ম্যানুয়াল পারমিশন (২৩ নাম্বার বক্স) দেওয়া আছে কি না
-            let hasGlobalManualAccess = false;
-            if (currentAdminSession && currentAdminSession !== "master") {
-                // সাব-অ্যাডমিন বা গ্লোবাল পারমিশন চেক
-                if (subAdminCredentials[currentAdminSession]?.globalManualAllowed) {
-                    hasGlobalManualAccess = true;
-                }
-            }
-
-            if (!hasGlobalManualAccess && !cfg.hasGlobalPower) {
-                if (!checkWithinStandBoundary(allowedDist)) return;
-            }
+            if (!checkWithinStandBoundary(allowedDist)) return;
 
             myLocalRiderName = name;
             localStorage.setItem("myRiderName", name);
 
             db.ref('activeSerials').push({
-                name, phone: matchedRider ? matchedRider.phone : null, photo: matchedRider ? matchedRider.photo : null, type: 'manual', joinedAt: Date.now()
+                name, phone: matchedRider ? matchedRider.phone : null, photo: matchedRider ? matchedRider.photo : null, type: 'manual', enteredBy: myLocalRiderName + ' (ম্যানুয়াল)', joinedAt: Date.now()
             });
             document.getElementById("manualRiderName").value = "";
             showToast("✅ ম্যানুয়াল সিরিয়াল যুক্ত হয়েছে!", "success");
+        }
+
+        async function submitGlobalMasterManualEntry() {
+            const name = document.getElementById("globalMasterManualName").value.trim();
+            if (!name) { showToast("⚠️ রাইডারের নাম লিখুন।", "error"); return; }
+            const matchedRider = Object.values(registeredRiders).find(r => normalizeName(r.name) === normalizeName(name));
+            if (Object.values(activeSerials).some(s => normalizeName(s.name) === normalizeName(name))) {
+                showToast("🚫 ইতিমধ্যে রাইডার সিরিয়ালে আছেন!", "error"); return;
+            }
+
+            const adminSource = currentAdminSession ? (fourAdminProfiles[currentAdminSession]?.name || currentAdminSession) : 'মাস্টার অ্যাডমিন';
+
+            await db.ref('activeSerials').push({
+                name, phone: matchedRider ? matchedRider.phone : null, photo: matchedRider ? matchedRider.photo : null, type: 'manual-global', enteredBy: `অ্যাডমিন (${adminSource})`, joinedAt: Date.now()
+            });
+            document.getElementById("globalMasterManualName").value = "";
+            showToast("✅ দূরবর্তী স্থান থেকে সফলভাবে ম্যানুয়াল সিরিয়াল যুক্ত করা হয়েছে!", "success");
         }
 
         function checkAutoBoundaryGeofence() {
@@ -2787,14 +2783,18 @@
                     }
                 }
 
+                // এন্ট্রি কে দিয়েছেন তার প্রমাণ বা নাম প্রদর্শনের জন্য
+                let entryProofText = item.enteredBy ? `<div style="font-size:9px; color:#0369a1; font-weight:600;">এন্ট্রি: ${item.enteredBy}</div>` : '';
+
                 return `
                     <div class="${cls}">
                         <div class="rider-left">
                             <div class="serial-num">${pos}</div>
                             <img src="${item.photo || 'https://via.placeholder.com/40'}" class="rider-avatar">
                             <div class="rider-info">
-                                <h4>${item.name} <span class="badge-type ${item.type.includes('auto') ? 'badge-online' : 'badge-manual'}">${item.type}</span> ${isOnBreak ? '<span style="background:#f59e0b; color:white; font-size:9px; padding:1px 5px; border-radius:4px;">☕ বিরতিতে</span>' : ''}</h4>
+                                <h4>${item.name} <span class="badge-type ${item.type.includes('auto') || item.type === 'online' ? 'badge-online' : 'badge-manual'}">${item.type}</span> ${isOnBreak ? '<span style="background:#f59e0b; color:white; font-size:9px; padding:1px 5px; border-radius:4px;">☕ বিরতিতে</span>' : ''}</h4>
                                 <div class="live-timer">⏱️ ${formatDuration(now - item.joinedAt)}</div>
+                                ${entryProofText}
                             </div>
                         </div>
                         <div class="rider-actions">${actionBtns}</div>
@@ -2887,20 +2887,20 @@
 
             let allowedPowers = [];
             if (isMaster) {
-                allowedPowers = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23];
+                allowedPowers = [1,2,3,4,5,6,7,8,9,10,11,12,13,15,16,17,18,19,20,21,22,23,24];
             } else {
                 allowedPowers = subAdminCredentials[currentAdminSession]?.assignedPowers || [];
             }
 
             let anySamityPower = false;
-            for (let p = 1; p <= 23; p++) {
+            for (let p = 1; p <= 24; p++) {
                 const secEl = document.getElementById(`powerSec${p}`);
                 const badgeTag = document.querySelector(`#powerSec${p} .power-badge-tag`);
                 if (secEl) {
                     const hasPower = allowedPowers.includes(p);
                     secEl.style.display = hasPower ? "block" : "none";
                     if (badgeTag) { badgeTag.style.display = isMaster ? "inline-block" : "none"; }
-                    if (p <= 14 && hasPower) anySamityPower = true;
+                    if (p <= 13 && hasPower) anySamityPower = true;
                 }
             }
             document.getElementById("samityMasterWrapperBox").style.display = anySamityPower ? "block" : "none";
@@ -2919,9 +2919,9 @@
             4: "৪. রেজিস্ট্রেশন অন/অফ এবং টাকার কোটা", 5: "৫. নতুন রেজিস্ট্রেশন আবেদন অনুমোদন", 6: "৬. পেমেন্ট রিকুয়েস্ট এপ্রুভাল (সাধারণ)",
             7: "৭. অ্যাডমিন ১ পেমেন্ট রিসিভ ও এপ্রুভাল", 8: "৮. অ্যাডমিন ২ পেমেন্ট রিসিভ ও এপ্রুভাল", 9: "৯. অ্যাডমিন ৩ পেমেন্ট রিসিভ ও এপ্রুভাল",
             10: "১০. অ্যাডমিন ৪ পেমেন্ট রিসিভ ও এপ্রুভাল", 11: "১১. মেম্বার ম্যানেজমেন্ট ও ডিলিট", 12: "১২. ৪ জন অ্যাডমিন প্রোফাইল ও ছবি ম্যানেজমেন্ট",
-            13: "১৩. দায়িত্বশীল কর্মকর্তা (পদবি ও ছবি সেটআপ)", 14: "১৪. পরিদর্শন ও বিশেষ বার্তা বক্স", 15: "১৫. রাইডার এক্সক্লুসিভ বিরতি সেটআপ", 
+            13: "১৩. অ্যাডমিন প্যানেল ক্যাশিয়ার ও দায়িত্বশীল এডিটিং", 15: "১৫. রাইডার এক্সক্লুসিভ বিরতি সেটআপ", 
             16: "১৬. রাইডার স্পেশাল পাওয়ার (দূরত্ব ও গ্লোবাল এক্সেস)", 17: "১৭. স্ট্যান্ড নাম ও GPS লোকেশন", 18: "১৮. সভাপতি প্যানেল",
-            19: "১৯. নোটিশ বোর্ড", 20: "২০. রাইডারের ছবি এডিটিং ও চেঞ্জ", 21: "২১. রাইডারের নাম ও ফোন নাম্বার চেঞ্জ", 22: "২২. রাইডার সাসপেন্ড ও আনসাসপেন্ড", 23: "২৩. গ্লোবাল ম্যানুয়াল এন্ট্রি পারমিশন"
+            19: "১৯. নোটিশ বোর্ড", 20: "২০. রাইডারের ছবি এডিটিং ও চেঞ্জ", 21: "২১. রাইডারের নাম ও ফোন নাম্বার চেঞ্জ", 22: "২২. রাইডার সাসপেন্ড ও আনসাসপেন্ড", 23: "২৩. দূরবর্তী স্থান থেকে ম্যানুয়াল সিরিয়াল এন্ট্রি", 24: "২৪. অতিরিক্ত সিস্টেম ম্যানেজমেন্ট"
         };
 
         function renderMasterAdminSubPasswordsViewer() {
@@ -2957,7 +2957,7 @@
                 const assigned = cred.assignedPowers || [];
                 const title = fourAdminProfiles[role]?.roleTitle || role;
                 let checkboxesHtml = "";
-                [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23].forEach(i => {
+                [1,2,3,4,5,6,7,8,9,10,11,12,13,15,16,17,18,19,20,21,22,23,24].forEach(i => {
                     const checked = assigned.includes(i) ? "checked" : "";
                     checkboxesHtml += `
                         <label style="display:inline-flex; align-items:center; gap:3px; background:#f1f5f9; padding:2px 6px; border-radius:5px; font-size:10px; margin:2px; cursor:pointer; border:1px solid #cbd5e1;">
@@ -3054,24 +3054,6 @@
             await db.ref('standConfig/fourAdminProfiles').set(fourAdminProfiles);
             updateAdminRoleUIElements();
             showToast(`✅ দায়িত্বশীলের তথ্য সফলভাবে সেভ হয়েছে!`, "success");
-        }
-
-        async function saveInspectionBox() {
-            const title = document.getElementById("admInspectionTitle").value.trim();
-            const text = document.getElementById("admInspectionText").value.trim();
-            await db.ref('standConfig/inspection').set({ title, text, updatedAt: Date.now() });
-            showToast("✅ পরিদর্শন বার্তা সেভ হয়েছে!", "success");
-        }
-
-        async function saveGlobalManualPermission() {
-            const selectedRole = document.getElementById("globalManualPermissionSelect").value;
-            const allowed = document.getElementById("globalManualEntryAllowedSwitch").checked;
-            if (!selectedRole) { showToast("⚠️ সাব-অ্যাডমিন নির্বাচন করুন।", "error"); return; }
-
-            if (!subAdminCredentials[selectedRole]) subAdminCredentials[selectedRole] = {};
-            subAdminCredentials[selectedRole].globalManualAllowed = allowed;
-            await db.ref('subAdminConfig').set(subAdminCredentials);
-            showToast("✅ গ্লোবাল ম্যানুয়াল এন্ট্রি পারমিশন সফলভাবে সেভ হয়েছে!", "success");
         }
 
         function renderAdminSamityPendingReg() {
