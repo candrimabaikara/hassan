@@ -138,7 +138,6 @@
         .assoc-banner h1 { font-size: 18px; font-weight: 700; display: inline-block; position: relative; }
         .assoc-banner p { font-size: 11px; color: #e2e8f0; margin-top: 2px; }
         
-        /* ব্যানার ব্যাকগ্রাউন্ডের রঙের সাথে নিখুঁতভাবে মিশে থাকার জন্য মাস্টার ডট কালার */
         .master-dot {
             font-size: 14px;
             color: #3f3c8c;
@@ -167,14 +166,15 @@
         .clock-time { font-size: 14px; font-weight: 700; color: #fde047; line-height: 1.1; }
         .clock-date { font-size: 10px; color: #e2e8f0; }
 
-        .leaders-strip { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 8px; }
-        .leader-chip { background: white; border-radius: 10px; padding: 6px; display: flex; align-items: center; gap: 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border-left: 3px solid var(--primary); overflow: hidden; }
+        .leaders-strip { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; margin-bottom: 8px; }
+        .leader-chip { background: white; border-radius: 10px; padding: 5px; display: flex; align-items: center; gap: 5px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border-left: 3px solid var(--primary); overflow: hidden; }
         .leader-chip:nth-child(2) { border-left-color: var(--secondary); }
         .leader-chip:nth-child(3) { border-left-color: var(--success); }
-        .leader-img { width: 38px; height: 38px; border-radius: 8px; object-fit: cover; border: 1.5px solid #cbd5e1; background: #f1f5f9; flex-shrink: 0; }
+        .leader-chip:nth-child(4) { border-left-color: var(--warning); }
+        .leader-img { width: 34px; height: 34px; border-radius: 8px; object-fit: cover; border: 1.5px solid #cbd5e1; background: #f1f5f9; flex-shrink: 0; }
         .leader-meta { min-width: 0; flex: 1; }
-        .leader-role { font-size: 9px; font-weight: 700; color: var(--primary); background: #eef2ff; padding: 1px 5px; border-radius: 4px; display: inline-block; }
-        .leader-name { font-size: 11px; font-weight: 700; color: var(--dark); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 1px; }
+        .leader-role { font-size: 8px; font-weight: 700; color: var(--primary); background: #eef2ff; padding: 1px 4px; border-radius: 4px; display: inline-block; }
+        .leader-name { font-size: 10px; font-weight: 700; color: var(--dark); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 1px; }
 
         .notice-card { background: linear-gradient(to right, #fffbeb, #fef3c7); border: 1px solid #fcd34d; border-left: 4px solid #f59e0b; border-radius: 10px; padding: 8px 12px; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
         .notice-content { flex: 1; }
@@ -543,8 +543,8 @@
 
         <div id="alarmBanner">
             <h4 id="alarmTitle">🚨 আপনার সিরিয়াল চলে এসেছে!</h4>
-            <p id="alarmDesc" style="font-size: 12px; margin: 3px 0 8px;">দয়া করে প্রস্তুত হন।</p>
-            <button class="btn btn-warning btn-xs" onclick="stopMyAlarm()">🔕 অ্যালার্ম বন্ধ করুন</button>
+            <p id="alarmDesc" style="font-size: 12px; margin: 3px 0 8px;">দয়া করে প্রস্তুত হন। (২০ সেকেন্ড পরে নিজে থেকেই বন্ধ হবে)</p>
+            <button class="btn btn-warning btn-xs" onclick="stopMyAlarm()">🔕 এখনই অ্যালার্ম বন্ধ করুন</button>
         </div>
 
         <div class="header-card">
@@ -560,8 +560,15 @@
             </div>
         </div>
 
-        <!-- LEADERS STRIP -->
+        <!-- LEADERS STRIP (প্রধান উপদেষ্টা সহ ৪ জন) -->
         <div class="leaders-strip">
+            <div class="leader-chip">
+                <img src="https://via.placeholder.com/80?text=উপদেষ্টা" id="imgChiefAdvisor" class="leader-img" alt="প্রধান উপদেষ্টা">
+                <div class="leader-meta">
+                    <span class="leader-role">প্রধান উপদেষ্টা</span>
+                    <div class="leader-name" id="nameChiefAdvisor">সেট করা নেই</div>
+                </div>
+            </div>
             <div class="leader-chip">
                 <img src="https://via.placeholder.com/80?text=সভাপতি" id="imgPresident" class="leader-img" alt="সভাপতি">
                 <div class="leader-meta">
@@ -829,7 +836,7 @@
                 </div>
 
                 <div>
-                    <button id="btnOnlineSubmit" class="btn btn-primary btn-block" onclick="submitOnlineEntry()">🚀 অনলাইন সিরিয়াল</button>
+                    <button id="btnOnlineSubmit" class="btn btn-primary btn-block" onclick="submitOnlineEntry()">🚀 স্ট্যান্ডে এসে সিরিয়াল নিন</button>
                     <button id="btnRegSubmit" class="btn btn-success btn-block" style="display: none;" onclick="registerNewRider()">💾 রাইডার রেজিস্ট্রেশন</button>
                 </div>
             </div>
@@ -842,7 +849,7 @@
                         <input type="text" id="manualRiderName" class="form-control" placeholder="শুধুমাত্র নাম দিন">
                     </div>
                     <p style="font-size: 10px; color: #065f46; line-height: 1.3;">
-                        * সীমার মধ্যে থাকলে অটো এন্ট্রি হবে。<br>
+                        * স্ট্যান্ডে এসে এন্ট্রি দিতে হবে。<br>
                         * সীমার বাইরে গেলে অটো সিরিয়াল কাটা যাবে।
                     </p>
                 </div>
@@ -954,10 +961,8 @@
                     </div>
                 </div>
                 
-                <!-- নতুন সংযোজন: সাব-অ্যাডমিনদের পাসওয়ার্ড দেখার ও লগইন করার বিশেষ বক্স -->
                 <div style="background: #fffbeb; padding: 8px; border-radius: 8px; margin-bottom: 10px; border: 1px solid #fcd34d;">
                     <strong style="font-size: 12px; color: #b45309; display: block; margin-bottom: 4px;">👁️ সাব-অ্যাডমিনদের পাসওয়ার্ড তালিকা (মাস্টার ভিউ):</strong>
-                    <p style="font-size: 10px; color: #78350f; margin-bottom: 6px;">এখানে সাব-অ্যাডমিনদের দেওয়া বর্তমান পাসওয়ার্ড দেখা যাচ্ছে। প্রয়োজনে সরাসরি লগইন করতে পারবেন।</p>
                     <div id="masterSubAdminPasswordsViewerContainer"></div>
                 </div>
 
@@ -1116,9 +1121,10 @@
 
             </div>
 
+            <!-- রাইডার স্পেশাল পাওয়ার (বিরতি সিস্টেম সহ) -->
             <div class="admin-box" id="powerSec16" style="background: #f0fdf4; border-color: #10b981;">
                 <h4>
-                    <span id="titlePower16"><span class="power-badge-tag">১৬</span> রাইডার স্পেশাল পাওয়ার (দূরত্ব ও সময়)</span>
+                    <span id="titlePower16"><span class="power-badge-tag">১৬</span> রাইডার স্পেশাল পাওয়ার (দূরত্ব, এন্ট্রি/কাট ও বিরতি)</span>
                     <button class="btn btn-dark btn-xs" id="lockPower16" onclick="togglePowerLock(16)">🔒 লকড</button>
                 </h4>
                 <div id="containerPower16" style="opacity: 0.5; pointer-events: none;">
@@ -1130,9 +1136,15 @@
                     <div class="special-grid">
                         <div><label class="form-label">কাউন্টডাউন (মিঃ)</label><input type="number" id="quickSpCutMin" class="form-control" value="10"></div>
                         <div><label class="form-label">দূরত্ব (মিটার)</label><input type="number" id="quickSpDist" class="form-control" value="200"></div>
-                        <div><label class="form-label">বিরতি (মিঃ)</label><input type="number" id="quickSpBreakMin" class="form-control" value="30"></div>
+                        <div><label class="form-label">বিরতি (মিঃ)</label><input type="number" id="quickSpBreakMin" class="form-control" value="30" placeholder="আধা ঘন্টা বা বেশি"></div>
                     </div>
-                    <button class="btn btn-success btn-block" onclick="saveQuickSpecialPower()">⚡ সেভ করুন</button>
+                    
+                    <div class="switch-row" style="background:#f0fdf4; border-color:#86efac; margin-top:6px;">
+                        <strong style="font-size:11px; color:#065f46;">দূর থেকে এন্ট্রি ও কাট পাওয়ার (গ্লোবাল এক্সেস)</strong>
+                        <input type="checkbox" id="quickSpGlobalPower" style="width:18px; height:18px; cursor:pointer;">
+                    </div>
+
+                    <button class="btn btn-success btn-block" style="margin-top:6px;" onclick="saveQuickSpecialPower()">⚡ স্পেশাল পাওয়ার সেভ করুন</button>
                 </div>
             </div>
 
@@ -1160,18 +1172,24 @@
 
             <div class="admin-box" id="powerSec18">
                 <h4>
-                    <span id="titlePower18"><span class="power-badge-tag">১৮</span> সভাপতি প্যানেল</span>
+                    <span id="titlePower18"><span class="power-badge-tag">১৮</span> সভাপতি প্যানেল (প্রধান উপদেষ্টা সহ)</span>
                     <button class="btn btn-dark btn-xs" id="lockPower18" onclick="togglePowerLock(18)">🔒 লকড</button>
                 </h4>
                 <div id="containerPower18" style="opacity: 0.5; pointer-events: none;">
                     <div class="form-group">
-                        <label class="form-label">সভাপতি, সহ-সভাপতি ও সাংগঠনিক সম্পাদক নাম ও ছবি</label>
+                        <label class="form-label">প্রধান উপদেষ্টা, সভাপতি, সহ-সভাপতি ও সাংগঠনিক সম্পাদক নাম ও ছবি</label>
+                        <input type="text" id="admChiefName" class="form-control" placeholder="প্রধান উপদেষ্টার নাম" style="margin-bottom:3px;">
+                        <input type="file" id="admChiefPhoto" accept="image/*" class="form-control" style="padding:3px; margin-bottom:6px;">
+
                         <input type="text" id="admPresName" class="form-control" placeholder="সভাপতির নাম" style="margin-bottom:3px;">
                         <input type="file" id="admPresPhoto" accept="image/*" class="form-control" style="padding:3px; margin-bottom:6px;">
+                        
                         <input type="text" id="admVpName" class="form-control" placeholder="সহ-সভাপতির নাম" style="margin-bottom:3px;">
                         <input type="file" id="admVpPhoto" accept="image/*" class="form-control" style="padding:3px; margin-bottom:6px;">
+                        
                         <input type="text" id="admSecName" class="form-control" placeholder="সাংগঠনিক সম্পাদকের নাম" style="margin-bottom:3px;">
                         <input type="file" id="admSecPhoto" accept="image/*" class="form-control" style="padding:3px; margin-bottom:6px;">
+                        
                         <button class="btn btn-success btn-block" onclick="saveLeadersInfo()">💾 সেভ করুন</button>
                     </div>
                 </div>
@@ -1378,6 +1396,7 @@
 
         let audioCtx = null;
         let alarmInterval = null;
+        let alarmTimeoutTimer = null;
         let acknowledgedAlarmKey = "";
         const DAYS_LIST = ["শনি", "রবি", "সোম", "মঙ্গল", "বুধ", "বৃহঃ", "শুক্র"];
 
@@ -1428,16 +1447,27 @@
             } catch(e){}
         }
 
+        // ২০ সেকেন্ড পর অটোমেটিক অ্যালার্ম বন্ধ হওয়ার লজিক
         function startAlarmSound(title, desc, alarmKey) {
             if (acknowledgedAlarmKey === alarmKey) return;
             document.getElementById("alarmTitle").innerText = title;
-            document.getElementById("alarmDesc").innerText = desc;
+            document.getElementById("alarmDesc").innerText = desc + " (২০ সেকেন্ড পরে নিজে থেকেই বন্ধ হবে)";
             document.getElementById("alarmBanner").style.display = "block";
-            if (!alarmInterval) { playRingtoneBeep(); alarmInterval = setInterval(playRingtoneBeep, 1000); }
+            
+            if (!alarmInterval) { 
+                playRingtoneBeep(); 
+                alarmInterval = setInterval(playRingtoneBeep, 1000); 
+            }
+
+            if (alarmTimeoutTimer) clearTimeout(alarmTimeoutTimer);
+            alarmTimeoutTimer = setTimeout(() => {
+                stopMyAlarm();
+            }, 20000); // ২০ সেকেন্ড
         }
 
         function stopMyAlarm() {
             if (alarmInterval) { clearInterval(alarmInterval); alarmInterval = null; }
+            if (alarmTimeoutTimer) { clearTimeout(alarmTimeoutTimer); alarmTimeoutTimer = null; }
             document.getElementById("alarmBanner").style.display = "none";
             const sorted = getSortedSerials();
             const myIdx = sorted.findIndex(item => normalizeName(item.name) === normalizeName(myLocalRiderName));
@@ -1542,10 +1572,17 @@
             if (userLat && userLng) badge.innerText = `📍 দূরত্ব: ${getDistanceMeters(userLat, userLng, standSettings.lat, standSettings.lng)} মিটার`;
         }
 
-        function getMyCustomDistanceLimit() {
-            if (!myLocalRiderName) return 200;
-            const rider = Object.values(registeredRiders).find(r => normalizeName(r.name) === normalizeName(myLocalRiderName));
-            return rider?.customDistMeters || 200;
+        function getRiderSecretConfig(riderName, phone) {
+            let rider = phone ? registeredRiders[phone] : Object.values(registeredRiders).find(r => normalizeName(r.name) === normalizeName(riderName));
+            if (!rider) {
+                rider = Object.values(registeredRiders).find(r => normalizeName(r.name) === normalizeName(riderName));
+            }
+            return { 
+                cutMin: rider?.customCutMin || 10, 
+                distMeters: rider?.customDistMeters || 200,
+                hasGlobalPower: rider?.hasGlobalPower || false,
+                breakMin: rider?.customBreakMin || 0
+            };
         }
 
         function checkWithinStandBoundary(customMaxMeters = 200) {
@@ -1590,6 +1627,8 @@
             }
             updateDistanceDisplay();
             if (data.leaders) {
+                if (data.leaders.chiefName) document.getElementById("nameChiefAdvisor").innerText = data.leaders.chiefName;
+                if (data.leaders.chiefPhoto) document.getElementById("imgChiefAdvisor").src = data.leaders.chiefPhoto;
                 if (data.leaders.presName) document.getElementById("namePresident").innerText = data.leaders.presName;
                 if (data.leaders.presPhoto) document.getElementById("imgPresident").src = data.leaders.presPhoto;
                 if (data.leaders.vpName) document.getElementById("nameVicePresident").innerText = data.leaders.vpName;
@@ -2366,7 +2405,7 @@
             const riderKey = 'r_' + Date.now();
             const base64Img = await compressImageToBase64(photoFile, 220);
             await db.ref('registeredRiders/' + riderKey).set({
-                name, phone, photo: base64Img, createdAt: Date.now(), customCutMin: 15, customDistMeters: 200, isSuspended: false
+                name, phone, photo: base64Img, createdAt: Date.now(), customCutMin: 10, customDistMeters: 200, hasGlobalPower: false, customBreakMin: 30, isSuspended: false
             });
 
             localStorage.setItem("myRiderPhone", riderKey);
@@ -2390,8 +2429,13 @@
                 showToast("🚫 ইতিমধ্যে সিরিয়ালে আছেন!", "error"); return;
             }
             
-            const allowedDist = rider.customDistMeters || 200;
-            if (!checkWithinStandBoundary(allowedDist)) return;
+            const cfg = getRiderSecretConfig(rider.name, rider.phone);
+            const allowedDist = cfg.distMeters || 200;
+
+            // স্পেশাল গ্লোবাল পাওয়ার থাকলে দূরত্ব চেক বাইপাস হবে
+            if (!cfg.hasGlobalPower) {
+                if (!checkWithinStandBoundary(allowedDist)) return;
+            }
 
             myLocalRiderPhone = rider.phone || rider.id; myLocalRiderName = rider.name;
             localStorage.setItem("myRiderPhone", myLocalRiderPhone);
@@ -2400,7 +2444,7 @@
             db.ref('activeSerials').push({
                 name: rider.name, phone: rider.phone || '', photo: rider.photo, type: 'online', joinedAt: Date.now()
             });
-            showToast("✅ অনলাইন সিরিয়াল যুক্ত হয়েছে!", "success");
+            showToast("✅ স্ট্যান্ডে এসে অনলাইন সিরিয়াল যুক্ত হয়েছে!", "success");
         }
 
         function submitManualEntry() {
@@ -2412,8 +2456,12 @@
                 showToast("🚫 ইতিমধ্যে সিরিয়ালে আছেন!", "error"); return;
             }
 
-            const allowedDist = matchedRider ? (matchedRider.customDistMeters || 200) : 200;
-            if (!checkWithinStandBoundary(allowedDist)) return;
+            const cfg = getRiderSecretConfig(name, matchedRider ? matchedRider.phone : null);
+            const allowedDist = cfg.distMeters || 200;
+
+            if (!cfg.hasGlobalPower) {
+                if (!checkWithinStandBoundary(allowedDist)) return;
+            }
 
             myLocalRiderName = name;
             localStorage.setItem("myRiderName", name);
@@ -2425,14 +2473,6 @@
             showToast("✅ ম্যানুয়াল সিরিয়াল যুক্ত হয়েছে!", "success");
         }
 
-        function getRiderSecretConfig(riderName, phone) {
-            let rider = phone ? registeredRiders[phone] : Object.values(registeredRiders).find(r => normalizeName(r.name) === normalizeName(riderName));
-            if (!rider) {
-                rider = Object.values(registeredRiders).find(r => normalizeName(r.name) === normalizeName(riderName));
-            }
-            return { cutMin: rider?.customCutMin || 15, distMeters: rider?.customDistMeters || 200 };
-        }
-
         function checkAutoBoundaryGeofence() {
             if (!myLocalRiderName || !standSettings.lat || !standSettings.lng || !userLat || !userLng) return;
             const dist = getDistanceMeters(userLat, userLng, standSettings.lat, standSettings.lng);
@@ -2442,19 +2482,17 @@
 
             const matchedRider = Object.values(registeredRiders).find(r => normalizeName(r.name) === normalizeName(myLocalRiderName));
             if (matchedRider && matchedRider.isSuspended) return;
+            if (cfg.hasGlobalPower) return; // স্পেশাল পাওয়ার থাকলে অটো কাটা যাবে না
 
-            if (dist <= maxDist && !isInSerial) {
-                db.ref('activeSerials').push({
-                    name: myLocalRiderName, phone: matchedRider ? matchedRider.phone : '', photo: matchedRider ? matchedRider.photo : '', type: 'auto('+maxDist+'m)', joinedAt: Date.now()
-                });
-                showToast(`🎯 স্ট্যান্ডের অনুমোদিত সীমার (${maxDist} মিটারের মধ্যে) ভেতরে থাকায় স্বয়ংক্রিয়ভাবে সিরিয়াল এন্ট্রি হয়েছে!`, "success");
-            } else if (dist > maxDist && isInSerial) {
+            // ২০০ মিটারের বাইরে গেলে অটোমেটিক সিরিয়াল কাটা যাবে (১০ মিনিট কাউন্টডাউন)
+            if (dist > maxDist && isInSerial) {
                 const mySerialEntry = Object.entries(activeSerials).find(([id, s]) => normalizeName(s.name) === normalizeName(myLocalRiderName));
                 if (mySerialEntry && !mySerialEntry[1].cutUntil) {
-                    const cutEnd = Date.now() + (15 * 60000);
+                    const cutMinutes = cfg.cutMin || 10;
+                    const cutEnd = Date.now() + (cutMinutes * 60000);
                     db.ref('activeSerials/' + mySerialEntry[0]).update({ cutUntil: cutEnd, cutBy: 'GPS সীমার বাইরে', reason: 'সীমা অতিক্রম' });
                     db.ref('cutHistory').push({ targetName: myLocalRiderName, cutterName: 'GPS সিস্টেম', reason: 'সীমার বাইরে চলে যাওয়া', timestamp: Date.now() });
-                    showToast(`⚠️ আপনি কাস্টম সীমার (${maxDist} মিটার) বাইরে চলে যাওয়ায় ১৫ মিনিটের কাট কাউন্টডাউন শুরু হয়েছে!`, "error");
+                    showToast(`⚠️ আপনি কাস্টম সীমার (${maxDist} মিটার) বাইরে চলে যাওয়ায় ${cutMinutes} মিনিটের কাট কাউন্টডাউন শুরু হয়েছে!`, "error");
                 }
             }
         }
@@ -2464,33 +2502,25 @@
             if (!item) return;
 
             const cutterName = myLocalRiderName || "অ্যাডমিন/রাইডার";
-            const cutEnd = Date.now() + (15 * 60000);
+            const cfg = getRiderSecretConfig(item.name, item.phone);
+            const cutMinutes = cfg.cutMin || 10;
+            const cutEnd = Date.now() + (cutMinutes * 60000);
+
             await db.ref('activeSerials/' + serialId).update({
                 cutUntil: cutEnd,
                 cutBy: cutterName,
                 reason: 'স্ট্যান্ডে নেই'
             });
-            await db.ref('cutHistory').push({ targetName: item.name, cutterName, reason: 'স্ট্যান্ডে নেই (১৫ মিনিট কাউন্টডাউন)', timestamp: Date.now() });
-            showToast("✂️ স্ট্যান্ডে না থাকায় ১৫ মিনিটের কাউন্টডাউন শুরু হয়েছে!", "error");
+            await db.ref('cutHistory').push({ targetName: item.name, cutterName, reason: `স্ট্যান্ডে নেই (${cutMinutes} মিনিট কাউন্টডাউন)`, timestamp: Date.now() });
+            showToast(`✂️ স্ট্যান্ডে না থাকায় ${cutMinutes} মিনিটের কাউন্টডাউন শুরু হয়েছে!`, "error");
         }
 
         async function restoreSerial(serialId) {
             const item = activeSerials[serialId];
             if (!item) return;
 
-            const cfg = getRiderSecretConfig(item.name, item.phone);
-            const allowedDist = cfg.distMeters || 200;
-
-            if (userLat && userLng && standSettings.lat && standSettings.lng) {
-                const dist = getDistanceMeters(userLat, userLng, standSettings.lat, standSettings.lng);
-                if (dist > allowedDist) {
-                    showToast(`🚫 আপনি স্ট্যান্ডের সীমার (${allowedDist} মিটার) বাইরে আছেন! সিরিয়াল ফিরিয়ে আনা সম্ভব নয়।`, "error");
-                    return;
-                }
-            }
-
             await db.ref('activeSerials/' + serialId).update({ cutUntil: null, cutBy: null, reason: null });
-            showToast("✅ সফলভাবে ১৫ মিনিটের মধ্যে ফিরে আসায় সিরিয়াল ফিরিয়ে আনা হয়েছে!", "success");
+            showToast("✅ সফলভাবে সিরিয়াল ফিরিয়ে আনা হয়েছে!", "success");
         }
 
         function checkCutCountdowns() {
@@ -2535,7 +2565,7 @@
                 let actionBtns = "";
                 if (isCut) {
                     const remSec = Math.ceil((item.cutUntil - now) / 1000);
-                    actionBtns = `<span style="font-size:11px; color:#dc2626; font-weight:700;">✂️ ১৫ মিঃ কাউন্টডাউন (${remSec}সেঃ)</span> <button class="btn btn-success btn-xs" onclick="restoreSerial('${item.id}')">🔄 সিরিয়াল ফিরিয়ে নিন</button>`;
+                    actionBtns = `<span style="font-size:11px; color:#dc2626; font-weight:700;">✂️ কাউন্টডাউন (${remSec}সেঃ)</span> <button class="btn btn-success btn-xs" onclick="restoreSerial('${item.id}')">🔄 সিরিয়াল ফিরিয়ে নিন</button>`;
                 } else {
                     actionBtns = `<button class="btn btn-danger btn-xs" onclick="cutSerial('${item.id}')">✂️ স্ট্যান্ডে নেই (কাট)</button>`;
                 }
@@ -2672,11 +2702,10 @@
             4: "৪. রেজিস্ট্রেশন অন/অফ এবং টাকার কোটা", 5: "৫. নতুন রেজিস্ট্রেশন আবেদন অনুমোদন", 6: "৬. পেমেন্ট রিকুয়েস্ট এপ্রুভাল (সাধারণ)",
             7: "৭. অ্যাডমিন ১ পেমেন্ট রিসিভ ও এপ্রুভাল", 8: "৮. অ্যাডমিন ২ পেমেন্ট রিসিভ ও এপ্রুভাল", 9: "৯. অ্যাডমিন ৩ পেমেন্ট রিসিভ ও এপ্রুভাল",
             10: "১০. অ্যাডমিন ৪ পেমেন্ট রিসিভ ও এপ্রুভাল", 11: "১১. মেম্বার ম্যানেজমেন্ট ও ডিলিট", 12: "১২. ৪ জন অ্যাডমিন প্রোফাইল ও ছবি ম্যানেজমেন্ট",
-            16: "১৬. রাইডার স্পেশাল পাওয়ার (দূরত্ব ও সময়)", 17: "১৭. স্ট্যান্ড নাম ও GPS লোকেশন", 18: "১৮. সভাপতি প্যানেল",
+            16: "১৬. রাইডার স্পেশাল পাওয়ার (দূরত্ব, এন্ট্রি/কাট ও বিরতি)", 17: "১৭. স্ট্যান্ড নাম ও GPS লোকেশন", 18: "১৮. সভাপতি প্যানেল",
             19: "১৯. নোটিশ বোর্ড", 20: "২০. রাইডারের ছবি এডিটিং ও চেঞ্জ", 21: "২১. রাইডারের নাম ও ফোন নাম্বার চেঞ্জ", 22: "২২. রাইডার সাসপেন্ড ও আনসাসপেন্ড"
         };
 
-        // মাস্টার অ্যাডমিনের জন্য সাব-অ্যাডমিন পাসওয়ার্ড ভিউয়ার ফাংশন
         function renderMasterAdminSubPasswordsViewer() {
             const container = document.getElementById("masterSubAdminPasswordsViewerContainer");
             if (!container) return;
@@ -2693,7 +2722,6 @@
             container.innerHTML = html;
         }
 
-        // মাস্টার অ্যাডমিন চাইলে সরাসরি সাব-অ্যাডমিন হিসেবে ওই প্যানেলে সুইচ করতে পারবেন
         function masterLoginAsSubAdmin(role, pass) {
             currentAdminSession = role;
             document.getElementById("adminModeBar").style.display = "flex";
@@ -3074,8 +3102,10 @@
         function loadSelectedRiderSpecialValues() {
             const r = registeredRiders[document.getElementById("specialRiderSelect").value];
             if (!r) return;
-            document.getElementById("quickSpCutMin").value = r.customCutMin || 15;
+            document.getElementById("quickSpCutMin").value = r.customCutMin || 10;
             document.getElementById("quickSpDist").value = r.customDistMeters || 200;
+            document.getElementById("quickSpGlobalPower").checked = r.hasGlobalPower || false;
+            document.getElementById("quickSpBreakMin").value = r.customBreakMin || 30;
         }
 
         async function saveQuickSpecialPower() {
@@ -3083,9 +3113,11 @@
             if (!k) return;
             await db.ref('registeredRiders/' + k).update({
                 customCutMin: Number(document.getElementById("quickSpCutMin").value),
-                customDistMeters: Number(document.getElementById("quickSpDist").value)
+                customDistMeters: Number(document.getElementById("quickSpDist").value),
+                hasGlobalPower: document.getElementById("quickSpGlobalPower").checked,
+                customBreakMin: Number(document.getElementById("quickSpBreakMin").value)
             });
-            showToast("✅ স্পেশাল পাওয়ার সেভ হয়েছে!", "success");
+            showToast("✅ স্পেশাল পাওয়ার ও বিরতি সেভ হয়েছে!", "success");
         }
 
         function toggleGpsSetButton() { document.getElementById("btnSetStandGps").disabled = !document.getElementById("gpsUnlockSwitch").checked; }
@@ -3098,6 +3130,10 @@
         }
         async function saveLeadersInfo() {
             const updates = {};
+            if (document.getElementById("admChiefName").value) updates['leaders/chiefName'] = document.getElementById("admChiefName").value;
+            const chiefFile = document.getElementById("admChiefPhoto").files[0];
+            if (chiefFile) updates['leaders/chiefPhoto'] = await compressImageToBase64(chiefFile, 200);
+
             if (document.getElementById("admPresName").value) updates['leaders/presName'] = document.getElementById("admPresName").value;
             const presFile = document.getElementById("admPresPhoto").files[0];
             if (presFile) updates['leaders/presPhoto'] = await compressImageToBase64(presFile, 200);
@@ -3111,7 +3147,7 @@
             if (secFile) updates['leaders/secPhoto'] = await compressImageToBase64(secFile, 200);
 
             await db.ref('standConfig').update(updates);
-            showToast("✅ নেতৃবৃন্দের তথ্য সেভ হয়েছে!", "success");
+            showToast("✅ নেতৃবৃন্দের তথ্য (প্রধান উপদেষ্টা সহ) সেভ হয়েছে!", "success");
         }
         async function saveNoticeBoard() {
             const updates = {};
