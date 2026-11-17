@@ -166,83 +166,23 @@
         .clock-time { font-size: 14px; font-weight: 700; color: #fde047; line-height: 1.1; }
         .clock-date { font-size: 10px; color: #e2e8f0; }
 
-        /* নতুন হরিজontal রোলিং মারকিউ মনিটর (নেতৃবৃন্দ ও অ্যাডমিন প্যানেল) */
-        .rolling-marquee-container {
-            background: white;
-            border-radius: 12px;
-            padding: 8px 10px;
-            margin-bottom: 8px;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.06);
-            border: 1px solid #cbd5e1;
-            overflow: hidden;
-            position: relative;
-        }
-        .marquee-title {
-            font-size: 11px;
-            font-weight: 700;
-            color: #4338ca;
-            margin-bottom: 5px;
-            border-bottom: 1px dashed #e2e8f0;
-            padding-bottom: 3px;
-        }
-        .marquee-track-wrapper {
-            display: flex;
-            overflow: hidden;
-            width: 100%;
-            position: relative;
-        }
-        .marquee-track {
-            display: flex;
-            gap: 10px;
-            animation: marqueeScroll 12s linear infinite;
-            white-space: nowrap;
-        }
-        .marquee-track:hover {
-            animation-play-state: paused;
-        }
-        @keyframes marqueeScroll {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-50%); }
-        }
-        .marquee-item {
-            background: #f8fafc;
-            border: 1.5px solid #cbd5e1;
-            border-radius: 10px;
-            padding: 6px 10px;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            flex-shrink: 0;
-            min-width: 160px;
-        }
-        .marquee-item img {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 1.5px solid #4f46e5;
-            background: #eef2ff;
-        }
-        .marquee-item-meta {
-            display: flex;
-            flex-direction: column;
-        }
-        .marquee-role {
-            font-size: 9px;
-            font-weight: 700;
-            color: #4f46e5;
-            background: #eef2ff;
-            padding: 1px 4px;
-            border-radius: 4px;
-            display: inline-block;
-            width: fit-content;
-        }
-        .marquee-name {
-            font-size: 11px;
-            font-weight: 700;
-            color: var(--dark);
-            margin-top: 1px;
-        }
+        .leaders-strip { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; margin-bottom: 8px; }
+        .leader-chip { background: white; border-radius: 10px; padding: 5px; display: flex; align-items: center; gap: 5px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border-left: 3px solid var(--primary); overflow: hidden; }
+        .leader-chip:nth-child(2) { border-left-color: var(--secondary); }
+        .leader-chip:nth-child(3) { border-left-color: var(--success); }
+        .leader-chip:nth-child(4) { border-left-color: var(--warning); }
+        .leader-img { width: 34px; height: 34px; border-radius: 8px; object-fit: cover; border: 1.5px solid #cbd5e1; background: #f1f5f9; flex-shrink: 0; }
+        .leader-meta { min-width: 0; flex: 1; }
+        .leader-role { font-size: 8px; font-weight: 700; color: var(--primary); background: #eef2ff; padding: 1px 4px; border-radius: 4px; display: inline-block; }
+        .leader-name { font-size: 10px; font-weight: 700; color: var(--dark); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 1px; }
+
+        /* অ্যাডমিন প্যানেল স্ট্রিপ (নাম পরিবর্তন করা হয়েছে) */
+        .admins-strip { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; margin-bottom: 8px; }
+        .admin-chip { background: white; border-radius: 10px; padding: 5px; display: flex; align-items: center; gap: 5px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border-left: 3px solid #d97706; overflow: hidden; }
+        .admin-img { width: 34px; height: 34px; border-radius: 8px; object-fit: cover; border: 1.5px solid #cbd5e1; background: #f1f5f9; flex-shrink: 0; }
+        .admin-meta { min-width: 0; flex: 1; }
+        .admin-role-badge { font-size: 8px; font-weight: 700; color: #b45309; background: #fef3c7; padding: 1px 4px; border-radius: 4px; display: inline-block; }
+        .admin-name { font-size: 10px; font-weight: 700; color: var(--dark); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 1px; }
 
         .notice-card { background: linear-gradient(to right, #fffbeb, #fef3c7); border: 1px solid #fcd34d; border-left: 4px solid #f59e0b; border-radius: 10px; padding: 8px 12px; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
         .notice-content { flex: 1; }
@@ -629,12 +569,66 @@
             </div>
         </div>
 
-        <!-- রোলিং মারকিউ মনিটর (নেতৃবৃন্দ ও দায়িত্বশীলগণ) -->
-        <div class="rolling-marquee-container">
-            <div class="marquee-title">⭐ নেতৃবৃন্দ ও দায়িত্বশীল প্যানেল</div>
-            <div class="marquee-track-wrapper">
-                <div class="marquee-track" id="marqueeTrackContainer">
-                    <!-- ডাইনামিকালি পপুলেট হবে -->
+        <!-- LEADERS STRIP -->
+        <div class="leaders-strip">
+            <div class="leader-chip">
+                <img src="https://via.placeholder.com/80?text=উপদেষ্টা" id="imgChiefAdvisor" class="leader-img" alt="প্রধান উপদেষ্টা">
+                <div class="leader-meta">
+                    <span class="leader-role">প্রধান উপদেষ্টা</span>
+                    <div class="leader-name" id="nameChiefAdvisor">সেট করা নেই</div>
+                </div>
+            </div>
+            <div class="leader-chip">
+                <img src="https://via.placeholder.com/80?text=সভাপতি" id="imgPresident" class="leader-img" alt="সভাপতি">
+                <div class="leader-meta">
+                    <span class="leader-role">সভাপতি</span>
+                    <div class="leader-name" id="namePresident">সেট করা নেই</div>
+                </div>
+            </div>
+            <div class="leader-chip">
+                <img src="https://via.placeholder.com/80?text=সহ" id="imgVicePresident" class="leader-img" alt="সহ-সভাপতি">
+                <div class="leader-meta">
+                    <span class="leader-role">সহ-সভাপতি</span>
+                    <div class="leader-name" id="nameVicePresident">সেট করা নেই</div>
+                </div>
+            </div>
+            <div class="leader-chip">
+                <img src="https://via.placeholder.com/80?text=সম্পাদক" id="imgOrgSecretary" class="leader-img" alt="সাংগঠনিক সম্পাদক">
+                <div class="leader-meta">
+                    <span class="leader-role">সাংগঠনিক সম্পাদক</span>
+                    <div class="leader-name" id="nameOrgSecretary">সেট করা নেই</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- অ্যাডমিন প্যানেল স্ট্রিপ -->
+        <div class="admins-strip">
+            <div class="admin-chip">
+                <img src="https://via.placeholder.com/80?text=এডমিন১" id="imgAdmin1" class="admin-img" alt="এডমিন ১">
+                <div class="admin-meta">
+                    <span class="admin-role-badge" id="roleAdmin1">ক্যাশিয়ার</span>
+                    <div class="admin-name" id="nameAdmin1">সেট করা নেই</div>
+                </div>
+            </div>
+            <div class="admin-chip">
+                <img src="https://via.placeholder.com/80?text=এডমিন২" id="imgAdmin2" class="admin-img" alt="এডমিন ২">
+                <div class="admin-meta">
+                    <span class="admin-role-badge" id="roleAdmin2">পরিচালক</span>
+                    <div class="admin-name" id="nameAdmin2">সেট করা নেই</div>
+                </div>
+            </div>
+            <div class="admin-chip">
+                <img src="https://via.placeholder.com/80?text=এডমিন৩" id="imgAdmin3" class="admin-img" alt="এডমিন ৩">
+                <div class="admin-meta">
+                    <span class="admin-role-badge" id="roleAdmin3">সহ-পরিচালক</span>
+                    <div class="admin-name" id="nameAdmin3">সেট করা নেই</div>
+                </div>
+            </div>
+            <div class="admin-chip">
+                <img src="https://via.placeholder.com/80?text=এডমিন৪" id="imgAdmin4" class="admin-img" alt="এডমিন ৪">
+                <div class="admin-meta">
+                    <span class="admin-role-badge" id="roleAdmin4">হিসাবরক্ষক</span>
+                    <div class="admin-name" id="nameAdmin4">সেট করা নেই</div>
                 </div>
             </div>
         </div>
@@ -999,7 +993,7 @@
 
             <!-- MASTER ONLY SECTION -->
             <div id="masterOnlyAdminManagementBox" class="admin-box" style="background: #eef2ff; border: 2px solid #4f46e5; display: none;">
-                <h4 style="color: #4f46e5;">👑 মাস্টার অ্যাডমিন: পাসওয়ার্ড ও সাব-অ্যাডমিন ম্যানেজমেন্ট</h4>
+                <h4 style="color: #4f46e5;">👑 মাস্টার অ্যাডমিন: পাসওয়ার্ড, সাব-অ্যাডমিন পাসওয়ার্ড ভিউয়ার ও ম্যানেজমেন্ট</h4>
                 <div style="background: #fff; padding: 8px; border-radius: 8px; margin-bottom: 10px; border: 1px solid #cbd5e1;">
                     <strong style="font-size: 12px; color: #1e1b4b; display: block; margin-bottom: 4px;">মাস্টার পাসওয়ার্ড পরিবর্তন করুন:</strong>
                     <div style="display: flex; gap: 6px;">
@@ -1009,24 +1003,23 @@
                 </div>
                 
                 <div style="background: #fffbeb; padding: 8px; border-radius: 8px; margin-bottom: 10px; border: 1px solid #fcd34d;">
-                    <strong style="font-size: 12px; color: #b45309; display: block; margin-bottom: 4px;">👁️ সাব-অ্যাডমিন তালিকা (সিরিয়াল ১০ থেকে ৩৯ অনুযায়ী):</strong>
+                    <strong style="font-size: 12px; color: #b45309; display: block; margin-bottom: 4px;">👁️ সাব-অ্যাডমিনদের পাসওয়ার্ড তালিকা (মাস্টার ভিউ):</strong>
                     <div id="masterSubAdminPasswordsViewerContainer"></div>
                 </div>
 
                 <div id="masterSubAdminBoxesContainer"></div>
             </div>
 
-            <!-- SAMITY SECTIONS (সিরিয়াল ১০ থেকে ৩৯ বিন্যাস অনুযায়ী) -->
+            <!-- SAMITY SECTIONS -->
             <div class="admin-box" id="samityMasterWrapperBox" style="background: #fffbeb; border: 2.5px solid #f59e0b;">
-                <h4 style="color: #b45309;">🏆 চন্দ্রিমা বাইকার টান সমিতি ও কন্ট্রোল সমূহ</h4>
+                <h4 style="color: #b45309;">🏆 চন্দ্রিমা বাইকার টান সমিতি কন্ট্রোল সমূহ</h4>
                 
-                <!-- সিরিয়াল ১০: অফিসিয়াল উইনার ওডো সেটআপ -->
-                <div class="admin-box" id="powerSec10" style="background: #fef3c7; border: 1.5px solid #fcd34d; margin-bottom: 8px;">
+                <div class="admin-box" id="powerSec1" style="background: #fef3c7; border: 1.5px solid #fcd34d; margin-bottom: 8px;">
                     <h4>
-                        <span id="titlePower10"><span class="power-badge-tag">১০</span> অফিসিয়াল উইনার ওডো সেটআপ</span>
-                        <button class="btn btn-dark btn-xs" id="lockPower10" onclick="togglePowerLock(10)">🔒 লকড</button>
+                        <span id="titlePower1"><span class="power-badge-tag">১</span> অফিসিয়াল উইনার ওডো সেটআপ</span>
+                        <button class="btn btn-dark btn-xs" id="lockPower1" onclick="togglePowerLock(1)">🔒 লকড</button>
                     </h4>
-                    <div id="containerPower10" style="opacity: 0.5; pointer-events: none;">
+                    <div id="containerPower1" style="opacity: 0.5; pointer-events: none;">
                         <strong style="font-size: 11px; color: #92400e;">🎯 নির্দিষ্ট সদস্যকে উইনার বানাতে চাইলে:</strong>
                         <div style="display: flex; gap: 6px; margin-top: 4px;">
                             <input type="text" id="adminForcedWinnerPhone" class="form-control" placeholder="নির্দিষ্ট সদস্যের ফোন নম্বর">
@@ -1035,13 +1028,12 @@
                     </div>
                 </div>
 
-                <!-- সিরিয়াল ১১: ড্র-এর সময় ও তারিখ নির্ধারণ -->
-                <div class="admin-box" id="powerSec11" style="background: #fef3c7; border: 1.5px solid #fcd34d; margin-bottom: 8px;">
+                <div class="admin-box" id="powerSec2" style="background: #fef3c7; border: 1.5px solid #fcd34d; margin-bottom: 8px;">
                     <h4>
-                        <span id="titlePower11"><span class="power-badge-tag">১১</span> ড্র-এর সময় ও তারিখ নির্ধারণ</span>
-                        <button class="btn btn-dark btn-xs" id="lockPower11" onclick="togglePowerLock(11)">🔒 লকড</button>
+                        <span id="titlePower2"><span class="power-badge-tag">২</span> ড্র-এর সময় ও তারিখ নির্ধারণ</span>
+                        <button class="btn btn-dark btn-xs" id="lockPower2" onclick="togglePowerLock(2)">🔒 লকড</button>
                     </h4>
-                    <div id="containerPower11" style="opacity: 0.5; pointer-events: none;">
+                    <div id="containerPower2" style="opacity: 0.5; pointer-events: none;">
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
                             <select id="adminDrawDay" class="form-control" onchange="saveAdminDrawSchedule()">
                                 <option value="Friday">শুক্রবার</option>
@@ -1054,13 +1046,12 @@
                     </div>
                 </div>
 
-                <!-- সিরিয়াল ১২: টাকার পারমিশন ও হুইল লক -->
-                <div class="admin-box" id="powerSec12" style="background: #fef3c7; border: 1.5px solid #fcd34d; margin-bottom: 8px;">
+                <div class="admin-box" id="powerSec3" style="background: #fef3c7; border: 1.5px solid #fcd34d; margin-bottom: 8px;">
                     <h4>
-                        <span id="titlePower12"><span class="power-badge-tag">১২</span> টাকার পারমিশন ও হুইল লক</span>
-                        <button class="btn btn-dark btn-xs" id="lockPower12" onclick="togglePowerLock(12)">🔒 লকড</button>
+                        <span id="titlePower3"><span class="power-badge-tag">৩</span> টাকার পারমিশন ও হুইল লক</span>
+                        <button class="btn btn-dark btn-xs" id="lockPower3" onclick="togglePowerLock(3)">🔒 লকড</button>
                     </h4>
-                    <div id="containerPower12" style="opacity: 0.5; pointer-events: none;">
+                    <div id="containerPower3" style="opacity: 0.5; pointer-events: none;">
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
                             <span style="font-size: 11px; color: #92400e; font-weight: 700;">সক্রিয় সদস্যদের Allow পারমিশন দিন:</span>
                             <button class="btn btn-info btn-xs" onclick="adminResetRoundPermissions()">🔄 রিসেট</button>
@@ -1069,13 +1060,12 @@
                     </div>
                 </div>
 
-                <!-- সিরিয়াল ১৩: রেজিস্ট্রেশন অন/অফ এবং টাকার অংক -->
-                <div class="admin-box" id="powerSec13" style="background: #fef3c7; border: 1.5px solid #fcd34d; margin-bottom: 8px;">
+                <div class="admin-box" id="powerSec4" style="background: #fef3c7; border: 1.5px solid #fcd34d; margin-bottom: 8px;">
                     <h4>
-                        <span id="titlePower13"><span class="power-badge-tag">১৩</span> রেজিস্ট্রেশন অন/অফ এবং টাকার অংক</span>
-                        <button class="btn btn-dark btn-xs" id="lockPower13" onclick="togglePowerLock(13)">🔒 লকড</button>
+                        <span id="titlePower4"><span class="power-badge-tag">৪</span> রেজিস্ট্রেশন অন/অফ এবং টাকার অংক</span>
+                        <button class="btn btn-dark btn-xs" id="lockPower4" onclick="togglePowerLock(4)">🔒 লকড</button>
                     </h4>
-                    <div id="containerPower13" style="opacity: 0.5; pointer-events: none;">
+                    <div id="containerPower4" style="opacity: 0.5; pointer-events: none;">
                         <div style="display: flex; gap: 6px; margin-bottom: 8px;">
                             <input type="number" id="adminDailyQuotaInput" class="form-control" value="200">
                             <button class="btn btn-warning btn-xs" onclick="saveDailyQuota()">সেভ</button>
@@ -1087,232 +1077,287 @@
                     </div>
                 </div>
 
-                <!-- সিরিয়াল ১৪: নতুন রেজিস্ট্রেশন আবেদন অনুমোদন -->
-                <div class="admin-box" id="powerSec14" style="background: white; border: 1px solid #fde68a; margin-bottom: 8px;">
+                <div class="admin-box" id="powerSec5" style="background: white; border: 1px solid #fde68a; margin-bottom: 8px;">
                     <h4>
-                        <span id="titlePower14"><span class="power-badge-tag">১৪</span> নতুন রেজিস্ট্রেশন আবেদন অনুমোদন</span>
-                        <button class="btn btn-dark btn-xs" id="lockPower14" onclick="togglePowerLock(14)">🔒 লকড</button>
+                        <span id="titlePower5"><span class="power-badge-tag">৫</span> নতুন রেজিস্ট্রেশন আবেদন অনুমোদন</span>
+                        <button class="btn btn-dark btn-xs" id="lockPower5" onclick="togglePowerLock(5)">🔒 লকড</button>
                     </h4>
-                    <div id="containerPower14" style="opacity: 0.5; pointer-events: none;">
+                    <div id="containerPower5" style="opacity: 0.5; pointer-events: none;">
                         <div id="adminSamityPendingRegList">লোড হচ্ছে...</div>
                     </div>
                 </div>
 
-                <!-- সিরিয়াল ১৫: পেমেন্ট রিকুয়েস্ট এপ্রুভাল -->
-                <div class="admin-box" id="powerSec15" style="background: white; border: 1px solid #fde68a; margin-bottom: 8px;">
+                <div class="admin-box" id="powerSec6" style="background: white; border: 1px solid #fde68a; margin-bottom: 8px;">
                     <h4>
-                        <span id="titlePower15"><span class="power-badge-tag">১৫</span> পেমেন্ট রিকুয়েস্ট এপ্রুভাল (স্ক্রিনশটসহ)</span>
-                        <button class="btn btn-dark btn-xs" id="lockPower15" onclick="togglePowerLock(15)">🔒 লকড</button>
+                        <span id="titlePower6"><span class="power-badge-tag">৬</span> পেমেন্ট রিকুয়েস্ট এপ্রুভাল (স্ক্রিনশটসহ)</span>
+                        <button class="btn btn-dark btn-xs" id="lockPower6" onclick="togglePowerLock(6)">🔒 লকড</button>
                     </h4>
-                    <div id="containerPower15" style="opacity: 0.5; pointer-events: none;">
+                    <div id="containerPower6" style="opacity: 0.5; pointer-events: none;">
                         <div id="adminSamityPendingPayList">লোড হচ্ছে...</div>
                     </div>
                 </div>
 
-                <!-- সিরিয়াল ১৬: মেম্বার ম্যানেজমেন্ট -->
-                <div class="admin-box" id="powerSec16" style="background: white; border: 1px solid #fde68a; margin-bottom: 8px;">
+                <div class="admin-box" id="powerSec7" style="background: white; border: 1px solid #fde68a; margin-bottom: 8px;">
                     <h4>
-                        <span id="titlePower16"><span class="power-badge-tag">১৬</span> মেম্বার ম্যানেজমেন্ট (টাকা জমা, নাম-ফোন ও ডিলিট)</span>
-                        <button class="btn btn-dark btn-xs" id="lockPower16" onclick="togglePowerLock(16)">🔒 লকড</button>
+                        <span id="titlePower7"><span class="power-badge-tag">৭</span> অ্যাডমিন ১ পেমেন্ট রিসিভ ও এপ্রুভাল</span>
+                        <button class="btn btn-dark btn-xs" id="lockPower7" onclick="togglePowerLock(7)">🔒 লকড</button>
                     </h4>
-                    <div id="containerPower16" style="opacity: 0.5; pointer-events: none;">
+                    <div id="containerPower7" style="opacity: 0.5; pointer-events: none;">
+                        <div id="admin1PendingPayList">লোড হচ্ছে...</div>
+                    </div>
+                </div>
+
+                <div class="admin-box" id="powerSec8" style="background: white; border: 1px solid #fde68a; margin-bottom: 8px;">
+                    <h4>
+                        <span id="titlePower8"><span class="power-badge-tag">৮</span> অ্যাডমিন ২ পেমেন্ট রিসিভ ও এপ্রুভাল</span>
+                        <button class="btn btn-dark btn-xs" id="lockPower8" onclick="togglePowerLock(8)">🔒 লকড</button>
+                    </h4>
+                    <div id="containerPower8" style="opacity: 0.5; pointer-events: none;">
+                        <div id="admin2PendingPayList">লোড হচ্ছে...</div>
+                    </div>
+                </div>
+
+                <div class="admin-box" id="powerSec9" style="background: white; border: 1px solid #fde68a; margin-bottom: 8px;">
+                    <h4>
+                        <span id="titlePower9"><span class="power-badge-tag">৯</span> অ্যাডমিন ৩ পেমেন্ট রিসিভ ও এপ্রুভাল</span>
+                        <button class="btn btn-dark btn-xs" id="lockPower9" onclick="togglePowerLock(9)">🔒 লকড</button>
+                    </h4>
+                    <div id="containerPower9" style="opacity: 0.5; pointer-events: none;">
+                        <div id="admin3PendingPayList">লোড হচ্ছে...</div>
+                    </div>
+                </div>
+
+                <div class="admin-box" id="powerSec10" style="background: white; border: 1px solid #fde68a; margin-bottom: 8px;">
+                    <h4>
+                        <span id="titlePower10"><span class="power-badge-tag">১০</span> অ্যাডমিন ৪ পেমেন্ট রিসিভ ও এপ্রুভাল</span>
+                        <button class="btn btn-dark btn-xs" id="lockPower10" onclick="togglePowerLock(10)">🔒 লকড</button>
+                    </h4>
+                    <div id="containerPower10" style="opacity: 0.5; pointer-events: none;">
+                        <div id="admin4PendingPayList">লোড হচ্ছে...</div>
+                    </div>
+                </div>
+
+                <div class="admin-box" id="powerSec11" style="background: white; border: 1px solid #fde68a; margin-bottom: 8px;">
+                    <h4>
+                        <span id="titlePower11"><span class="power-badge-tag">১১</span> মেম্বার ম্যানেজমেন্ট (টাকা জমা, নাম-ফোন ও ডিলিট)</span>
+                        <button class="btn btn-dark btn-xs" id="lockPower11" onclick="togglePowerLock(11)">🔒 লকড</button>
+                    </h4>
+                    <div id="containerPower11" style="opacity: 0.5; pointer-events: none;">
                         <div style="display: flex; justify-content: flex-end; margin-bottom: 6px;">
-                            <button class="btn btn-danger btn-xs" onclick="resetAllMembersNewWeek()">🔄 সম্পূর্ণ নতুন সপ্তাহ রিসেট</button>
+                            <button class="btn btn-danger btn-xs" onclick="resetAllMembersNewWeek()">🔄 সম্পূর্ণ নতুন সপ্তাহ রিসেট (সব মুছে যাবে)</button>
                         </div>
                         <div id="adminSingleBoxMemberManagement" style="background:#fffbeb; padding:6px; border-radius:8px; border:1px solid #fcd34d; max-height:220px; overflow-y:auto;"></div>
                     </div>
                 </div>
 
-                <!-- সিরিয়াল ১৭: ৪ জন সাব-অ্যাডমিনের প্রোফাইল ও ছবি -->
-                <div class="admin-box" id="powerSec17" style="background: white; border: 1.5px solid #f59e0b; margin-bottom: 8px;">
+                <div class="admin-box" id="powerSec12" style="background: white; border: 1px solid #fde68a; margin-bottom: 8px;">
                     <h4>
-                        <span id="titlePower17"><span class="power-badge-tag">১৭</span> দায়িত্বশীল কর্মকর্তা ও ক্যাশিয়ার এডিটিং</span>
-                        <button class="btn btn-dark btn-xs" id="lockPower17" onclick="togglePowerLock(17)">🔒 লকড</button>
+                        <span id="titlePower12"><span class="power-badge-tag">১২</span> ৪ জন সাব-অ্যাডমিনের প্রোফাইল ও ছবি ম্যানেজমেন্ট</span>
+                        <button class="btn btn-dark btn-xs" id="lockPower12" onclick="togglePowerLock(12)">🔒 লকড</button>
                     </h4>
-                    <div id="containerPower17" style="opacity: 0.5; pointer-events: none;">
+                    <div id="containerPower12" style="opacity: 0.5; pointer-events: none;">
+                        <div id="adminFourProfilesUnifiedEditorContainer"></div>
+                    </div>
+                </div>
+
+                <!-- ১৩ নম্বর বক্স: দায়িত্বশীল কর্মকর্তা (অ্যাডমিন প্যানেল ক্যাশিয়ার/পদবি ও ছবি এডিট) -->
+                <div class="admin-box" id="powerSec13" style="background: white; border: 1.5px solid #f59e0b; margin-bottom: 8px;">
+                    <h4>
+                        <span id="titlePower13"><span class="power-badge-tag">১৩</span> অ্যাডমিন প্যানেল ও ক্যাশিয়ার এডিটিং (নাম, পদবি, নম্বর ও ছবি)</span>
+                        <button class="btn btn-dark btn-xs" id="lockPower13" onclick="togglePowerLock(13)">🔒 লকড</button>
+                    </h4>
+                    <div id="containerPower13" style="opacity: 0.5; pointer-events: none;">
                         <div id="adminFourRoleProfilesEditorContainer"></div>
                     </div>
                 </div>
 
-                <!-- সিরিয়াল ১৮: রাইডার বিরতি সেটআপ -->
-                <div class="admin-box" id="powerSec18" style="background: #fffbeb; border-color: #f59e0b;">
-                    <h4>
-                        <span id="titlePower18"><span class="power-badge-tag">১৮</span> রাইডার এক্সক্লুসিভ বিরতি সেটআপ</span>
-                        <button class="btn btn-dark btn-xs" id="lockPower18" onclick="togglePowerLock(18)">🔒 লকড</button>
-                    </h4>
-                    <div id="containerPower18" style="opacity: 0.5; pointer-events: none;">
-                        <div class="form-group">
-                            <select id="specialRiderSelect15" class="form-control" onchange="loadSelectedRiderBreakValues()">
-                                <option value="">-- রাইডার বেছে নিন --</option>
-                            </select>
-                        </div>
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin: 6px 0;">
-                            <div>
-                                <label class="form-label">বিরতির সময় (মিঃ)</label>
-                                <input type="number" id="quickSpBreakMin" class="form-control" value="30">
-                            </div>
-                            <div>
-                                <label class="form-label">দৈনিক বিরতি সীমা</label>
-                                <input type="number" id="quickSpBreakDailyLimit" class="form-control" value="2">
-                            </div>
-                        </div>
-                        <div class="switch-row" style="background:#e0f2fe; border-color:#7dd3fc; margin-top:6px;">
-                            <strong style="font-size:11px; color:#0369a1;">বিরতির অনুমতি দিন</strong>
-                            <input type="checkbox" id="quickSpBreakAllowed" style="width:18px; height:18px; cursor:pointer;">
-                        </div>
-                        <div style="display: flex; gap: 6px; margin-top: 6px;">
-                            <button class="btn btn-info btn-xs" style="flex:1;" onclick="adminResetRiderBreakUsage15()">🔄 কাউন্ট জিরো</button>
-                            <button class="btn btn-success btn-xs" style="flex:1;" onclick="saveQuickBreakPower()">💾 সেভ</button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- সিরিয়াল ১৯: রাইডার স্পেশাল পাওয়ার (দূরত্ব ও গ্লোবাল) -->
-                <div class="admin-box" id="powerSec19" style="background: #f0fdf4; border-color: #10b981;">
-                    <h4>
-                        <span id="titlePower19"><span class="power-badge-tag">১৯</span> রাইডার স্পেশাল পাওয়ার (দূরত্ব ও গ্লোবাল)</span>
-                        <button class="btn btn-dark btn-xs" id="lockPower19" onclick="togglePowerLock(19)">🔒 লকড</button>
-                    </h4>
-                    <div id="containerPower19" style="opacity: 0.5; pointer-events: none;">
-                        <div class="form-group">
-                            <select id="specialRiderSelect16" class="form-control" onchange="loadSelectedRiderDistanceValues()">
-                                <option value="">-- রাইডার বেছে নিন --</option>
-                            </select>
-                        </div>
-                        <div class="special-grid">
-                            <div><label class="form-label">কাউন্টডাউন (মিঃ)</label><input type="number" id="quickSpCutMin" class="form-control" value="10"></div>
-                            <div><label class="form-label">দূরত্ব (মিটার)</label><input type="number" id="quickSpDist" class="form-control" value="200"></div>
-                        </div>
-                        <div class="switch-row" style="background:#f0fdf4; border-color:#86efac; margin-top:6px;">
-                            <strong style="font-size:11px; color:#065f46;">গ্লোবাল এক্সেস</strong>
-                            <input type="checkbox" id="quickSpGlobalPower" style="width:18px; height:18px; cursor:pointer;">
-                        </div>
-                        <button class="btn btn-success btn-block" style="margin-top:6px;" onclick="saveQuickDistancePower()">⚡ সেভ করুন</button>
-                    </div>
-                </div>
-
-                <!-- সিরিয়াল ২০: স্ট্যান্ড নাম ও GPS -->
-                <div class="admin-box" id="powerSec20">
-                    <h4>
-                        <span id="titlePower20"><span class="power-badge-tag">২০</span> স্ট্যান্ডের নাম ও GPS লোকেশন</span>
-                        <button class="btn btn-dark btn-xs" id="lockPower20" onclick="togglePowerLock(20)">🔒 লকড</button>
-                    </h4>
-                    <div id="containerPower20" style="opacity: 0.5; pointer-events: none;">
-                        <div class="form-group">
-                            <label class="form-label">স্ট্যান্ডের নাম</label>
-                            <div style="display: flex; gap: 6px;">
-                                <input type="text" id="adminStandName" class="form-control">
-                                <button class="btn btn-primary btn-xs" onclick="saveStandName()">সেভ</button>
-                            </div>
-                        </div>
-                        <div class="switch-row">
-                            <strong>GPS বাটন আনলক সুইচ</strong>
-                            <input type="checkbox" id="gpsUnlockSwitch" onchange="toggleGpsSetButton()" style="width: 20px; height: 20px;">
-                        </div>
-                        <button id="btnSetStandGps" class="btn btn-danger btn-block" disabled onclick="setStandCurrentLocation()">🔒 বর্তমান অবস্থানকে কেন্দ্র হিসেবে সেট করুন</button>
-                        <p id="savedStandCoords" style="font-size: 11px; color: #475569; margin-top: 5px;"></p>
-                    </div>
-                </div>
-
-                <!-- সিরিয়াল ২১: সভাপতি প্যানেল -->
-                <div class="admin-box" id="powerSec21">
-                    <h4>
-                        <span id="titlePower21"><span class="power-badge-tag">২১</span> সভাপতি ও নেতৃবৃন্দ প্যানেল</span>
-                        <button class="btn btn-dark btn-xs" id="lockPower21" onclick="togglePowerLock(21)">🔒 লকড</button>
-                    </h4>
-                    <div id="containerPower21" style="opacity: 0.5; pointer-events: none;">
-                        <div class="form-group">
-                            <label class="form-label">প্রধান উপদেষ্টা, সভাপতি, সহ-সভাপতি ও সম্পাদক</label>
-                            <input type="text" id="admChiefName" class="form-control" placeholder="প্রধান উপদেষ্টার নাম" style="margin-bottom:3px;">
-                            <input type="file" id="admChiefPhoto" accept="image/*" class="form-control" style="padding:3px; margin-bottom:6px;">
-                            <input type="text" id="admPresName" class="form-control" placeholder="সভাপতির নাম" style="margin-bottom:3px;">
-                            <input type="file" id="admPresPhoto" accept="image/*" class="form-control" style="padding:3px; margin-bottom:6px;">
-                            <input type="text" id="admVpName" class="form-control" placeholder="সহ-সভাপতির নাম" style="margin-bottom:3px;">
-                            <input type="file" id="admVpPhoto" accept="image/*" class="form-control" style="padding:3px; margin-bottom:6px;">
-                            <input type="text" id="admSecName" class="form-control" placeholder="সাংগঠনিক সম্পাদকের নাম" style="margin-bottom:3px;">
-                            <input type="file" id="admSecPhoto" accept="image/*" class="form-control" style="padding:3px; margin-bottom:6px;">
-                            <button class="btn btn-success btn-block" onclick="saveLeadersInfo()">💾 সেভ করুন</button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- সিরিয়াল ২২: নোটিশ বোর্ড -->
-                <div class="admin-box" id="powerSec22">
-                    <h4>
-                        <span id="titlePower22"><span class="power-badge-tag">২২</span> নোটিশ বোর্ড</span>
-                        <button class="btn btn-dark btn-xs" id="lockPower22" onclick="togglePowerLock(22)">🔒 লকড</button>
-                    </h4>
-                    <div id="containerPower22" style="opacity: 0.5; pointer-events: none;">
-                        <div class="form-group">
-                            <label class="form-label">নোটিশ বোর্ড আপডেট</label>
-                            <textarea id="admNoticeText" rows="2" class="form-control" placeholder="জরুরি নোটিশ..." style="margin-bottom:4px;"></textarea>
-                            <input type="file" id="admNoticePhoto" accept="image/*" class="form-control" style="padding:3px; margin-bottom:5px;">
-                            <button class="btn btn-warning btn-block" onclick="saveNoticeBoard()">📢 প্রকাশ</button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- সিরিয়াল ২৩: রাইডারের ছবি এডিটিং -->
-                <div class="admin-box" id="powerSec23">
-                    <h4>
-                        <span id="titlePower23"><span class="power-badge-tag">২৩</span> রাইডারের ছবি এডিটিং ও চেঞ্জ</span>
-                        <button class="btn btn-dark btn-xs" id="lockPower23" onclick="togglePowerLock(23)">🔒 লকড</button>
-                    </h4>
-                    <div id="containerPower23" style="opacity: 0.5; pointer-events: none;">
-                        <div id="adminRegisteredListPhotoOnly">লোড হচ্ছে...</div>
-                    </div>
-                </div>
-
-                <!-- সিরিয়াল ২৪: রাইডার নাম ও ফোন নম্বর -->
-                <div class="admin-box" id="powerSec24">
-                    <h4>
-                        <span id="titlePower24"><span class="power-badge-tag">২৪</span> রাইডার নাম ও ফোন নম্বর চেঞ্জ</span>
-                        <button class="btn btn-dark btn-xs" id="lockPower24" onclick="togglePowerLock(24)">🔒 লকড</button>
-                    </h4>
-                    <div id="containerPower24" style="opacity: 0.5; pointer-events: none;">
-                        <div id="adminRegisteredListNamePhone">লোড হচ্ছে...</div>
-                    </div>
-                </div>
-
-                <!-- সিরিয়াল ২৫: রাইডার সাসপেন্ড -->
-                <div class="admin-box" id="powerSec25">
-                    <h4>
-                        <span id="titlePower25"><span class="power-badge-tag">২৫</span> রাইডার সাসপেন্ড ও আনসাসপেন্ড</span>
-                        <button class="btn btn-dark btn-xs" id="lockPower25" onclick="togglePowerLock(25)">🔒 লকড</button>
-                    </h4>
-                    <div id="containerPower25" style="opacity: 0.5; pointer-events: none;">
-                        <div id="adminRegisteredListSuspend">লোড হচ্ছে...</div>
-                    </div>
-                </div>
-
-                <!-- সিরিয়াল ২৬: দূরবর্তী স্থান থেকে ম্যানুয়াল এন্ট্রি -->
-                <div class="admin-box" id="powerSec26" style="background: #e0f2fe; border: 2px solid #0284c7;">
-                    <h4>
-                        <span id="titlePower26"><span class="power-badge-tag">২৬</span> দূরবর্তী স্থান থেকে ম্যানুয়াল সিরিয়াল এন্ট্রি</span>
-                        <button class="btn btn-dark btn-xs" id="lockPower26" onclick="togglePowerLock(26)">🔒 লকড</button>
-                    </h4>
-                    <div id="containerPower26" style="opacity: 0.5; pointer-events: none;">
-                        <div class="form-group">
-                            <label class="form-label">রাইডারের নাম লিখুন</label>
-                            <input type="text" id="globalMasterManualName" class="form-control" placeholder="রাইডারের নাম">
-                        </div>
-                        <button class="btn btn-success btn-block" onclick="submitGlobalMasterManualEntry()">➕ ম্যানুয়াল সিরিয়াল দিন</button>
-                    </div>
-                </div>
-
-                <!-- সিরিয়াল ২৭-৩৯: অতিরিক্ত সিস্টেম ম্যানেজমেন্ট বক্সসমূহ -->
-                <div class="admin-box" id="powerSec27" style="background: #fdf4ff; border: 2px solid #c084fc;">
-                    <h4>
-                        <span id="titlePower27"><span class="power-badge-tag">২৭-৩৯</span> অতিরিক্ত সিস্টেম প্যানেল ও কনফিগারেশন</span>
-                        <button class="btn btn-dark btn-xs" id="lockPower27" onclick="togglePowerLock(27)">🔒 লকড</button>
-                    </h4>
-                    <div id="containerPower27" style="opacity: 0.5; pointer-events: none;">
-                        <p style="font-size: 11px; color: #7e22ce; margin-bottom: 6px;">* সিস্টেমের অতিরিক্ত সেটিংস ও সিকিউরিটি কন্ট্রোল এখানে সংরক্ষিত আছে।</p>
-                        <button class="btn btn-primary btn-block btn-xs" onclick="showToast('✅ সিস্টেম স্ট্যাটাস ফুললি রানিং!', 'success')">⚙️ সিস্টেম স্ট্যাটাস চেক করুন</button>
-                    </div>
-                </div>
-
             </div>
+
+            <!-- ১৫ নম্বর বক্স: রাইডার এক্সক্লুসিভ বিরতি সেটআপ -->
+            <div class="admin-box" id="powerSec15" style="background: #fffbeb; border-color: #f59e0b;">
+                <h4>
+                    <span id="titlePower15"><span class="power-badge-tag">১৫</span> রাইডার এক্সক্লুসিভ বিরতি সেটআপ</span>
+                    <button class="btn btn-dark btn-xs" id="lockPower15" onclick="togglePowerLock(15)">🔒 লকড</button>
+                </h4>
+                <div id="containerPower15" style="opacity: 0.5; pointer-events: none;">
+                    <div class="form-group">
+                        <select id="specialRiderSelect15" class="form-control" onchange="loadSelectedRiderBreakValues()">
+                            <option value="">-- রাইডার বেছে নিন --</option>
+                        </select>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin: 6px 0;">
+                        <div>
+                            <label class="form-label">বিরতির সময় (মিঃ)</label>
+                            <input type="number" id="quickSpBreakMin" class="form-control" value="30" placeholder="৩০ মিনিট">
+                        </div>
+                        <div>
+                            <label class="form-label">দৈনিক কতবার বিরতি পাবে?</label>
+                            <input type="number" id="quickSpBreakDailyLimit" class="form-control" value="2" placeholder="যেমন: ২ বার">
+                        </div>
+                    </div>
+
+                    <div class="switch-row" style="background:#e0f2fe; border-color:#7dd3fc; margin-top:6px;">
+                        <strong style="font-size:11px; color:#0369a1;">এই রাইডারকে সিরিয়ালে বিরতি নেওয়ার অনুমতি দিন</strong>
+                        <input type="checkbox" id="quickSpBreakAllowed" style="width:18px; height:18px; cursor:pointer;">
+                    </div>
+
+                    <div style="display: flex; gap: 6px; margin-top: 6px;">
+                        <button class="btn btn-info btn-xs" style="flex:1;" onclick="adminResetRiderBreakUsage15()">🔄 কাউন্ট জিরো করুন</button>
+                        <button class="btn btn-success btn-xs" style="flex:1;" onclick="saveQuickBreakPower()">💾 বিরতি সেভ করুন</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ১৬ নম্বর বক্স: রাইডার স্পেশাল পাওয়ার (দূরত্ব এবং গ্লোবাল এক্সেস) -->
+            <div class="admin-box" id="powerSec16" style="background: #f0fdf4; border-color: #10b981;">
+                <h4>
+                    <span id="titlePower16"><span class="power-badge-tag">১৬</span> রাইডার স্পেশাল পাওয়ার (দূরত্ব ও গ্লোবাল এক্সেস)</span>
+                    <button class="btn btn-dark btn-xs" id="lockPower16" onclick="togglePowerLock(16)">🔒 লকড</button>
+                </h4>
+                <div id="containerPower16" style="opacity: 0.5; pointer-events: none;">
+                    <div class="form-group">
+                        <select id="specialRiderSelect16" class="form-control" onchange="loadSelectedRiderDistanceValues()">
+                            <option value="">-- রাইডার বেছে নিন --</option>
+                        </select>
+                    </div>
+                    <div class="special-grid">
+                        <div><label class="form-label">কাউন্টডাউন (মিঃ)</label><input type="number" id="quickSpCutMin" class="form-control" value="10"></div>
+                        <div><label class="form-label">দূরত্ব (মিটার)</label><input type="number" id="quickSpDist" class="form-control" value="200"></div>
+                    </div>
+                    
+                    <div class="switch-row" style="background:#f0fdf4; border-color:#86efac; margin-top:6px;">
+                        <strong style="font-size:11px; color:#065f46;">দূর থেকে এন্ট্রি ও কাট পাওয়ার (গ্লোবাল এক্সেস)</strong>
+                        <input type="checkbox" id="quickSpGlobalPower" style="width:18px; height:18px; cursor:pointer;">
+                    </div>
+
+                    <button class="btn btn-success btn-block" style="margin-top:6px;" onclick="saveQuickDistancePower()">⚡ দূরত্ব ও গ্লোবাল পাওয়ার সেভ করুন</button>
+                </div>
+            </div>
+
+            <div class="admin-box" id="powerSec17">
+                <h4>
+                    <span id="titlePower17"><span class="power-badge-tag">১৭</span> স্ট্যান্ডের নাম ও GPS লোকেশন</span>
+                    <button class="btn btn-dark btn-xs" id="lockPower17" onclick="togglePowerLock(17)">🔒 লকড</button>
+                </h4>
+                <div id="containerPower17" style="opacity: 0.5; pointer-events: none;">
+                    <div class="form-group">
+                        <label class="form-label">স্ট্যান্ডের নাম</label>
+                        <div style="display: flex; gap: 6px;">
+                            <input type="text" id="adminStandName" class="form-control" placeholder="স্ট্যান্ডের নাম">
+                            <button class="btn btn-primary btn-xs" onclick="saveStandName()">সেভ</button>
+                        </div>
+                    </div>
+                    <div class="switch-row">
+                        <strong>GPS বাটন আনলক সুইচ</strong>
+                        <input type="checkbox" id="gpsUnlockSwitch" onchange="toggleGpsSetButton()" style="width: 20px; height: 20px;">
+                    </div>
+                    <button id="btnSetStandGps" class="btn btn-danger btn-block" disabled onclick="setStandCurrentLocation()">🔒 বর্তমান অবস্থানকে কেন্দ্র হিসেবে সেট করুন</button>
+                    <p id="savedStandCoords" style="font-size: 11px; color: #475569; margin-top: 5px;"></p>
+                </div>
+            </div>
+
+            <div class="admin-box" id="powerSec18">
+                <h4>
+                    <span id="titlePower18"><span class="power-badge-tag">১৮</span> সভাপতি প্যানেল (প্রধান উপদেষ্টা সহ)</span>
+                    <button class="btn btn-dark btn-xs" id="lockPower18" onclick="togglePowerLock(18)">🔒 লকড</button>
+                </h4>
+                <div id="containerPower18" style="opacity: 0.5; pointer-events: none;">
+                    <div class="form-group">
+                        <label class="form-label">প্রধান উপদেষ্টা, সভাপতি, সহ-সভাপতি ও সাংগঠনিক সম্পাদক নাম ও ছবি</label>
+                        <input type="text" id="admChiefName" class="form-control" placeholder="প্রধান উপদেষ্টার নাম" style="margin-bottom:3px;">
+                        <input type="file" id="admChiefPhoto" accept="image/*" class="form-control" style="padding:3px; margin-bottom:6px;">
+
+                        <input type="text" id="admPresName" class="form-control" placeholder="সভাপতির নাম" style="margin-bottom:3px;">
+                        <input type="file" id="admPresPhoto" accept="image/*" class="form-control" style="padding:3px; margin-bottom:6px;">
+                        
+                        <input type="text" id="admVpName" class="form-control" placeholder="সহ-সভাপতির নাম" style="margin-bottom:3px;">
+                        <input type="file" id="admVpPhoto" accept="image/*" class="form-control" style="padding:3px; margin-bottom:6px;">
+                        
+                        <input type="text" id="admSecName" class="form-control" placeholder="সাংগঠনিক সম্পাদকের নাম" style="margin-bottom:3px;">
+                        <input type="file" id="admSecPhoto" accept="image/*" class="form-control" style="padding:3px; margin-bottom:6px;">
+                        
+                        <button class="btn btn-success btn-block" onclick="saveLeadersInfo()">💾 সেভ করুন</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="admin-box" id="powerSec19">
+                <h4>
+                    <span id="titlePower19"><span class="power-badge-tag">১৯</span> নোটিশ বোর্ড</span>
+                    <button class="btn btn-dark btn-xs" id="lockPower19" onclick="togglePowerLock(19)">🔒 লকড</button>
+                </h4>
+                <div id="containerPower19" style="opacity: 0.5; pointer-events: none;">
+                    <div class="form-group">
+                        <label class="form-label">নোটিশ বোর্ড আপডেট (লেখা ও ছবি)</label>
+                        <textarea id="admNoticeText" rows="2" class="form-control" placeholder="জরুরি নোটিশ লিখুন..." style="margin-bottom:4px;"></textarea>
+                        <input type="file" id="admNoticePhoto" accept="image/*" class="form-control" style="padding:3px; margin-bottom:5px;">
+                        <button class="btn btn-warning btn-block" onclick="saveNoticeBoard()">📢 প্রকাশ করুন</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="admin-box" id="powerSec20">
+                <h4>
+                    <span id="titlePower20"><span class="power-badge-tag">২০</span> রাইডারের ছবি এডিটিং ও চেঞ্জ</span>
+                    <button class="btn btn-dark btn-xs" id="lockPower20" onclick="togglePowerLock(20)">🔒 লকড</button>
+                </h4>
+                <div id="containerPower20" style="opacity: 0.5; pointer-events: none;">
+                    <div id="adminRegisteredListPhotoOnly">লোড হচ্ছে...</div>
+                </div>
+            </div>
+
+            <div class="admin-box" id="powerSec21">
+                <h4>
+                    <span id="titlePower21"><span class="power-badge-tag">২১</span> রাইডারের নাম ও ফোন নাম্বার চেঞ্জ</span>
+                    <button class="btn btn-dark btn-xs" id="lockPower21" onclick="togglePowerLock(21)">🔒 লকড</button>
+                </h4>
+                <div id="containerPower21" style="opacity: 0.5; pointer-events: none;">
+                    <div id="adminRegisteredListNamePhone">লোড হচ্ছে...</div>
+                </div>
+            </div>
+
+            <div class="admin-box" id="powerSec22">
+                <h4>
+                    <span id="titlePower22"><span class="power-badge-tag">২২</span> রাইডার সাসপেন্ড ও আনসাসপেন্ড</span>
+                    <button class="btn btn-dark btn-xs" id="lockPower22" onclick="togglePowerLock(22)">🔒 লকড</button>
+                </h4>
+                <div id="containerPower22" style="opacity: 0.5; pointer-events: none;">
+                    <div id="adminRegisteredListSuspend">লোড হচ্ছে...</div>
+                </div>
+            </div>
+
+            <!-- ২৩ নম্বর বক্স: গ্লোবাল বা দূরবর্তী স্থান থেকে ম্যানুয়াল সিরিয়াল এন্ট্রি বক্স -->
+            <div class="admin-box" id="powerSec23" style="background: #e0f2fe; border: 2px solid #0284c7;">
+                <h4>
+                    <span id="titlePower23"><span class="power-badge-tag">২৩</span> দূরবর্তী স্থান থেকে ম্যানুয়াল সিরিয়াল এন্ট্রি প্যানেল</span>
+                    <button class="btn btn-dark btn-xs" id="lockPower23" onclick="togglePowerLock(23)">🔒 লকড</button>
+                </h4>
+                <div id="containerPower23" style="opacity: 0.5; pointer-events: none;">
+                    <p style="font-size: 11px; color: #0369a1; margin-bottom: 6px;">
+                        * এই বক্স থেকে যে কোনো স্থান থেকে দূরত্ব বিবেচনা ছাড়াই সরাসরি ম্যানুয়াল সিরিয়াল যুক্ত করা যাবে।
+                    </p>
+                    <div class="form-group">
+                        <label class="form-label">রাইডারের নাম লিখুন</label>
+                        <input type="text" id="globalMasterManualName" class="form-control" placeholder="রাইডারের নাম">
+                    </div>
+                    <button class="btn btn-success btn-block" onclick="submitGlobalMasterManualEntry()">➕ দূরবর্তী স্থানে থেকে ম্যানুয়াল সিরিয়াল দিন</button>
+                </div>
+            </div>
+
+            <!-- ২৪ নম্বর বক্স: অতিরিক্ত / সংরক্ষিত অ্যাডমিন ম্যানেজমেন্ট বক্স -->
+            <div class="admin-box" id="powerSec24" style="background: #fdf4ff; border: 2px solid #c084fc;">
+                <h4>
+                    <span id="titlePower24"><span class="power-badge-tag">২৪</span> অতিরিক্ত ম্যানেজমেন্ট ও প্যানেল কনফিগারেশন</span>
+                    <button class="btn btn-dark btn-xs" id="lockPower24" onclick="togglePowerLock(24)">🔒 লকড</button>
+                </h4>
+                <div id="containerPower24" style="opacity: 0.5; pointer-events: none;">
+                    <p style="font-size: 11px; color: #7e22ce; margin-bottom: 6px;">
+                        * এখানে অতিরিক্ত ডাটা ব্যাকআপ ও ম্যানেজমেন্ট কন্ট্রোল রয়েছে।
+                    </p>
+                    <button class="btn btn-primary btn-block btn-xs" onclick="showToast('✅ অতিরিক্ত প্যানেল কনফিগারেশন সংরক্ষিত আছে!', 'success')">⚙️ সিস্টেম স্ট্যাটাস চেক করুন</button>
+                </div>
+            </div>
+
         </div>
     </div>
 
@@ -1334,7 +1379,7 @@
         </div>
     </div>
 
-    <!-- MODAL FOR EDITING SAMITY MEMBER PHOTO -->
+    <!-- MODAL FOR EDITING SAMITY MEMBER PHOTO ONLY -->
     <div class="modal-backdrop" id="samityEditPhotoModal" style="z-index: 6500;">
         <div class="modal-card" style="max-width: 360px;">
             <h4 style="color: var(--primary); margin-bottom: 8px;">🖼️ সদস্যের ছবি পরিবর্তন</h4>
@@ -1437,10 +1482,10 @@
         let currentAdminSession = null;
         let masterPasswordStored = "692372";
         let subAdminCredentials = {
-            admin1: { pass: "admin123", assignedPowers: [10, 11, 12, 13, 14, 15, 16] },
-            admin2: { pass: "admin234", assignedPowers: [17, 18, 19] },
-            admin3: { pass: "admin345", assignedPowers: [20, 21, 22] },
-            admin4: { pass: "admin456", assignedPowers: [23, 24, 25, 26, 27] }
+            admin1: { pass: "admin123", assignedPowers: [1, 2, 3, 4, 5, 6, 7] },
+            admin2: { pass: "admin234", assignedPowers: [8, 12, 13] },
+            admin3: { pass: "admin345", assignedPowers: [9, 15, 16] },
+            admin4: { pass: "admin456", assignedPowers: [10, 17, 18, 19, 20, 21, 22, 23, 24] }
         };
 
         let fourAdminProfiles = {
@@ -1450,7 +1495,7 @@
             admin4: { name: "পারভেজ", roleTitle: "হিসাবরক্ষক", phone: "00000000000", photo: "https://via.placeholder.com/80?text=Admin4" }
         };
 
-        let standSettings = { name: "চন্দ্রিমা বাইক স্ট্যান্ড", lat: null, lng: null, leaders: {} };
+        let standSettings = { name: "চন্দ্রিমা বাইক স্ট্যান্ড", lat: null, lng: null };
         let registeredRiders = {};
         let activeSerials = {};
 
@@ -1563,7 +1608,6 @@
                 { enableHighAccuracy: true, maximumAge: 5000, timeout: 15000 }
             );
         }
-
         function enterMainApp() {
             try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch(e){}
             document.getElementById("stepAllow").classList.add("done");
@@ -1695,14 +1739,22 @@
             const data = snap.val() || {};
             standSettings.name = data.name || "চন্দ্রিমা বাইক স্ট্যান্ড";
             standSettings.lat = data.lat || null; standSettings.lng = data.lng || null;
-            standSettings.leaders = data.leaders || {};
             document.getElementById("displayStandName").innerText = standSettings.name;
             document.getElementById("adminStandName").value = standSettings.name;
             if (standSettings.lat && standSettings.lng) {
                 document.getElementById("savedStandCoords").innerText = `সেট করা লোকেশন: ${standSettings.lat.toFixed(5)}, ${standSettings.lng.toFixed(5)}`;
             }
             updateDistanceDisplay();
-            
+            if (data.leaders) {
+                if (data.leaders.chiefName) document.getElementById("nameChiefAdvisor").innerText = data.leaders.chiefName;
+                if (data.leaders.chiefPhoto) document.getElementById("imgChiefAdvisor").src = data.leaders.chiefPhoto;
+                if (data.leaders.presName) document.getElementById("namePresident").innerText = data.leaders.presName;
+                if (data.leaders.presPhoto) document.getElementById("imgPresident").src = data.leaders.presPhoto;
+                if (data.leaders.vpName) document.getElementById("nameVicePresident").innerText = data.leaders.vpName;
+                if (data.leaders.vpPhoto) document.getElementById("imgVicePresident").src = data.leaders.vpPhoto;
+                if (data.leaders.secName) document.getElementById("nameOrgSecretary").innerText = data.leaders.secName;
+                if (data.leaders.secPhoto) document.getElementById("imgOrgSecretary").src = data.leaders.secPhoto;
+            }
             if (data.notice) {
                 document.getElementById("displayNoticeText").innerText = data.notice.text || "কোনো নতুন নোটিশ নেই।";
                 const nImg = document.getElementById("displayNoticeImg");
@@ -1715,7 +1767,6 @@
                 renderAdminFourRoleProfilesEditor();
                 updateAdminRoleUIElements();
             }
-            renderRollingMarquee();
         });
 
         db.ref('subAdminConfig').on('value', (snap) => {
@@ -1832,42 +1883,13 @@
             `).join('');
         });
 
-        // হরিজন্টাল রোলিং মারকিউ রেন্ডার ফাংশন (নেতৃবৃন্দ + ৪ জন অ্যাডমিন)
-        function renderRollingMarquee() {
-            const track = document.getElementById("marqueeTrackContainer");
-            if (!track) return;
-            const l = standSettings.leaders || {};
-            
-            let items = [
-                { role: "প্রধান উপদেষ্টা", name: l.chiefName || "সেট করা নেই", photo: l.chiefPhoto || 'https://via.placeholder.com/80' },
-                { role: "সভাপতি", name: l.presName || "সেট করা নেই", photo: l.presPhoto || 'https://via.placeholder.com/80' },
-                { role: "সহ-সভাপতি", name: l.vpName || "সেট করা নেই", photo: l.vpPhoto || 'https://via.placeholder.com/80' },
-                { role: "সাংগঠনিক সম্পাদক", name: l.secName || "সেট করা নেই", photo: l.secPhoto || 'https://via.placeholder.com/80' }
-            ];
-
-            ['admin1', 'admin2', 'admin3', 'admin4'].forEach(role => {
-                const p = fourAdminProfiles[role] || {};
-                items.push({ role: p.roleTitle || role, name: p.name || "সেট করা নেই", photo: p.photo || 'https://via.placeholder.com/80' });
-            });
-
-            // লুপ ইফেক্ট মসৃণ করার জন্য দুইবার আইটেম রেন্ডার করা হচ্ছে
-            const htmlContent = items.concat(items).map(item => `
-                <div class="marquee-item">
-                    <img src="${item.photo}" alt="${item.name}">
-                    <div class="marquee-item-meta">
-                        <span class="marquee-role">${item.role}</span>
-                        <div class="marquee-name">${item.name}</div>
-                    </div>
-                </div>
-            `).join('');
-
-            track.innerHTML = htmlContent;
-        }
-
         function updateAdminRoleUIElements() {
-            renderRollingMarquee();
             ['admin1', 'admin2', 'admin3', 'admin4'].forEach(role => {
                 const p = fourAdminProfiles[role] || { name: role, roleTitle: 'অ্যাডমিন', phone: '' };
+                document.getElementById(`img${role.charAt(0).toUpperCase() + role.slice(1)}`).src = p.photo || 'https://via.placeholder.com/80';
+                document.getElementById(`role${role.charAt(0).toUpperCase() + role.slice(1)}`).innerText = p.roleTitle || 'পদবি';
+                document.getElementById(`name${role.charAt(0).toUpperCase() + role.slice(1)}`).innerText = p.name || 'সেট করা নেই';
+
                 const payOpt = document.getElementById(`payOpt${role.charAt(0).toUpperCase() + role.slice(1)}`);
                 if (payOpt) payOpt.innerText = `${p.roleTitle || role}: ${p.name}`;
 
@@ -2761,6 +2783,7 @@
                     }
                 }
 
+                // এন্ট্রি কে দিয়েছেন তার প্রমাণ বা নাম প্রদর্শনের জন্য
                 let entryProofText = item.enteredBy ? `<div style="font-size:9px; color:#0369a1; font-weight:600;">এন্ট্রি: ${item.enteredBy}</div>` : '';
 
                 return `
@@ -2864,20 +2887,20 @@
 
             let allowedPowers = [];
             if (isMaster) {
-                allowedPowers = [10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27];
+                allowedPowers = [1,2,3,4,5,6,7,8,9,10,11,12,13,15,16,17,18,19,20,21,22,23,24];
             } else {
                 allowedPowers = subAdminCredentials[currentAdminSession]?.assignedPowers || [];
             }
 
             let anySamityPower = false;
-            for (let p = 10; p <= 27; p++) {
+            for (let p = 1; p <= 24; p++) {
                 const secEl = document.getElementById(`powerSec${p}`);
                 const badgeTag = document.querySelector(`#powerSec${p} .power-badge-tag`);
                 if (secEl) {
                     const hasPower = allowedPowers.includes(p);
                     secEl.style.display = hasPower ? "block" : "none";
                     if (badgeTag) { badgeTag.style.display = isMaster ? "inline-block" : "none"; }
-                    if (p <= 17 && hasPower) anySamityPower = true;
+                    if (p <= 13 && hasPower) anySamityPower = true;
                 }
             }
             document.getElementById("samityMasterWrapperBox").style.display = anySamityPower ? "block" : "none";
@@ -2892,11 +2915,13 @@
         }
 
         const POWER_DESCRIPTIONS = {
-            10: "১০. অফিসিয়াল উইনার ওডো সেটআপ", 11: "১১. ড্র-এর সময় ও তারিখ নির্ধারণ", 12: "১২. টাকার পারমিশন ও হুইল লক",
-            13: "১৩. রেজিস্ট্রেশন অন/অফ এবং টাকার কোটা", 14: "১৪. নতুন রেজিস্ট্রেশন আবেদন অনুমোদন", 15: "১৫. পেমেন্ট রিকুয়েস্ট এপ্রুভাল (স্ক্রিনশটসহ)",
-            16: "১৬. মেম্বার ম্যানেজমেন্ট ও ডিলিট", 17: "১৭. দায়িত্বশীল কর্মকর্তা ও ক্যাশিয়ার এডিটিং", 18: "১৮. রাইডার এক্সক্লুসিভ বিরতি সেটআপ",
-            19: "১৯. রাইডার স্পেশাল পাওয়ার (দূরত্ব ও গ্লোবাল)", 20: "২০. স্ট্যান্ড নাম ও GPS লোকেশন", 21: "২১. সভাপতি প্যানেল",
-            22: "২২. নোটিশ বোর্ড", 23: "২৩. রাইডারের ছবি এডিটিং ও চেঞ্জ", 24: "২৪. রাইডার নাম ও ফোন নম্বর চেঞ্জ", 25: "২৫. রাইডার সাসপেন্ড ও আনসাসপেন্ড", 26: "২৬. দূরবর্তী স্থান থেকে ম্যানুয়াল সিরিয়াল", 27: "২৭-৩৯. অতিরিক্ত সিস্টেম ম্যানেজমেন্ট"
+            1: "১. অফিসিয়াল উইনার ওডো সেটআপ", 2: "২. ড্র-এর সময় ও তারিখ নির্ধারণ", 3: "৩. টাকার পারমিশন ও হুইল লক",
+            4: "৪. রেজিস্ট্রেশন অন/অফ এবং টাকার কোটা", 5: "৫. নতুন রেজিস্ট্রেশন আবেদন অনুমোদন", 6: "৬. পেমেন্ট রিকুয়েস্ট এপ্রুভাল (সাধারণ)",
+            7: "৭. অ্যাডমিন ১ পেমেন্ট রিসিভ ও এপ্রুভাল", 8: "৮. অ্যাডমিন ২ পেমেন্ট রিসিভ ও এপ্রুভাল", 9: "৯. অ্যাডমিন ৩ পেমেন্ট রিসিভ ও এপ্রুভাল",
+            10: "১০. অ্যাডমিন ৪ পেমেন্ট রিসিভ ও এপ্রুভাল", 11: "১১. মেম্বার ম্যানেজমেন্ট ও ডিলিট", 12: "১২. ৪ জন অ্যাডমিন প্রোফাইল ও ছবি ম্যানেজমেন্ট",
+            13: "১৩. অ্যাডমিন প্যানেল ক্যাশিয়ার ও দায়িত্বশীল এডিটিং", 15: "১৫. রাইডার এক্সক্লুসিভ বিরতি সেটআপ", 
+            16: "১৬. রাইডার স্পেশাল পাওয়ার (দূরত্ব ও গ্লোবাল এক্সেস)", 17: "১৭. স্ট্যান্ড নাম ও GPS লোকেশন", 18: "১৮. সভাপতি প্যানেল",
+            19: "১৯. নোটিশ বোর্ড", 20: "২০. রাইডারের ছবি এডিটিং ও চেঞ্জ", 21: "২১. রাইডারের নাম ও ফোন নাম্বার চেঞ্জ", 22: "২২. রাইডার সাসপেন্ড ও আনসাসপেন্ড", 23: "২৩. দূরবর্তী স্থান থেকে ম্যানুয়াল সিরিয়াল এন্ট্রি", 24: "২৪. অতিরিক্ত সিস্টেম ম্যানেজমেন্ট"
         };
 
         function renderMasterAdminSubPasswordsViewer() {
@@ -2908,21 +2933,12 @@
                 const title = fourAdminProfiles[role]?.roleTitle || role;
                 html += `
                     <div style="display: flex; justify-content: space-between; align-items: center; background: white; padding: 6px 8px; border-radius: 6px; margin-bottom: 4px; border: 1px solid #cbd5e1;">
-                        <span style="font-size: 11px; font-weight: 700; color: #1e293b;">সিরিয়াল ১০-৩৯ (টেবিল): ${title} - <strong style="color: #dc2626; font-family: monospace; font-size: 12px; background: #fee2e2; padding: 1px 5px; border-radius: 4px;">${cred.pass}</strong></span>
-                        <div style="display:flex; align-items:center; gap:6px;">
-                            <button class="btn btn-warning btn-xs" onclick="openSubAdminEditPowerModal('${role}')" title="এডিট পাওয়ার">✏️ এডিট</button>
-                            <button class="btn btn-info btn-xs" onclick="masterLoginAsSubAdmin('${role}', '${cred.pass}')">🚀 এই প্যানেলে ঢুকুন</button>
-                        </div>
+                        <span style="font-size: 11px; font-weight: 700; color: #1e293b;">${title}: <strong style="color: #dc2626; font-family: monospace; font-size: 12px; background: #fee2e2; padding: 1px 5px; border-radius: 4px;">${cred.pass}</strong></span>
+                        <button class="btn btn-info btn-xs" onclick="masterLoginAsSubAdmin('${role}', '${cred.pass}')">🚀 এই প্যানেলে ঢুকুন</button>
                     </div>
                 `;
             });
             container.innerHTML = html;
-        }
-
-        function openSubAdminEditPowerModal(role) {
-            currentAdminSession = role;
-            openAdminPanelUI();
-            showToast(`⚙️ ${role.toUpperCase()} প্যানেলের পাওয়ার কনফিগারেশন মোড ওপেন হয়েছে।`, "success");
         }
 
         function masterLoginAsSubAdmin(role, pass) {
@@ -2941,7 +2957,7 @@
                 const assigned = cred.assignedPowers || [];
                 const title = fourAdminProfiles[role]?.roleTitle || role;
                 let checkboxesHtml = "";
-                [10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27].forEach(i => {
+                [1,2,3,4,5,6,7,8,9,10,11,12,13,15,16,17,18,19,20,21,22,23,24].forEach(i => {
                     const checked = assigned.includes(i) ? "checked" : "";
                     checkboxesHtml += `
                         <label style="display:inline-flex; align-items:center; gap:3px; background:#f1f5f9; padding:2px 6px; border-radius:5px; font-size:10px; margin:2px; cursor:pointer; border:1px solid #cbd5e1;">
@@ -3010,7 +3026,7 @@
                             <button class="btn btn-success btn-xs" onclick="saveSingleRoleAdminProfile('${role}')">💾 সেভ</button>
                         </div>
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 4px;">
-                            <input type="text" id="editAdminRoleTitle_${role}" value="${p.roleTitle || ''}" class="form-control" placeholder="পদবি">
+                            <input type="text" id="editAdminRoleTitle_${role}" value="${p.roleTitle || ''}" class="form-control" placeholder="পদবি (যেমন: ক্যাশিয়ার)">
                             <input type="text" id="editAdminName_${role}" value="${p.name || ''}" class="form-control" placeholder="নাম">
                         </div>
                         <div style="display: grid; grid-template-columns: 1fr; gap: 6px; margin-bottom: 4px;">
@@ -3071,6 +3087,14 @@
         function renderAdminSamityPendingPaymentsAllAndIndividual() {
             const list = Object.entries(samityPendingPayments).filter(([k, r]) => r.status === 'pending');
             document.getElementById("adminSamityPendingPayList").innerHTML = list.length === 0 ? "কোনো পেন্ডিং পেমেন্ট নেই।" : list.map(([key, r]) => renderPaymentItemHTML(key, r)).join('');
+
+            ['admin1', 'admin2', 'admin3', 'admin4'].forEach(role => {
+                const container = document.getElementById(`${role}PendingPayList`);
+                if (container) {
+                    const roleList = list.filter(([k, r]) => r.adminRole === role);
+                    container.innerHTML = roleList.length === 0 ? `কোনো পেন্ডিং পেমেন্ট নেই` : roleList.map(([key, r]) => renderPaymentItemHTML(key, r)).join('');
+                }
+            });
         }
 
         function renderPaymentItemHTML(key, r) {
@@ -3345,7 +3369,7 @@
             const k = document.getElementById("specialRiderSelect15").value;
             if (!k) { showToast("⚠️ আগে রাইডার সিলেক্ট করুন।", "error"); return; }
             await db.ref('registeredRiders/' + k).update({ todayBreakCount: 0 });
-            showToast("🔄 রাইডারের আজকের বিরতি কাউন্ট রিসেট করা হয়েছে!", "success");
+            showToast("🔄 রাইডারের আজকের বিরতি কাউন্ট রিসেট (জিরো) করা হয়েছে!", "success");
         }
 
         function toggleGpsSetButton() { document.getElementById("btnSetStandGps").disabled = !document.getElementById("gpsUnlockSwitch").checked; }
@@ -3375,7 +3399,7 @@
             if (secFile) updates['leaders/secPhoto'] = await compressImageToBase64(secFile, 200);
 
             await db.ref('standConfig').update(updates);
-            showToast("✅ নেতৃবৃন্দের তথ্য সেভ হয়েছে!", "success");
+            showToast("✅ নেতৃবৃন্দের তথ্য (প্রধান উপদেষ্টা সহ) সেভ হয়েছে!", "success");
         }
         async function saveNoticeBoard() {
             const updates = {};
@@ -3389,3 +3413,4 @@
     </script>
 </body>
 </html>
+
