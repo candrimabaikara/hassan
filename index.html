@@ -393,18 +393,6 @@
         .day-box.partial { background: #fef9c3; border-color: #eab308; color: #854d0e; font-weight: 700; }
         .day-box.unpaid { background: #fee2e2; border-color: #ef4444; color: #991b1b; }
 
-        .member-item-card {
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
-            border-radius: 10px;
-            padding: 8px;
-            margin-bottom: 6px;
-            cursor: pointer;
-        }
-
-        .winner-badge { background: #2563eb; color: white; font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 10px; display: inline-block; }
-        .pending-badge { background: #d97706; color: white; font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 10px; display: inline-block; }
-
         .entry-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
         .box-card { background: white; border-radius: 12px; padding: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.06); border: 1px solid #cbd5e1; display: flex; flex-direction: column; justify-content: space-between; }
         .box-online { border-top: 4px solid #4f46e5; }
@@ -431,6 +419,7 @@
         .serial-item.top-2 { background: linear-gradient(to right, #fffbeb, #fef3c7); border-color: #fcd34d; }
         .serial-item.top-3 { background: linear-gradient(to right, #f0fdf4, #dcfce7); border-color: #86efac; }
         .serial-item.is-cut { background: #fee2e2; border: 1.5px dashed #ef4444; }
+        .serial-item.is-break { background: #fef3c7; border: 1.5px dashed #f59e0b; }
 
         .rider-left { display: flex; align-items: center; gap: 8px; }
         .serial-num { width: 28px; height: 28px; border-radius: 50%; background: var(--primary); color: white; font-weight: 700; display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; }
@@ -481,21 +470,6 @@
             border-radius: 5px;
             font-size: 11px;
             margin-right: 4px;
-        }
-        .perm-member-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 6px 8px;
-            border-radius: 8px;
-            margin-bottom: 4px;
-            background: white;
-            border: 1px solid #e2e8f0;
-        }
-        .perm-member-row.is-winner-row {
-            background: #f1f5f9;
-            opacity: 0.85;
-            border-color: #cbd5e1;
         }
     </style>
 </head>
@@ -560,7 +534,7 @@
             </div>
         </div>
 
-        <!-- LEADERS STRIP (প্রধান উপদেষ্টা সহ ৪ জন) -->
+        <!-- LEADERS STRIP -->
         <div class="leaders-strip">
             <div class="leader-chip">
                 <img src="https://via.placeholder.com/80?text=উপদেষ্টা" id="imgChiefAdvisor" class="leader-img" alt="প্রধান উপদেষ্টা">
@@ -718,7 +692,7 @@
 
                 <div id="samityPaySection" style="display: none;">
                     <p style="font-size: 11px; color: #475569; margin-bottom: 8px;">
-                        নিচে নির্দিষ্ট অ্যাডমিনদের বিকাশ/নগদ নম্বর দেওয়া হলো। আপনার পছন্দমতো যেকোনো একজন অ্যাডমিনের কাছে টাকা পাঠিয়ে মাধ্যম (বিকাশ/নগদ) ও নম্বর দিয়ে নিচের তথ্য ফর্ম পূরণ করুন:
+                        নিচে নির্দিষ্ট অ্যাডমিনদের বিকাশ/নগদ নম্বর দেওয়া হলো। আপনার পছন্দমতো যেকোনো একজন অ্যাডমিনের কাছে টাকা পাঠিয়ে মাধ্যম ও নম্বর দিয়ে নিচের তথ্য ফর্ম পূরণ করুন:
                     </p>
 
                     <div id="fourAdminsPaymentCardsContainer" style="margin-bottom: 10px;"></div>
@@ -1124,7 +1098,7 @@
             <!-- রাইডার স্পেশাল পাওয়ার (বিরতি সিস্টেম সহ) -->
             <div class="admin-box" id="powerSec16" style="background: #f0fdf4; border-color: #10b981;">
                 <h4>
-                    <span id="titlePower16"><span class="power-badge-tag">১৬</span> রাইডার স্পেশাল পাওয়ার (দূরত্ব, এন্ট্রি/কাট ও বিরতি)</span>
+                    <span id="titlePower16"><span class="power-badge-tag">১৬</span> রাইডার স্পেশাল পাওয়ার ও এক্সক্লুসিভ বিরতি সেটআপ</span>
                     <button class="btn btn-dark btn-xs" id="lockPower16" onclick="togglePowerLock(16)">🔒 লকড</button>
                 </h4>
                 <div id="containerPower16" style="opacity: 0.5; pointer-events: none;">
@@ -1136,7 +1110,12 @@
                     <div class="special-grid">
                         <div><label class="form-label">কাউন্টডাউন (মিঃ)</label><input type="number" id="quickSpCutMin" class="form-control" value="10"></div>
                         <div><label class="form-label">দূরত্ব (মিটার)</label><input type="number" id="quickSpDist" class="form-control" value="200"></div>
-                        <div><label class="form-label">বিরতি (মিঃ)</label><input type="number" id="quickSpBreakMin" class="form-control" value="30" placeholder="আধা ঘন্টা বা বেশি"></div>
+                        <div><label class="form-label">বিরতির সময় (মিঃ)</label><input type="number" id="quickSpBreakMin" class="form-control" value="30" placeholder="কত মিনিট"></div>
+                    </div>
+
+                    <div style="margin-top: 6px; margin-bottom: 6px;">
+                        <label class="form-label">সর্বোচ্চ বিরতি নেওয়ার সংখ্যা (কতবার)</label>
+                        <input type="number" id="quickSpMaxBreaks" class="form-control" value="2" placeholder="যেমন: ২ বার">
                     </div>
                     
                     <div class="switch-row" style="background:#f0fdf4; border-color:#86efac; margin-top:6px;">
@@ -1144,7 +1123,12 @@
                         <input type="checkbox" id="quickSpGlobalPower" style="width:18px; height:18px; cursor:pointer;">
                     </div>
 
-                    <button class="btn btn-success btn-block" style="margin-top:6px;" onclick="saveQuickSpecialPower()">⚡ স্পেশাল পাওয়ার সেভ করুন</button>
+                    <div class="switch-row" style="background:#eff6ff; border-color:#93c5fd; margin-top:6px;">
+                        <strong style="font-size:11px; color:#1e40af;">☕ এই রাইডারকে সিরিয়ালে বিরতি নেওয়ার অনুমতি দিন</strong>
+                        <input type="checkbox" id="quickSpAllowBreak" style="width:18px; height:18px; cursor:pointer;">
+                    </div>
+
+                    <button class="btn btn-success btn-block" style="margin-top:6px;" onclick="saveQuickSpecialPower()">⚡ স্পেশাল পাওয়ার ও বিরতি সেভ করুন</button>
                 </div>
             </div>
 
@@ -1447,7 +1431,6 @@
             } catch(e){}
         }
 
-        // ২০ সেকেন্ড পর অটোমেটিক অ্যালার্ম বন্ধ হওয়ার লজিক
         function startAlarmSound(title, desc, alarmKey) {
             if (acknowledgedAlarmKey === alarmKey) return;
             document.getElementById("alarmTitle").innerText = title;
@@ -1462,7 +1445,7 @@
             if (alarmTimeoutTimer) clearTimeout(alarmTimeoutTimer);
             alarmTimeoutTimer = setTimeout(() => {
                 stopMyAlarm();
-            }, 20000); // ২০ সেকেন্ড
+            }, 20000);
         }
 
         function stopMyAlarm() {
@@ -1581,7 +1564,9 @@
                 cutMin: rider?.customCutMin || 10, 
                 distMeters: rider?.customDistMeters || 200,
                 hasGlobalPower: rider?.hasGlobalPower || false,
-                breakMin: rider?.customBreakMin || 0
+                breakMin: rider?.customBreakMin || 30,
+                maxBreaks: rider?.customMaxBreaks || 2,
+                allowBreak: rider?.allowBreak || false
             };
         }
 
@@ -1738,6 +1723,7 @@
             activeSerials = snap.val() || {};
             renderSerialList();
             checkCutCountdowns();
+            checkBreakCountdowns();
         });
 
         db.ref('cutHistory').on('value', (snap) => {
@@ -2405,7 +2391,7 @@
             const riderKey = 'r_' + Date.now();
             const base64Img = await compressImageToBase64(photoFile, 220);
             await db.ref('registeredRiders/' + riderKey).set({
-                name, phone, photo: base64Img, createdAt: Date.now(), customCutMin: 10, customDistMeters: 200, hasGlobalPower: false, customBreakMin: 30, isSuspended: false
+                name, phone, photo: base64Img, createdAt: Date.now(), customCutMin: 10, customDistMeters: 200, hasGlobalPower: false, customBreakMin: 30, customMaxBreaks: 2, allowBreak: false, isSuspended: false
             });
 
             localStorage.setItem("myRiderPhone", riderKey);
@@ -2432,7 +2418,6 @@
             const cfg = getRiderSecretConfig(rider.name, rider.phone);
             const allowedDist = cfg.distMeters || 200;
 
-            // স্পেশাল গ্লোবাল পাওয়ার থাকলে দূরত্ব চেক বাইপাস হবে
             if (!cfg.hasGlobalPower) {
                 if (!checkWithinStandBoundary(allowedDist)) return;
             }
@@ -2442,7 +2427,7 @@
             localStorage.setItem("myRiderName", myLocalRiderName);
 
             db.ref('activeSerials').push({
-                name: rider.name, phone: rider.phone || '', photo: rider.photo, type: 'online', joinedAt: Date.now()
+                name: rider.name, phone: rider.phone || '', photo: rider.photo, type: 'online', joinedAt: Date.now(), breaksUsed: 0
             });
             showToast("✅ স্ট্যান্ডে এসে অনলাইন সিরিয়াল যুক্ত হয়েছে!", "success");
         }
@@ -2467,7 +2452,7 @@
             localStorage.setItem("myRiderName", name);
 
             db.ref('activeSerials').push({
-                name, phone: matchedRider ? matchedRider.phone : null, photo: matchedRider ? matchedRider.photo : null, type: 'manual', joinedAt: Date.now()
+                name, phone: matchedRider ? matchedRider.phone : null, photo: matchedRider ? matchedRider.photo : null, type: 'manual', joinedAt: Date.now(), breaksUsed: 0
             });
             document.getElementById("manualRiderName").value = "";
             showToast("✅ ম্যানুয়াল সিরিয়াল যুক্ত হয়েছে!", "success");
@@ -2482,12 +2467,11 @@
 
             const matchedRider = Object.values(registeredRiders).find(r => normalizeName(r.name) === normalizeName(myLocalRiderName));
             if (matchedRider && matchedRider.isSuspended) return;
-            if (cfg.hasGlobalPower) return; // স্পেশাল পাওয়ার থাকলে অটো কাটা যাবে না
+            if (cfg.hasGlobalPower) return;
 
-            // ২০০ মিটারের বাইরে গেলে অটোমেটিক সিরিয়াল কাটা যাবে (১০ মিনিট কাউন্টডাউন)
             if (dist > maxDist && isInSerial) {
                 const mySerialEntry = Object.entries(activeSerials).find(([id, s]) => normalizeName(s.name) === normalizeName(myLocalRiderName));
-                if (mySerialEntry && !mySerialEntry[1].cutUntil) {
+                if (mySerialEntry && !mySerialEntry[1].cutUntil && !mySerialEntry[1].breakUntil) {
                     const cutMinutes = cfg.cutMin || 10;
                     const cutEnd = Date.now() + (cutMinutes * 60000);
                     db.ref('activeSerials/' + mySerialEntry[0]).update({ cutUntil: cutEnd, cutBy: 'GPS সীমার বাইরে', reason: 'সীমা অতিক্রম' });
@@ -2508,6 +2492,7 @@
 
             await db.ref('activeSerials/' + serialId).update({
                 cutUntil: cutEnd,
+                breakUntil: null,
                 cutBy: cutterName,
                 reason: 'স্ট্যান্ডে নেই'
             });
@@ -2515,11 +2500,38 @@
             showToast(`✂️ স্ট্যান্ডে না থাকায় ${cutMinutes} মিনিটের কাউন্টডাউন শুরু হয়েছে!`, "error");
         }
 
+        async function takeBreakSerial(serialId) {
+            const item = activeSerials[serialId];
+            if (!item) return;
+            const cfg = getRiderSecretConfig(item.name, item.phone);
+
+            if (!cfg.allowBreak) {
+                showToast("🚫 অ্যাডমিন আপনাকে বিরতি নেওয়ার অনুমতি দেননি!", "error");
+                return;
+            }
+
+            const breaksUsed = Number(item.breaksUsed || 0);
+            if (breaksUsed >= (cfg.maxBreaks || 2)) {
+                showToast("🚫 আপনার নির্ধারিত বিরতির কোটা শেষ হয়ে গেছে!", "error");
+                return;
+            }
+
+            const breakMinutes = cfg.breakMin || 30;
+            const breakEnd = Date.now() + (breakMinutes * 60000);
+
+            await db.ref('activeSerials/' + serialId).update({
+                breakUntil: breakEnd,
+                cutUntil: null,
+                breaksUsed: breaksUsed + 1
+            });
+            showToast(`☕ সফলভাবে ${breakMinutes} মিনিটের বিরতি নেওয়া হয়েছে! (বাকি ${cfg.maxBreaks - (breaksUsed + 1)} বার)`, "success");
+        }
+
         async function restoreSerial(serialId) {
             const item = activeSerials[serialId];
             if (!item) return;
 
-            await db.ref('activeSerials/' + serialId).update({ cutUntil: null, cutBy: null, reason: null });
+            await db.ref('activeSerials/' + serialId).update({ cutUntil: null, breakUntil: null, cutBy: null, reason: null });
             showToast("✅ সফলভাবে সিরিয়াল ফিরিয়ে আনা হয়েছে!", "success");
         }
 
@@ -2532,6 +2544,16 @@
             });
         }
         setInterval(checkCutCountdowns, 2000);
+
+        function checkBreakCountdowns() {
+            const now = Date.now();
+            Object.entries(activeSerials).forEach(([id, item]) => {
+                if (item.breakUntil && now >= item.breakUntil) {
+                    db.ref('activeSerials/' + id).update({ breakUntil: null });
+                }
+            });
+        }
+        setInterval(checkBreakCountdowns, 2000);
 
         function getSortedSerials() {
             return Object.entries(activeSerials).map(([id, val]) => ({ id, ...val })).sort((a, b) => a.joinedAt - b.joinedAt);
@@ -2553,21 +2575,32 @@
             container.innerHTML = sorted.map((item, index) => {
                 const pos = index + 1;
                 const isCut = item.cutUntil && now < item.cutUntil;
+                const isOnBreak = item.breakUntil && now < item.breakUntil;
                 const isMyAccount = myLocalRiderName && normalizeName(item.name) === normalizeName(myLocalRiderName);
+                const cfg = getRiderSecretConfig(item.name, item.phone);
 
-                if (pos <= 3 && isMyAccount && !isCut) {
+                if (pos <= 3 && isMyAccount && !isCut && !isOnBreak) {
                     startAlarmSound(`🚨 আপনি এখন ${pos} নম্বর সিরিয়ালে!`, `প্রস্তুত হন।`, `${item.id}_pos_${pos}`);
                 }
 
                 let cls = "serial-item" + (pos === 1 ? " top-1" : (pos === 2 ? " top-2" : (pos === 3 ? " top-3" : "")));
                 if (isCut) cls += " is-cut";
+                if (isOnBreak) cls += " is-break";
 
                 let actionBtns = "";
                 if (isCut) {
                     const remSec = Math.ceil((item.cutUntil - now) / 1000);
                     actionBtns = `<span style="font-size:11px; color:#dc2626; font-weight:700;">✂️ কাউন্টডাউন (${remSec}সেঃ)</span> <button class="btn btn-success btn-xs" onclick="restoreSerial('${item.id}')">🔄 সিরিয়াল ফিরিয়ে নিন</button>`;
+                } else if (isOnBreak) {
+                    const breakRemMin = Math.ceil((item.breakUntil - now) / 60000);
+                    actionBtns = `<span style="font-size:11px; color:#b45309; font-weight:700;">☕ বিরতিতে আছেন (${breakRemMin}মিঃ বাকি)</span> <button class="btn btn-success btn-xs" onclick="restoreSerial('${item.id}')">🔄 কাজে ফিরুন</button>`;
                 } else {
-                    actionBtns = `<button class="btn btn-danger btn-xs" onclick="cutSerial('${item.id}')">✂️ স্ট্যান্ডে নেই (কাট)</button>`;
+                    let breakBtnHtml = "";
+                    if (cfg.allowBreak && isMyAccount) {
+                        const remainingBreaks = Math.max(0, (cfg.maxBreaks || 2) - Number(item.breaksUsed || 0));
+                        breakBtnHtml = `<button class="btn btn-warning btn-xs" onclick="takeBreakSerial('${item.id}')">☕ বিরতি নিন (${remainingBreaks} বার)</button>`;
+                    }
+                    actionBtns = `${breakBtnHtml} <button class="btn btn-danger btn-xs" onclick="cutSerial('${item.id}')">✂️ স্ট্যান্ডে নেই (কাট)</button>`;
                 }
 
                 return `
@@ -2577,7 +2610,7 @@
                             <img src="${item.photo || 'https://via.placeholder.com/40'}" class="rider-avatar">
                             <div class="rider-info">
                                 <h4>${item.name} <span class="badge-type ${item.type.includes('auto') ? 'badge-online' : 'badge-manual'}">${item.type}</span></h4>
-                                <div class="live-timer">⏱️ ${formatDuration(now - item.joinedAt)}</div>
+                                <div class="live-timer">⏱️ ${formatDuration(now - item.joinedAt)} ${isOnBreak ? ' | <span style="color:#d97706;">☕ বিরতিতে</span>' : ''}</div>
                             </div>
                         </div>
                         <div class="rider-actions">${actionBtns}</div>
@@ -2702,7 +2735,7 @@
             4: "৪. রেজিস্ট্রেশন অন/অফ এবং টাকার কোটা", 5: "৫. নতুন রেজিস্ট্রেশন আবেদন অনুমোদন", 6: "৬. পেমেন্ট রিকুয়েস্ট এপ্রুভাল (সাধারণ)",
             7: "৭. অ্যাডমিন ১ পেমেন্ট রিসিভ ও এপ্রুভাল", 8: "৮. অ্যাডমিন ২ পেমেন্ট রিসিভ ও এপ্রুভাল", 9: "৯. অ্যাডমিন ৩ পেমেন্ট রিসিভ ও এপ্রুভাল",
             10: "১০. অ্যাডমিন ৪ পেমেন্ট রিসিভ ও এপ্রুভাল", 11: "১১. মেম্বার ম্যানেজমেন্ট ও ডিলিট", 12: "১২. ৪ জন অ্যাডমিন প্রোফাইল ও ছবি ম্যানেজমেন্ট",
-            16: "১৬. রাইডার স্পেশাল পাওয়ার (দূরত্ব, এন্ট্রি/কাট ও বিরতি)", 17: "১৭. স্ট্যান্ড নাম ও GPS লোকেশন", 18: "১৮. সভাপতি প্যানেল",
+            16: "১৬. রাইডার স্পেশাল পাওয়ার ও বিরতি সিস্টেম", 17: "১৭. স্ট্যান্ড নাম ও GPS লোকেশন", 18: "১৮. সভাপতি প্যানেল",
             19: "১৯. নোটিশ বোর্ড", 20: "২০. রাইডারের ছবি এডিটিং ও চেঞ্জ", 21: "২১. রাইডারের নাম ও ফোন নাম্বার চেঞ্জ", 22: "২২. রাইডার সাসপেন্ড ও আনসাসপেন্ড"
         };
 
@@ -3106,6 +3139,8 @@
             document.getElementById("quickSpDist").value = r.customDistMeters || 200;
             document.getElementById("quickSpGlobalPower").checked = r.hasGlobalPower || false;
             document.getElementById("quickSpBreakMin").value = r.customBreakMin || 30;
+            document.getElementById("quickSpMaxBreaks").value = r.customMaxBreaks || 2;
+            document.getElementById("quickSpAllowBreak").checked = r.allowBreak || false;
         }
 
         async function saveQuickSpecialPower() {
@@ -3115,9 +3150,11 @@
                 customCutMin: Number(document.getElementById("quickSpCutMin").value),
                 customDistMeters: Number(document.getElementById("quickSpDist").value),
                 hasGlobalPower: document.getElementById("quickSpGlobalPower").checked,
-                customBreakMin: Number(document.getElementById("quickSpBreakMin").value)
+                customBreakMin: Number(document.getElementById("quickSpBreakMin").value),
+                customMaxBreaks: Number(document.getElementById("quickSpMaxBreaks").value),
+                allowBreak: document.getElementById("quickSpAllowBreak").checked
             });
-            showToast("✅ স্পেশাল পাওয়ার ও বিরতি সেভ হয়েছে!", "success");
+            showToast("✅ স্পেশাল পাওয়ার ও বিরতি অপশন সফলভাবে সেভ হয়েছে!", "success");
         }
 
         function toggleGpsSetButton() { document.getElementById("btnSetStandGps").disabled = !document.getElementById("gpsUnlockSwitch").checked; }
