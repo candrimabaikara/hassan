@@ -104,6 +104,7 @@
         .btn-warning { background: linear-gradient(135deg, #d97706, #f59e0b); color: white; }
         .btn-danger { background: linear-gradient(135deg, #dc2626, #ef4444); color: white; }
         .btn-info { background: linear-gradient(135deg, #0284c7, #0ea5e9); color: white; }
+        .btn-purple { background: linear-gradient(135deg, #6d28d9, #9333ea); color: white; box-shadow: 0 4px 15px rgba(124, 58, 237, 0.45); }
         .btn-dark { background: #1e293b; color: white; }
         .btn-xs { padding: 4px 8px; font-size: 11px; border-radius: 6px; }
         .btn-block { width: 100%; }
@@ -303,19 +304,105 @@
             justify-content: space-between;
             box-shadow: 0 1px 3px rgba(0,0,0,0.05);
         }
+
+        /* পরিবর্তন ৫ ও ৭: বড় স্পিন হুইল (স্ট্যান্ড ছাড়া) ও হলুদ বর্ডার বক্সে দর্শক পিন অ্যানিমেশন */
+        .yellow-wheel-box {
+            position: relative;
+            background: linear-gradient(135deg, #fef3c7, #fde68a);
+            border: 3px solid #f59e0b;
+            border-radius: 16px;
+            padding: 14px 10px;
+            margin-bottom: 12px;
+            text-align: center;
+            box-shadow: inset 0 2px 6px rgba(255,255,255,0.6), 0 6px 16px rgba(245, 158, 11, 0.25);
+            overflow: hidden;
+        }
+        .spectator-pins-rail {
+            position: absolute;
+            top: 6px;
+            bottom: 6px;
+            width: 48px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            gap: 10px;
+            z-index: 35;
+            pointer-events: none;
+            padding-top: 8px;
+        }
+        .spectator-pins-rail.left-rail { left: 4px; }
+        .spectator-pins-rail.right-rail { right: 4px; }
+
+        .spectator-pin-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            animation: pinDropDown 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) forwards, pinSway 2.2s ease-in-out infinite alternate;
+            transform-origin: top center;
+        }
+        @keyframes pinDropDown {
+            0% { transform: translateY(-90px) scale(0.4); opacity: 0; }
+            100% { transform: translateY(0) scale(1); opacity: 1; }
+        }
+        @keyframes pinSway {
+            0% { transform: rotate(-8deg) translateY(0px); }
+            100% { transform: rotate(8deg) translateY(5px); }
+        }
+        .pin-head-circle {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #dc2626, #f59e0b);
+            padding: 2.5px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.45);
+            position: relative;
+        }
+        .pin-head-circle img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 1.5px solid #ffffff;
+        }
+        .pin-needle-tip {
+            width: 0;
+            height: 0;
+            border-left: 5px solid transparent;
+            border-right: 5px solid transparent;
+            border-top: 11px solid #b91c1c;
+            margin-top: -1px;
+            filter: drop-shadow(0 2px 2px rgba(0,0,0,0.35));
+        }
+        .pin-name-tag {
+            font-size: 8.5px;
+            font-weight: 700;
+            background: rgba(15, 23, 42, 0.85);
+            color: #fde047;
+            padding: 1px 4px;
+            border-radius: 4px;
+            max-width: 46px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin-top: 1px;
+        }
+
         .wheel-stage-container {
             position: relative;
-            width: 280px;
-            margin: 0 auto 12px;
-            padding-bottom: 38px;
+            width: 312px;
+            max-width: 92vw;
+            aspect-ratio: 1 / 1;
+            margin: 0 auto 10px;
+            padding-bottom: 0;
         }
         .wheel-outer-rim {
             position: relative;
-            width: 280px;
-            height: 280px;
+            width: 100%;
+            height: 100%;
             border-radius: 50%;
             background: radial-gradient(circle, #fde047 0%, #f59e0b 75%, #b45309 100%);
-            padding: 18px;
+            padding: 14px;
             box-shadow: 0 12px 28px rgba(146, 64, 14, 0.45), inset 0 2px 6px rgba(255,255,255,0.8);
             border: 4px solid #92400e;
             z-index: 2;
@@ -325,52 +412,18 @@
             width: 100%;
             height: 100%;
             border-radius: 50%;
-            background: #ffffff;
+            background: #0f172a;
             border: 4px solid #b45309;
             overflow: hidden;
-            box-shadow: inset 0 4px 12px rgba(0,0,0,0.35);
-        }
-        .wheel-stand-neck {
-            position: absolute;
-            bottom: 18px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 90px;
-            height: 45px;
-            background: linear-gradient(to right, #b45309, #d97706, #b45309);
-            clip-path: polygon(20% 0%, 80% 0%, 100% 100%, 0% 100%);
-            z-index: 1;
-        }
-        .wheel-stand-base-top {
-            position: absolute;
-            bottom: 10px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 150px;
-            height: 12px;
-            background: linear-gradient(to right, #92400e, #f59e0b, #92400e);
-            border-radius: 6px 6px 0 0;
-            z-index: 1;
-        }
-        .wheel-stand-base-bottom {
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 185px;
-            height: 12px;
-            background: linear-gradient(to right, #78350f, #d97706, #78350f);
-            border-radius: 6px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-            z-index: 1;
+            box-shadow: inset 0 4px 12px rgba(0,0,0,0.5);
         }
         .wheel-pointer-pin {
             position: absolute;
-            top: -6px;
+            top: -8px;
             left: 50%;
             transform: translateX(-50%);
-            width: 26px;
-            height: 36px;
+            width: 28px;
+            height: 38px;
             background: #dc2626;
             clip-path: polygon(0% 0%, 100% 0%, 50% 100%);
             border-top: 4px solid #fde047;
@@ -385,13 +438,20 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 50px;
-            height: 50px;
+            width: 54px;
+            height: 54px;
             background: radial-gradient(circle, #fde047 0%, #d97706 100%);
-            border: 3px solid #b45309;
+            border: 3px solid #92400e;
             border-radius: 50%;
             z-index: 25;
-            box-shadow: inset 0 2px 4px rgba(255,255,255,0.7), 0 2px 6px rgba(0,0,0,0.4);
+            cursor: pointer;
+            box-shadow: inset 0 2px 4px rgba(255,255,255,0.7), 0 3px 8px rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 800;
+            color: #78350f;
         }
         #wheelWinnerMonitor {
             display: none;
@@ -404,7 +464,7 @@
             align-items: center;
             justify-content: center;
             text-align: center;
-            padding: 10px;
+            padding: 14px;
             color: white;
             animation: popMonitor 0.4s ease-out;
         }
@@ -413,13 +473,13 @@
             100% { transform: scale(1); opacity: 1; }
         }
         #wheelWinnerMonitor img {
-            width: 75px;
-            height: 75px;
+            width: 86px;
+            height: 86px;
             border-radius: 50%;
             object-fit: cover;
             border: 3px solid #fde047;
             box-shadow: 0 0 15px rgba(253, 224, 71, 0.8);
-            margin-bottom: 4px;
+            margin-bottom: 5px;
         }
         .samity-status-bar {
             background: #fffbeb;
@@ -672,32 +732,36 @@
                         </div>
                     </div>
                 </div>
-                <div style="background: linear-gradient(135deg, #fef3c7, #fde68a); border: 2.5px solid #f59e0b; border-radius: 16px; padding: 14px; margin-bottom: 12px; text-align: center; box-shadow: inset 0 2px 6px rgba(255,255,255,0.6);">
-                    <h3 style="font-size: 15px; color: #92400e; margin-bottom: 4px; font-weight: 700;">🎯 ডিজিটাল চরকি ও লাইভ মনিটর</h3>
-                    <p style="font-size: 11px; color: #78350f; margin-bottom: 12px;">সারা সপ্তাহ ফ্রি স্পিন টেস্ট করা যাবে। অফিসিয়াল ড্র-এর সময়ে ১০০% সক্রিয় সদস্যের Allow পারমিশন লাগবে।</p>
+
+                <!-- হলুদ বর্ডারযুক্ত স্পিন হুইল বক্স (পরিবর্তন ২, ৪, ৫, ৭ যুক্ত) -->
+                <div class="yellow-wheel-box" id="yellowWheelBox">
+                    <!-- পরিবর্তন ৭: দুই পাশের নড়াচড়া করা দর্শক বিজয়ী পিন রেল -->
+                    <div class="spectator-pins-rail left-rail" id="spectatorPinsLeft"></div>
+                    <div class="spectator-pins-rail right-rail" id="spectatorPinsRight"></div>
+
+                    <h3 style="font-size: 15px; color: #92400e; margin-bottom: 3px; font-weight: 700; position: relative; z-index: 10;">🎯 ডিজিটাল চরকি ও লাইভ মনিটর</h3>
+                    <p style="font-size: 11px; color: #78350f; margin-bottom: 10px; position: relative; z-index: 10;">অফিসিয়াল ড্র-এর সময়ে ১০০% সক্রিয় সদস্যের Allow পারমিশন লাগবে।</p>
+                    
                     <div class="wheel-stage-container">
                         <div class="wheel-outer-rim">
                             <div id="wheelPointerPin" class="wheel-pointer-pin"></div>
                             <div class="wheel-inner-box">
-                                <canvas id="wheelCanvas" width="236" height="236" style="width: 100%; height: 100%; border-radius: 50%;"></canvas>
-                                <div class="wheel-center-circle"></div>
+                                <canvas id="wheelCanvas" width="320" height="320" style="width: 100%; height: 100%; border-radius: 50%;"></canvas>
+                                <div class="wheel-center-circle" onclick="handleSpinTriggerClick()" title="স্পিন ঘুরান">SPIN</div>
                                 <div id="wheelWinnerMonitor">
-                                    <span id="winnerMonitorBadge" style="font-size: 9px; background: #dc2626; color: #fde047; padding: 2px 6px; border-radius: 8px; font-weight: 700; margin-bottom: 3px;">🎉 উইনার 🎉</span>
+                                    <span id="winnerMonitorBadge" style="font-size: 10px; background: #dc2626; color: #fde047; padding: 2px 8px; border-radius: 8px; font-weight: 700; margin-bottom: 4px;">🎉 উইনার 🎉</span>
                                     <img id="monitorWinnerImg" src="https://via.placeholder.com/90" alt="Winner">
-                                    <div id="monitorWinnerName" style="font-size: 13px; font-weight: 800; color: #fde047; line-height: 1.2;">নাম</div>
-                                    <div id="monitorWinnerSub" style="font-size: 10px; color: #cbd5e1; margin-top: 2px;">অভিনন্দন!</div>
+                                    <div id="monitorWinnerName" style="font-size: 15px; font-weight: 800; color: #fde047; line-height: 1.2;">নাম</div>
+                                    <div id="monitorWinnerSub" style="font-size: 10.5px; color: #cbd5e1; margin-top: 2px;">অভিনন্দন!</div>
                                 </div>
                             </div>
                         </div>
-                        <div class="wheel-stand-neck"></div>
-                        <div class="wheel-stand-base-top"></div>
-                        <div class="wheel-stand-base-bottom"></div>
                     </div>
-                    <div style="display: flex; gap: 6px; justify-content: center; margin-bottom: 8px;">
-                        <button class="btn btn-success btn-block" style="font-size: 13px; padding: 10px; font-weight: 800;" onclick="triggerLiveWheelSpin()">🎡 SPIN (স্পিন ঘুরান)</button>
-                    </div>
-                    <div id="wheelStatusInfo" style="font-size: 11px; color: #92400e; margin-top: 6px; font-weight: 700; background: #fffbeb; padding: 7px; border-radius: 8px; border: 1px solid #fcd34d;">অপেক্ষমাণ...</div>
+
+                    <div id="wheelStatusInfo" style="font-size: 11.5px; color: #92400e; margin-top: 6px; font-weight: 700; background: #fffbeb; padding: 7px; border-radius: 8px; border: 1px solid #fcd34d; position: relative; z-index: 10;">অপেক্ষমাণ...</div>
                 </div>
+
+                <!-- নিচের পারমিশন ও অ্যাকাউন্ট কার্ড (পরিবর্তন ৬ যুক্ত) -->
                 <div style="background: #fffbeb; border: 1.5px solid #f59e0b; border-radius: 12px; padding: 10px; margin-bottom: 10px;">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
                         <h4 style="font-size: 12px; color: #92400e;">👤 আপনার নির্ধারিত অ্যাকাউন্ট</h4>
@@ -721,9 +785,10 @@
                             </div>
                             <span id="myDotIndicator" style="width: 14px; height: 14px; border-radius: 50%; background: #ef4444; display: inline-block; box-shadow: 0 0 6px rgba(0,0,0,0.3);"></span>
                         </div>
-                        <button id="btnMySamityMainAction" class="btn btn-danger btn-block" style="font-size: 12px; padding: 8px;" onclick="handleMySamityActionClick()">🔴 ড্র-এর জন্য Allow দিন</button>
+                        <button id="btnMySamityMainAction" class="btn btn-danger btn-block" style="font-size: 12.5px; padding: 10px; line-height: 1.35;" onclick="handleMainPermissionAndSpinButton()">🔴 ড্র সম্পন্ন করার জন্য পারমিশন দিন</button>
                     </div>
                 </div>
+
                 <div class="samity-status-bar" id="samityStatusBar">
                     <span>🎯 খেলা সম্পন্ন: <strong id="cntCompletedGames">০</strong> | বাকি: <strong id="cntRemainingGames">০</strong></span>
                     <span>👥 মোট সদস্য: <span id="cntTotalMembers">০</span> (বিজয়ী: <span id="cntWinners" style="color:var(--primary);">০</span>)</span>
@@ -763,7 +828,7 @@
                         <img id="samityTargetImg" src="" style="width: 34px; height: 34px; border-radius: 50%; object-fit: cover; border: 1.5px solid #059669;">
                         <div style="font-size: 12px;">
                             <strong id="samityTargetName" style="color: #065f46;">নাম</strong>
-                            <div style="font-size: 10px; color: #047857;">✅ অনুমোদিত সদস্য | মোট ব্যালেন্স: <strong id="samityTargetPaid">৳০</strong> | চলতি সপ্তাহ জমা: <strong id="samityTargetWeekPaid">৳০</strong></div>
+                            <div style="font-size: 10px; color: #047857;">✅ অনুমোদিত সদস্য | বর্তমান জমা: <strong id="samityTargetPaid">৳০</strong></div>
                         </div>
                     </div>
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 6px;">
@@ -1014,6 +1079,8 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- পরিবর্তন ৩: প্রতিদিন অপশনসহ ড্র-এর সময় ও তারিখ নির্ধারণ -->
                 <div class="admin-box" id="powerSec_schedule" style="background: #fef3c7; border: 1.5px solid #fcd34d; margin-bottom: 8px;">
                     <h4>
                         <span>ড্র-এর সময় ও তারিখ নির্ধারণ</span>
@@ -1022,6 +1089,7 @@
                     <div id="containerPower_schedule" style="opacity: 0.5; pointer-events: none;">
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
                             <select id="adminDrawDay" class="form-control" onchange="saveAdminDrawSchedule()">
+                                <option value="Daily">প্রতিদিন (Daily)</option>
                                 <option value="Friday">শুক্রবার</option>
                                 <option value="Saturday">শনিবার</option>
                                 <option value="Sunday">রবিবার</option>
@@ -1033,8 +1101,10 @@
                             </select>
                             <input type="text" id="adminDrawTime" class="form-control" value="21:00-21:30" placeholder="21:00-21:30" onchange="saveAdminDrawSchedule()">
                         </div>
+                        <p style="font-size: 10px; color: #78350f; margin-top: 4px;">* "প্রতিদিন" সিলেক্ট করলে প্রতিদিন নির্ধারিত টাইমে খেলা চালু হবে, আর নির্দিষ্ট বার দিলে শুধু ওই বারেই খেলা হবে।</p>
                     </div>
                 </div>
+
                 <div class="admin-box" id="powerSec_wheel" style="background: #fef3c7; border: 1.5px solid #fcd34d; margin-bottom: 8px;">
                     <h4>
                         <span>টাকার পারমিশন ও হুইল লক</span>
@@ -1043,7 +1113,7 @@
                     <div id="containerPower_wheel" style="opacity: 0.5; pointer-events: none;">
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
                             <span style="font-size: 11px; color: #92400e; font-weight: 700;">সক্রিয় সদস্যদের Allow পারমিশন দিন:</span>
-                            <button class="btn btn-info btn-xs" onclick="adminResetRoundPermissions()">🔄 রিসেট (নতুন খেলা)</button>
+                            <button class="btn btn-info btn-xs" onclick="adminResetRoundPermissions()">🔄 রিসেট</button>
                         </div>
                         <div id="adminIndividualWheelPermissionsList" style="max-height: 220px; overflow-y: auto; background: #fffbeb; padding: 6px; border-radius: 8px; border: 1px solid #fde68a;">লোড হচ্ছে...</div>
                     </div>
@@ -1442,10 +1512,11 @@
         let samityApprovedMembers = {};
         let samityPendingMembers = {};
         let samityPendingPayments = {};
-        let samityConfig = { registrationOpen: true, dailyQuota: 200, drawDay: "Friday", drawTime: "21:00-21:30", forcedWinner: "", isWheelLocked: false, paidListClearTimestamp: 0 };
+        let samityConfig = { registrationOpen: true, dailyQuota: 200, drawDay: "Daily", drawTime: "21:00-21:30", forcedWinner: "", isWheelLocked: false, paidListClearTimestamp: 0 };
         let samityAllowedStatus = {};
         let liveSpinState = null;
         let lastHandledSpinId = "";
+        let lastClearedWinnerSpinId = "";
         let expandedSamityMemberPhone = null;
         let myLocalRiderPhone = localStorage.getItem("myRiderPhone") || "";
         let myLocalRiderName = localStorage.getItem("myRiderName") || "";
@@ -1459,16 +1530,6 @@
         function getDailyQuota() { return Number(samityConfig.dailyQuota) || 200; }
         function getTotalRequiredQuota() { return getDailyQuota() * 7; }
         
-        // কোনো সদস্যের চলতি সপ্তাহের জমা বের করার ফাংশন (ব্যালেন্স মাইনাস থাকলেও চলতি সপ্তাহ আলাদা থাকবে)
-        function getMemberCurrentWeekPaid(m) {
-            if (m.currentWeekPaid !== undefined && m.currentWeekPaid !== null) {
-                return Number(m.currentWeekPaid);
-            }
-            const bal = Number(m.weeklyPaid || 0);
-            return bal > 0 ? bal : 0;
-        }
-        
-        // নম্বর হাইড করার ফাংশন
         function maskPhoneNumber(phone) {
             if (!phone || phone.length < 6) return "017********";
             return phone.substring(0, 3) + "********";
@@ -1559,6 +1620,7 @@
             renderLockedSamityAccountUI();
             renderDigitalMonitorMarquee();
             renderCashierPaymentCard();
+            renderSpectatorWinnerPins();
             drawWheel(0);
         }
         function renderDigitalMonitorMarquee() {
@@ -1679,18 +1741,9 @@
             checkAutoBoundaryGeofence();
         }
         setInterval(updateLiveClock, 1000); updateLiveClock();
-        
-        // ড্র সম্পন্ন হওয়ার পর নির্ধারিত সময় পার হলে সাপ্তাহিক জমা শূন্য হয়ে আবার বাম পাশের লিস্টে চলে যাবে
-        async function checkPaidListAutoClear() {
+        function checkPaidListAutoClear() {
             if (samityConfig.paidListClearTimestamp && Date.now() >= samityConfig.paidListClearTimestamp) {
-                const updates = {};
-                Object.keys(samityApprovedMembers).forEach(phone => {
-                    updates[phone + '/currentWeekPaid'] = 0;
-                });
-                if (Object.keys(updates).length > 0) {
-                    await db.ref('tanSamity/approvedMembers').update(updates);
-                }
-                await db.ref('tanSamity/config/paidListClearTimestamp').set(0);
+                db.ref('tanSamity/config/paidListClearTimestamp').set(0);
             }
         }
         function getDistanceMeters(lat1, lon1, lat2, lon2) {
@@ -1822,16 +1875,17 @@
             if (snap.exists()) { masterPasswordStored = snap.val(); }
         });
         db.ref('tanSamity/config').on('value', (snap) => {
-            samityConfig = snap.val() || { registrationOpen: true, dailyQuota: 200, drawDay: "Friday", drawTime: "21:00-21:30", forcedWinner: "", isWheelLocked: false, paidListClearTimestamp: 0 };
+            samityConfig = snap.val() || { registrationOpen: true, dailyQuota: 200, drawDay: "Daily", drawTime: "21:00-21:30", forcedWinner: "", isWheelLocked: false, paidListClearTimestamp: 0 };
             document.getElementById("samityRegToggleSwitch").checked = samityConfig.registrationOpen !== false;
             document.getElementById("adminDailyQuotaInput").value = samityConfig.dailyQuota || 200;
-            document.getElementById("adminDrawDay").value = samityConfig.drawDay || "Friday";
+            document.getElementById("adminDrawDay").value = samityConfig.drawDay || "Daily";
             document.getElementById("adminDrawTime").value = samityConfig.drawTime || "21:00-21:30";
             document.getElementById("adminForcedWinnerPhone").value = samityConfig.forcedWinner || "";
             document.getElementById("samityRuleNoticeText").innerHTML = `💡 নিয়ম: প্রতিদিন <strong>৳${samityConfig.dailyQuota || 200}</strong> করে ৭ দিনে মোট <strong>৳${(samityConfig.dailyQuota || 200)*7}</strong> পরিশোধ থাকতে হবে।`;
             updateSamityRegSectionUI();
             renderSamityMembersList();
             renderDualPaymentLists();
+            renderSpectatorWinnerPins();
             evaluateWheelAndActionState();
             if (!isSpinningWheel) drawWheel(currentWheelAngle);
         });
@@ -1845,6 +1899,7 @@
             updateSamityStatusBar();
             autoCheckSamityMember(false);
             renderLockedSamityAccountUI();
+            renderSpectatorWinnerPins();
             if (!isSpinningWheel) drawWheel(currentWheelAngle);
             evaluateWheelAndActionState();
         });
@@ -1852,6 +1907,7 @@
             samityAllowedStatus = snap.val() || {};
             renderLockedSamityAccountUI();
             renderAdminIndividualWheelPermissions();
+            renderSpectatorWinnerPins();
             if (!isSpinningWheel) drawWheel(currentWheelAngle);
             evaluateWheelAndActionState();
         });
@@ -1860,17 +1916,25 @@
             if (!liveSpinState) {
                 document.getElementById("wheelWinnerMonitor").style.display = "none";
                 if (!isSpinningWheel) drawWheel(currentWheelAngle);
+                renderSpectatorWinnerPins();
                 return;
             }
             const now = Date.now();
             const elapsed = now - liveSpinState.startedAt;
-            const duration = liveSpinState.duration || 25000;
+            const duration = liveSpinState.duration || 30000;
             if (elapsed < duration && liveSpinState.spinId !== lastHandledSpinId) {
                 lastHandledSpinId = liveSpinState.spinId;
                 runSynchronizedWheelAnimation(liveSpinState);
             } else if (elapsed >= duration && liveSpinState.winner) {
-                showWheelWinnerMonitor(liveSpinState.winner);
+                // পরিবর্তন ৪: খেলার সময় শুরু হলে আগের বিজয়ীর ছবি ও ব্যানার সরে যাবে যাতে সবাই হুইলে নাম ও লাল/সবুজ বাতি দেখতে পায়
+                const isOldSpinBeforeCurrentGame = isWithinScheduleTime() && !samityConfig.isWheelLocked && !isSpinningWheel;
+                if (isOldSpinBeforeCurrentGame) {
+                    document.getElementById("wheelWinnerMonitor").style.display = "none";
+                } else {
+                    showWheelWinnerMonitor(liveSpinState.winner, liveSpinState.isDemo);
+                }
             }
+            renderSpectatorWinnerPins();
         });
         db.ref('tanSamity/pendingMembers').on('value', (snap) => {
             samityPendingMembers = snap.val() || {};
@@ -1926,8 +1990,6 @@
             });
         }
         
-        // **সমাধানকৃত দ্বৈত তালিকা (বাকি বনাম পরিশোধ করেছেন)**
-        // এখানে বিজয়ী সদস্যের মূল ব্যালেন্সে মাইনাস (ডিউ) থাকলেও, চলতি সপ্তাহের নির্ধারিত টাকা (currentWeekPaid >= requiredQuota) পরিশোধ করলেই ডান পাশের বক্সে চলে যাবে।
         function renderDualPaymentLists() {
             const unpaidContainer = document.getElementById("unpaidMembersList");
             const paidContainer = document.getElementById("paidMembersList");
@@ -1937,9 +1999,8 @@
             let unpaidHtml = "", paidHtml = "";
             
             members.forEach(m => {
-                const weekPaid = getMemberCurrentWeekPaid(m);
-                const totalBalance = Number(m.weeklyPaid || 0);
-                const isFullyPaid = weekPaid >= requiredQuota;
+                const paid = Number(m.weeklyPaid || 0);
+                const isFullyPaid = paid >= requiredQuota;
                 const isMyAccount = (myLockedSamityPhone === m.phone || (myLocalRiderName && normalizeName(m.name) === normalizeName(myLocalRiderName)));
                 
                 let displayPhone = isMyAccount ? m.phone : maskPhoneNumber(m.phone);
@@ -1950,10 +2011,10 @@
                                 <img src="${m.photo || 'https://via.placeholder.com/30'}" style="width:24px; height:24px; border-radius:50%; object-fit:cover; flex-shrink:0;">
                                 <div style="min-width:0;">
                                     <strong style="display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${m.name} ${m.isWinner ? '<span class="winner-badge" style="font-size:8px;">(বিজয়ী)</span>' : ''}</strong>
-                                    <span style="font-size:9px; color:#64748b;">${displayPhone} ${totalBalance < 0 ? `<span style="color:#dc2626;">(বাকি: ৳${Math.abs(totalBalance)})</span>` : ''}</span>
+                                    <span style="font-size:9px; color:#64748b;">${displayPhone}</span>
                                 </div>
                             </div>
-                            <span style="color: #166534; font-weight:700; white-space:nowrap; font-size:10px;">৳${weekPaid}</span>
+                            <span style="color: #166534; font-weight:700; white-space:nowrap; font-size:10px;">৳${paid}</span>
                         </div>
                     `;
                 } else {
@@ -1963,10 +2024,10 @@
                                 <img src="${m.photo || 'https://via.placeholder.com/30'}" style="width:24px; height:24px; border-radius:50%; object-fit:cover; flex-shrink:0;">
                                 <div style="min-width:0;">
                                     <strong style="color: #991b1b; display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${m.name} ${m.isWinner ? '<span class="winner-badge" style="font-size:8px;">(বিজয়ী)</span>' : ''}</strong>
-                                    <span style="font-size:9px; color:#64748b;">${displayPhone} ${totalBalance < 0 ? `<span style="color:#dc2626;">(মোট ডিউ: ৳${Math.abs(totalBalance)})</span>` : ''}</span>
+                                    <span style="font-size:9px; color:#64748b;">${displayPhone}</span>
                                 </div>
                             </div>
-                            <span style="color: #dc2626; white-space:nowrap; font-size:10px;">৳${weekPaid}/${requiredQuota}</span>
+                            <span style="color: #dc2626; white-space:nowrap; font-size:10px;">৳${paid}/${requiredQuota}</span>
                         </div>
                     `;
                 }
@@ -1984,6 +2045,7 @@
             myLockedSamityPhone = phone;
             localStorage.setItem("lockedSamityPhone", phone);
             renderLockedSamityAccountUI();
+            renderSpectatorWinnerPins();
             showToast("✅ আপনার অ্যাকাউন্ট নির্ধারিত ও লক করা হয়েছে!", "success");
         }
         function renderLockedSamityAccountUI() {
@@ -2005,33 +2067,51 @@
             const dot = document.getElementById("myDotIndicator");
             dot.style.background = isAllowed ? "#22c55e" : "#ef4444";
             dot.style.boxShadow = isAllowed ? "0 0 8px #22c55e" : "0 0 8px #ef4444";
-            const actionBtn = document.getElementById("btnMySamityMainAction");
-            if (isAllowed) {
-                actionBtn.className = "btn btn-info btn-block";
-                actionBtn.innerText = "✅ আপনি Allow দিয়েছেন";
-            } else {
-                actionBtn.className = "btn btn-danger btn-block";
-                actionBtn.innerText = "🔴 ড্র-এর জন্য Allow দিন";
-            }
             evaluateWheelAndActionState();
         }
+
+        // পরিবর্তন ৩: প্রতিদিন অপশনসহ কাউন্টডাউন হিসাব
         function updateScheduleCountdown() {
             const badge = document.getElementById("drawCountdownBadge");
             if (!badge) return;
             if (samityConfig.drawDay === "Any") { badge.innerText = "🟢 খেলা উন্মুক্ত (টেস্ট মোড)"; return; }
             const now = new Date();
-            const daysMap = { "Sunday": 0, "Monday": 1, "Tuesday": 2, "Wednesday": 3, "Thursday": 4, "Friday": 5, "Saturday": 6 };
-            const targetDay = daysMap[samityConfig.drawDay] !== undefined ? daysMap[samityConfig.drawDay] : 5;
             const timeRange = samityConfig.drawTime || "21:00-21:30";
             const parts = timeRange.split("-");
             const [startH, startM] = parts[0].split(":").map(Number);
             const [endH, endM] = (parts[1] || "21:30").split(":").map(Number);
+
             let targetStart = new Date(now);
+            let targetEnd = new Date(now);
+            targetStart.setHours(startH, startM, 0, 0);
+            targetEnd.setHours(endH, endM, 0, 0);
+
+            if (samityConfig.drawDay === "Daily") {
+                if (now >= targetStart && now <= targetEnd) {
+                    const remMs = targetEnd - now;
+                    const mins = Math.floor(remMs / 60000);
+                    const secs = Math.floor((remMs % 60000) / 1000);
+                    badge.innerText = `🔥 প্রতিদিনের খেলা চলছে! বাকি: ${mins}মিঃ ${secs}সেঃ`;
+                    badge.style.background = "#dc2626";
+                } else {
+                    if (now > targetEnd) targetStart.setDate(targetStart.getDate() + 1);
+                    const diffMs = targetStart - now;
+                    const h = Math.floor(diffMs / 3600000);
+                    const m = Math.floor((diffMs % 3600000) / 60000);
+                    const s = Math.floor((diffMs % 60000) / 1000);
+                    badge.innerText = `⏳ প্রতিদিনের ড্র বাকি: ${h}ঘঃ ${m}মিঃ ${s}সেঃ`;
+                    badge.style.background = "#1e1b4b";
+                }
+                return;
+            }
+
+            const daysMap = { "Sunday": 0, "Monday": 1, "Tuesday": 2, "Wednesday": 3, "Thursday": 4, "Friday": 5, "Saturday": 6 };
+            const targetDay = daysMap[samityConfig.drawDay] !== undefined ? daysMap[samityConfig.drawDay] : 5;
             let diffDays = (targetDay - now.getDay() + 7) % 7;
             targetStart.setDate(now.getDate() + diffDays);
-            targetStart.setHours(startH, startM, 0, 0);
-            let targetEnd = new Date(targetStart);
+            targetEnd = new Date(targetStart);
             targetEnd.setHours(endH, endM, 0, 0);
+
             if (now >= targetStart && now <= targetEnd) {
                 const remMs = targetEnd - now;
                 const mins = Math.floor(remMs / 60000);
@@ -2049,11 +2129,14 @@
                 badge.style.background = "#1e1b4b";
             }
         }
+
         function isWithinScheduleTime() {
             if (samityConfig.drawDay === "Any") return true;
             const now = new Date();
-            const daysMap = { "Sunday": 0, "Monday": 1, "Tuesday": 2, "Wednesday": 3, "Thursday": 4, "Friday": 5, "Saturday": 6 };
-            if (daysMap[samityConfig.drawDay] !== undefined && now.getDay() !== daysMap[samityConfig.drawDay]) return false;
+            if (samityConfig.drawDay !== "Daily") {
+                const daysMap = { "Sunday": 0, "Monday": 1, "Tuesday": 2, "Wednesday": 3, "Thursday": 4, "Friday": 5, "Saturday": 6 };
+                if (daysMap[samityConfig.drawDay] !== undefined && now.getDay() !== daysMap[samityConfig.drawDay]) return false;
+            }
             
             const timeRange = samityConfig.drawTime || "21:00-21:30";
             const parts = timeRange.split("-");
@@ -2063,45 +2146,156 @@
             const currentTotalMin = now.getHours() * 60 + now.getMinutes();
             return currentTotalMin >= (startH * 60 + startM) && currentTotalMin <= (endH * 60 + endM);
         }
+
         function areAllActiveMembersAllowed() {
             const activeMembers = Object.values(samityApprovedMembers).filter(m => !m.isWinner);
             if (activeMembers.length === 0) return false;
             return activeMembers.every(m => samityAllowedStatus[m.phone] === true);
         }
+
+        // পরিবর্তন ৪, ৬ ও ৭: খেলার শুরুতে আগের বিজয়ী ছবি সরানো, নিচের বাটনের লাল/সবুজ/বেগুনি অবস্থা ও দর্শক পিন নিয়ন্ত্রণ
         function evaluateWheelAndActionState() {
             const infoBox = document.getElementById("wheelStatusInfo");
+            const actionBtn = document.getElementById("btnMySamityMainAction");
             const activeMembers = Object.values(samityApprovedMembers).filter(m => !m.isWinner);
             const inSchedule = isWithinScheduleTime();
             const allAllowed = areAllActiveMembersAllowed();
+            const isAllowed = myLockedSamityPhone && samityAllowedStatus[myLockedSamityPhone] === true;
+
+            // পরিবর্তন ৪: খেলার টাইম শুরু হলে ও ড্র বাকি থাকলে হুইলের ওপরে থাকা আগের বিজয়ীর ছবি ও নাম সরে যাবে যাতে হুইলে সবার নাম ও লাল/সবুজ বাতি দেখা যায়
+            if (inSchedule && !samityConfig.isWheelLocked && !isSpinningWheel) {
+                document.getElementById("wheelWinnerMonitor").style.display = "none";
+            }
+
             if (!inSchedule) {
-                infoBox.innerText = "🟢 ফ্রি ডেমো স্পিন মোড চালু (সবার জন্য উন্মুক্ত টেস্ট স্পিন)";
+                infoBox.innerText = "🟢 ফ্রি ডেমো স্পিন মোড চালু (মাঝের SPIN বাটনে টাচ করে টেস্ট করতে পারবেন)";
+                if (actionBtn) {
+                    if (isAllowed) {
+                        actionBtn.className = "btn btn-success btn-block";
+                        actionBtn.innerText = "🟢 একটু ধৈর্য ধরুন, সবাই পারমিশন দিলে স্পিন হুইল চালানোর জন্য অনুমতি মিলবে";
+                    } else {
+                        actionBtn.className = "btn btn-danger btn-block";
+                        actionBtn.innerText = "🔴 ড্র সম্পন্ন করার জন্য পারমিশন দিন";
+                    }
+                }
                 return;
             }
+
             if (samityConfig.isWheelLocked) {
                 infoBox.innerText = "🔒 আজকের ড্র সম্পন্ন হয়েছে।";
+                if (actionBtn) {
+                    actionBtn.className = "btn btn-dark btn-block";
+                    actionBtn.innerText = "✅ আজকের খেলা সম্পন্ন হয়েছে";
+                }
                 return;
             }
+
             if (activeMembers.length === 0) {
                 infoBox.innerText = "⚠️ কোনো সক্রিয় সদস্য নেই।";
                 return;
             }
+
             if (allAllowed) {
-                infoBox.innerText = "🟢 ১০০% সদস্যের পারমিশন সম্পন্ন! অফিসিয়াল ড্র স্পিন করার জন্য প্রস্তুত।";
+                infoBox.innerText = "🟣 ১০০% সদস্যের পারমিশন সম্পন্ন! নিচের বেগুনি বাটনে বা হুইলের মাঝে টাচ করে স্পিন শুরু করুন।";
+                if (actionBtn) {
+                    actionBtn.className = "btn btn-purple btn-block";
+                    actionBtn.innerText = "🟣 এখন স্পিন করার জন্য প্রস্তুত (স্পিন ঘুরাতে টাচ করুন)";
+                }
             } else {
                 const allowedCount = activeMembers.filter(m => samityAllowedStatus[m.phone] === true).length;
-                infoBox.innerText = `🔒 অফিসিয়াল ড্র-এর জন্য সবাই Allow দিন (${allowedCount}/${activeMembers.length} জন প্রস্তুত)`;
+                infoBox.innerText = `🔒 অফিসিয়াল ড্র-এর জন্য সবাই পারমিশন দিন (${allowedCount}/${activeMembers.length} জন প্রস্তুত)`;
+                if (actionBtn) {
+                    if (isAllowed) {
+                        actionBtn.className = "btn btn-success btn-block";
+                        actionBtn.innerText = "🟢 একটু ধৈর্য ধরুন, সবাই পারমিশন দিলে স্পিন হুইল চালানোর জন্য অনুমতি মিলবে";
+                    } else {
+                        actionBtn.className = "btn btn-danger btn-block";
+                        actionBtn.innerText = "🔴 ড্র সম্পন্ন করার জন্য পারমিশন দিন";
+                    }
+                }
             }
         }
-        async function handleMySamityActionClick() {
-            if (!myLockedSamityPhone || !samityApprovedMembers[myLockedSamityPhone]) { showToast("⚠️ আগে আপনার অ্যাকাউন্ট নম্বর লক করুন!", "error"); return; }
+
+        // পরিবর্তন ৬: নিচের বাটনে টাচ করলে পারমিশন দেওয়া এবং সবাই পারমিশন দিলে (বেগুনি অবস্থায়) স্পিন চালু হওয়া
+        async function handleMainPermissionAndSpinButton() {
+            if (!myLockedSamityPhone || !samityApprovedMembers[myLockedSamityPhone]) {
+                showToast("⚠️ আগে আপনার অ্যাকাউন্ট নম্বর লক করুন!", "error");
+                return;
+            }
+            const inSchedule = isWithinScheduleTime();
+            const allAllowed = areAllActiveMembersAllowed();
+
+            if (inSchedule && !samityConfig.isWheelLocked && allAllowed) {
+                await triggerLiveWheelSpin();
+                return;
+            }
+
             const current = samityAllowedStatus[myLockedSamityPhone] === true;
             await db.ref('tanSamity/allowedStatus/' + myLockedSamityPhone).set(!current);
-            showToast(!current ? "✅ আপনার Allow পারমিশন গৃহীত হয়েছে!" : "⚠️ আপনার Allow বাতিল করা হয়েছে।", "info");
+            renderSpectatorWinnerPins();
+            showToast(!current ? "✅ আপনার পারমিশন (Allow) গৃহীত হয়েছে!" : "⚠️ আপনার পারমিশন বাতিল করা হয়েছে।", "info");
+        }
+
+        function handleSpinTriggerClick() {
+            triggerLiveWheelSpin();
+        }
+
+        // পরিবর্তন ৭: বিজয়ী সদস্য দর্শক হিসেবে Allow বাটনে টাচ করলে হলুদ বর্ডারের দুই পাশে পিনের মাথায় নড়াচড়া করা ছবি দেখানো এবং খেলা শেষ হলে মুছে ফেলা
+        function renderSpectatorWinnerPins() {
+            const leftRail = document.getElementById("spectatorPinsLeft");
+            const rightRail = document.getElementById("spectatorPinsRight");
+            if (!leftRail || !rightRail) return;
+
+            const inSchedule = isWithinScheduleTime();
+            const isGameFinished = samityConfig.isWheelLocked && !isSpinningWheel;
+
+            // খেলা সম্পন্ন হয়ে গেলে বা খেলার সময় শেষ হলে পিনের মাথা ও ছবি মুছে যাবে
+            if (!inSchedule || isGameFinished) {
+                leftRail.innerHTML = "";
+                rightRail.innerHTML = "";
+                return;
+            }
+
+            // শুধুমাত্র যারা বিজয়ী (দর্শক) এবং Allow বাটনে টাচ করেছেন
+            const allowedWinners = Object.values(samityApprovedMembers).filter(
+                m => m.isWinner === true && samityAllowedStatus[m.phone] === true
+            );
+
+            if (allowedWinners.length === 0) {
+                leftRail.innerHTML = "";
+                rightRail.innerHTML = "";
+                return;
+            }
+
+            let leftHtml = "";
+            let rightHtml = "";
+
+            allowedWinners.forEach((w, idx) => {
+                const pinCard = `
+                    <div class="spectator-pin-item" style="animation-delay: ${idx * 0.12}s;">
+                        <div class="pin-head-circle">
+                            <img src="${w.photo || 'https://via.placeholder.com/40'}" alt="${w.name}">
+                        </div>
+                        <div class="pin-needle-tip"></div>
+                        <div class="pin-name-tag">${w.name}</div>
+                    </div>
+                `;
+                if (idx % 2 === 0) {
+                    leftHtml += pinCard;
+                } else {
+                    rightHtml += pinCard;
+                }
+            });
+
+            leftRail.innerHTML = leftHtml;
+            rightRail.innerHTML = rightHtml;
         }
         
         let currentWheelAngle = 0;
         let isSpinningWheel = false;
         let lastTickSliceIndex = -1;
+
+        // পরিবর্তন ২: স্পিন হুইলের ব্যাকগ্রাউন্ডে সুন্দর ও গাঢ় কন্ট্রাস্ট কালার এবং বড় ও স্পষ্ট অক্ষর
         function drawWheel(angle = 0) {
             const canvas = document.getElementById("wheelCanvas");
             if (!canvas) return;
@@ -2111,12 +2305,20 @@
             ctx.clearRect(0, 0, width, height);
             const activeMembers = Object.values(samityApprovedMembers).filter(m => !m.isWinner);
             if (activeMembers.length === 0) {
-                ctx.fillStyle = "#92400e"; ctx.font = "bold 13px Hind Siliguri, sans-serif"; ctx.textAlign = "center";
-                ctx.fillText("কোনো সক্রিয় সদস্য নেই", centerX, centerY - 25);
+                ctx.fillStyle = "#fde047"; ctx.font = "bold 16px Hind Siliguri, sans-serif"; ctx.textAlign = "center";
+                ctx.fillText("কোনো সক্রিয় সদস্য নেই", centerX, centerY - 30);
                 return;
             }
             const sliceAngle = (2 * Math.PI) / activeMembers.length;
-            const sliceColors = ["#ef4444", "#0ea5e9", "#22c55e", "#a855f7", "#eab308", "#ec4899", "#8b5cf6"];
+            const sliceColors = [
+                "#1e1b4b", // গাঢ় নেভি ব্লু
+                "#991b1b", // গাঢ় লাল
+                "#065f46", // গাঢ় সবুজ
+                "#581c87", // গাঢ় বেগুনি
+                "#9a3412", // গাঢ় কমলা-বাদামি
+                "#075985", // গাঢ় নীল
+                "#831843"  // গাঢ় ম্যাজেন্টা
+            ];
             activeMembers.forEach((m, i) => {
                 const startAngle = angle + i * sliceAngle;
                 const endAngle = startAngle + sliceAngle;
@@ -2125,27 +2327,36 @@
                 ctx.closePath();
                 ctx.fillStyle = sliceColors[i % sliceColors.length];
                 ctx.fill();
-                ctx.strokeStyle = "#ffffff"; ctx.lineWidth = 2; ctx.stroke();
+                ctx.strokeStyle = "#fde047"; ctx.lineWidth = 2.5; ctx.stroke();
+
                 ctx.save();
                 ctx.translate(centerX, centerY);
                 ctx.rotate(startAngle + sliceAngle / 2);
+
+                // লাল বা সবুজ স্ট্যাটাস বাতি
                 const isAllowed = samityAllowedStatus[m.phone] === true;
-                ctx.beginPath(); ctx.arc(radius - 14, 0, 6, 0, 2 * Math.PI);
-                ctx.fillStyle = isAllowed ? "#00ff00" : "#ff0000";
-                ctx.fill(); ctx.strokeStyle = "#ffffff"; ctx.lineWidth = 1.5; ctx.stroke();
-                ctx.textAlign = "right"; ctx.fillStyle = "#ffffff";
-                ctx.font = "bold 11px Hind Siliguri, sans-serif";
-                ctx.shadowColor = "rgba(0,0,0,0.6)"; ctx.shadowBlur = 3;
-                ctx.fillText(m.name.substring(0, 8), radius - 24, -2);
+                ctx.beginPath(); ctx.arc(radius - 16, 0, 7.5, 0, 2 * Math.PI);
+                ctx.fillStyle = isAllowed ? "#22c55e" : "#ef4444";
+                ctx.fill(); ctx.strokeStyle = "#ffffff"; ctx.lineWidth = 2; ctx.stroke();
+
+                // বড় এবং স্পষ্ট অক্ষরে সদস্যের নাম
+                ctx.textAlign = "right";
+                ctx.fillStyle = "#ffffff";
+                ctx.font = "bold 15px Hind Siliguri, sans-serif";
+                ctx.shadowColor = "rgba(0,0,0,0.95)";
+                ctx.shadowBlur = 4;
+                ctx.fillText(m.name.substring(0, 10), radius - 30, 5);
                 ctx.restore();
             });
         }
+
+        // পরিবর্তন ১: স্পিন হুইলটি এখন ৩০ সেকেন্ড (30000ms) ঘুরবে
         async function triggerLiveWheelSpin() {
             if (isSpinningWheel) return;
             const inSchedule = isWithinScheduleTime();
             if (inSchedule) {
                 if (samityConfig.isWheelLocked) { showToast("🔒 আজকের অফিসিয়াল ড্র ইতিমধ্যে সম্পন্ন হয়েছে!", "error"); return; }
-                if (!areAllActiveMembersAllowed()) { showToast("🔒 অফিসিয়াল ড্র-এর জন্য ১০০% সদস্যের Allow পারমিশন লাগবে!", "error"); return; }
+                if (!areAllActiveMembersAllowed()) { showToast("🔒 অফিসিয়াল ড্র-এর জন্য ১০০% সদস্যের পারমিশন লাগবে!", "error"); return; }
             }
             const activeMembers = Object.values(samityApprovedMembers).filter(m => !m.isWinner);
             if (activeMembers.length === 0) { showToast("⚠️ খেলার যোগ্য কোনো সক্রিয় সদস্য নেই।", "error"); return; }
@@ -2160,31 +2371,27 @@
             }
             const spinId = "spin_" + Date.now();
             await db.ref('tanSamity/liveSpin').set({
-                spinId: spinId, startedAt: Date.now(), duration: 25000, isDemo: !inSchedule,
-                winner: { 
-                    name: winnerMember.name, 
-                    phone: winnerMember.phone, 
-                    photo: winnerMember.photo || 'https://via.placeholder.com/90', 
-                    weeklyPaid: Number(winnerMember.weeklyPaid || 0),
-                    currentWeekPaid: getMemberCurrentWeekPaid(winnerMember)
-                },
+                spinId: spinId, startedAt: Date.now(), duration: 30000, isDemo: !inSchedule,
+                winner: { name: winnerMember.name, phone: winnerMember.phone, photo: winnerMember.photo || 'https://via.placeholder.com/90', weeklyPaid: Number(winnerMember.weeklyPaid || 0) },
                 membersSnapshot: activeMembers.map(m => ({ name: m.name, phone: m.phone }))
             });
         }
+
         function runSynchronizedWheelAnimation(spinData) {
             isSpinningWheel = true;
             document.getElementById("wheelWinnerMonitor").style.display = "none";
+            renderSpectatorWinnerPins();
             const activeMembers = Object.values(samityApprovedMembers).filter(m => !m.isWinner);
             if (activeMembers.length === 0) { isSpinningWheel = false; return; }
             const sliceAngle = (2 * Math.PI) / activeMembers.length;
             let targetIndex = activeMembers.findIndex(m => m.phone === spinData.winner.phone);
             if (targetIndex === -1) targetIndex = 0;
             const pointerAngle = -Math.PI / 2;
-            const extraSpins = 16 * 2 * Math.PI;
+            const extraSpins = 20 * 2 * Math.PI;
             const randomOffset = (Math.random() - 0.5) * (sliceAngle * 0.7);
             const targetSliceCenter = targetIndex * sliceAngle + sliceAngle / 2 + randomOffset;
             const finalTargetAngle = extraSpins + (pointerAngle - targetSliceCenter);
-            const duration = spinData.duration || 25000;
+            const duration = spinData.duration || 30000;
             const startTime = spinData.startedAt;
             const pointerEl = document.getElementById("wheelPointerPin");
             function frame() {
@@ -2204,6 +2411,7 @@
             }
             requestAnimationFrame(frame);
         }
+
         async function finalizeSpinWinner(spinData) {
             const winner = spinData.winner;
             const isDemo = spinData.isDemo;
@@ -2214,14 +2422,14 @@
                 return;
             }
             const requiredQuota = getTotalRequiredQuota();
-            const winnerWeekPaid = winner.currentWeekPaid !== undefined ? Number(winner.currentWeekPaid) : Number(winner.weeklyPaid || 0);
-            if (winnerWeekPaid < requiredQuota) {
+            if (Number(winner.weeklyPaid || 0) < requiredQuota) {
                 showInsufficientBalanceWinnerMonitor(winner);
                 playVoiceMessage(`সতর্কবার্তা! ${winner.name}, আপনার সাপ্তাহিক টাকা পরিপূর্ণ না থাকার কারণে নতুন স্পিন শুরু হচ্ছে!`);
                 showToast(`⚠️ ${winner.name}-এর সাপ্তাহিক টাকা বাকি থাকায় নতুন স্পিন হবে!`, "error");
                 await db.ref('tanSamity/config/isWheelLocked').set(false);
                 await db.ref('tanSamity/liveSpin').remove();
                 lastHandledSpinId = "";
+                renderSpectatorWinnerPins();
                 return;
             }
             showWheelWinnerMonitor(winner, false);
@@ -2236,6 +2444,7 @@
             updateSamityStatusBar();
             renderSamityMembersList();
             renderDualPaymentLists();
+            renderSpectatorWinnerPins();
         }
         function showWheelWinnerMonitor(winner, isDemo = false) {
             const monitor = document.getElementById("wheelWinnerMonitor");
@@ -2286,25 +2495,18 @@
         async function toggleSingleMemberWheelAllow(phone) {
             const current = samityAllowedStatus[phone] === true;
             await db.ref('tanSamity/allowedStatus/' + phone).set(!current);
+            renderSpectatorWinnerPins();
             showToast(!current ? "✅ গ্রীন বাতি (Allow) দেওয়া হয়েছে!" : "🔴 লাল বাতি করা হয়েছে।", "info");
         }
-        
-        // নতুন খেলা শুরু করার সময় সবার চলতি সপ্তাহের জমা (currentWeekPaid) শূন্য হয়ে বাম পাশের লিস্টে চলে আসবে, কিন্তু মূল মাইনাস ব্যালেন্স ঠিক থাকবে
         async function adminResetRoundPermissions() {
-            const updates = {};
-            Object.keys(samityApprovedMembers).forEach(phone => {
-                updates[phone + '/currentWeekPaid'] = 0;
-            });
-            if (Object.keys(updates).length > 0) {
-                await db.ref('tanSamity/approvedMembers').update(updates);
-            }
             await db.ref('tanSamity/allowedStatus').remove();
             await db.ref('tanSamity/liveSpin').remove();
             await db.ref('tanSamity/config').update({ isWheelLocked: false, paidListClearTimestamp: 0 });
             lastHandledSpinId = "";
             document.getElementById("wheelWinnerMonitor").style.display = "none";
+            renderSpectatorWinnerPins();
             drawWheel(0);
-            showToast("🔄 নতুন ড্র-এর জন্য পারমিশন ও সাপ্তাহিক লিস্ট রিসেট হয়েছে!", "success");
+            showToast("🔄 নতুন ড্র-এর জন্য পারমিশন রিসেট ও হুইল আনলক হয়েছে!", "success");
         }
         function switchSamityTab(tab) {
             document.getElementById("tabSamityMembers").classList.toggle("active", tab === 'members');
@@ -2338,19 +2540,19 @@
             document.getElementById("cntCompletedGames").innerText = winners;
             document.getElementById("cntRemainingGames").innerText = Math.max(0, members.length - winners);
         }
-        function calculateSevenDaysQuota(weekPaid) {
-            let remaining = Number(weekPaid) || 0; 
+        function calculateSevenDaysQuota(weeklyPaid) {
+            let remaining = Number(weeklyPaid) || 0; 
             const daily = getDailyQuota();
             let days = [];
             for (let i = 0; i < 7; i++) {
                 if (remaining >= daily) { days.push(daily); remaining -= daily; }
                 else if (remaining > 0) { days.push(remaining); remaining = 0; }
-                else { days.push(0); remaining = 0; } 
+                else { days.push(remaining); remaining = 0; } 
             }
             return days;
         }
-        function renderSevenDaysGridHTML(weekPaid) {
-            const quotas = calculateSevenDaysQuota(weekPaid);
+        function renderSevenDaysGridHTML(weeklyPaid) {
+            const quotas = calculateSevenDaysQuota(weeklyPaid);
             const daily = getDailyQuota();
             return `
                 <div class="seven-days-grid">
@@ -2377,10 +2579,9 @@
             }
             const requiredQuota = getTotalRequiredQuota();
             container.innerHTML = members.map((m) => {
-                const totalBalance = Number(m.weeklyPaid || 0);
-                const weekPaid = getMemberCurrentWeekPaid(m);
+                const paid = Number(m.weeklyPaid || 0);
                 const isExpanded = expandedSamityMemberPhone === m.phone;
-                const isUnpaid = weekPaid < requiredQuota;
+                const isUnpaid = paid < requiredQuota;
                 const isMyAccount = (myLockedSamityPhone === m.phone || (myLocalRiderName && normalizeName(m.name) === normalizeName(myLocalRiderName)));
                 let displayPhone = isMyAccount ? m.phone : maskPhoneNumber(m.phone);
                 return `
@@ -2390,7 +2591,7 @@
                                 <img src="${m.photo || 'https://via.placeholder.com/40'}" style="width: 36px; height: 36px; border-radius: 50%; object-fit: cover; border: 1.5px solid #f59e0b; flex-shrink:0;">
                                 <div style="min-width:0;">
                                     <div style="font-size: 13px; font-weight: 700; color: #0f172a; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${m.name}</div>
-                                    <div style="font-size: 10px; color: #475569;">📞 ${displayPhone} | ব্যালেন্স: <strong style="color: ${totalBalance < 0 ? '#dc2626' : '#16a34a'};">৳${totalBalance}</strong> | সপ্তাহ: <strong>৳${weekPaid}/${requiredQuota}</strong> ${isUnpaid ? '<span style="color:#dc2626; font-weight:700;">(বাকি)</span>' : '<span style="color:#16a34a; font-weight:700;">(পরিশোধ)</span>'}</div>
+                                    <div style="font-size: 10px; color: #475569;">📞 ${displayPhone} | টোটাল: <strong style="color: ${paid < 0 ? '#dc2626' : '#16a34a'};">৳${paid}</strong> ${isUnpaid ? '<span style="color:#dc2626; font-weight:700;">(বাকি)</span>' : ''}</div>
                                 </div>
                             </div>
                             <div style="text-align: right; flex-shrink:0;">
@@ -2398,7 +2599,7 @@
                                 <div style="font-size: 10px; color: var(--primary); margin-top: 2px;">${isExpanded ? '▲ বন্ধ' : '▼ ৭ দিন'}</div>
                             </div>
                         </div>
-                        ${isExpanded ? `<div style="margin-top: 8px; padding-top: 6px; border-top: 1px dashed #cbd5e1;">${renderSevenDaysGridHTML(weekPaid)}</div>` : ''}
+                        ${isExpanded ? `<div style="margin-top: 8px; padding-top: 6px; border-top: 1px dashed #cbd5e1;">${renderSevenDaysGridHTML(paid)}</div>` : ''}
                     </div>
                 `;
             }).join('');
@@ -2431,7 +2632,6 @@
                 document.getElementById("samityTargetImg").src = member.photo || 'https://via.placeholder.com/40';
                 document.getElementById("samityTargetName").innerText = `${member.name} (${maskPhoneNumber(member.phone)})`;
                 document.getElementById("samityTargetPaid").innerText = `৳${Number(member.weeklyPaid || 0)}`;
-                document.getElementById("samityTargetWeekPaid").innerText = `৳${getMemberCurrentWeekPaid(member)}`;
                 preview.style.display = "flex";
             } else {
                 preview.style.display = "none";
@@ -2706,7 +2906,7 @@
                 let actionBtns = "";
                 if (isCut) {
                     const remSec = Math.ceil((item.cutUntil - now) / 1000);
-                    actionBtns = `<span style="font-size:11px; color:#dc2626; font-weight:700;">✂️ কাউন্টডাউন (${remSec}সেঃসঃ)</span> <button class="btn btn-success btn-xs" onclick="restoreSerial('${item.id}')">🔄 সিরিয়াল ফিরিয়ে নিন</button>`;
+                    actionBtns = `<span style="font-size:11px; color:#dc2626; font-weight:700;">✂️ কাউন্টডাউন (${remSec}সেঃ)</span> <button class="btn btn-success btn-xs" onclick="restoreSerial('${item.id}')">🔄 সিরিয়াল ফিরিয়ে নিন</button>`;
                 } else if (isOnBreak) {
                     const remBreakSec = Math.ceil((item.breakUntil - now) / 1000);
                     const remMin = Math.floor(remBreakSec / 60);
@@ -2952,7 +3152,7 @@
                             ${r.slipPhoto ? `<div style="margin-top:6px;"><a href="${r.slipPhoto}" target="_blank"><img src="${r.slipPhoto}" style="width:70px; height:50px; object-fit:cover; border-radius:6px; border:1px solid #cbd5e1;" title="স্ক্রিনশট দেখুন"></a></div>` : ''}
                         </div>
                     `).join('');
-                const memberOptions = `<option value="">-- সদস্য সিলেক্ট করুন --</option>` + membersList.map(m => `<option value="${m.phone}">${m.name} (${maskPhoneNumber(m.phone)}) - ব্যালেন্স: ৳${m.weeklyPaid || 0}</option>`).join('');
+                const memberOptions = `<option value="">-- সদস্য সিলেক্ট করুন --</option>` + membersList.map(m => `<option value="${m.phone}">${m.name} (${maskPhoneNumber(m.phone)}) - জমা: ৳${m.weeklyPaid || 0}</option>`).join('');
                 
                 const otherCashiersOptions = ALL_CASHIER_IDS
                     .filter(otherId => otherId !== cid)
@@ -3115,8 +3315,6 @@
             renderFourCashierPanels();
             showToast(`✅ ক্যাশিয়ারের তথ্য সেভ হয়েছে!`, "success");
         }
-        
-        // ক্যাশিয়ার থেকে সরাসরি জমা/মাইনাস করার সময় মূল ব্যালেন্স ও চলতি সপ্তাহের জমা আপডেট হবে
         async function processCashierDirectCash(cid, mode) {
             const memberPhone = document.getElementById(`cashDirectMember_${cid}`).value;
             const amt = Number(document.getElementById(`cashDirectAmount_${cid}`).value);
@@ -3127,13 +3325,8 @@
             const member = samityApprovedMembers[memberPhone];
             if (!member) return;
             const currentPaid = Number(member.weeklyPaid || 0);
-            const currentWeek = getMemberCurrentWeekPaid(member);
             const newPaid = mode === 'add' ? currentPaid + amt : currentPaid - amt;
-            const newWeekPaid = mode === 'add' ? currentWeek + amt : Math.max(0, currentWeek - amt);
-            await db.ref('tanSamity/approvedMembers/' + memberPhone).update({ 
-                weeklyPaid: newPaid,
-                currentWeekPaid: newWeekPaid
-            });
+            await db.ref('tanSamity/approvedMembers/' + memberPhone).update({ weeklyPaid: newPaid });
             
             const cashierObj = fourCashiersData[cid] || { name: cid, balance: 0 };
             const updatedCashierBal = mode === 'add'
@@ -3214,7 +3407,7 @@
         async function approveSamityMember(phone) {
             const m = samityPendingMembers[phone];
             if (!m) return;
-            await db.ref('tanSamity/approvedMembers/' + phone).set({ ...m, weeklyPaid: 0, currentWeekPaid: 0, isWinner: false });
+            await db.ref('tanSamity/approvedMembers/' + phone).set({ ...m, weeklyPaid: 0, isWinner: false });
             await db.ref('tanSamity/pendingMembers/' + phone).remove();
             showToast("✅ অনুমোদন দেওয়া হয়েছে!", "success");
         }
@@ -3224,8 +3417,6 @@
                 showToast("বাতিল করা হয়েছে।", "info");
             }
         }
-        
-        // পেমেন্ট অনুমোদন করলে মূল ব্যালেন্স থেকে মাইনাস কমবে এবং চলতি সপ্তাহের জমা বাড়বে যাতে ডান পাশের বক্সে নাম চলে আসে
         async function approveSamityPayment(key) {
             const r = samityPendingPayments[key];
             if (!r) return;
@@ -3259,12 +3450,7 @@
             const snap = await db.ref('tanSamity/approvedMembers/' + r.targetPhone).once('value');
             if (snap.exists()) {
                 const amt = Number(r.amount);
-                const mData = snap.val();
-                const prevWeekPaid = getMemberCurrentWeekPaid(mData);
-                await db.ref('tanSamity/approvedMembers/' + r.targetPhone).update({ 
-                    weeklyPaid: Number(mData.weeklyPaid || 0) + amt,
-                    currentWeekPaid: prevWeekPaid + amt
-                });
+                await db.ref('tanSamity/approvedMembers/' + r.targetPhone).update({ weeklyPaid: Number(snap.val().weeklyPaid || 0) + amt });
                 await db.ref('tanSamity/pendingPayments/' + key).update({ status: 'approved' });
                 
                 const cid = r.cashierId || "cashier1";
@@ -3299,7 +3485,7 @@
                 <div style="display:flex; justify-content:space-between; align-items:center; background:#fff; padding:6px; border-radius:6px; margin-bottom:4px; border:1px solid #fcd34d; gap:6px;">
                     <div style="display:flex; align-items:center; gap:6px; min-width:0;">
                         <img src="${m.photo || 'https://via.placeholder.com/28'}" style="width:26px; height:26px; border-radius:50%; object-fit:cover; flex-shrink:0;">
-                        <div style="font-size:11px; font-weight:700; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${m.name} (${maskPhoneNumber(m.phone)}) | ব্যালেন্স: ৳${m.weeklyPaid || 0} (সপ্তাহ: ৳${getMemberCurrentWeekPaid(m)})</div>
+                        <div style="font-size:11px; font-weight:700; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${m.name} (${maskPhoneNumber(m.phone)}) | জমা: ৳${m.weeklyPaid || 0}</div>
                     </div>
                     <div style="display:flex; gap:3px; flex-shrink:0;">
                         <button class="btn btn-warning btn-xs" onclick="openSamityEditPhotoModal('${m.phone}')">ছবি</button>
@@ -3360,46 +3546,30 @@
         function openSamityAdjustModal(phone) {
             const m = samityApprovedMembers[phone];
             document.getElementById("samityAdjPhone").value = phone;
-            document.getElementById("samityAdjInfo").innerHTML = `<strong>${m ? m.name : phone}</strong> | মোট ব্যালেন্স: <strong>৳${m ? (m.weeklyPaid || 0) : 0}</strong> | চলতি সপ্তাহ: <strong>৳${m ? getMemberCurrentWeekPaid(m) : 0}</strong>`;
+            document.getElementById("samityAdjInfo").innerHTML = `<strong>${m ? m.name : phone}</strong> | বর্তমান জমা: <strong>৳${m ? (m.weeklyPaid || 0) : 0}</strong>`;
             document.getElementById("samityAdjustModal").style.display = "block";
         }
-        
-        // এডমিন প্যানেল থেকে টাকা জমা দিলে সাপ্তাহিক জমা বাড়বে (ডান পাশের বক্সে যাবে), এবং বড় অ্যামাউন্ট মাইনাস করলে মূল ব্যালেন্স মাইনাস হবে কিন্তু সাপ্তাহিক স্ট্যাটাস নষ্ট হবে না
         async function applySamityMoneyChange(type) {
             const phone = document.getElementById("samityAdjPhone").value;
             const amt = Number(document.getElementById("samityAdjAmount").value);
             const m = samityApprovedMembers[phone];
             if (!m || !amt) return;
-            const currentPaid = Number(m.weeklyPaid || 0);
-            const currentWeek = getMemberCurrentWeekPaid(m);
-            const newPaid = type === 'add' ? currentPaid + amt : currentPaid - amt;
-            let updates = { weeklyPaid: newPaid };
-            if (type === 'add') {
-                updates.currentWeekPaid = currentWeek + amt;
-            } else {
-                // বড় অ্যামাউন্ট (যেমন বিজয়ীর টাকা ৳৯০০০) মাইনাস করলে শুধু মোট ব্যালেন্স থেকে কমবে, কিন্তু সাপ্তাহিক কোটার চেয়ে ছোট অ্যামাউন্ট মাইনাস করলে সাপ্তাহিক জমা সমন্বয় হবে
-                if (amt <= getTotalRequiredQuota()) {
-                    updates.currentWeekPaid = Math.max(0, currentWeek - amt);
-                }
-            }
-            await db.ref('tanSamity/approvedMembers/' + phone).update(updates);
+            const newPaid = type === 'add' ? Number(m.weeklyPaid || 0) + amt : Number(m.weeklyPaid || 0) - amt;
+            await db.ref('tanSamity/approvedMembers/' + phone).update({ weeklyPaid: newPaid });
             document.getElementById("samityAdjustModal").style.display = "none";
             showToast("✅ সফল!", "success");
         }
         async function resetAllMembersNewWeek() {
             if (confirm("নতুন সপ্তাহ রিসেট করতে চান?")) {
                 const updates = {};
-                Object.keys(samityApprovedMembers).forEach(phone => { 
-                    updates[phone + '/weeklyPaid'] = 0; 
-                    updates[phone + '/currentWeekPaid'] = 0; 
-                    updates[phone + '/isWinner'] = false; 
-                });
+                Object.keys(samityApprovedMembers).forEach(phone => { updates[phone + '/weeklyPaid'] = 0; updates[phone + '/isWinner'] = false; });
                 await db.ref('tanSamity/approvedMembers').update(updates);
                 await db.ref('tanSamity/config').update({ isWheelLocked: false, paidListClearTimestamp: 0 });
                 await db.ref('tanSamity/allowedStatus').remove();
                 await db.ref('tanSamity/liveSpin').remove();
                 lastHandledSpinId = "";
                 document.getElementById("wheelWinnerMonitor").style.display = "none";
+                renderSpectatorWinnerPins();
                 showToast("🔄 রিসেট সম্পন্ন!", "success");
             }
         }
