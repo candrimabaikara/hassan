@@ -566,6 +566,21 @@
             padding: 8px;
             margin-bottom: 8px;
         }
+        .cashier-history-item {
+            background: #fff;
+            border-left: 3.5px solid #0284c7;
+            border-top: 1px solid #e2e8f0;
+            border-right: 1px solid #e2e8f0;
+            border-bottom: 1px solid #e2e8f0;
+            border-radius: 6px;
+            padding: 6px 8px;
+            margin-bottom: 5px;
+            font-size: 11px;
+        }
+        .cashier-history-item.type-transfer { border-left-color: #7c3aed; background: #faf5ff; }
+        .cashier-history-item.type-receive { border-left-color: #059669; background: #f0fdf4; }
+        .cashier-history-item.type-cash-add { border-left-color: #0ea5e9; background: #f0f9ff; }
+        .cashier-history-item.type-cash-sub { border-left-color: #dc2626; background: #fef2f2; }
     </style>
 </head>
 <body>
@@ -928,7 +943,7 @@
             </div>
         </div>
     </div>
-    <!-- SUB-ADMIN POWER & PASSWORD MODAL (সমস্ত অপশন বণ্টন) -->
+    <!-- SUB-ADMIN POWER & PASSWORD MODAL -->
     <div class="modal-backdrop" id="subAdminPowerModal" style="z-index: 5800;">
         <div class="modal-card" style="max-width: 480px;">
             <h3 id="powerModalTitle" style="color: var(--primary); font-size: 16px; margin-bottom: 8px;">✏️ অ্যাডমিন কাজ ও পাসওয়ার্ড নির্ধারণ</h3>
@@ -1055,7 +1070,8 @@
                         <div id="adminSamityPendingRegList">লোড হচ্ছে...</div>
                     </div>
                 </div>
-                <!-- ৪ জন আলাদা ক্যাশিয়ার বক্স (আলাদা নাম, নম্বর, পেমেন্ট রিসিভ ও হাতে ক্যাশ জমা/মাইনাস) -->
+
+                <!-- ৪ জন আলাদা ক্যাশিয়ার বক্স (আলাদা নাম, নম্বর, পেমেন্ট রিসিভ, হাতে ক্যাশ জমা/মাইনাস এবং ক্যাশিয়ার-টু-ক্যাশিয়ার টাকা ট্রান্সফার) -->
                 <div class="admin-box" id="powerSec_cashier1" style="background: #f0fdf4; border: 1.5px solid #10b981; margin-bottom: 8px;">
                     <h4>
                         <span id="cashierBoxHeaderTitle_cashier1">💰 ক্যাশিয়ার প্যানেল ১ (প্রধান ক্যাশিয়ার)</span>
@@ -1092,6 +1108,33 @@
                         <div id="cashierPanelBody_cashier4"></div>
                     </div>
                 </div>
+
+                <!-- নতুন বক্স: ক্যাশিয়ারদের সম্পূর্ণ লেনদেনের ইতিহাস (হিস্ট্রি অপশন) -->
+                <div class="admin-box" id="powerSec_cashierhistory" style="background: #f0f9ff; border: 1.5px solid #0284c7; margin-bottom: 8px;">
+                    <h4>
+                        <span>📜 ক্যাশিয়ারদের সম্পূর্ণ লেনদেন ইতিহাস (হিস্ট্রি)</span>
+                        <button class="btn btn-dark btn-xs" id="lockPower_cashierhistory" onclick="togglePowerLock('_cashierhistory')">🔒 লকড</button>
+                    </h4>
+                    <div id="containerPower_cashierhistory" style="opacity: 0.5; pointer-events: none;">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; gap:6px;">
+                            <select id="filterCashierHistorySelect" class="form-control" style="max-width:200px;" onchange="renderCashierTransactionsHistory()">
+                                <option value="ALL">🔍 সকল ক্যাশিয়ারের ইতিহাস</option>
+                                <option value="cashier1">ক্যাশিয়ার ১</option>
+                                <option value="cashier2">ক্যাশিয়ার ২</option>
+                                <option value="cashier3">ক্যাশিয়ার ৩</option>
+                                <option value="cashier4">ক্যাশিয়ার ৪</option>
+                            </select>
+                            <button class="btn btn-danger btn-xs" onclick="clearAllCashierHistory()">🗑️ ইতিহাস মুছুন</button>
+                        </div>
+                        <div id="cashierTotalSummaryBar" style="background:#e0f2fe; padding:6px 8px; border-radius:6px; font-size:11px; color:#0369a1; font-weight:700; margin-bottom:6px;">
+                            হিসাব লোড হচ্ছে...
+                        </div>
+                        <div id="cashierTransactionsHistoryList" style="max-height: 260px; overflow-y: auto; background:#f8fafc; padding:6px; border-radius:8px; border:1px solid #bae6fd;">
+                            কোনো লেনদেনের ইতিহাস নেই।
+                        </div>
+                    </div>
+                </div>
+
                 <!-- মেম্বার ম্যানেজমেন্ট -->
                 <div class="admin-box" id="powerSec_members" style="background: white; border: 1px solid #fde68a; margin-bottom: 8px;">
                     <h4>
@@ -1338,10 +1381,11 @@
             { id: "_wheel", label: "টাকার পারমিশন ও হুইল লক" },
             { id: "_quota", label: "রেজিস্ট্রেশন অন/অফ এবং টাকার কোটা" },
             { id: "_regapp", label: "নতুন রেজিস্ট্রেশন আবেদন অনুমোদন" },
-            { id: "_cashier1", label: "ক্যাশিয়ার প্যানেল (প্রধান ক্যাশিয়ার - টাকা রিসিভ ও নগদ জমা)" },
-            { id: "_cashier2", label: "ক্যাশিয়ার প্যানেল (দ্বিতীয় ক্যাশিয়ার - টাকা রিসিভ ও নগদ জমা)" },
-            { id: "_cashier3", label: "ক্যাশিয়ার প্যানেল (তৃতীয় ক্যাশিয়ার - টাকা রিসিভ ও নগদ জমা)" },
-            { id: "_cashier4", label: "ক্যাশিয়ার প্যানেল (চতুর্থ ক্যাশিয়ার - টাকা রিসিভ ও নগদ জমা)" },
+            { id: "_cashier1", label: "ক্যাশিয়ার প্যানেল (প্রধান ক্যাশিয়ার - টাকা রিসিভ, নগদ জমা ও ট্রান্সফার)" },
+            { id: "_cashier2", label: "ক্যাশিয়ার প্যানেল (দ্বিতীয় ক্যাশিয়ার - টাকা রিসিভ, নগদ জমা ও ট্রান্সফার)" },
+            { id: "_cashier3", label: "ক্যাশিয়ার প্যানেল (তৃতীয় ক্যাশিয়ার - টাকা রিসিভ, নগদ জমা ও ট্রান্সফার)" },
+            { id: "_cashier4", label: "ক্যাশিয়ার প্যানেল (চতুর্থ ক্যাশিয়ার - টাকা রিসিভ, নগদ জমা ও ট্রান্সফার)" },
+            { id: "_cashierhistory", label: "ক্যাশিয়ারদের সম্পূর্ণ লেনদেন ইতিহাস (হিস্ট্রি)" },
             { id: "_members", label: "মেম্বার ম্যানেজমেন্ট (টাকা জমা, নাম-ফোন ও ডিলিট)" },
             { id: "_eightadmins", label: "৮ জন অ্যাডমিন প্রোফাইল কন্ট্রোল" },
             { id: "_break", label: "রাইডার এক্সক্লুসিভ বিরতি সেটআপ" },
@@ -1355,21 +1399,22 @@
             { id: "_remote", label: "দূরবর্তী ম্যানুয়াল সিরিয়াল এন্ট্রি" }
         ];
         let subAdminCredentials = {
-            admin1: { pass: "123456", assignedPowers: ["_winner", "_schedule", "_wheel", "_quota", "_regapp", "_cashier1"] },
-            admin2: { pass: "123456", assignedPowers: ["_cashier2", "_members"] },
-            admin3: { pass: "123456", assignedPowers: ["_cashier3", "_break", "_special"] },
-            admin4: { pass: "123456", assignedPowers: ["_cashier4", "_gps", "_leaders", "_fouradmins", "_notice", "_rideredit", "_suspend", "_remote"] },
+            admin1: { pass: "123456", assignedPowers: ["_winner", "_schedule", "_wheel", "_quota", "_regapp", "_cashier1", "_cashierhistory"] },
+            admin2: { pass: "123456", assignedPowers: ["_cashier2", "_cashierhistory", "_members"] },
+            admin3: { pass: "123456", assignedPowers: ["_cashier3", "_cashierhistory", "_break", "_special"] },
+            admin4: { pass: "123456", assignedPowers: ["_cashier4", "_cashierhistory", "_gps", "_leaders", "_fouradmins", "_notice", "_rideredit", "_suspend", "_remote"] },
             admin5: { pass: "123456", assignedPowers: ["_members"] },
             admin6: { pass: "123456", assignedPowers: ["_notice"] },
             admin7: { pass: "123456", assignedPowers: ["_rideredit"] },
-            admin8: { pass: "123456", assignedPowers: ["_cashier1", "_members"] }
+            admin8: { pass: "123456", assignedPowers: ["_cashier1", "_cashierhistory", "_members"] }
         };
         let fourCashiersData = {
-            cashier1: { roleTitle: "প্রধান ক্যাশিয়ার", name: "ক্যাশিয়ার ১", phone: "01700000001", photo: "https://via.placeholder.com/80?text=Cashier1", active: true },
-            cashier2: { roleTitle: "ক্যাশিয়ার", name: "ক্যাশিয়ার ২", phone: "01700000002", photo: "https://via.placeholder.com/80?text=Cashier2", active: true },
-            cashier3: { roleTitle: "ক্যাশিয়ার", name: "ক্যাশিয়ার ৩", phone: "01700000003", photo: "https://via.placeholder.com/80?text=Cashier3", active: true },
-            cashier4: { roleTitle: "ক্যাশিয়ার", name: "ক্যাশিয়ার ৪", phone: "01700000004", photo: "https://via.placeholder.com/80?text=Cashier4", active: true }
+            cashier1: { roleTitle: "প্রধান ক্যাশিয়ার", name: "ক্যাশিয়ার ১", phone: "01700000001", photo: "https://via.placeholder.com/80?text=Cashier1", active: true, balance: 0 },
+            cashier2: { roleTitle: "ক্যাশিয়ার", name: "ক্যাশিয়ার ২", phone: "01700000002", photo: "https://via.placeholder.com/80?text=Cashier2", active: true, balance: 0 },
+            cashier3: { roleTitle: "ক্যাশিয়ার", name: "ক্যাশিয়ার ৩", phone: "01700000003", photo: "https://via.placeholder.com/80?text=Cashier3", active: true, balance: 0 },
+            cashier4: { roleTitle: "ক্যাশিয়ার", name: "ক্যাশিয়ার ৪", phone: "01700000004", photo: "https://via.placeholder.com/80?text=Cashier4", active: true, balance: 0 }
         };
+        let cashierTransactionsList = {};
         let eightAdminProfiles = {
             admin1: { name: "রায়হান", roleTitle: "এডমিন", phone: "01835-016892", photo: "https://via.placeholder.com/80?text=Admin", isCashier: false },
             admin2: { name: "সুজন", roleTitle: "এডমিন", phone: "00000000000", photo: "https://via.placeholder.com/80?text=Admin", isCashier: false },
@@ -1552,7 +1597,7 @@
             let cashierHtml = "";
             let selectOptionsHtml = "";
             
-            ALL_CASHIER_IDS.forEach((cid, idx) => {
+            ALL_CASHIER_IDS.forEach((cid) => {
                 const c = fourCashiersData[cid];
                 if (c && c.active !== false) {
                     cashierHtml += `
@@ -1739,6 +1784,7 @@
             }
             renderCashierPaymentCard();
             renderFourCashierPanels();
+            renderCashierTransactionsHistory();
             renderAdminEightRoleProfilesEditor();
             updateAdminRoleUIElements();
             renderDigitalMonitorMarquee();
@@ -1816,6 +1862,10 @@
             samityPendingPayments = snap.val() || {};
             renderFourCashierPanels();
             renderSamityRecentRequests();
+        });
+        db.ref('tanSamity/cashierHistory').on('value', (snap) => {
+            cashierTransactionsList = snap.val() || {};
+            renderCashierTransactionsHistory();
         });
         db.ref('registeredRiders').on('value', (snap) => {
             registeredRiders = snap.val() || {};
@@ -2704,7 +2754,7 @@
             } else {
                 allowedPowers = subAdminCredentials[currentAdminSession]?.assignedPowers || [];
             }
-            const samityKeys = ["_winner", "_schedule", "_wheel", "_quota", "_regapp", "_cashier1", "_cashier2", "_cashier3", "_cashier4", "_members", "_eightadmins"];
+            const samityKeys = ["_winner", "_schedule", "_wheel", "_quota", "_regapp", "_cashier1", "_cashier2", "_cashier3", "_cashier4", "_cashierhistory", "_members", "_eightadmins"];
             let anySamityPower = false;
             ALL_SYSTEM_POWERS.forEach(p => {
                 const secEl = document.getElementById(`powerSec${p.id}`);
@@ -2717,6 +2767,7 @@
             document.getElementById("samityMasterWrapperBox").style.display = anySamityPower ? "block" : "none";
             renderAdminSamityPendingReg();
             renderFourCashierPanels();
+            renderCashierTransactionsHistory();
             renderAdminSamityApprovedListSingleBox();
             renderAdminIndividualWheelPermissions();
             renderAdminRegisteredListsCombined();
@@ -2808,14 +2859,24 @@
             showToast("✅ ড্র শিডিউল সেভ হয়েছে!", "success");
         }
         async function toggleSamityRegStatus(cb) { await db.ref('tanSamity/config/registrationOpen').set(cb.checked); }
+        
+        // ক্যাশিয়ার লেনদেন ইতিহাসে রেকর্ড করার ফাংশন
+        async function recordCashierHistoryLog(logObj) {
+            await db.ref('tanSamity/cashierHistory').push({
+                ...logObj,
+                timestamp: Date.now()
+            });
+        }
+
         function renderFourCashierPanels() {
             const pendingList = Object.entries(samityPendingPayments).filter(([k, r]) => r.status === 'pending');
             const membersList = Object.values(samityApprovedMembers);
             ALL_CASHIER_IDS.forEach((cid, idx) => {
-                const cData = fourCashiersData[cid] || { roleTitle: idx === 0 ? "প্রধান ক্যাশিয়ার" : "ক্যাশিয়ার", name: "", phone: "", photo: "", active: true };
+                const cData = fourCashiersData[cid] || { roleTitle: idx === 0 ? "প্রধান ক্যাশিয়ার" : "ক্যাশিয়ার", name: "", phone: "", photo: "", active: true, balance: 0 };
+                const currentBalance = Number(cData.balance || 0);
                 const headerEl = document.getElementById(`cashierBoxHeaderTitle_${cid}`);
                 if (headerEl) {
-                    headerEl.innerText = `💰 ${cData.roleTitle || 'ক্যাশিয়ার'}: ${cData.name || 'নাম সেট করুন'}`;
+                    headerEl.innerText = `💰 ${cData.roleTitle || 'ক্যাশিয়ার'}: ${cData.name || 'নাম সেট করুন'} (জমা: ৳${currentBalance})`;
                 }
                 const bodyEl = document.getElementById(`cashierPanelBody_${cid}`);
                 if (!bodyEl) return;
@@ -2838,7 +2899,23 @@
                         </div>
                     `).join('');
                 const memberOptions = `<option value="">-- সদস্য সিলেক্ট করুন --</option>` + membersList.map(m => `<option value="${m.phone}">${m.name} (${m.phone}) - জমা: ৳${m.weeklyPaid || 0}</option>`).join('');
+                
+                // অন্য ক্যাশিয়ারদের অপশন (ট্রান্সফার করার জন্য)
+                const otherCashiersOptions = ALL_CASHIER_IDS
+                    .filter(otherId => otherId !== cid)
+                    .map(otherId => {
+                        const oc = fourCashiersData[otherId] || { name: otherId, roleTitle: "ক্যাশিয়ার" };
+                        return `<option value="${otherId}">${oc.roleTitle}: ${oc.name} (জমা: ৳${Number(oc.balance || 0)})</option>`;
+                    }).join('');
+
                 bodyEl.innerHTML = `
+                    <!-- ক্যাশিয়ারের বর্তমান তহবিল ব্যালেন্স ব্যাজ -->
+                    <div style="background:#065f46; color:#fff; padding:6px 10px; border-radius:8px; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center; font-size:12px;">
+                        <span>💼 এই ক্যাশিয়ারের বর্তমান তহবিল:</span>
+                        <strong style="font-size:14px; color:#fde047;">৳${currentBalance}</strong>
+                    </div>
+
+                    <!-- ১. ক্যাশিয়ার সেটিংস -->
                     <div style="background:#ffffff; border:1px solid #a7f3d0; border-radius:8px; padding:8px; margin-bottom:8px;">
                         <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:5px;">
                             <div style="display:flex; align-items:center; gap:6px;">
@@ -2860,6 +2937,24 @@
                             <span>টাকা পাঠানোর তালিকায় এই ক্যাশিয়ারকে চালু রাখুন</span>
                         </label>
                     </div>
+
+                    <!-- ২. এক ক্যাশিয়ার থেকে আরেক ক্যাশিয়ারকে টাকা ট্রান্সফার -->
+                    <div style="background:#f5f3ff; border:1.5px solid #8b5cf6; border-radius:8px; padding:8px; margin-bottom:8px;">
+                        <strong style="font-size:11px; color:#5b21b6; display:block; margin-bottom:4px;">🔄 অন্য ক্যাশিয়ারকে টাকা ট্রান্সফার করুন:</strong>
+                        <div style="display:grid; grid-template-columns:1.5fr 1fr; gap:5px; margin-bottom:5px;">
+                            <select id="transferTargetCashier_${cid}" class="form-control">
+                                <option value="">-- প্রাপক ক্যাশিয়ার --</option>
+                                ${otherCashiersOptions}
+                            </select>
+                            <input type="number" id="transferCashierAmount_${cid}" class="form-control" placeholder="টাকার পরিমাণ">
+                        </div>
+                        <div style="display:flex; gap:5px;">
+                            <input type="text" id="transferCashierNote_${cid}" class="form-control" placeholder="নোট (যেমন: বিকাশ/হাতে ক্যাশ)" style="flex:1;">
+                            <button class="btn btn-primary btn-xs" onclick="transferMoneyBetweenCashiers('${cid}')">💸 ট্রান্সফার করুন</button>
+                        </div>
+                    </div>
+
+                    <!-- ৩. হাতে নগদ ক্যাশ জমা (+) বা মাইনাস (-) -->
                     <div style="background:#fffbeb; border:1px solid #fcd34d; border-radius:8px; padding:8px; margin-bottom:8px;">
                         <strong style="font-size:11px; color:#92400e; display:block; margin-bottom:4px;">💵 হাতে নগদ ক্যাশ টাকা জমা (+) বা মাইনাস (-):</strong>
                         <div style="display:grid; grid-template-columns:1.5fr 1fr; gap:5px; margin-bottom:5px;">
@@ -2871,6 +2966,8 @@
                             <button class="btn btn-danger btn-xs" style="flex:1;" onclick="processCashierDirectCash('${cid}', 'sub')">➖ টাকা মাইনাস করুন</button>
                         </div>
                     </div>
+
+                    <!-- ৪. পেন্ডিং পেমেন্ট রিসিভ -->
                     <div>
                         <strong style="font-size:11px; color:#047857; display:block; margin-bottom:4px;">📥 এই ক্যাশিয়ারের কাছে আসা পেমেন্ট রিকোয়েস্ট (${myPending.length}টি):</strong>
                         ${pendingHtml}
@@ -2878,6 +2975,116 @@
                 `;
             });
         }
+
+        async function transferMoneyBetweenCashiers(fromCid) {
+            const toCid = document.getElementById(`transferTargetCashier_${fromCid}`).value;
+            const amount = Number(document.getElementById(`transferCashierAmount_${fromCid}`).value);
+            const note = document.getElementById(`transferCashierNote_${fromCid}`).value.trim() || "ক্যাশিয়ার ট্রান্সফার";
+
+            if (!toCid) {
+                showToast("⚠️ কোন ক্যাশিয়ারকে টাকা পাঠাবেন তা সিলেক্ট করুন।", "error");
+                return;
+            }
+            if (!amount || amount <= 0) {
+                showToast("⚠️ সঠিক টাকার পরিমাণ দিন।", "error");
+                return;
+            }
+
+            const fromCashier = fourCashiersData[fromCid];
+            const toCashier = fourCashiersData[toCid];
+            if (!fromCashier || !toCashier) return;
+
+            const fromNewBal = Number(fromCashier.balance || 0) - amount;
+            const toNewBal = Number(toCashier.balance || 0) + amount;
+
+            await db.ref(`standConfig/fourCashiers/${fromCid}/balance`).set(fromNewBal);
+            await db.ref(`standConfig/fourCashiers/${toCid}/balance`).set(toNewBal);
+
+            await recordCashierHistoryLog({
+                type: 'transfer',
+                fromCashierId: fromCid,
+                fromCashierName: fromCashier.name || fromCid,
+                toCashierId: toCid,
+                toCashierName: toCashier.name || toCid,
+                amount: amount,
+                note: note
+            });
+
+            document.getElementById(`transferCashierAmount_${fromCid}`).value = "";
+            document.getElementById(`transferCashierNote_${fromCid}`).value = "";
+            showToast(`✅ ${fromCashier.name} থেকে ${toCashier.name}-এর কাছে ৳${amount} ট্রান্সফার সফল হয়েছে!`, "success");
+        }
+
+        function renderCashierTransactionsHistory() {
+            const container = document.getElementById("cashierTransactionsHistoryList");
+            const summaryBar = document.getElementById("cashierTotalSummaryBar");
+            const filterEl = document.getElementById("filterCashierHistorySelect");
+            if (!container || !summaryBar) return;
+
+            const filterCid = filterEl ? filterEl.value : "ALL";
+            let items = Object.entries(cashierTransactionsList).map(([k, v]) => ({ key: k, ...v }));
+            items.sort((a, b) => b.timestamp - a.timestamp);
+
+            if (filterCid !== "ALL") {
+                items = items.filter(item =>
+                    item.cashierId === filterCid ||
+                    item.fromCashierId === filterCid ||
+                    item.toCashierId === filterCid
+                );
+            }
+
+            // প্রতিটি ক্যাশিয়ারের বর্তমান ব্যালেন্স সামারি
+            const balSummary = ALL_CASHIER_IDS.map(cid => {
+                const c = fourCashiersData[cid] || { name: cid, balance: 0 };
+                return `${c.name}: ৳${Number(c.balance || 0)}`;
+            }).join(" | ");
+            summaryBar.innerHTML = `💼 ক্যাশিয়ার তহবিল ব্যালেন্স: ${balSummary}`;
+
+            if (items.length === 0) {
+                container.innerHTML = `<div style="font-size:11px; color:#64748b; text-align:center; padding:10px;">কোনো লেনদেনের ইতিহাস পাওয়া যায়নি।</div>`;
+                return;
+            }
+
+            container.innerHTML = items.map(item => {
+                const timeStr = new Date(item.timestamp).toLocaleString('bn-BD', {
+                    day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit'
+                });
+
+                let rowClass = "cashier-history-item";
+                let descHtml = "";
+
+                if (item.type === 'transfer') {
+                    rowClass += " type-transfer";
+                    descHtml = `🔄 <strong style="color:#5b21b6;">${item.fromCashierName}</strong> ➔ <strong style="color:#5b21b6;">${item.toCashierName}</strong>-কে <strong>৳${item.amount}</strong> ট্রান্সফার করেছেন <span style="color:#475569;">(${item.note || ''})</span>`;
+                } else if (item.type === 'receive') {
+                    rowClass += " type-receive";
+                    descHtml = `📥 <strong style="color:#065f46;">${item.cashierName}</strong> সদস্য <strong>${item.memberName}</strong>-এর কাছ থেকে <strong>৳${item.amount}</strong> রিসিভ করেছেন <span style="color:#0284c7;">(${item.method || 'Online'})</span>`;
+                } else if (item.type === 'cash-add') {
+                    rowClass += " type-cash-add";
+                    descHtml = `➕ <strong style="color:#0369a1;">${item.cashierName}</strong> সদস্য <strong>${item.memberName}</strong>-এর অ্যাকাউন্টে নগদ <strong>৳${item.amount}</strong> জমা করেছেন`;
+                } else if (item.type === 'cash-sub') {
+                    rowClass += " type-cash-sub";
+                    descHtml = `➖ <strong style="color:#dc2626;">${item.cashierName}</strong> সদস্য <strong>${item.memberName}</strong>-এর অ্যাকাউন্ট থেকে <strong>৳${item.amount}</strong> মাইনাস করেছেন`;
+                }
+
+                return `
+                    <div class="${rowClass}">
+                        <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:6px;">
+                            <div style="flex:1; line-height:1.35;">${descHtml}</div>
+                            <span style="font-size:10px; color:#64748b; white-space:nowrap;">🕒 ${timeStr}</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        async function clearAllCashierHistory() {
+            if (confirm("আপনি কি নিশ্চিতভাবে ক্যাশিয়ারদের সম্পূর্ণ লেনদেন ইতিহাস মুছে ফেলতে চান?")) {
+                await db.ref('tanSamity/cashierHistory').remove();
+                showToast("🗑️ ক্যাশিয়ারদের লেনদেন ইতিহাস মুছে ফেলা হয়েছে।", "info");
+            }
+        }
+
         async function saveSingleCashierConfig(cid) {
             const roleTitle = document.getElementById(`cashierRole_${cid}`).value.trim();
             const name = document.getElementById(`cashierName_${cid}`).value.trim();
@@ -2885,10 +3092,11 @@
             const active = document.getElementById(`cashierActive_${cid}`).checked;
             const photoFile = document.getElementById(`cashierPhotoFile_${cid}`).files[0];
             let photoBase64 = fourCashiersData[cid]?.photo || '';
+            const existingBalance = Number(fourCashiersData[cid]?.balance || 0);
             if (photoFile) {
                 photoBase64 = await compressImageToBase64(photoFile, 200);
             }
-            fourCashiersData[cid] = { roleTitle, name, phone, photo: photoBase64, active };
+            fourCashiersData[cid] = { roleTitle, name, phone, photo: photoBase64, active, balance: existingBalance };
             await db.ref('standConfig/fourCashiers').set(fourCashiersData);
             renderCashierPaymentCard();
             renderFourCashierPanels();
@@ -2906,6 +3114,23 @@
             const currentPaid = Number(member.weeklyPaid || 0);
             const newPaid = mode === 'add' ? currentPaid + amt : currentPaid - amt;
             await db.ref('tanSamity/approvedMembers/' + memberPhone).update({ weeklyPaid: newPaid });
+
+            // ক্যাশিয়ারের নিজস্ব ব্যালেন্স আপডেট ও ইতিহাসে সংরক্ষণ
+            const cashierObj = fourCashiersData[cid] || { name: cid, balance: 0 };
+            const updatedCashierBal = mode === 'add'
+                ? Number(cashierObj.balance || 0) + amt
+                : Number(cashierObj.balance || 0) - amt;
+            await db.ref(`standConfig/fourCashiers/${cid}/balance`).set(updatedCashierBal);
+
+            await recordCashierHistoryLog({
+                type: mode === 'add' ? 'cash-add' : 'cash-sub',
+                cashierId: cid,
+                cashierName: cashierObj.name || cid,
+                memberPhone: memberPhone,
+                memberName: member.name,
+                amount: amt
+            });
+
             document.getElementById(`cashDirectAmount_${cid}`).value = "";
             showToast(mode === 'add' ? `✅ ${member.name}-এর অ্যাকাউন্টে নগদ ৳${amt} জমা হয়েছে!` : `✅ ${member.name}-এর অ্যাকাউন্ট থেকে ৳${amt} মাইনাস হয়েছে!`, "success");
         }
@@ -2987,8 +3212,26 @@
             if (!r) return;
             const snap = await db.ref('tanSamity/approvedMembers/' + r.targetPhone).once('value');
             if (snap.exists()) {
-                await db.ref('tanSamity/approvedMembers/' + r.targetPhone).update({ weeklyPaid: Number(snap.val().weeklyPaid || 0) + Number(r.amount) });
+                const amt = Number(r.amount);
+                await db.ref('tanSamity/approvedMembers/' + r.targetPhone).update({ weeklyPaid: Number(snap.val().weeklyPaid || 0) + amt });
                 await db.ref('tanSamity/pendingPayments/' + key).update({ status: 'approved' });
+
+                // ক্যাশিয়ারের তহবিলে টাকা যোগ ও ইতিহাসে সংরক্ষণ
+                const cid = r.cashierId || "cashier1";
+                const cashierObj = fourCashiersData[cid] || { name: cid, balance: 0 };
+                const updatedCashierBal = Number(cashierObj.balance || 0) + amt;
+                await db.ref(`standConfig/fourCashiers/${cid}/balance`).set(updatedCashierBal);
+
+                await recordCashierHistoryLog({
+                    type: 'receive',
+                    cashierId: cid,
+                    cashierName: cashierObj.name || cid,
+                    memberPhone: r.targetPhone,
+                    memberName: r.targetName,
+                    amount: amt,
+                    method: `${r.paymentMethod || 'bKash'} (${r.senderPhone || ''})`
+                });
+
                 showToast("✅ পেমেন্ট রিসিভ ও অ্যাপ্রুভড!", "success");
             }
         }
@@ -3099,7 +3342,7 @@
             const list = Object.entries(registeredRiders);
             const combinedContainer = document.getElementById("adminRegisteredListCombinedEdit");
             if (combinedContainer) {
-                combinedContainer.innerHTML = list.length === 0 ? "রাইডার নেই。" : list.map(([k, r]) => `
+                combinedContainer.innerHTML = list.length === 0 ? "রাইডার নেই।" : list.map(([k, r]) => `
                     <div class="reg-rider-row">
                         <div style="display:flex; align-items:center; gap:8px;">
                             <img src="${r.photo || 'https://via.placeholder.com/30'}" style="width:32px; height:32px; border-radius:50%; object-fit:cover; border:1px solid #cbd5e1;">
