@@ -1459,7 +1459,7 @@
         function getDailyQuota() { return Number(samityConfig.dailyQuota) || 200; }
         function getTotalRequiredQuota() { return getDailyQuota() * 7; }
         
-        // নম্বর হাইড করার ফাংশন (মাঝের ৪-৫ ডিজিট স্টার * করে দেওয়া)
+        // নম্বর হাইড করার ফাংশন
         function maskPhoneNumber(phone) {
             if (!phone || phone.length < 6) return "017********";
             return phone.substring(0, 3) + "********";
@@ -1909,7 +1909,8 @@
             });
         }
         
-        // দ্বৈত তালিকা (বাকি বনাম পরিশোধ করেছেন) - এখানে বিজয়ীরা টাকা পরিশোধ করলে ডানের বক্সে আসবে, তবে লটারির স্পিনে অংশ নিতে পারবে না
+        // **সমাধানকৃত দ্বৈত তালিকা (বাকি বনাম পরিশোধ করেছেন)**
+        // এখানে উইনার হোক বা সাধারণ সদস্য, নির্দিষ্ট পরিমাণ (৳১৪০০ বা নির্ধারিত কোটা) পরিশোধ করলেই ডান দিকের বক্সে চলে যাবে।
         function renderDualPaymentLists() {
             const unpaidContainer = document.getElementById("unpaidMembersList");
             const paidContainer = document.getElementById("paidMembersList");
@@ -1923,7 +1924,6 @@
                 const isFullyPaid = paid >= requiredQuota;
                 const isMyAccount = (myLockedSamityPhone === m.phone || (myLocalRiderName && normalizeName(m.name) === normalizeName(myLocalRiderName)));
                 
-                // নম্বর হাইড করা (যদি নিজের অ্যাকাউন্ট না হয় এবং অ্যাডমিন মোড না থাকে)
                 let displayPhone = isMyAccount ? m.phone : maskPhoneNumber(m.phone);
 
                 if (isFullyPaid && !isPaidCleared) {
@@ -1983,7 +1983,6 @@
             const member = samityApprovedMembers[myLockedSamityPhone];
             document.getElementById("myLockedSamityImg").src = member.photo || 'https://via.placeholder.com/40';
             document.getElementById("myLockedSamityName").innerText = member.name;
-            // নিজের অ্যাকাউন্ট হওয়ায় সম্পূর্ণ নম্বর দেখা যাবে
             document.getElementById("myLockedSamityPhoneDisplay").innerText = member.phone;
             const isAllowed = samityAllowedStatus[myLockedSamityPhone] === true;
             const dot = document.getElementById("myDotIndicator");
@@ -2335,7 +2334,6 @@
             renderSamityMembersList();
         }
         
-        // সাধারণ সদস্য তালিকায় নম্বর হাইড করার ব্যবস্থা
         function renderSamityMembersList() {
             const container = document.getElementById("samityMembersListContainer");
             const members = Object.values(samityApprovedMembers);
@@ -2674,7 +2672,7 @@
                 let actionBtns = "";
                 if (isCut) {
                     const remSec = Math.ceil((item.cutUntil - now) / 1000);
-                    actionBtns = `<span style="font-size:11px; color:#dc2626; font-weight:700;">✂️ কাউন্টডাউন (${remSec}সেঃ)</span> <button class="btn btn-success btn-xs" onclick="restoreSerial('${item.id}')">🔄 সিরিয়াল ফিরিয়ে নিন</button>`;
+                    actionBtns = `<span style="font-size:11px; color:#dc2626; font-weight:700;">✂️ কাউন্টডাউন (${remSec}সেঃসঃ)</span> <button class="btn btn-success btn-xs" onclick="restoreSerial('${item.id}')">🔄 সিরিয়াল ফিরিয়ে নিন</button>`;
                 } else if (isOnBreak) {
                     const remBreakSec = Math.ceil((item.breakUntil - now) / 1000);
                     const remMin = Math.floor(remBreakSec / 60);
@@ -3162,7 +3160,7 @@
         }
         function renderAdminSamityPendingReg() {
             const list = Object.entries(samityPendingMembers);
-            document.getElementById("adminSamityPendingRegList").innerHTML = list.length === 0 ? "কোনো পেন্ডিং আবেদন নেই।" : list.map(([phone, m]) => `
+            document.getElementById("adminSamityPendingRegList").innerHTML = list.length === 0 ? "কোনো পেন্ডিং আবেদন নেই。" : list.map(([phone, m]) => `
                 <div class="reg-rider-row">
                     <span>${m.name} (${maskPhoneNumber(m.phone)})</span>
                     <div>
