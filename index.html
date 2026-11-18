@@ -763,7 +763,7 @@
                         <img id="samityTargetImg" src="" style="width: 34px; height: 34px; border-radius: 50%; object-fit: cover; border: 1.5px solid #059669;">
                         <div style="font-size: 12px;">
                             <strong id="samityTargetName" style="color: #065f46;">নাম</strong>
-                            <div style="font-size: 10px; color: #047857;">✅ অনুমোদিত সদস্য | বর্তমান জমা: <strong id="samityTargetPaid">৳০</strong></div>
+                            <div style="font-size: 10px; color: #047857;">✅ অনুমোদিত সদস্য | মোট ব্যালেন্স: <strong id="samityTargetPaid">৳০</strong> | চলতি সপ্তাহ জমা: <strong id="samityTargetWeekPaid">৳০</strong></div>
                         </div>
                     </div>
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 6px;">
@@ -862,7 +862,7 @@
                         <input type="text" id="manualRiderName" class="form-control" placeholder="শুধুমাত্র নাম দিন">
                     </div>
                     <p style="font-size: 10px; color: #065f46; line-height: 1.3;">
-                        * স্ট্যান্ডে এসে এন্ট্রি দিতে হবে。<br>
+                        * স্ট্যান্ডে এসে এন্ট্রি দিতে হবে।<br>
                         * সীমার বাইরে গেলে অটো সিরিয়াল কাটা যাবে।
                     </p>
                 </div>
@@ -1043,7 +1043,7 @@
                     <div id="containerPower_wheel" style="opacity: 0.5; pointer-events: none;">
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
                             <span style="font-size: 11px; color: #92400e; font-weight: 700;">সক্রিয় সদস্যদের Allow পারমিশন দিন:</span>
-                            <button class="btn btn-info btn-xs" onclick="adminResetRoundPermissions()">🔄 রিসেট</button>
+                            <button class="btn btn-info btn-xs" onclick="adminResetRoundPermissions()">🔄 রিসেট (নতুন খেলা)</button>
                         </div>
                         <div id="adminIndividualWheelPermissionsList" style="max-height: 220px; overflow-y: auto; background: #fffbeb; padding: 6px; border-radius: 8px; border: 1px solid #fde68a;">লোড হচ্ছে...</div>
                     </div>
@@ -1459,12 +1459,20 @@
         function getDailyQuota() { return Number(samityConfig.dailyQuota) || 200; }
         function getTotalRequiredQuota() { return getDailyQuota() * 7; }
         
+        // কোনো সদস্যের চলতি সপ্তাহের জমা বের করার ফাংশন (ব্যালেন্স মাইনাস থাকলেও চলতি সপ্তাহ আলাদা থাকবে)
+        function getMemberCurrentWeekPaid(m) {
+            if (m.currentWeekPaid !== undefined && m.currentWeekPaid !== null) {
+                return Number(m.currentWeekPaid);
+            }
+            const bal = Number(m.weeklyPaid || 0);
+            return bal > 0 ? bal : 0;
+        }
+        
         // নম্বর হাইড করার ফাংশন
         function maskPhoneNumber(phone) {
             if (!phone || phone.length < 6) return "017********";
             return phone.substring(0, 3) + "********";
         }
-
         function playWheelTickSound() {
             try {
                 if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -1671,9 +1679,18 @@
             checkAutoBoundaryGeofence();
         }
         setInterval(updateLiveClock, 1000); updateLiveClock();
-        function checkPaidListAutoClear() {
+        
+        // ড্র সম্পন্ন হওয়ার পর নির্ধারিত সময় পার হলে সাপ্তাহিক জমা শূন্য হয়ে আবার বাম পাশের লিস্টে চলে যাবে
+        async function checkPaidListAutoClear() {
             if (samityConfig.paidListClearTimestamp && Date.now() >= samityConfig.paidListClearTimestamp) {
-                db.ref('tanSamity/config/paidListClearTimestamp').set(0);
+                const updates = {};
+                Object.keys(samityApprovedMembers).forEach(phone => {
+                    updates[phone + '/currentWeekPaid'] = 0;
+                });
+                if (Object.keys(updates).length > 0) {
+                    await db.ref('tanSamity/approvedMembers').update(updates);
+                }
+                await db.ref('tanSamity/config/paidListClearTimestamp').set(0);
             }
         }
         function getDistanceMeters(lat1, lon1, lat2, lon2) {
@@ -1910,7 +1927,7 @@
         }
         
         // **সমাধানকৃত দ্বৈত তালিকা (বাকি বনাম পরিশোধ করেছেন)**
-        // এখানে উইনার হোক বা সাধারণ সদস্য, নির্দিষ্ট পরিমাণ (৳১৪০০ বা নির্ধারিত কোটা) পরিশোধ করলেই ডান দিকের বক্সে চলে যাবে।
+        // এখানে বিজয়ী সদস্যের মূল ব্যালেন্সে মাইনাস (ডিউ) থাকলেও, চলতি সপ্তাহের নির্ধারিত টাকা (currentWeekPaid >= requiredQuota) পরিশোধ করলেই ডান পাশের বক্সে চলে যাবে।
         function renderDualPaymentLists() {
             const unpaidContainer = document.getElementById("unpaidMembersList");
             const paidContainer = document.getElementById("paidMembersList");
@@ -1920,12 +1937,12 @@
             let unpaidHtml = "", paidHtml = "";
             
             members.forEach(m => {
-                const paid = Number(m.weeklyPaid || 0);
-                const isFullyPaid = paid >= requiredQuota;
+                const weekPaid = getMemberCurrentWeekPaid(m);
+                const totalBalance = Number(m.weeklyPaid || 0);
+                const isFullyPaid = weekPaid >= requiredQuota;
                 const isMyAccount = (myLockedSamityPhone === m.phone || (myLocalRiderName && normalizeName(m.name) === normalizeName(myLocalRiderName)));
                 
                 let displayPhone = isMyAccount ? m.phone : maskPhoneNumber(m.phone);
-
                 if (isFullyPaid && !isPaidCleared) {
                     paidHtml += `
                         <div class="dual-list-item">
@@ -1933,10 +1950,10 @@
                                 <img src="${m.photo || 'https://via.placeholder.com/30'}" style="width:24px; height:24px; border-radius:50%; object-fit:cover; flex-shrink:0;">
                                 <div style="min-width:0;">
                                     <strong style="display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${m.name} ${m.isWinner ? '<span class="winner-badge" style="font-size:8px;">(বিজয়ী)</span>' : ''}</strong>
-                                    <span style="font-size:9px; color:#64748b;">${displayPhone}</span>
+                                    <span style="font-size:9px; color:#64748b;">${displayPhone} ${totalBalance < 0 ? `<span style="color:#dc2626;">(বাকি: ৳${Math.abs(totalBalance)})</span>` : ''}</span>
                                 </div>
                             </div>
-                            <span style="color: #166534; font-weight:700; white-space:nowrap; font-size:10px;">৳${paid}</span>
+                            <span style="color: #166534; font-weight:700; white-space:nowrap; font-size:10px;">৳${weekPaid}</span>
                         </div>
                     `;
                 } else {
@@ -1946,10 +1963,10 @@
                                 <img src="${m.photo || 'https://via.placeholder.com/30'}" style="width:24px; height:24px; border-radius:50%; object-fit:cover; flex-shrink:0;">
                                 <div style="min-width:0;">
                                     <strong style="color: #991b1b; display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${m.name} ${m.isWinner ? '<span class="winner-badge" style="font-size:8px;">(বিজয়ী)</span>' : ''}</strong>
-                                    <span style="font-size:9px; color:#64748b;">${displayPhone}</span>
+                                    <span style="font-size:9px; color:#64748b;">${displayPhone} ${totalBalance < 0 ? `<span style="color:#dc2626;">(মোট ডিউ: ৳${Math.abs(totalBalance)})</span>` : ''}</span>
                                 </div>
                             </div>
-                            <span style="color: #dc2626; white-space:nowrap; font-size:10px;">৳${paid}/${requiredQuota}</span>
+                            <span style="color: #dc2626; white-space:nowrap; font-size:10px;">৳${weekPaid}/${requiredQuota}</span>
                         </div>
                     `;
                 }
@@ -2144,7 +2161,13 @@
             const spinId = "spin_" + Date.now();
             await db.ref('tanSamity/liveSpin').set({
                 spinId: spinId, startedAt: Date.now(), duration: 25000, isDemo: !inSchedule,
-                winner: { name: winnerMember.name, phone: winnerMember.phone, photo: winnerMember.photo || 'https://via.placeholder.com/90', weeklyPaid: Number(winnerMember.weeklyPaid || 0) },
+                winner: { 
+                    name: winnerMember.name, 
+                    phone: winnerMember.phone, 
+                    photo: winnerMember.photo || 'https://via.placeholder.com/90', 
+                    weeklyPaid: Number(winnerMember.weeklyPaid || 0),
+                    currentWeekPaid: getMemberCurrentWeekPaid(winnerMember)
+                },
                 membersSnapshot: activeMembers.map(m => ({ name: m.name, phone: m.phone }))
             });
         }
@@ -2191,7 +2214,8 @@
                 return;
             }
             const requiredQuota = getTotalRequiredQuota();
-            if (Number(winner.weeklyPaid || 0) < requiredQuota) {
+            const winnerWeekPaid = winner.currentWeekPaid !== undefined ? Number(winner.currentWeekPaid) : Number(winner.weeklyPaid || 0);
+            if (winnerWeekPaid < requiredQuota) {
                 showInsufficientBalanceWinnerMonitor(winner);
                 playVoiceMessage(`সতর্কবার্তা! ${winner.name}, আপনার সাপ্তাহিক টাকা পরিপূর্ণ না থাকার কারণে নতুন স্পিন শুরু হচ্ছে!`);
                 showToast(`⚠️ ${winner.name}-এর সাপ্তাহিক টাকা বাকি থাকায় নতুন স্পিন হবে!`, "error");
@@ -2264,14 +2288,23 @@
             await db.ref('tanSamity/allowedStatus/' + phone).set(!current);
             showToast(!current ? "✅ গ্রীন বাতি (Allow) দেওয়া হয়েছে!" : "🔴 লাল বাতি করা হয়েছে।", "info");
         }
+        
+        // নতুন খেলা শুরু করার সময় সবার চলতি সপ্তাহের জমা (currentWeekPaid) শূন্য হয়ে বাম পাশের লিস্টে চলে আসবে, কিন্তু মূল মাইনাস ব্যালেন্স ঠিক থাকবে
         async function adminResetRoundPermissions() {
+            const updates = {};
+            Object.keys(samityApprovedMembers).forEach(phone => {
+                updates[phone + '/currentWeekPaid'] = 0;
+            });
+            if (Object.keys(updates).length > 0) {
+                await db.ref('tanSamity/approvedMembers').update(updates);
+            }
             await db.ref('tanSamity/allowedStatus').remove();
             await db.ref('tanSamity/liveSpin').remove();
             await db.ref('tanSamity/config').update({ isWheelLocked: false, paidListClearTimestamp: 0 });
             lastHandledSpinId = "";
             document.getElementById("wheelWinnerMonitor").style.display = "none";
             drawWheel(0);
-            showToast("🔄 নতুন ড্র-এর জন্য পারমিশন রিসেট ও হুইল আনলক হয়েছে!", "success");
+            showToast("🔄 নতুন ড্র-এর জন্য পারমিশন ও সাপ্তাহিক লিস্ট রিসেট হয়েছে!", "success");
         }
         function switchSamityTab(tab) {
             document.getElementById("tabSamityMembers").classList.toggle("active", tab === 'members');
@@ -2305,19 +2338,19 @@
             document.getElementById("cntCompletedGames").innerText = winners;
             document.getElementById("cntRemainingGames").innerText = Math.max(0, members.length - winners);
         }
-        function calculateSevenDaysQuota(weeklyPaid) {
-            let remaining = Number(weeklyPaid) || 0; 
+        function calculateSevenDaysQuota(weekPaid) {
+            let remaining = Number(weekPaid) || 0; 
             const daily = getDailyQuota();
             let days = [];
             for (let i = 0; i < 7; i++) {
                 if (remaining >= daily) { days.push(daily); remaining -= daily; }
                 else if (remaining > 0) { days.push(remaining); remaining = 0; }
-                else { days.push(remaining); remaining = 0; } 
+                else { days.push(0); remaining = 0; } 
             }
             return days;
         }
-        function renderSevenDaysGridHTML(weeklyPaid) {
-            const quotas = calculateSevenDaysQuota(weeklyPaid);
+        function renderSevenDaysGridHTML(weekPaid) {
+            const quotas = calculateSevenDaysQuota(weekPaid);
             const daily = getDailyQuota();
             return `
                 <div class="seven-days-grid">
@@ -2344,12 +2377,12 @@
             }
             const requiredQuota = getTotalRequiredQuota();
             container.innerHTML = members.map((m) => {
-                const paid = Number(m.weeklyPaid || 0);
+                const totalBalance = Number(m.weeklyPaid || 0);
+                const weekPaid = getMemberCurrentWeekPaid(m);
                 const isExpanded = expandedSamityMemberPhone === m.phone;
-                const isUnpaid = paid < requiredQuota;
+                const isUnpaid = weekPaid < requiredQuota;
                 const isMyAccount = (myLockedSamityPhone === m.phone || (myLocalRiderName && normalizeName(m.name) === normalizeName(myLocalRiderName)));
                 let displayPhone = isMyAccount ? m.phone : maskPhoneNumber(m.phone);
-
                 return `
                     <div class="member-item-card" onclick="toggleMemberQuotaView('${m.phone}')">
                         <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px;">
@@ -2357,7 +2390,7 @@
                                 <img src="${m.photo || 'https://via.placeholder.com/40'}" style="width: 36px; height: 36px; border-radius: 50%; object-fit: cover; border: 1.5px solid #f59e0b; flex-shrink:0;">
                                 <div style="min-width:0;">
                                     <div style="font-size: 13px; font-weight: 700; color: #0f172a; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${m.name}</div>
-                                    <div style="font-size: 10px; color: #475569;">📞 ${displayPhone} | টোটাল: <strong style="color: ${paid < 0 ? '#dc2626' : '#16a34a'};">৳${paid}</strong> ${isUnpaid ? '<span style="color:#dc2626; font-weight:700;">(বাকি)</span>' : ''}</div>
+                                    <div style="font-size: 10px; color: #475569;">📞 ${displayPhone} | ব্যালেন্স: <strong style="color: ${totalBalance < 0 ? '#dc2626' : '#16a34a'};">৳${totalBalance}</strong> | সপ্তাহ: <strong>৳${weekPaid}/${requiredQuota}</strong> ${isUnpaid ? '<span style="color:#dc2626; font-weight:700;">(বাকি)</span>' : '<span style="color:#16a34a; font-weight:700;">(পরিশোধ)</span>'}</div>
                                 </div>
                             </div>
                             <div style="text-align: right; flex-shrink:0;">
@@ -2365,7 +2398,7 @@
                                 <div style="font-size: 10px; color: var(--primary); margin-top: 2px;">${isExpanded ? '▲ বন্ধ' : '▼ ৭ দিন'}</div>
                             </div>
                         </div>
-                        ${isExpanded ? `<div style="margin-top: 8px; padding-top: 6px; border-top: 1px dashed #cbd5e1;">${renderSevenDaysGridHTML(paid)}</div>` : ''}
+                        ${isExpanded ? `<div style="margin-top: 8px; padding-top: 6px; border-top: 1px dashed #cbd5e1;">${renderSevenDaysGridHTML(weekPaid)}</div>` : ''}
                     </div>
                 `;
             }).join('');
@@ -2398,6 +2431,7 @@
                 document.getElementById("samityTargetImg").src = member.photo || 'https://via.placeholder.com/40';
                 document.getElementById("samityTargetName").innerText = `${member.name} (${maskPhoneNumber(member.phone)})`;
                 document.getElementById("samityTargetPaid").innerText = `৳${Number(member.weeklyPaid || 0)}`;
+                document.getElementById("samityTargetWeekPaid").innerText = `৳${getMemberCurrentWeekPaid(member)}`;
                 preview.style.display = "flex";
             } else {
                 preview.style.display = "none";
@@ -2918,7 +2952,7 @@
                             ${r.slipPhoto ? `<div style="margin-top:6px;"><a href="${r.slipPhoto}" target="_blank"><img src="${r.slipPhoto}" style="width:70px; height:50px; object-fit:cover; border-radius:6px; border:1px solid #cbd5e1;" title="স্ক্রিনশট দেখুন"></a></div>` : ''}
                         </div>
                     `).join('');
-                const memberOptions = `<option value="">-- সদস্য সিলেক্ট করুন --</option>` + membersList.map(m => `<option value="${m.phone}">${m.name} (${maskPhoneNumber(m.phone)}) - জমা: ৳${m.weeklyPaid || 0}</option>`).join('');
+                const memberOptions = `<option value="">-- সদস্য সিলেক্ট করুন --</option>` + membersList.map(m => `<option value="${m.phone}">${m.name} (${maskPhoneNumber(m.phone)}) - ব্যালেন্স: ৳${m.weeklyPaid || 0}</option>`).join('');
                 
                 const otherCashiersOptions = ALL_CASHIER_IDS
                     .filter(otherId => otherId !== cid)
@@ -3081,6 +3115,8 @@
             renderFourCashierPanels();
             showToast(`✅ ক্যাশিয়ারের তথ্য সেভ হয়েছে!`, "success");
         }
+        
+        // ক্যাশিয়ার থেকে সরাসরি জমা/মাইনাস করার সময় মূল ব্যালেন্স ও চলতি সপ্তাহের জমা আপডেট হবে
         async function processCashierDirectCash(cid, mode) {
             const memberPhone = document.getElementById(`cashDirectMember_${cid}`).value;
             const amt = Number(document.getElementById(`cashDirectAmount_${cid}`).value);
@@ -3091,8 +3127,13 @@
             const member = samityApprovedMembers[memberPhone];
             if (!member) return;
             const currentPaid = Number(member.weeklyPaid || 0);
+            const currentWeek = getMemberCurrentWeekPaid(member);
             const newPaid = mode === 'add' ? currentPaid + amt : currentPaid - amt;
-            await db.ref('tanSamity/approvedMembers/' + memberPhone).update({ weeklyPaid: newPaid });
+            const newWeekPaid = mode === 'add' ? currentWeek + amt : Math.max(0, currentWeek - amt);
+            await db.ref('tanSamity/approvedMembers/' + memberPhone).update({ 
+                weeklyPaid: newPaid,
+                currentWeekPaid: newWeekPaid
+            });
             
             const cashierObj = fourCashiersData[cid] || { name: cid, balance: 0 };
             const updatedCashierBal = mode === 'add'
@@ -3160,7 +3201,7 @@
         }
         function renderAdminSamityPendingReg() {
             const list = Object.entries(samityPendingMembers);
-            document.getElementById("adminSamityPendingRegList").innerHTML = list.length === 0 ? "কোনো পেন্ডিং আবেদন নেই。" : list.map(([phone, m]) => `
+            document.getElementById("adminSamityPendingRegList").innerHTML = list.length === 0 ? "কোনো পেন্ডিং আবেদন নেই।" : list.map(([phone, m]) => `
                 <div class="reg-rider-row">
                     <span>${m.name} (${maskPhoneNumber(m.phone)})</span>
                     <div>
@@ -3173,7 +3214,7 @@
         async function approveSamityMember(phone) {
             const m = samityPendingMembers[phone];
             if (!m) return;
-            await db.ref('tanSamity/approvedMembers/' + phone).set({ ...m, weeklyPaid: 0, isWinner: false });
+            await db.ref('tanSamity/approvedMembers/' + phone).set({ ...m, weeklyPaid: 0, currentWeekPaid: 0, isWinner: false });
             await db.ref('tanSamity/pendingMembers/' + phone).remove();
             showToast("✅ অনুমোদন দেওয়া হয়েছে!", "success");
         }
@@ -3183,6 +3224,8 @@
                 showToast("বাতিল করা হয়েছে।", "info");
             }
         }
+        
+        // পেমেন্ট অনুমোদন করলে মূল ব্যালেন্স থেকে মাইনাস কমবে এবং চলতি সপ্তাহের জমা বাড়বে যাতে ডান পাশের বক্সে নাম চলে আসে
         async function approveSamityPayment(key) {
             const r = samityPendingPayments[key];
             if (!r) return;
@@ -3213,11 +3256,15 @@
                 showToast("✅ ট্রান্সফার রিসিভড!", "success");
                 return;
             }
-
             const snap = await db.ref('tanSamity/approvedMembers/' + r.targetPhone).once('value');
             if (snap.exists()) {
                 const amt = Number(r.amount);
-                await db.ref('tanSamity/approvedMembers/' + r.targetPhone).update({ weeklyPaid: Number(snap.val().weeklyPaid || 0) + amt });
+                const mData = snap.val();
+                const prevWeekPaid = getMemberCurrentWeekPaid(mData);
+                await db.ref('tanSamity/approvedMembers/' + r.targetPhone).update({ 
+                    weeklyPaid: Number(mData.weeklyPaid || 0) + amt,
+                    currentWeekPaid: prevWeekPaid + amt
+                });
                 await db.ref('tanSamity/pendingPayments/' + key).update({ status: 'approved' });
                 
                 const cid = r.cashierId || "cashier1";
@@ -3252,7 +3299,7 @@
                 <div style="display:flex; justify-content:space-between; align-items:center; background:#fff; padding:6px; border-radius:6px; margin-bottom:4px; border:1px solid #fcd34d; gap:6px;">
                     <div style="display:flex; align-items:center; gap:6px; min-width:0;">
                         <img src="${m.photo || 'https://via.placeholder.com/28'}" style="width:26px; height:26px; border-radius:50%; object-fit:cover; flex-shrink:0;">
-                        <div style="font-size:11px; font-weight:700; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${m.name} (${maskPhoneNumber(m.phone)}) | জমা: ৳${m.weeklyPaid || 0}</div>
+                        <div style="font-size:11px; font-weight:700; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${m.name} (${maskPhoneNumber(m.phone)}) | ব্যালেন্স: ৳${m.weeklyPaid || 0} (সপ্তাহ: ৳${getMemberCurrentWeekPaid(m)})</div>
                     </div>
                     <div style="display:flex; gap:3px; flex-shrink:0;">
                         <button class="btn btn-warning btn-xs" onclick="openSamityEditPhotoModal('${m.phone}')">ছবি</button>
@@ -3313,23 +3360,40 @@
         function openSamityAdjustModal(phone) {
             const m = samityApprovedMembers[phone];
             document.getElementById("samityAdjPhone").value = phone;
-            document.getElementById("samityAdjInfo").innerHTML = `<strong>${m ? m.name : phone}</strong> | বর্তমান জমা: <strong>৳${m ? (m.weeklyPaid || 0) : 0}</strong>`;
+            document.getElementById("samityAdjInfo").innerHTML = `<strong>${m ? m.name : phone}</strong> | মোট ব্যালেন্স: <strong>৳${m ? (m.weeklyPaid || 0) : 0}</strong> | চলতি সপ্তাহ: <strong>৳${m ? getMemberCurrentWeekPaid(m) : 0}</strong>`;
             document.getElementById("samityAdjustModal").style.display = "block";
         }
+        
+        // এডমিন প্যানেল থেকে টাকা জমা দিলে সাপ্তাহিক জমা বাড়বে (ডান পাশের বক্সে যাবে), এবং বড় অ্যামাউন্ট মাইনাস করলে মূল ব্যালেন্স মাইনাস হবে কিন্তু সাপ্তাহিক স্ট্যাটাস নষ্ট হবে না
         async function applySamityMoneyChange(type) {
             const phone = document.getElementById("samityAdjPhone").value;
             const amt = Number(document.getElementById("samityAdjAmount").value);
             const m = samityApprovedMembers[phone];
             if (!m || !amt) return;
-            const newPaid = type === 'add' ? Number(m.weeklyPaid || 0) + amt : Number(m.weeklyPaid || 0) - amt;
-            await db.ref('tanSamity/approvedMembers/' + phone).update({ weeklyPaid: newPaid });
+            const currentPaid = Number(m.weeklyPaid || 0);
+            const currentWeek = getMemberCurrentWeekPaid(m);
+            const newPaid = type === 'add' ? currentPaid + amt : currentPaid - amt;
+            let updates = { weeklyPaid: newPaid };
+            if (type === 'add') {
+                updates.currentWeekPaid = currentWeek + amt;
+            } else {
+                // বড় অ্যামাউন্ট (যেমন বিজয়ীর টাকা ৳৯০০০) মাইনাস করলে শুধু মোট ব্যালেন্স থেকে কমবে, কিন্তু সাপ্তাহিক কোটার চেয়ে ছোট অ্যামাউন্ট মাইনাস করলে সাপ্তাহিক জমা সমন্বয় হবে
+                if (amt <= getTotalRequiredQuota()) {
+                    updates.currentWeekPaid = Math.max(0, currentWeek - amt);
+                }
+            }
+            await db.ref('tanSamity/approvedMembers/' + phone).update(updates);
             document.getElementById("samityAdjustModal").style.display = "none";
             showToast("✅ সফল!", "success");
         }
         async function resetAllMembersNewWeek() {
             if (confirm("নতুন সপ্তাহ রিসেট করতে চান?")) {
                 const updates = {};
-                Object.keys(samityApprovedMembers).forEach(phone => { updates[phone + '/weeklyPaid'] = 0; updates[phone + '/isWinner'] = false; });
+                Object.keys(samityApprovedMembers).forEach(phone => { 
+                    updates[phone + '/weeklyPaid'] = 0; 
+                    updates[phone + '/currentWeekPaid'] = 0; 
+                    updates[phone + '/isWinner'] = false; 
+                });
                 await db.ref('tanSamity/approvedMembers').update(updates);
                 await db.ref('tanSamity/config').update({ isWheelLocked: false, paidListClearTimestamp: 0 });
                 await db.ref('tanSamity/allowedStatus').remove();
@@ -3343,7 +3407,7 @@
             const list = Object.entries(registeredRiders);
             const combinedContainer = document.getElementById("adminRegisteredListCombinedEdit");
             if (combinedContainer) {
-                combinedContainer.innerHTML = list.length === 0 ? "রাইডার নেই。" : list.map(([k, r]) => `
+                combinedContainer.innerHTML = list.length === 0 ? "রাইডার নেই।" : list.map(([k, r]) => `
                     <div class="reg-rider-row">
                         <div style="display:flex; align-items:center; gap:8px;">
                             <img src="${r.photo || 'https://via.placeholder.com/30'}" style="width:32px; height:32px; border-radius:50%; object-fit:cover; border:1px solid #cbd5e1;">
@@ -3358,7 +3422,7 @@
             }
             const suspendContainer = document.getElementById("adminRegisteredListSuspend");
             if (suspendContainer) {
-                suspendContainer.innerHTML = list.length === 0 ? "রাইডার নেই。" : list.map(([k, r]) => `
+                suspendContainer.innerHTML = list.length === 0 ? "রাইডার নেই।" : list.map(([k, r]) => `
                     <div class="reg-rider-row">
                         <div>
                             <strong>${r.name}</strong> ${r.isSuspended ? '<span style="color:red;">[সাসপেন্ড]</span>' : '<span style="color:green;">[সক্রিয়]</span>'}
