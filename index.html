@@ -16,7 +16,6 @@
             --success: #10b981;
             --warning: #f59e0b;
             --danger: #ef4444;
-            --purple: #7c3aed;
             --dark: #0f172a;
         }
         * {
@@ -50,14 +49,6 @@
             gap: 10px;
             max-width: 92%;
             border-left: 5px solid var(--warning);
-        }
-        #customToastClose {
-            background: transparent;
-            border: none;
-            color: #fff;
-            font-weight: bold;
-            cursor: pointer;
-            font-size: 14px;
         }
         #gatekeeper {
             position: fixed;
@@ -109,11 +100,11 @@
         }
         .btn:active { transform: scale(0.96); }
         .btn-primary { background: linear-gradient(135deg, #4f46e5, #6366f1); color: white; }
-        .btn-success { background: linear-gradient(135deg, #059669, #10b981); color: white; box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4); }
+        .btn-success { background: linear-gradient(135deg, #059669, #10b981); color: white; }
         .btn-warning { background: linear-gradient(135deg, #d97706, #f59e0b); color: white; }
-        .btn-danger { background: linear-gradient(135deg, #dc2626, #ef4444); color: white; box-shadow: 0 4px 14px rgba(239, 68, 68, 0.4); }
+        .btn-danger { background: linear-gradient(135deg, #dc2626, #ef4444); color: white; }
         .btn-info { background: linear-gradient(135deg, #0284c7, #0ea5e9); color: white; }
-        .btn-purple { background: linear-gradient(135deg, #6d28d9, #9333ea); color: white; box-shadow: 0 4px 18px rgba(124, 58, 237, 0.55); }
+        .btn-purple { background: linear-gradient(135deg, #6d28d9, #9333ea); color: white; box-shadow: 0 4px 15px rgba(124, 58, 237, 0.45); }
         .btn-dark { background: #1e293b; color: white; }
         .btn-xs { padding: 4px 8px; font-size: 11px; border-radius: 6px; }
         .btn-block { width: 100%; }
@@ -162,32 +153,6 @@
         .clock-time { font-size: 14px; font-weight: 700; color: #fde047; line-height: 1.1; }
         .clock-date { font-size: 10px; color: #e2e8f0; }
         
-        /* WhatsApp অডিও কল নির্দেশনা ব্যানার */
-        .wa-call-guide-banner {
-            background: linear-gradient(135deg, #064e3b, #047857);
-            color: #ecfdf5;
-            border: 1.5px solid #34d399;
-            border-radius: 12px;
-            padding: 10px 12px;
-            margin-bottom: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 10px;
-            box-shadow: 0 4px 12px rgba(4, 120, 87, 0.25);
-        }
-        .wa-call-guide-text h4 {
-            font-size: 13px;
-            color: #fde047;
-            font-weight: 700;
-            margin-bottom: 2px;
-        }
-        .wa-call-guide-text p {
-            font-size: 11px;
-            color: #d1fae5;
-            line-height: 1.35;
-        }
-
         .digital-monitor-container {
             background: #0f172a;
             border: 2px solid #38bdf8;
@@ -470,6 +435,66 @@
             0% { transform: scale(0.2); }
             100% { transform: scale(1); }
         }
+
+        /* হোয়াটসঅ্যাপ অডিও কল জয়েন কার্ড (ছবি ২ এর ডিজাইন) */
+        .whatsapp-join-card {
+            display: none;
+            background: linear-gradient(135deg, #065f46 0%, #047857 100%);
+            border: 2px solid #34d399;
+            border-radius: 14px;
+            padding: 12px 14px;
+            margin-top: 10px;
+            color: #ffffff;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            box-shadow: 0 6px 16px rgba(6, 95, 70, 0.35);
+            animation: fadeInCard 0.35s ease-out;
+        }
+        @keyframes fadeInCard {
+            from { opacity: 0; transform: translateY(-6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .whatsapp-join-card-left {
+            flex: 1;
+            text-align: left;
+        }
+        .whatsapp-join-title {
+            font-size: 14.5px;
+            font-weight: 700;
+            color: #fde047;
+            margin-bottom: 3px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .whatsapp-join-desc {
+            font-size: 11.5px;
+            color: #ecfdf5;
+            line-height: 1.35;
+        }
+        .btn-whatsapp-orange {
+            background: linear-gradient(135deg, #f59e0b, #ea580c);
+            color: #ffffff;
+            border: 1.5px solid #fde047;
+            padding: 10px 14px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 700;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            white-space: nowrap;
+            box-shadow: 0 4px 12px rgba(234, 88, 12, 0.45);
+            flex-shrink: 0;
+            transition: transform 0.15s;
+        }
+        .btn-whatsapp-orange:active {
+            transform: scale(0.95);
+        }
+
         .samity-status-bar {
             background: #fffbeb;
             border: 1px solid #fcd34d;
@@ -636,26 +661,6 @@
         <span id="customToastMsg">বার্তা</span>
         <button id="customToastClose" onclick="hideToast()">✕</button>
     </div>
-
-    <!-- WhatsApp কল জয়েন পপআপ মডাল (Allow বাটনে টাচ করার সাথে সাথে দেখানো ও লিংকে যাওয়ার জন্য) -->
-    <div class="modal-backdrop" id="whatsappCallJoinModal" style="z-index: 7000;">
-        <div class="modal-card" style="max-width: 390px; border: 2px solid #10b981; background: linear-gradient(180deg, #ffffff 0%, #ecfdf5 100%); text-align: center;">
-            <div style="font-size: 38px; margin-bottom: 6px;">📞🎧</div>
-            <h3 style="color: #065f46; font-size: 17px; font-weight: 800; margin-bottom: 6px;">WhatsApp অডিও কলে জয়েন করুন</h3>
-            <p style="font-size: 12.5px; color: #1e293b; line-height: 1.5; margin-bottom: 10px; background: #fff; padding: 10px; border-radius: 10px; border: 1px solid #a7f3d0;">
-                আপনার <strong>Allow</strong> পারমিশন <strong>লাল থেকে গ্রীন</strong> হয়েছে!<br>
-                খেলা চলাকালীন অ্যাডমিন আগেই একটি <strong>WhatsApp অডিও কল</strong> চালু রেখেছেন।<br>
-                নিচের বাটনে টাচ করে WhatsApp-এ গিয়ে <strong>এই কলে জয়েন করুন</strong>, তারপর <strong>Back বাটনে টাচ করে</strong> আবার আগের খেলার অপশনে ফিরে আসুন।
-            </p>
-            <a id="waDirectJoinLink" href="https://chat.whatsapp.com/FuvpJ56RNMtEHaGUzXEegL?s=cl&p=a&iam=2" target="_blank" rel="noopener noreferrer" class="btn btn-success btn-block" style="padding: 10px; font-size: 13.5px; text-decoration: none; margin-bottom: 8px;">
-                🟢 WhatsApp গ্রুপ ও অডিও কলে যান
-            </a>
-            <button type="button" class="btn btn-dark btn-block btn-xs" onclick="closeWaCallModal()">
-                ↩️ কলে জয়েন শেষে খেলার পর্দায় ফিরে আসুন
-            </button>
-        </div>
-    </div>
-
     <!-- GATEKEEPER -->
     <div id="gatekeeper">
         <div class="gate-box">
@@ -667,7 +672,6 @@
             </div>
         </div>
     </div>
-
     <!-- MAIN APP -->
     <div class="container" id="mainApp" style="display: none;">
         <div class="assoc-banner">
@@ -698,18 +702,6 @@
                 </div>
             </div>
         </div>
-
-        <!-- WhatsApp অডিও কল গাইড ব্যানার -->
-        <div class="wa-call-guide-banner" id="waCallGuideBanner">
-            <div class="wa-call-guide-text">
-                <h4>🎧 খেলা চলাকালীন WhatsApp অডিও কল</h4>
-                <p>Allow বাটনে টাচ করলে WhatsApp লিংক ওপেন হবে—<strong>কলে জয়েন করে Back বাটনে টাচ করে</strong> এখানে ফিরে আসুন।</p>
-            </div>
-            <a href="https://chat.whatsapp.com/FuvpJ56RNMtEHaGUzXEegL?s=cl&p=a&iam=2" target="_blank" rel="noopener noreferrer" class="btn btn-warning btn-xs" style="text-decoration:none; white-space:nowrap;">
-                📞 কল জয়েন
-            </a>
-        </div>
-
         <!-- ডিজিটাল মনিটর মারকিউ -->
         <div class="digital-monitor-container">
             <div class="digital-monitor-title">🌟 ডিজিটাল মনিটর (নেতৃবৃন্দ ও অ্যাডমিন প্যানেল) 🌟</div>
@@ -717,7 +709,6 @@
                 <div class="marquee-track" id="digitalMonitorTrack"></div>
             </div>
         </div>
-
         <!-- NOTICE BOARD -->
         <div class="notice-card">
             <div class="notice-content">
@@ -726,10 +717,9 @@
             </div>
             <img id="displayNoticeImg" class="notice-img" style="display: none;" onclick="window.open(this.src)" alt="নোটিশ ছবি">
         </div>
-
         <!-- TAN SAMITY & LIVE MONITOR SPIN WHEEL -->
         <div class="samity-card">
-            <div class="samity-header" onclick="toggleSamityCardCollapse()">
+            <div class="samity-header" id="samityHeaderToggle" onclick="toggleSamityCardCollapse()">
                 <h2>🏆 চন্দ্রিমা বাইকার টান সমিতি (স্পিন লটারি)</h2>
                 <div style="display: flex; align-items: center; gap: 6px;">
                     <span id="drawTypeBadgeHeader" style="font-size: 11px; font-weight: 700; background: #92400e; color: white; padding: 2px 8px; border-radius: 10px;">ড্র খেলা</span>
@@ -751,7 +741,6 @@
                         </div>
                     </div>
                 </div>
-
                 <!-- ১ ও ৪. পারফেক্ট সেন্টার্ড স্পিন হুইল বক্স -->
                 <div class="yellow-wheel-box" id="yellowWheelBox">
                     <div class="wheel-stage-container">
@@ -772,12 +761,13 @@
                     </div>
                     <div id="wheelStatusInfo" style="width: 100%; font-size: 11.5px; color: #fde047; margin-top: 4px; font-weight: 700; background: rgba(15, 23, 42, 0.7); padding: 7px; border-radius: 8px; border: 1px solid #38bdf8; position: relative; z-index: 10;">অপেক্ষমাণ...</div>
                 </div>
-
                 <!-- নির্ধারিত অ্যাকাউন্ট ও পারমিশন বক্স -->
                 <div style="background: #fffbeb; border: 1.5px solid #f59e0b; border-radius: 12px; padding: 10px; margin-bottom: 10px;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-                        <h4 style="font-size: 12px; color: #92400e;">👤 আপনার নির্ধারিত অ্যাকাউন্ট</h4>
-                        <span id="drawCountdownBadge" style="font-size: 11px; background: #1e1b4b; color: #fde047; padding: 2px 8px; border-radius: 8px; font-weight: 700;">⏳ সময় গণনা হচ্ছে...</span>
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 6px; margin-bottom: 8px; flex-wrap: wrap;">
+                        <h4 style="font-size: 12.5px; color: #92400e; padding-top: 3px;">👤 আপনার নির্ধারিত অ্যাকাউন্ট</h4>
+                        <div id="drawCountdownBadge" style="font-size: 11px; background: #1e1b4b; color: #ffffff; padding: 5px 10px; border-radius: 8px; font-weight: 700; text-align: right; line-height: 1.35; box-shadow: 0 2px 6px rgba(0,0,0,0.18);">
+                            ⏳ সময় গণনা হচ্ছে...
+                        </div>
                     </div>
                     <div id="samityAccountLinkBox" style="display: none;">
                         <p style="font-size: 11px; color: #78350f; margin-bottom: 5px;">আপনার রেজিস্টার্ড ফোন নম্বরটি দিয়ে একবার অ্যাকাউন্ট লক করুন:</p>
@@ -797,15 +787,22 @@
                             </div>
                             <span id="myDotIndicator" style="width: 14px; height: 14px; border-radius: 50%; background: #ef4444; display: inline-block; box-shadow: 0 0 6px rgba(0,0,0,0.3);"></span>
                         </div>
-                        <!-- লাল -> গ্রীন -> বেগুনি ধাপের মেইন Allow ও স্পিন বাটন -->
-                        <button id="btnMySamityMainAction" class="btn btn-danger btn-block" style="font-size: 12.5px; padding: 10px; line-height: 1.35;" onclick="handleMainPermissionAndSpinButton()">🔴 ড্র সম্পন্ন করার জন্য পারমিশন দিন (Allow)</button>
-                        <div id="waCallReturnReminder" style="display:none; margin-top:6px; background:#ecfdf5; border:1px solid #10b981; color:#065f46; padding:7px 9px; border-radius:8px; font-size:11px; font-weight:600; line-height:1.35;">
-                            🎧 WhatsApp কল ওপেন হয়েছে। <strong>এই কলে জয়েন করুন</strong> এবং জয়েন হয়ে <strong>Back বাটনে টাচ করে</strong> আবার এখানে ফিরে আসুন।
-                            <a href="https://chat.whatsapp.com/FuvpJ56RNMtEHaGUzXEegL?s=cl&p=a&iam=2" target="_blank" rel="noopener noreferrer" style="color:#047857; font-weight:800; text-decoration:underline; margin-left:4px;">আবার লিংক খুলুন</a>
+                        <button id="btnMySamityMainAction" class="btn btn-danger btn-block" style="font-size: 12.5px; padding: 10px; line-height: 1.35;" onclick="handleMainPermissionAndSpinButton()">🔴 ড্র সম্পন্ন করার জন্য পারমিশন দিন</button>
+                        
+                        <!-- WhatsApp অডিও কল জয়েন বক্স (সবুজ বাটন হলে দেখাবে) -->
+                        <div id="whatsappAudioCallBox" class="whatsapp-join-card">
+                            <div class="whatsapp-join-card-left">
+                                <div class="whatsapp-join-title">🎧 খেলা চলাকালীন WhatsApp অডিও কল</div>
+                                <div class="whatsapp-join-desc">
+                                    Allow বাটনে টাচ করলে WhatsApp লিংক ওপেন হবে— <strong>কলে জয়েন করে Back বাটনে টাচ করে</strong> এখানে ফিরে আসুন।
+                                </div>
+                            </div>
+                            <a href="https://chat.whatsapp.com/FuvpJ56RNMtEHaGUzXEegL?s=cl&p=a&iam=2" target="_blank" class="btn-whatsapp-orange" onclick="showToast('📞 WhatsApp গ্রুপে নিয়ে যাওয়া হচ্ছে... কল জয়েন করে Back বাটনে ফিরে আসুন।', 'info')">
+                                📞 কল জয়েন
+                            </a>
                         </div>
                     </div>
                 </div>
-
                 <div class="samity-status-bar" id="samityStatusBar">
                     <span>🎯 খেলা সম্পন্ন: <strong id="cntCompletedGames">০</strong> | বাকি: <strong id="cntRemainingGames">০</strong></span>
                     <span>👥 মোট সদস্য: <span id="cntTotalMembers">০</span> (বিজয়ী: <span id="cntWinners" style="color:var(--primary);">০</span>)</span>
@@ -827,7 +824,6 @@
                         <p style="font-size: 12px; color: #64748b; text-align: center; padding: 10px;">লোড হচ্ছে...</p>
                     </div>
                 </div>
-
                 <!-- টাকা পাঠানোর অপশন -->
                 <div id="samityPaySection" style="display: none;">
                     <p style="font-size: 11px; color: #475569; margin-bottom: 8px;">
@@ -903,81 +899,82 @@
             </div>
         </div>
 
-        <!-- BIKE RIDER ENTRY BOXES -->
-        <div class="entry-grid">
-            <div class="box-card box-online">
-                <div>
-                    <div class="box-title" style="color: #4338ca;">📱 বাইক সিরিয়াল এন্ট্রি ও রেজিঃ</div>
-                    <div class="mini-tabs">
-                        <div class="mini-tab active" id="tabOnlineEntry" onclick="switchOnlineTab('entry')">সিরিয়াল দিন</div>
-                        <div class="mini-tab" id="tabOnlineReg" onclick="switchOnlineTab('reg')">রাইডার রেজিঃ</div>
-                    </div>
-                    <div id="onlineEntryForm">
-                        <div class="form-group">
-                            <label class="form-label">রেজিস্টার্ড নাম বা নম্বর</label>
-                            <input type="text" id="loginPhone" class="form-control" placeholder="আপনার নাম বা নম্বর দিন">
+        <!-- রাইড শেয়ার সিরিয়াল মেইনটেন অংশ (লটারি খুললে বা আনলক থাকলে হাইড হবে) -->
+        <div id="rideSerialMainWrapper">
+            <!-- BIKE RIDER ENTRY BOXES -->
+            <div class="entry-grid">
+                <div class="box-card box-online">
+                    <div>
+                        <div class="box-title" style="color: #4338ca;">📱 বাইক সিরিয়াল এন্ট্রি ও রেজিঃ</div>
+                        <div class="mini-tabs">
+                            <div class="mini-tab active" id="tabOnlineEntry" onclick="switchOnlineTab('entry')">সিরিয়াল দিন</div>
+                            <div class="mini-tab" id="tabOnlineReg" onclick="switchOnlineTab('reg')">রাইডার রেজিঃ</div>
+                        </div>
+                        <div id="onlineEntryForm">
+                            <div class="form-group">
+                                <label class="form-label">রেজিস্টার্ড নাম বা নম্বর</label>
+                                <input type="text" id="loginPhone" class="form-control" placeholder="আপনার নাম বা নম্বর দিন">
+                            </div>
+                        </div>
+                        <div id="onlineRegForm" style="display: none;">
+                            <div class="form-group">
+                                <label class="form-label">রাইডারের নাম (বাধ্যতামূলক)</label>
+                                <input type="text" id="regName" class="form-control" placeholder="রাইডারের নাম লিখুন">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">ফোন নাম্বার (বাধ্যতামূলক)</label>
+                                <input type="tel" id="regPhone" class="form-control" placeholder="১১ ডিজিটের মোবাইল নাম্বার">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">রাইডারের ছবি (বাধ্যতামূলক)</label>
+                                <input type="file" id="regPhoto" accept="image/*" class="form-control" style="padding: 4px;">
+                            </div>
                         </div>
                     </div>
-                    <div id="onlineRegForm" style="display: none;">
-                        <div class="form-group">
-                            <label class="form-label">রাইডারের নাম (বাধ্যতামূলক)</label>
-                            <input type="text" id="regName" class="form-control" placeholder="রাইডারের নাম লিখুন">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">ফোন নাম্বার (বাধ্যতামূলক)</label>
-                            <input type="tel" id="regPhone" class="form-control" placeholder="১১ ডিজিটের মোবাইল নাম্বার">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">রাইডারের ছবি (বাধ্যতামূলক)</label>
-                            <input type="file" id="regPhoto" accept="image/*" class="form-control" style="padding: 4px;">
-                        </div>
+                    <div>
+                        <button id="btnOnlineSubmit" class="btn btn-primary btn-block" onclick="submitOnlineEntry()">🚀 স্ট্যান্ডে এসে সিরিয়াল নিন</button>
+                        <button id="btnRegSubmit" class="btn btn-success btn-block" style="display: none;" onclick="registerNewRider()">💾 রাইডার রেজিস্ট্রেশন</button>
                     </div>
                 </div>
-                <div>
-                    <button id="btnOnlineSubmit" class="btn btn-primary btn-block" onclick="submitOnlineEntry()">🚀 স্ট্যান্ডে এসে সিরিয়াল নিন</button>
-                    <button id="btnRegSubmit" class="btn btn-success btn-block" style="display: none;" onclick="registerNewRider()">💾 রাইডার রেজিস্ট্রেশন</button>
-                </div>
-            </div>
-            <div class="box-card box-manual">
-                <div>
-                    <div class="box-title" style="color: #047857;">✍️ ম্যানুয়াল এন্ট্রি</div>
-                    <div class="form-group">
-                        <label class="form-label">রাইডারের নাম লিখুন</label>
-                        <input type="text" id="manualRiderName" class="form-control" placeholder="শুধুমাত্র নাম দিন">
+                <div class="box-card box-manual">
+                    <div>
+                        <div class="box-title" style="color: #047857;">✍️ ম্যানুয়াল এন্ট্রি</div>
+                        <div class="form-group">
+                            <label class="form-label">রাইডারের নাম লিখুন</label>
+                            <input type="text" id="manualRiderName" class="form-control" placeholder="শুধুমাত্র নাম দিন">
+                        </div>
+                        <p style="font-size: 10px; color: #065f46; line-height: 1.3;">
+                            * স্ট্যান্ডে এসে এন্ট্রি দিতে হবে।<br>
+                            * সীমার বাইরে গেলে অটো সিরিয়াল কাটা যাবে।
+                        </p>
                     </div>
-                    <p style="font-size: 10px; color: #065f46; line-height: 1.3;">
-                        * স্ট্যান্ডে এসে এন্ট্রি দিতে হবে।<br>
-                        * সীমার বাইরে গেলে অটো সিরিয়াল কাটা যাবে।
-                    </p>
-                </div>
-                <div>
-                    <button class="btn btn-success btn-block" onclick="submitManualEntry()">➕ ম্যানুয়াল সিরিয়াল</button>
+                    <div>
+                        <button class="btn btn-success btn-block" onclick="submitManualEntry()">➕ ম্যানুয়াল সিরিয়াল</button>
+                    </div>
                 </div>
             </div>
-        </div>
-
-        <!-- LIVE SERIAL LIST -->
-        <div class="serial-section">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                <h3 style="font-size: 15px; color: #0369a1;">📋 বর্তমান সিরিয়াল তালিকা (<span id="totalSerialCount">0</span>)</h3>
-                <span style="font-size: 11px; background: #e0f2fe; color: #0369a1; padding: 2px 7px; border-radius: 6px; font-weight: 600;">লাইভ</span>
+            <!-- LIVE SERIAL LIST -->
+            <div class="serial-section">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                    <h3 style="font-size: 15px; color: #0369a1;">📋 বর্তমান সিরিয়াল তালিকা (<span id="totalSerialCount">0</span>)</h3>
+                    <span style="font-size: 11px; background: #e0f2fe; color: #0369a1; padding: 2px 7px; border-radius: 6px; font-weight: 600;">লাইভ</span>
+                </div>
+                <div id="serialListContainer">
+                    <p style="text-align: center; color: #64748b; padding: 15px; font-size: 13px;">বর্তমানে কোনো রাইডার সিরিয়ালে নেই।</p>
+                </div>
             </div>
-            <div id="serialListContainer">
-                <p style="text-align: center; color: #64748b; padding: 15px; font-size: 13px;">বর্তমানে কোনো রাইডার সিরিয়ালে নেই।</p>
-            </div>
-        </div>
-
-        <!-- CUT HISTORY BOX -->
-        <div class="history-card-box">
-            <div class="history-card-header" onclick="toggleHistoryDropdown()">
-                <h3>
-                    <span style="background: #dc2626; color: white; width: 22px; height: 22px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 12px;">✂️</span> 
-                    কে কার সিরিয়াল কেটেছে (২৪ ঘণ্টার হিস্ট্রি)
-                </h3>
-                <span id="historyToggleArrow" style="font-size: 13px; font-weight: 700; color: #dc2626;">▼ খুলুন</span>
-            </div>
-            <div class="history-dropdown-content" id="cutHistoryContainer">
-                <p style="color: #64748b; font-size: 12px;">গত ২৪ ঘণ্টায় কোনো সিরিয়াল কাটা হয়নি।</p>
+            <!-- CUT HISTORY BOX -->
+            <div class="history-card-box">
+                <div class="history-card-header" onclick="toggleHistoryDropdown()">
+                    <h3>
+                        <span style="background: #dc2626; color: white; width: 22px; height: 22px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 12px;">✂️</span> 
+                        কে কার সিরিয়াল কেটেছে (২৪ ঘণ্টার হিস্ট্রি)
+                    </h3>
+                    <span id="historyToggleArrow" style="font-size: 13px; font-weight: 700; color: #dc2626;">▼ খুলুন</span>
+                </div>
+                <div class="history-dropdown-content" id="cutHistoryContainer">
+                    <p style="color: #64748b; font-size: 12px;">গত ২৪ ঘণ্টায় কোনো সিরিয়াল কাটা হয়নি।</p>
+                </div>
             </div>
         </div>
 
@@ -986,7 +983,6 @@
             <button class="btn btn-dark btn-xs" onclick="openAdminLoginModal()">🔐 সাব-অ্যাডমিন প্যানেল লগইন</button>
         </div>
     </div>
-
     <!-- ৫. ৪ জন সাব-অ্যাডমিন লগইন মডাল -->
     <div class="modal-backdrop" id="adminLoginModal">
         <div class="modal-card" style="max-width: 360px;">
@@ -1011,7 +1007,6 @@
             </div>
         </div>
     </div>
-
     <!-- MASTER ADMIN LOGIN MODAL -->
     <div class="modal-backdrop" id="masterLoginModal" style="z-index: 5500;">
         <div class="modal-card" style="max-width: 360px;">
@@ -1027,7 +1022,6 @@
             </div>
         </div>
     </div>
-
     <!-- SUB-ADMIN POWER & PASSWORD MODAL -->
     <div class="modal-backdrop" id="subAdminPowerModal" style="z-index: 5800;">
         <div class="modal-card" style="max-width: 480px;">
@@ -1051,7 +1045,6 @@
             </div>
         </div>
     </div>
-
     <!-- ADMIN PANEL MODAL (সিরিয়াল অনুযায়ী সাজানো) -->
     <div class="modal-backdrop" id="adminModal">
         <div class="modal-card">
@@ -1070,6 +1063,20 @@
             <!-- MASTER ONLY SECTION -->
             <div id="masterOnlyAdminManagementBox" class="admin-box" style="background: #eef2ff; border: 2px solid #4f46e5; display: none;">
                 <h4 style="color: #4f46e5;">👑 মাস্টার অ্যাডমিন: ৪ জন অ্যাডমিন ও কাজ বণ্টন কন্ট্রোল</h4>
+                
+                <!-- নতুন বক্স: লটারি ও সিরিয়াল লক/আনলক কন্ট্রোল -->
+                <div style="background: #fff1f2; padding: 10px; border-radius: 8px; margin-bottom: 10px; border: 1.5px solid #f43f5e;">
+                    <strong style="font-size: 12.5px; color: #9f1239; display: block; margin-bottom: 4px;">🎛️ লটারি ইন্টারফেস ও সিরিয়াল কন্ট্রোল (লক / আনলক):</strong>
+                    <p style="font-size: 10.5px; color: #881337; margin-bottom: 8px; line-height: 1.35;">
+                        • <strong>লক (🔒) থাকলে:</strong> সিরিয়াল ও লটারি উভয় অপশন দেখাবে। ইউজার লটারি খুললে সিরিয়াল হাইড হবে, বন্ধ করলে আবার ফিরে আসবে।<br>
+                        • <strong>আনলক (🔓) থাকলে:</strong> সবার কাছে লটারির পুরো পেজ সবসময় সরাসরি ওপেন থাকবে এবং সিরিয়াল অপশন থাকবে না।
+                    </p>
+                    <div style="display: flex; align-items: center; justify-content: space-between; background: #ffffff; padding: 8px 10px; border-radius: 8px; border: 1px solid #fecdd3;">
+                        <span id="masterLotteryLockStatusText" style="font-size: 12px; font-weight: 700; color: #dc2626;">🔒 বর্তমানে লক করা আছে</span>
+                        <button id="btnToggleLotteryLockMode" class="btn btn-danger btn-xs" onclick="toggleLotteryCardLockMode()">🔓 আনলক করুন</button>
+                    </div>
+                </div>
+
                 <div style="background: #fff; padding: 8px; border-radius: 8px; margin-bottom: 10px; border: 1px solid #cbd5e1;">
                     <strong style="font-size: 12px; color: #1e1b4b; display: block; margin-bottom: 4px;">মাস্টার পাসওয়ার্ড পরিবর্তন করুন:</strong>
                     <div style="display: flex; gap: 6px;">
@@ -1084,37 +1091,53 @@
                     <div id="masterSubAdminPasswordsViewerContainer"></div>
                 </div>
             </div>
-
             <!-- SAMITY & CASHIER SECTIONS (সিরিয়াল ১ থেকে ১৩) -->
             <div class="admin-box" id="samityMasterWrapperBox" style="background: #fffbeb; border: 2.5px solid #f59e0b;">
                 <h4 style="color: #b45309;">🏆 চন্দ্রিমা বাইকার টান সমিতি ও ক্যাশিয়ার কন্ট্রোল</h4>
                 
-                <!-- 1. ড্র-এর সময় ও টাকার পরিমাণ নির্ধারণ -->
+                <!-- 1. ড্র-এর সময় ও টাকার পরিমাণ নির্ধারণ (AM/PM সহ আপডেটেড) -->
                 <div class="admin-box" id="powerSec_schedule" style="background: #fef3c7; border: 1.5px solid #fcd34d; margin-bottom: 8px;">
                     <h4>
-                        <span>1. ড্র-এর সময় ও টাকার পরিমাণ নির্ধারণ (প্রতিদিন/সাপ্তাহিক)</span>
+                        <span>1. ড্র-এর সময় ও টাকার পরিমাণ নির্ধারণ (AM/PM সহ)</span>
                         <button class="btn btn-dark btn-xs" id="lockPower_schedule" onclick="togglePowerLock('_schedule')">🔒 লকড</button>
                     </h4>
                     <div id="containerPower_schedule" style="opacity: 0.5; pointer-events: none;">
+                        <div class="form-group" style="margin-bottom: 6px;">
+                            <label class="form-label">ড্র-এর ধরন (প্রতিদিন বা নির্দিষ্ট বার)</label>
+                            <select id="adminDrawDay" class="form-control" onchange="saveAdminDrawSchedule()">
+                                <option value="Daily">প্রতিদিন (Daily)</option>
+                                <option value="Friday">শুক্রবার (সাপ্তাহিক)</option>
+                                <option value="Saturday">শনিবার (সাপ্তাহিক)</option>
+                                <option value="Sunday">রবিবার (সাপ্তাহিক)</option>
+                                <option value="Monday">সোমবার (সাপ্তাহিক)</option>
+                                <option value="Tuesday">মঙ্গলবার (সাপ্তাহিক)</option>
+                                <option value="Wednesday">বুধবার (সাপ্তাহিক)</option>
+                                <option value="Thursday">বৃহস্পতিবার (সাপ্তাহিক)</option>
+                            </select>
+                        </div>
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 6px;">
                             <div>
-                                <label class="form-label">ড্র-এর ধরন (প্রতিদিন বা নির্দিষ্ট বার)</label>
-                                <select id="adminDrawDay" class="form-control" onchange="saveAdminDrawSchedule()">
-                                    <option value="Daily">প্রতিদিন (Daily)</option>
-                                    <option value="Friday">শুক্রবার (সাপ্তাহিক)</option>
-                                    <option value="Saturday">শনিবার (সাপ্তাহিক)</option>
-                                    <option value="Sunday">রবিবার (সাপ্তাহিক)</option>
-                                    <option value="Monday">সোমবার (সাপ্তাহিক)</option>
-                                    <option value="Tuesday">মঙ্গলবার (সাপ্তাহিক)</option>
-                                    <option value="Wednesday">বুধবার (সাপ্তাহিক)</option>
-                                    <option value="Thursday">বৃহস্পতিবার (সাপ্তাহিক)</option>
-                                </select>
+                                <label class="form-label">খেলা শুরুর সময় (AM/PM)</label>
+                                <div style="display: flex; gap: 3px;">
+                                    <input type="text" id="adminStartTimeInput" class="form-control" value="09:00" placeholder="09:00" style="padding: 5px;">
+                                    <select id="adminStartAmPm" class="form-control" style="width: 66px; padding: 5px;">
+                                        <option value="AM">AM</option>
+                                        <option value="PM" selected>PM</option>
+                                    </select>
+                                </div>
                             </div>
                             <div>
-                                <label class="form-label">অফিসিয়াল ড্র-এর সময় (যেমন: 21:00-21:30)</label>
-                                <input type="text" id="adminDrawTime" class="form-control" value="21:00-21:30" placeholder="21:00-21:30" onchange="saveAdminDrawSchedule()">
+                                <label class="form-label">খেলা শেষের সময় (AM/PM)</label>
+                                <div style="display: flex; gap: 3px;">
+                                    <input type="text" id="adminEndTimeInput" class="form-control" value="09:30" placeholder="09:30" style="padding: 5px;">
+                                    <select id="adminEndAmPm" class="form-control" style="width: 66px; padding: 5px;">
+                                        <option value="AM">AM</option>
+                                        <option value="PM" selected>PM</option>
+                                    </select>
+                                </div>
                             </div>
                         </div>
+                        <button class="btn btn-primary btn-block btn-xs" style="margin-bottom: 8px; padding: 6px;" onclick="saveAdminDrawSchedule()">⏰ খেলার সময় ও শিডিউল সেভ করুন</button>
                         <div style="display: grid; grid-template-columns: 1fr auto; gap: 6px; align-items: flex-end;">
                             <div>
                                 <label class="form-label" id="lblDrawQuotaAmount">প্রতিদিনের / সাপ্তাহিক ড্র টাকার পরিমাণ (৳)</label>
@@ -1122,10 +1145,9 @@
                             </div>
                             <button class="btn btn-warning btn-xs" style="height: 34px;" onclick="saveDailyQuota()">টাকা সেভ</button>
                         </div>
-                        <p style="font-size: 10px; color: #78350f; margin-top: 4px;">* প্রতিদিন সিলেক্ট থাকলে ২০০ টাকায় এবং সাপ্তাহিক বার সিলেক্ট থাকলে নির্ধারিত টাকায় ড্র সম্পন্ন হবে।</p>
+                        <p style="font-size: 10px; color: #78350f; margin-top: 4px;">* সকাল ৯:০০ AM বা রাত ৯:০০ PM যেকোনো সময় নির্ধারণ করলে সে অনুযায়ী ঘড়িতে কাউন্টডাউন ও অংশগ্রহণের মোট মিনিট দেখাবে।</p>
                     </div>
                 </div>
-
                 <!-- 2. সদস্যদের Allow পারমিশন ও হুইল লক -->
                 <div class="admin-box" id="powerSec_wheel" style="background: #fef3c7; border: 1.5px solid #fcd34d; margin-bottom: 8px;">
                     <h4>
@@ -1140,7 +1162,6 @@
                         <div id="adminIndividualWheelPermissionsList" style="max-height: 220px; overflow-y: auto; background: #fffbeb; padding: 6px; border-radius: 8px; border: 1px solid #fde68a;">লোড হচ্ছে...</div>
                     </div>
                 </div>
-
                 <!-- 3. অফিসিয়াল উইনার সেটআপ -->
                 <div class="admin-box" id="powerSec_winner" style="background: #fef3c7; border: 1.5px solid #fcd34d; margin-bottom: 8px;">
                     <h4>
@@ -1155,7 +1176,6 @@
                         </div>
                     </div>
                 </div>
-
                 <!-- 4. রেজিস্ট্রেশন অন/অফ কন্ট্রোল -->
                 <div class="admin-box" id="powerSec_quota" style="background: #fef3c7; border: 1.5px solid #fcd34d; margin-bottom: 8px;">
                     <h4>
@@ -1169,7 +1189,6 @@
                         </div>
                     </div>
                 </div>
-
                 <!-- 5. নতুন রেজিস্ট্রেশন আবেদন অনুমোদন -->
                 <div class="admin-box" id="powerSec_regapp" style="background: white; border: 1px solid #fde68a; margin-bottom: 8px;">
                     <h4>
@@ -1180,7 +1199,6 @@
                         <div id="adminSamityPendingRegList">লোড হচ্ছে...</div>
                     </div>
                 </div>
-
                 <!-- 6 থেকে 11. ৬ জন আলাদা ক্যাশিয়ার বক্স -->
                 <div class="admin-box" id="powerSec_cashier1" style="background: #f0fdf4; border: 1.5px solid #10b981; margin-bottom: 8px;">
                     <h4>
@@ -1236,7 +1254,6 @@
                         <div id="cashierPanelBody_cashier6"></div>
                     </div>
                 </div>
-
                 <!-- 12. ক্যাশিয়ারদের সম্পূর্ণ লেনদেনের ইতিহাস -->
                 <div class="admin-box" id="powerSec_cashierhistory" style="background: #f0f9ff; border: 1.5px solid #0284c7; margin-bottom: 8px;">
                     <h4>
@@ -1264,7 +1281,6 @@
                         </div>
                     </div>
                 </div>
-
                 <!-- 13. মেম্বার ম্যানেজমেন্ট -->
                 <div class="admin-box" id="powerSec_members" style="background: white; border: 1px solid #fde68a; margin-bottom: 8px;">
                     <h4>
@@ -1279,7 +1295,6 @@
                     </div>
                 </div>
             </div>
-
             <!-- 14. ৪ জন সাব-অ্যাডমিন প্রোফাইল ও মনিটর সেটআপ -->
             <div class="admin-box" id="powerSec_fouradmins" style="background: #fffbeb; border: 2px solid #d97706;">
                 <h4>
@@ -1291,7 +1306,6 @@
                     <div id="adminFourRoleProfilesEditorContainer"></div>
                 </div>
             </div>
-
             <!-- 15. সভাপতি প্যানেল -->
             <div class="admin-box" id="powerSec_leaders">
                 <h4><span>15. সভাপতি প্যানেল (৪ জন নেতৃবৃন্দ)</span><button class="btn btn-dark btn-xs" id="lockPower_leaders" onclick="togglePowerLock('_leaders')">🔒 লকড</button></h4>
@@ -1319,7 +1333,6 @@
                     <button class="btn btn-success btn-block" onclick="saveLeadersInfo()">💾 সভাপতি প্যানেল সেভ করুন</button>
                 </div>
             </div>
-
             <!-- 16. নোটিশ বোর্ড -->
             <div class="admin-box" id="powerSec_notice">
                 <h4><span>16. নোটিশ বোর্ড</span><button class="btn btn-dark btn-xs" id="lockPower_notice" onclick="togglePowerLock('_notice')">🔒 লকড</button></h4>
@@ -1327,7 +1340,6 @@
                     <div class="form-group"><textarea id="admNoticeText" rows="2" class="form-control" placeholder="জরুরি নোটিশ..." style="margin-bottom:4px;"></textarea><input type="file" id="admNoticePhoto" accept="image/*" class="form-control" style="padding:3px; margin-bottom:5px;"><button class="btn btn-warning btn-block" onclick="saveNoticeBoard()">📢 প্রকাশ</button></div>
                 </div>
             </div>
-
             <!-- 17. স্ট্যান্ডের নাম ও GPS -->
             <div class="admin-box" id="powerSec_gps">
                 <h4><span>17. স্ট্যান্ডের নাম ও GPS</span><button class="btn btn-dark btn-xs" id="lockPower_gps" onclick="togglePowerLock('_gps')">🔒 লকড</button></h4>
@@ -1338,7 +1350,6 @@
                     <p id="savedStandCoords" style="font-size: 11px; color: #475569; margin-top: 5px;"></p>
                 </div>
             </div>
-
             <!-- 18. দূরবর্তী ম্যানুয়াল সিরিয়াল -->
             <div class="admin-box" id="powerSec_remote" style="background: #e0f2fe; border: 2px solid #0284c7;">
                 <h4><span>18. দূরবর্তী ম্যানুয়াল সিরিয়াল</span><button class="btn btn-dark btn-xs" id="lockPower_remote" onclick="togglePowerLock('_remote')">🔒 লকড</button></h4>
@@ -1347,7 +1358,6 @@
                     <button class="btn btn-success btn-block" onclick="submitGlobalMasterManualEntry()">➕ দূরবর্তী ম্যানুয়াল সিরিয়াল</button>
                 </div>
             </div>
-
             <!-- 19. রাইডার এক্সক্লুসিভ বিরতি সেটআপ -->
             <div class="admin-box" id="powerSec_break" style="background: #fffbeb; border-color: #f59e0b;">
                 <h4><span>19. রাইডার এক্সক্লুসিভ বিরতি সেটআপ</span><button class="btn btn-dark btn-xs" id="lockPower_break" onclick="togglePowerLock('_break')">🔒 লকড</button></h4>
@@ -1367,7 +1377,6 @@
                     </div>
                 </div>
             </div>
-
             <!-- 20. রাইডার স্পেশাল পাওয়ার -->
             <div class="admin-box" id="powerSec_special" style="background: #f0fdf4; border-color: #10b981;">
                 <h4><span>20. রাইডার স্পেশাল পাওয়ার</span><button class="btn btn-dark btn-xs" id="lockPower_special" onclick="togglePowerLock('_special')">🔒 লকড</button></h4>
@@ -1384,7 +1393,6 @@
                     <button class="btn btn-success btn-block" style="margin-top:6px;" onclick="saveQuickDistancePower()">⚡ পাওয়ার সেভ করুন</button>
                 </div>
             </div>
-
             <!-- 21. রাইডার নাম, ফোন নাম্বার ও ছবি এডিট -->
             <div class="admin-box" id="powerSec_rideredit">
                 <h4><span>21. রাইডার নাম, ফোন নাম্বার ও ছবি এডিট</span><button class="btn btn-dark btn-xs" id="lockPower_rideredit" onclick="togglePowerLock('_rideredit')">🔒 লকড</button></h4>
@@ -1392,7 +1400,6 @@
                     <div id="adminRegisteredListCombinedEdit">লোড হচ্ছে...</div>
                 </div>
             </div>
-
             <!-- 22. রাইডার সাসপেন্ড -->
             <div class="admin-box" id="powerSec_suspend">
                 <h4><span>22. রাইডার সাসপেন্ড</span><button class="btn btn-dark btn-xs" id="lockPower_suspend" onclick="togglePowerLock('_suspend')">🔒 লকড</button></h4>
@@ -1400,7 +1407,6 @@
             </div>
         </div>
     </div>
-
     <!-- MODALS FOR EDITING -->
     <div class="modal-backdrop" id="samityAdjustModal" style="z-index: 6000;">
         <div class="modal-card" style="max-width: 380px;">
@@ -1451,11 +1457,7 @@
             </div>
         </div>
     </div>
-
     <script>
-        // আপনার নির্ধারিত WhatsApp গ্রুপ ও অডিও কল লিংক
-        const WHATSAPP_CALL_GROUP_LINK = "https://chat.whatsapp.com/FuvpJ56RNMtEHaGUzXEegL?s=cl&p=a&iam=2";
-
         let toastTimeout = null;
         function showToast(msg, type = 'info') {
             const toast = document.getElementById("customToast");
@@ -1466,24 +1468,6 @@
             toastTimeout = setTimeout(() => { toast.style.display = "none"; }, 4500);
         }
         function hideToast() { document.getElementById("customToast").style.display = "none"; }
-
-        function openWhatsAppGroupCallAndGuide() {
-            const modal = document.getElementById("whatsappCallJoinModal");
-            const reminder = document.getElementById("waCallReturnReminder");
-            if (modal) modal.style.display = "block";
-            if (reminder) reminder.style.display = "block";
-
-            // নতুন ট্যাব/অ্যাপে WhatsApp লিংক ওপেন করার চেষ্টা
-            const win = window.open(WHATSAPP_CALL_GROUP_LINK, "_blank", "noopener,noreferrer");
-            if (!win) {
-                showToast("📞 WhatsApp কলে জয়েন করতে 'WhatsApp গ্রুপ ও অডিও কলে যান' বাটনে টাচ করুন।", "info");
-            }
-        }
-        function closeWaCallModal() {
-            const modal = document.getElementById("whatsappCallJoinModal");
-            if (modal) modal.style.display = "none";
-            showToast("✅ স্বাগতম! কলে জয়েন করে আবার খেলার পর্দায় ফিরে এসেছেন।", "success");
-        }
         
         // ফায়ারবেস কনফিগ
         const firebaseConfig = {
@@ -1500,7 +1484,7 @@
         let userLat = null, userLng = null;
         let currentAdminSession = null;
         let masterPasswordStored = "692372";
-
+        // ৫. ৪ জন সাব-অ্যাডমিন ও ৬ জন ক্যাশিয়ার কনফিগ
         const ALL_ADMIN_ROLES = ["admin1", "admin2", "admin3", "admin4"];
         const ALL_CASHIER_IDS = ["cashier1", "cashier2", "cashier3", "cashier4", "cashier5", "cashier6"];
         const ALL_SYSTEM_POWERS = [
@@ -1560,7 +1544,16 @@
         let samityApprovedMembers = {};
         let samityPendingMembers = {};
         let samityPendingPayments = {};
-        let samityConfig = { registrationOpen: true, dailyQuota: 200, drawDay: "Daily", drawTime: "21:00-21:30", forcedWinner: "", isWheelLocked: false, paidListClearTimestamp: 0 };
+        let samityConfig = { 
+            registrationOpen: true, 
+            dailyQuota: 200, 
+            drawDay: "Daily", 
+            drawTime: "21:00-21:30", 
+            forcedWinner: "", 
+            isWheelLocked: false, 
+            paidListClearTimestamp: 0,
+            isLotteryCardLocked: true 
+        };
         let samityAllowedStatus = {};
         let liveSpinState = null;
         let lastHandledSpinId = "";
@@ -1575,7 +1568,7 @@
         let alarmTimeoutTimer = null;
         let acknowledgedAlarmKey = "";
         const DAYS_LIST = ["শনি", "রবি", "সোম", "মঙ্গল", "বুধ", "বৃহঃ", "শুক্র"];
-
+        
         function getRequiredDrawQuota() {
             return Number(samityConfig.dailyQuota) || 200;
         }
@@ -1653,6 +1646,7 @@
             renderLockedSamityAccountUI();
             renderDigitalMonitorMarquee();
             renderCashierPaymentCard();
+            applyLotteryAndSerialVisibility();
             drawWheel(0);
             
             if (navigator.geolocation) {
@@ -1721,18 +1715,79 @@
             container.innerHTML = cashierHtml;
             selectEl.innerHTML = selectOptionsHtml;
         }
-        function toggleSamityCardCollapse() {
+
+        // লটারি ও সিরিয়াল লক/আনলক কন্ট্রোল লজিক
+        function applyLotteryAndSerialVisibility() {
+            const isLocked = samityConfig.isLotteryCardLocked !== false; // ডিফল্টভাবে লক থাকবে
             const bodyContainer = document.getElementById("samityBodyContainer");
             const arrow = document.getElementById("samityToggleArrow");
+            const serialWrapper = document.getElementById("rideSerialMainWrapper");
+            const statusText = document.getElementById("masterLotteryLockStatusText");
+            const toggleBtn = document.getElementById("btnToggleLotteryLockMode");
+
+            if (statusText && toggleBtn) {
+                if (isLocked) {
+                    statusText.innerText = "🔒 বর্তমানে লক করা আছে (সিরিয়াল + লটারি উভয় চলবে)";
+                    statusText.style.color = "#dc2626";
+                    toggleBtn.innerText = "🔓 আনলক করুন";
+                    toggleBtn.className = "btn btn-success btn-xs";
+                } else {
+                    statusText.innerText = "🔓 বর্তমানে আনলক করা আছে (লটারি সরাসরি ওপেন থাকবে)";
+                    statusText.style.color = "#059669";
+                    toggleBtn.innerText = "🔒 লক করুন";
+                    toggleBtn.className = "btn btn-danger btn-xs";
+                }
+            }
+
+            if (!isLocked) {
+                // আনলক থাকলে লটারি সবসময় ওপেন থাকবে এবং সিরিয়াল অপশন থাকবে না
+                bodyContainer.style.display = "block";
+                arrow.style.display = "none";
+                if (serialWrapper) serialWrapper.style.display = "none";
+                drawWheel(currentWheelAngle);
+            } else {
+                // লক থাকলে ইউজার ক্লিক করে খুলতে পারবে
+                arrow.style.display = "inline-block";
+                const isSamityOpen = bodyContainer.style.display === "block";
+                arrow.innerText = isSamityOpen ? "▲ বন্ধ করুন" : "▼ খুলুন";
+                if (serialWrapper) {
+                    serialWrapper.style.display = isSamityOpen ? "none" : "block";
+                }
+            }
+        }
+
+        async function toggleLotteryCardLockMode() {
+            const currentLocked = samityConfig.isLotteryCardLocked !== false;
+            const nextState = !currentLocked;
+            await db.ref('tanSamity/config/isLotteryCardLocked').set(nextState);
+            if (nextState) {
+                document.getElementById("samityBodyContainer").style.display = "none";
+            }
+            applyLotteryAndSerialVisibility();
+            showToast(nextState ? "🔒 লটারি কার্ড লক করা হয়েছে। এখন সিরিয়াল ও লটারি উভয় দেখাবে।" : "🔓 লটারি কার্ড আনলক করা হয়েছে। এখন সবার কাছে সরাসরি লটারি ওপেন থাকবে।", "info");
+        }
+
+        function toggleSamityCardCollapse() {
+            const isLocked = samityConfig.isLotteryCardLocked !== false;
+            // আনলক করা থাকলে কার্ড বন্ধ হবে না, সবসময় ওপেন থাকবে
+            if (!isLocked) return;
+
+            const bodyContainer = document.getElementById("samityBodyContainer");
+            const arrow = document.getElementById("samityToggleArrow");
+            const serialWrapper = document.getElementById("rideSerialMainWrapper");
+
             if (bodyContainer.style.display === "block") {
                 bodyContainer.style.display = "none";
                 arrow.innerText = "▼ খুলুন";
+                if (serialWrapper) serialWrapper.style.display = "block";
             } else {
                 bodyContainer.style.display = "block";
                 arrow.innerText = "▲ বন্ধ করুন";
+                if (serialWrapper) serialWrapper.style.display = "none";
                 drawWheel(currentWheelAngle);
             }
         }
+
         function toggleHistoryDropdown() {
             const content = document.getElementById("cutHistoryContainer");
             const arrow = document.getElementById("historyToggleArrow");
@@ -1770,7 +1825,6 @@
             evaluateWheelAndActionState();
         }
         setInterval(updateLiveClock, 1000); updateLiveClock();
-
         function checkPaidListAutoClear() {
             if (samityConfig.paidListClearTimestamp && Date.now() >= samityConfig.paidListClearTimestamp) {
                 db.ref('tanSamity/config/paidListClearTimestamp').set(0);
@@ -1894,18 +1948,41 @@
             if (snap.exists()) { masterPasswordStored = snap.val(); }
         });
         db.ref('tanSamity/config').on('value', (snap) => {
-            samityConfig = snap.val() || { registrationOpen: true, dailyQuota: 200, drawDay: "Daily", drawTime: "21:00-21:30", forcedWinner: "", isWheelLocked: false, paidListClearTimestamp: 0 };
+            samityConfig = { 
+                registrationOpen: true, 
+                dailyQuota: 200, 
+                drawDay: "Daily", 
+                drawTime: "21:00-21:30", 
+                forcedWinner: "", 
+                isWheelLocked: false, 
+                paidListClearTimestamp: 0,
+                isLotteryCardLocked: true,
+                ...(snap.val() || {})
+            };
             document.getElementById("samityRegToggleSwitch").checked = samityConfig.registrationOpen !== false;
             document.getElementById("adminDailyQuotaInput").value = samityConfig.dailyQuota || 200;
             document.getElementById("adminDrawDay").value = samityConfig.drawDay || "Daily";
-            document.getElementById("adminDrawTime").value = samityConfig.drawTime || "21:00-21:30";
             document.getElementById("adminForcedWinnerPhone").value = samityConfig.forcedWinner || "";
             
+            // অ্যাডমিন টাইম ইনপুট পপুলেট (24h থেকে 12h AM/PM কনভার্ট)
+            const { startH, startM, endH, endM } = parseScheduleRange();
+            const s12 = to12HourObj(startH, startM);
+            const e12 = to12HourObj(endH, endM);
+            const sInp = document.getElementById("adminStartTimeInput");
+            const sAmp = document.getElementById("adminStartAmPm");
+            const eInp = document.getElementById("adminEndTimeInput");
+            const eAmp = document.getElementById("adminEndAmPm");
+            if (sInp && document.activeElement !== sInp) sInp.value = s12.timeStr;
+            if (sAmp && document.activeElement !== sAmp) sAmp.value = s12.ampm;
+            if (eInp && document.activeElement !== eInp) eInp.value = e12.timeStr;
+            if (eAmp && document.activeElement !== eAmp) eAmp.value = e12.ampm;
+
             const isDaily = (samityConfig.drawDay === "Daily");
             const drawTypeLabel = isDaily ? "প্রতিদিনের খেলা" : "সাপ্তাহিক খেলা";
             document.getElementById("drawTypeBadgeHeader").innerText = drawTypeLabel;
             document.getElementById("samityRuleNoticeText").innerHTML = `💡 নিয়ম: ${isDaily ? 'প্রতিদিনের' : 'সাপ্তাহিক'} ড্র-এর জন্য নির্ধারিত <strong>৳${getRequiredDrawQuota()}</strong> পরিশোধ থাকতে হবে।`;
             
+            applyLotteryAndSerialVisibility();
             updateSamityRegSectionUI();
             renderSamityMembersList();
             renderDualPaymentLists();
@@ -2087,6 +2164,26 @@
             evaluateWheelAndActionState();
         }
 
+        // 24h <-> 12h AM/PM হেল্পার ফাংশনসমূহ
+        function to12HourObj(h24, m) {
+            const ampm = h24 >= 12 ? "PM" : "AM";
+            let h12 = h24 % 12;
+            if (h12 === 0) h12 = 12;
+            const timeStr = `${String(h12).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
+            return { timeStr, ampm, fullStr: `${h12}:${String(m).padStart(2, '0')} ${ampm}` };
+        }
+
+        function to24HourFromInput(timeStr, ampm) {
+            const parts = (timeStr || "09:00").trim().split(":");
+            let h = parseInt(parts[0], 10);
+            let m = parseInt(parts[1] || "0", 10);
+            if (isNaN(h) || h < 1 || h > 12) h = 9;
+            if (isNaN(m) || m < 0 || m > 59) m = 0;
+            if (ampm === "PM" && h !== 12) h += 12;
+            if (ampm === "AM" && h === 12) h = 0;
+            return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
+        }
+
         function parseScheduleRange() {
             const timeRange = (samityConfig.drawTime || "21:00-21:30").trim();
             const parts = timeRange.split("-");
@@ -2103,21 +2200,36 @@
                 endM: isNaN(endM) ? 30 : endM
             };
         }
+
+        function pad2(n) {
+            return String(Math.max(0, Math.floor(n))).padStart(2, '0');
+        }
+
         function updateScheduleCountdown() {
             const badge = document.getElementById("drawCountdownBadge");
             if (!badge) return;
             const now = new Date();
             const { startH, startM, endH, endM } = parseScheduleRange();
+            
+            const start12 = to12HourObj(startH, startM).fullStr;
+            const end12 = to12HourObj(endH, endM).fullStr;
+            let durationMin = (endH * 60 + endM) - (startH * 60 + startM);
+            if (durationMin < 0) durationMin += 1440;
+            const scheduleSubInfo = `<div style="font-size:9.5px; color:#fde047; font-weight:600; margin-top:2px;">⏰ ${start12} - ${end12} (${durationMin} মিনিট)</div>`;
+
             let targetStart = new Date(now);
             let targetEnd = new Date(now);
             targetStart.setHours(startH, startM, 0, 0);
             targetEnd.setHours(endH, endM, 0, 0);
+            if (targetEnd <= targetStart) targetEnd.setDate(targetEnd.getDate() + 1);
+
             if (samityConfig.drawDay === "Daily" || !samityConfig.drawDay) {
                 if (now >= targetStart && now <= targetEnd) {
                     const remMs = targetEnd - now;
-                    const mins = Math.floor(remMs / 60000);
-                    const secs = Math.floor((remMs % 60000) / 1000);
-                    badge.innerText = `🔥 অফিসিয়াল সময় চলছে! বাকি: ${mins}মিঃ ${secs}সেঃ`;
+                    const h = Math.floor(remMs / 3600000);
+                    const m = Math.floor((remMs % 3600000) / 60000);
+                    const s = Math.floor((remMs % 60000) / 1000);
+                    badge.innerHTML = `🔥 অফিসিয়াল সময় চলছে! বাকি: ${pad2(h)}:${pad2(m)}:${pad2(s)}${scheduleSubInfo}`;
                     badge.style.background = "#dc2626";
                 } else {
                     if (now > targetEnd) targetStart.setDate(targetStart.getDate() + 1);
@@ -2125,7 +2237,7 @@
                     const h = Math.floor(diffMs / 3600000);
                     const m = Math.floor((diffMs % 3600000) / 60000);
                     const s = Math.floor((diffMs % 60000) / 1000);
-                    badge.innerText = `⏳ পরবর্তী ড্র: ${h}ঘঃ ${m}মিঃ ${s}সেঃ`;
+                    badge.innerHTML = `⏳ পরবর্তী ড্র: ${pad2(h)}:${pad2(m)}:${pad2(s)}${scheduleSubInfo}`;
                     badge.style.background = "#1e1b4b";
                 }
                 return;
@@ -2136,11 +2248,14 @@
             targetStart.setDate(now.getDate() + diffDays);
             targetEnd = new Date(targetStart);
             targetEnd.setHours(endH, endM, 0, 0);
+            if (targetEnd <= targetStart) targetEnd.setDate(targetEnd.getDate() + 1);
+
             if (now >= targetStart && now <= targetEnd) {
                 const remMs = targetEnd - now;
-                const mins = Math.floor(remMs / 60000);
-                const secs = Math.floor((remMs % 60000) / 1000);
-                badge.innerText = `🔥 অফিসিয়াল সময় চলছে! বাকি: ${mins}মিঃ ${secs}সেঃ`;
+                const h = Math.floor(remMs / 3600000);
+                const m = Math.floor((remMs % 3600000) / 60000);
+                const s = Math.floor((remMs % 60000) / 1000);
+                badge.innerHTML = `🔥 অফিসিয়াল সময় চলছে! বাকি: ${pad2(h)}:${pad2(m)}:${pad2(s)}${scheduleSubInfo}`;
                 badge.style.background = "#dc2626";
             } else {
                 if (now > targetEnd) targetStart.setDate(targetStart.getDate() + 7);
@@ -2149,7 +2264,7 @@
                 const h = Math.floor((diffMs % 86400000) / 3600000);
                 const m = Math.floor((diffMs % 3600000) / 60000);
                 const s = Math.floor((diffMs % 60000) / 1000);
-                badge.innerText = `⏳ বাকি: ${d}দিন ${h}ঘঃ ${m}মিঃ ${s}সেঃ`;
+                badge.innerHTML = `⏳ বাকি: ${d}দিন ${pad2(h)}:${pad2(m)}:${pad2(s)}${scheduleSubInfo}`;
                 badge.style.background = "#1e1b4b";
             }
         }
@@ -2161,7 +2276,13 @@
             }
             const { startH, startM, endH, endM } = parseScheduleRange();
             const currentTotalMin = now.getHours() * 60 + now.getMinutes();
-            return currentTotalMin >= (startH * 60 + startM) && currentTotalMin <= (endH * 60 + endM);
+            const startTotalMin = startH * 60 + startM;
+            const endTotalMin = endH * 60 + endM;
+            if (endTotalMin >= startTotalMin) {
+                return currentTotalMin >= startTotalMin && currentTotalMin <= endTotalMin;
+            } else {
+                return currentTotalMin >= startTotalMin || currentTotalMin <= endTotalMin;
+            }
         }
         function areAllActiveMembersAllowed() {
             const activeMembers = Object.values(samityApprovedMembers).filter(m => !m.isWinner);
@@ -2169,15 +2290,17 @@
             return activeMembers.every(m => samityAllowedStatus[m.phone] === true);
         }
 
-        // বাটনের রঙ: প্রথম লাল -> Allow দিলে গ্রীন -> সবাই দিলে বেগুনি
+        // ৩. অফিসিয়াল টাইম ও ফ্রি স্পিন স্টেট + WhatsApp অডিও কল বক্স কন্ট্রোল
         function evaluateWheelAndActionState() {
             const infoBox = document.getElementById("wheelStatusInfo");
             const actionBtn = document.getElementById("btnMySamityMainAction");
+            const waBox = document.getElementById("whatsappAudioCallBox");
             const activeMembers = Object.values(samityApprovedMembers).filter(m => !m.isWinner);
             const inSchedule = isWithinScheduleTime();
             const allAllowed = areAllActiveMembersAllowed();
             const isAllowed = myLockedSamityPhone && samityAllowedStatus[myLockedSamityPhone] === true;
             
+            // অফিসিয়াল সময় শেষ হয়ে গেলে অটোমেটিক লক খুলে যাবে
             if (!inSchedule && samityConfig.isWheelLocked) {
                 db.ref('tanSamity/config/isWheelLocked').set(false);
                 db.ref('tanSamity/allowedStatus').remove();
@@ -2185,23 +2308,18 @@
             }
             if (!inSchedule) {
                 lastOfficialAnnounced = false;
+                if (waBox) waBox.style.display = "none";
                 infoBox.innerText = "🟢 ফ্রি স্পিন মোড চালু আছে (হুইলের মাঝে টাচ করে স্বাভাবিক নিয়মে স্পিন করুন)";
                 if (actionBtn) {
                     actionBtn.disabled = false;
-                    if (allAllowed && activeMembers.length > 0) {
-                        actionBtn.className = "btn btn-purple btn-block";
-                        actionBtn.innerText = "🟣 সবাই পারমিশন দিয়েছেন — এখন স্পিন করুন!";
-                    } else if (isAllowed) {
-                        actionBtn.className = "btn btn-success btn-block";
-                        actionBtn.innerText = "🟢 গ্রীন বাতি (Allow সম্পন্ন) — স্পিন বা কলে যান";
-                    } else {
-                        actionBtn.className = "btn btn-danger btn-block";
-                        actionBtn.innerText = "🔴 Allow বাটনে টাচ করুন (গ্রীন বাতি ও WhatsApp কল)";
-                    }
+                    actionBtn.className = "btn btn-success btn-block";
+                    actionBtn.innerText = "🎡 ফ্রি স্পিন করুন (স্বাভাবিক মোড)";
                 }
                 return;
             }
+            // অফিসিয়াল টাইমের ভেতরে লক থাকলে
             if (samityConfig.isWheelLocked) {
+                if (waBox) waBox.style.display = "none";
                 infoBox.innerText = "🔒 নির্ধারিত অফিসিয়াল সময়ের ড্র সম্পন্ন হয়েছে। সময় শেষ হলে পুনরায় ফ্রি স্পিন চালু হবে।";
                 if (actionBtn) {
                     actionBtn.disabled = true;
@@ -2212,10 +2330,12 @@
             }
             if (actionBtn) actionBtn.disabled = false;
             if (activeMembers.length === 0) {
+                if (waBox) waBox.style.display = "none";
                 infoBox.innerText = "⚠️ কোনো সক্রিয় সদস্য নেই।";
                 return;
             }
             if (allAllowed) {
+                if (waBox) waBox.style.display = "none";
                 infoBox.innerText = "🟣 ড্র করার জন্য সম্পূর্ণ হয়েছে! নিচের বেগুনি বাটনে বা হুইলের মাঝে টাচ করে স্পিন করুন।";
                 if (!lastOfficialAnnounced) {
                     lastOfficialAnnounced = true;
@@ -2231,57 +2351,51 @@
                 infoBox.innerText = `⏳ ড্র-এর জন্য সবাই Allow বাটনে টাচ করুন (${allowedCount}/${activeMembers.length} জন প্রস্তুত)`;
                 if (actionBtn) {
                     if (isAllowed) {
+                        // সবুজ বাটন হলেই কেবল WhatsApp অডিও কল বক্স দেখাবে
+                        if (waBox) waBox.style.display = "flex";
+                        actionBtn.disabled = true;
                         actionBtn.className = "btn btn-success btn-block";
-                        actionBtn.innerText = "🟢 পারমিশন গ্রীন হয়েছে (WhatsApp কলে জয়েন করুন / অপেক্ষা করুন)";
+                        actionBtn.innerText = "🟢 ধৈর্য ধরুন, সবাই Allow করলে স্পিন করার পারমিশন পাবেন...";
                     } else {
+                        // লাল বাটন অবস্থায় WhatsApp বক্স থাকবে না
+                        if (waBox) waBox.style.display = "none";
+                        actionBtn.disabled = false;
                         actionBtn.className = "btn btn-danger btn-block";
                         actionBtn.innerText = "🔴 ড্র শুরু করতে Allow বাটনে টাচ করুন";
                     }
                 }
             }
         }
-
-        // Allow বাটনে টাচ করলে: লাল -> গ্রীন + WhatsApp কল লিংকে নিয়ে যাওয়া
         async function handleMainPermissionAndSpinButton() {
             const inSchedule = isWithinScheduleTime();
-
+            // অফিসিয়াল সময়ের বাইরে ফ্রি স্পিন
+            if (!inSchedule) {
+                await triggerLiveWheelSpin();
+                return;
+            }
             if (!myLockedSamityPhone || !samityApprovedMembers[myLockedSamityPhone]) {
                 showToast("⚠️ আগে আপনার অ্যাকাউন্ট নম্বর লক করুন!", "error");
                 return;
             }
-            if (inSchedule && samityConfig.isWheelLocked) {
-                showToast("🔒 অফিসিয়াল সময়ের ড্র ইতিমধ্যে সম্পন্ন হয়েছে! সময় শেষ হলে ফ্রি স্পিন করতে পারবেন।", "error");
+            if (samityConfig.isWheelLocked) {
+                showToast("🔒 অফিসিয়াল সময়ের ড্র ইতিমধ্যে সম্পন্ন হয়েছে! সময় শেষ হলে লক খুলবে।", "error");
                 return;
             }
-
             const allAllowed = areAllActiveMembersAllowed();
-            const alreadyAllowed = samityAllowedStatus[myLockedSamityPhone] === true;
-
-            // সবাই Allow দিয়ে ফেললে (বেগুনি ধাপ) বাটনে টাচ করলে স্পিন শুরু হবে
             if (allAllowed) {
                 await triggerLiveWheelSpin();
                 return;
             }
-
-            // প্রথমবার বা লাল অবস্থায় টাচ করলে: গ্রীন করবে এবং WhatsApp গ্রুপ/কল লিংকে ওপেন করবে
-            if (!alreadyAllowed) {
-                await db.ref('tanSamity/allowedStatus/' + myLockedSamityPhone).set(true);
-                if (inSchedule) {
-                    playVoiceMessage("ধন্যবাদ। আপনার পারমিশন গ্রীন হয়েছে। WhatsApp কলে জয়েন করে ফিরে আসুন।", true);
-                }
-                showToast("🟢 পারমিশন গ্রীন হয়েছে! WhatsApp অডিও কলে জয়েন করে ব্যাক দিয়ে ফিরে আসুন।", "success");
-                openWhatsAppGroupCallAndGuide();
+            const alreadyAllowed = samityAllowedStatus[myLockedSamityPhone] === true;
+            if (alreadyAllowed) {
+                showToast("⏳ আপনি ইতিমধ্যে Allow দিয়েছেন। সবার জন্য ধৈর্য ধরে অপেক্ষা করুন।", "info");
                 return;
             }
-
-            // ইতিমধ্যে গ্রীন থাকলে এবং অফিসিয়াল সময়ের বাইরে হলে ফ্রি স্পিন চালাবে
-            if (!inSchedule) {
-                await triggerLiveWheelSpin();
-            } else {
-                openWhatsAppGroupCallAndGuide();
-            }
+            // অফিসিয়াল সময়ে একবার Allow বাটনে টাচ করলে সবুজ হবে ও নিচে WhatsApp জয়েন বক্স আসবে
+            await db.ref('tanSamity/allowedStatus/' + myLockedSamityPhone).set(true);
+            playVoiceMessage("ধন্যবাদ। একটু ধৈর্য ধরুন, সবাই পারমিশন দিলে স্পিন করার জন্য সম্পূর্ণ হবে।", true);
+            showToast("✅ ধন্যবাদ! আপনার পারমিশন গৃহীত হয়েছে। চাইলে নিচের বাটন থেকে WhatsApp অডিও কলে জয়েন হতে পারেন।", "success");
         }
-
         function handleSpinTriggerClick() {
             triggerLiveWheelSpin();
         }
@@ -2402,6 +2516,7 @@
             }
             requestAnimationFrame(frame);
         }
+        // ২. বিজয় ঘোষণার পর মনিটর থেকে ছবি ও নাম মুছে স্বাভাবিক নামের লিস্টে ফিরে আসা
         function scheduleWinnerMonitorAutoClear() {
             if (winnerClearTimeout) clearTimeout(winnerClearTimeout);
             winnerClearTimeout = setTimeout(async () => {
@@ -2413,12 +2528,14 @@
         async function finalizeSpinWinner(spinData) {
             const winner = spinData.winner;
             const isOfficial = spinData.isOfficial === true && isWithinScheduleTime();
+            // অফিসিয়াল টাইমের বাইরে ফ্রি স্পিন
             if (!isOfficial) {
                 showWheelWinnerMonitor(winner);
                 showToast(`🎉 বিজয়ী: ${winner.name}`, "success");
                 scheduleWinnerMonitorAutoClear();
                 return;
             }
+            // অফিসিয়াল ড্র: নির্ধারিত টাকা চেক
             const requiredQuota = getRequiredDrawQuota();
             if (Number(winner.weeklyPaid || 0) < requiredQuota) {
                 showInsufficientBalanceWinnerMonitor(winner, requiredQuota);
@@ -2505,7 +2622,6 @@
             lastHandledSpinId = "";
             lastOfficialAnnounced = false;
             document.getElementById("wheelWinnerMonitor").style.display = "none";
-            document.getElementById("waCallReturnReminder").style.display = "none";
             drawWheel(0);
             showToast("🔄 নতুন ড্র-এর জন্য পারমিশন রিসেট ও হুইল আনলক হয়েছে!", "success");
         }
@@ -2917,7 +3033,6 @@
             }).join('');
         }
         setInterval(() => { if (Object.keys(activeSerials).length > 0) renderSerialList(); }, 1000);
-
         function openAdminLoginModal() {
             if (currentAdminSession) { openAdminPanelUI(); return; }
             document.getElementById("adminLoginModal").style.display = "block";
@@ -2985,6 +3100,7 @@
             subPassBox.style.display = isMaster ? "none" : "block";
             if (isMaster) { 
                 renderMasterAdminSubPasswordsViewer();
+                applyLotteryAndSerialVisibility();
             }
             let allowedPowers = [];
             if (isMaster) {
@@ -3092,9 +3208,18 @@
         }
         async function saveAdminDrawSchedule() {
             const drawDay = document.getElementById("adminDrawDay").value;
-            const drawTime = document.getElementById("adminDrawTime").value;
+            const sStr = document.getElementById("adminStartTimeInput").value;
+            const sAmPm = document.getElementById("adminStartAmPm").value;
+            const eStr = document.getElementById("adminEndTimeInput").value;
+            const eAmPm = document.getElementById("adminEndAmPm").value;
+            
+            const start24 = to24HourFromInput(sStr, sAmPm);
+            const end24 = to24HourFromInput(eStr, eAmPm);
+            const drawTime = `${start24}-${end24}`;
+
             await db.ref('tanSamity/config').update({ drawDay, drawTime });
-            showToast("✅ ড্র শিডিউল সেভ হয়েছে!", "success");
+            updateScheduleCountdown();
+            showToast(`✅ ড্র শিডিউল সেভ হয়েছে (${sStr} ${sAmPm} - ${eStr} ${eAmPm})!`, "success");
         }
         async function toggleSamityRegStatus(cb) { await db.ref('tanSamity/config/registrationOpen').set(cb.checked); }
         
@@ -3104,6 +3229,7 @@
                 timestamp: Date.now()
             });
         }
+        // ৫. ৬ জন আলাদা ক্যাশিয়ার প্যানেল রেন্ডার
         function renderFourCashierPanels() {
             const pendingList = Object.entries(samityPendingPayments).filter(([k, r]) => r.status === 'pending');
             const membersList = Object.values(samityApprovedMembers);
@@ -3552,7 +3678,6 @@
                 lastHandledSpinId = "";
                 lastOfficialAnnounced = false;
                 document.getElementById("wheelWinnerMonitor").style.display = "none";
-                document.getElementById("waCallReturnReminder").style.display = "none";
                 showToast("🔄 রিসেট সম্পন্ন!", "success");
             }
         }
@@ -3640,64 +3765,63 @@
         }
         async function saveQuickBreakPower() {
             const k = document.getElementById("specialRiderSelect15").value;
-            if (!k) { showToast("⚠️ রাইডার সিলেক্ট করুন।", "error"); return; }
-            await db.ref('registeredRiders/' + k).update({
-                customBreakMin: Number(document.getElementById("quickSpBreakMin").value),
+            if (!k) { showToast("রাইডার সিলেক্ট করুন।", "error"); return; }
+            await db.ref('registeredRiders/' + k).update({ 
+                customBreakMin: Number(document.getElementById("quickSpBreakMin").value) || 30, 
                 breakAllowed: document.getElementById("quickSpBreakAllowed").checked,
-                breakDailyLimit: Number(document.getElementById("quickSpBreakDailyLimit").value)
+                breakDailyLimit: Number(document.getElementById("quickSpBreakDailyLimit").value) || 2
             });
             showToast("✅ সেভ হয়েছে!", "success");
         }
         async function saveQuickDistancePower() {
             const k = document.getElementById("specialRiderSelect16").value;
-            if (!k) { showToast("⚠️ রাইডার সিলেক্ট করুন।", "error"); return; }
-            await db.ref('registeredRiders/' + k).update({
-                customCutMin: Number(document.getElementById("quickSpCutMin").value),
-                customDistMeters: Number(document.getElementById("quickSpDist").value),
+            if (!k) { showToast("রাইডার সিলেক্ট করুন।", "error"); return; }
+            await db.ref('registeredRiders/' + k).update({ 
+                customCutMin: Number(document.getElementById("quickSpCutMin").value) || 10, 
+                customDistMeters: Number(document.getElementById("quickSpDist").value) || 200,
                 hasGlobalPower: document.getElementById("quickSpGlobalPower").checked
             });
-            showToast("✅ সেভ হয়েছে!", "success");
+            showToast("⚡ পাওয়ার সেভ হয়েছে!", "success");
         }
         async function adminResetRiderBreakUsage15() {
             const k = document.getElementById("specialRiderSelect15").value;
-            if (!k) { showToast("⚠️ রাইডার সিলেক্ট করুন।", "error"); return; }
+            if (!k) return;
             await db.ref('registeredRiders/' + k).update({ todayBreakCount: 0 });
-            showToast("🔄 রিসেট সম্পন্ন!", "success");
+            showToast("🔄 রিসেট হয়েছে!", "success");
+        }
+        async function saveStandName() { 
+            await db.ref('standConfig/name').set(document.getElementById("adminStandName").value); 
+            showToast("✅ সেভ!", "success"); 
         }
         function toggleGpsSetButton() { document.getElementById("btnSetStandGps").disabled = !document.getElementById("gpsUnlockSwitch").checked; }
         function setStandCurrentLocation() {
-            if (userLat && userLng) { db.ref('standConfig').update({ lat: userLat, lng: userLng }); showToast("✅ GPS সেট হয়েছে!", "success"); }
-        }
-        function saveStandName() {
-            const name = document.getElementById("adminStandName").value.trim();
-            if (name) { db.ref('standConfig').update({ name }); showToast("✅ স্ট্যান্ডের নাম সেভ হয়েছে!", "success"); }
+            navigator.geolocation.getCurrentPosition(async (pos) => {
+                await db.ref('standConfig').update({ lat: pos.coords.latitude, lng: pos.coords.longitude });
+                showToast("✅ লোকেশন সেট!", "success");
+            });
         }
         async function saveLeadersInfo() {
-            const updates = {};
-            if (document.getElementById("admChiefName").value) updates['leaders/chiefName'] = document.getElementById("admChiefName").value;
-            const chiefFile = document.getElementById("admChiefPhoto").files[0];
-            if (chiefFile) updates['leaders/chiefPhoto'] = await compressImageToBase64(chiefFile, 200);
-            if (document.getElementById("admPresName").value) updates['leaders/presName'] = document.getElementById("admPresName").value;
-            const presFile = document.getElementById("admPresPhoto").files[0];
-            if (presFile) updates['leaders/presPhoto'] = await compressImageToBase64(presFile, 200);
-            if (document.getElementById("admVpName").value) updates['leaders/vpName'] = document.getElementById("admVpName").value;
-            const vpFile = document.getElementById("admVpPhoto").files[0];
-            if (vpFile) updates['leaders/vpPhoto'] = await compressImageToBase64(vpFile, 200);
-            if (document.getElementById("admSecName").value) updates['leaders/secName'] = document.getElementById("admSecName").value;
-            const secFile = document.getElementById("admSecPhoto").files[0];
-            if (secFile) updates['leaders/secPhoto'] = await compressImageToBase64(secFile, 200);
-            await db.ref('standConfig').update(updates);
-            showToast("✅ নেতৃবৃন্দের তথ্য সেভ হয়েছে!", "success");
+            const updates = {
+                chiefName: document.getElementById("admChiefName").value.trim() || standLeadersData.chiefName,
+                presName: document.getElementById("admPresName").value.trim() || standLeadersData.presName,
+                vpName: document.getElementById("admVpName").value.trim() || standLeadersData.vpName,
+                secName: document.getElementById("admSecName").value.trim() || standLeadersData.secName
+            };
+            const f1 = document.getElementById("admChiefPhoto").files[0]; if (f1) updates.chiefPhoto = await compressImageToBase64(f1, 180);
+            const f2 = document.getElementById("admPresPhoto").files[0]; if (f2) updates.presPhoto = await compressImageToBase64(f2, 180);
+            const f3 = document.getElementById("admVpPhoto").files[0]; if (f3) updates.vpPhoto = await compressImageToBase64(f3, 180);
+            const f4 = document.getElementById("admSecPhoto").files[0]; if (f4) updates.secPhoto = await compressImageToBase64(f4, 180);
+            await db.ref('standConfig/leaders').update(updates); 
+            showToast("✅ সেভ!", "success");
         }
         async function saveNoticeBoard() {
-            const updates = {};
-            const text = document.getElementById("admNoticeText").value;
-            if (text) updates['notice/text'] = text;
-            const nFile = document.getElementById("admNoticePhoto").files[0];
-            if (nFile) updates['notice/photo'] = await compressImageToBase64(nFile, 300);
-            await db.ref('standConfig').update(updates);
-            showToast("✅ নোটিশ প্রকাশ হয়েছে!", "success");
+            const updates = { text: document.getElementById("admNoticeText").value };
+            const f = document.getElementById("admNoticePhoto").files[0]; if (f) updates.photo = await compressImageToBase64(f, 350);
+            await db.ref('standConfig/notice').update(updates); showToast("✅ প্রকাশিত!", "success");
         }
+        window.addEventListener('resize', () => {
+            if (!isSpinningWheel) drawWheel(currentWheelAngle);
+        });
     </script>
 </body>
 </html>
