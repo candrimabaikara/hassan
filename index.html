@@ -4,6 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>চন্দ্রিমা যুব উন্নয়ন টান সমিতি - বাইক রাইডার সিরিয়াল ও চ্যাট সিস্টেম</title>
+    
+    <!-- PWA / App Icon & Manifest Link (GitHub স্ক্রিনশট অনুযায়ী) -->
+    <link rel="manifest" href="./manifest.json">
+    <meta name="theme-color" content="#4f46e5">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <link rel="icon" type="image/png" href="./app-icon.png">
+    <link rel="apple-touch-icon" href="./app-icon.png">
+
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
     
     <!-- Firebase SDK v9 Compat -->
@@ -127,6 +136,20 @@
         .assoc-banner h1 { font-size: 18px; font-weight: 700; display: inline-block; position: relative; }
         .assoc-banner p { font-size: 11px; color: #e2e8f0; margin-top: 2px; }
         
+        /* অ্যাপ ইনস্টল ও APK ডাউনলোড বার */
+        .app-install-bar {
+            background: linear-gradient(135deg, #0f172a, #1e293b);
+            border: 1.5px solid #38bdf8;
+            border-radius: 10px;
+            padding: 7px 10px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            color: #fff;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+        }
         .master-dot {
             font-size: 14px;
             color: #3f3c8c;
@@ -304,7 +327,6 @@
             justify-content: space-between;
             box-shadow: 0 1px 3px rgba(0,0,0,0.05);
         }
-        /* ১. স্পিন হুইল সেন্টারিং এবং পারফেক্ট সাইজ ফিক্স */
         .yellow-wheel-box {
             position: relative;
             background: radial-gradient(circle at center, #1e1b4b 0%, #0f172a 60%, #090d16 100%);
@@ -435,7 +457,7 @@
             0% { transform: scale(0.2); }
             100% { transform: scale(1); }
         }
-        /* হোয়াটসঅ্যাপ অডিও কল জয়েন কার্ড (ছবি ২ এর ডিজাইন) */
+        /* হোয়াটসঅ্যাপ অডিও কল জয়েন কার্ড */
         .whatsapp-join-card {
             display: none;
             background: linear-gradient(135deg, #065f46 0%, #047857 100%);
@@ -488,6 +510,7 @@
             white-space: nowrap;
             box-shadow: 0 4px 12px rgba(234, 88, 12, 0.45);
             flex-shrink: 0;
+            cursor: pointer;
             transition: transform 0.15s;
         }
         .btn-whatsapp-orange:active {
@@ -659,9 +682,11 @@
         <span id="customToastMsg">বার্তা</span>
         <button id="customToastClose" onclick="hideToast()">✕</button>
     </div>
+
     <!-- GATEKEEPER -->
     <div id="gatekeeper">
         <div class="gate-box">
+            <img src="./app-icon.png" onerror="this.style.display='none'" style="width: 72px; height: 72px; border-radius: 16px; margin-bottom: 8px; border: 2px solid #fde047; box-shadow: 0 4px 12px rgba(0,0,0,0.4);">
             <h3 style="margin-bottom: 4px;">🏍️ বাইক স্ট্যান্ড সিরিয়াল</h3>
             <p style="font-size: 12px; color: #cbd5e1; margin-bottom: 12px;">অ্যাপে প্রবেশ করতে নিচের Allow বাটনে টাচ করুন</p>
             <div class="gate-step done" id="stepAllow">
@@ -670,6 +695,7 @@
             </div>
         </div>
     </div>
+
     <!-- MAIN APP -->
     <div class="container" id="mainApp" style="display: none;">
         <div class="assoc-banner">
@@ -679,6 +705,22 @@
             </h1>
             <p>বাইক রাইডার সিরিয়াল ও টান সমিতি ব্যবস্থাপনা প্যানেল</p>
         </div>
+
+        <!-- ওয়েবসাইট থেকে সরাসরি অ্যাপ / APK ডাউনলোড বার -->
+        <div class="app-install-bar" id="appInstallBannerBar">
+            <div style="display: flex; align-items: center; gap: 8px;">
+                <img src="./app-icon.png" onerror="this.style.display='none'" style="width: 34px; height: 34px; border-radius: 8px; border: 1.5px solid #fde047;">
+                <div>
+                    <div style="font-size: 12px; font-weight: 700; color: #fde047;">📲 যুব উন্নয়ন ও ড্র সমিতি অ্যাপ</div>
+                    <div style="font-size: 10px; color: #cbd5e1;">সহজে ব্যবহার করতে ফোনে অ্যাপটি ডাউনলোড/ইনস্টল করুন</div>
+                </div>
+            </div>
+            <div style="display: flex; gap: 5px; flex-shrink: 0;">
+                <button id="btnPwaInstall" class="btn btn-success btn-xs" style="display: none;" onclick="triggerPwaInstall()">⬇️ ইনস্টল</button>
+                <a href="./app.apk" download="Chandrima_Yuba_Unnayan.apk" class="btn btn-warning btn-xs" style="text-decoration: none;" onclick="handleApkDownloadClick(event)">📥 APK ডাউনলোড</a>
+            </div>
+        </div>
+
         <div id="adminModeBar">
             <span id="adminModeBarTitle">🛡️ অ্যাডমিন মোড চালু আছে</span>
             <button class="btn btn-danger btn-xs" onclick="logoutAdminMode()">লগআউট</button>
@@ -739,7 +781,7 @@
                         </div>
                     </div>
                 </div>
-                <!-- ১ ও ৪. পারফেক্ট সেন্টার্ড স্পিন হুইল বক্স -->
+                <!-- পারফেক্ট সেন্টার্ড স্পিন হুইল বক্স -->
                 <div class="yellow-wheel-box" id="yellowWheelBox">
                     <div class="wheel-stage-container">
                         <div class="wheel-outer-rim">
@@ -787,7 +829,7 @@
                         </div>
                         <button id="btnMySamityMainAction" class="btn btn-danger btn-block" style="font-size: 12.5px; padding: 10px; line-height: 1.35;" onclick="handleMainPermissionAndSpinButton()">🔴 ড্র সম্পন্ন করার জন্য পারমিশন দিন</button>
                         
-                        <!-- WhatsApp অডিও কল জয়েন বক্স (সবুজ বাটন হলে দেখাবে) -->
+                        <!-- নতুন WhatsApp গ্রুপ লিংক ও APK-কম্প্যাটিবল জয়েন বাটন -->
                         <div id="whatsappAudioCallBox" class="whatsapp-join-card">
                             <div class="whatsapp-join-card-left">
                                 <div class="whatsapp-join-title">🎧 খেলা চলাকালীন WhatsApp অডিও কল</div>
@@ -795,9 +837,9 @@
                                     Allow বাটনে টাচ করলে WhatsApp লিংক ওপেন হবে— <strong>কলে জয়েন করে Back বাটনে টাচ করে</strong> এখানে ফিরে আসুন।
                                 </div>
                             </div>
-                            <a href="https://chat.whatsapp.com/GsNmqRKEp38Gf2qNr1wcQe?s=cl&p=a&iam=2" target="_blank" class="btn-whatsapp-orange" onclick="showToast('📞 WhatsApp গ্রুপে নিয়ে যাওয়া হচ্ছে... কল জয়েন করে Back বাটনে ফিরে আসুন।', 'info')">
+                            <button type="button" class="btn-whatsapp-orange" onclick="openWhatsAppGroupSafely()">
                                 📞 কল জয়েন
-                            </a>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -896,9 +938,8 @@
                 </div>
             </div>
         </div>
-        <!-- রাইড শেয়ার সিরিয়াল মেইনটেন অংশ (লটারি খুললে বা আনলক থাকলে হাইড হবে) -->
+        <!-- রাইড শেয়ার সিরিয়াল মেইনটেন অংশ -->
         <div id="rideSerialMainWrapper">
-            <!-- BIKE RIDER ENTRY BOXES -->
             <div class="entry-grid">
                 <div class="box-card box-online">
                     <div>
@@ -979,7 +1020,8 @@
             <button class="btn btn-dark btn-xs" onclick="openAdminLoginModal()">🔐 সাব-অ্যাডমিন প্যানেল লগইন</button>
         </div>
     </div>
-    <!-- ৫. ৪ জন সাব-অ্যাডমিন লগইন মডাল -->
+
+    <!-- MODALS -->
     <div class="modal-backdrop" id="adminLoginModal">
         <div class="modal-card" style="max-width: 360px;">
             <h3 style="color: var(--primary); font-size: 16px; margin-bottom: 8px;">🔐 সাব-অ্যাডমিন লগইন</h3>
@@ -1003,7 +1045,7 @@
             </div>
         </div>
     </div>
-    <!-- MASTER ADMIN LOGIN MODAL -->
+
     <div class="modal-backdrop" id="masterLoginModal" style="z-index: 5500;">
         <div class="modal-card" style="max-width: 360px;">
             <h3 style="color: #1e1b4b; font-size: 16px; margin-bottom: 8px;">👑 মাস্টার অ্যাডমিন কন্ট্রোল</h3>
@@ -1018,7 +1060,7 @@
             </div>
         </div>
     </div>
-    <!-- SUB-ADMIN POWER & PASSWORD MODAL -->
+
     <div class="modal-backdrop" id="subAdminPowerModal" style="z-index: 5800;">
         <div class="modal-card" style="max-width: 480px;">
             <h3 id="powerModalTitle" style="color: var(--primary); font-size: 16px; margin-bottom: 8px;">✏️ অ্যাডমিন কাজ ও পাসওয়ার্ড নির্ধারণ</h3>
@@ -1041,14 +1083,13 @@
             </div>
         </div>
     </div>
-    <!-- ADMIN PANEL MODAL (সিরিয়াল অনুযায়ী সাজানো) -->
+
     <div class="modal-backdrop" id="adminModal">
         <div class="modal-card">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
                 <h3 id="adminModalMainTitle" style="color: var(--primary); font-size: 16px;">🛡️ অ্যাডমিন কন্ট্রোল প্যানেল</h3>
                 <button class="btn btn-danger btn-xs" onclick="closeAdminModal()">✖ বন্ধ করুন</button>
             </div>
-            <!-- PASSWORD CHANGE FOR SUB-ADMINS -->
             <div id="subAdminSelfPasswordBox" class="admin-box" style="background: #f0fdf4; border: 1.5px solid #10b981; display: none;">
                 <h4 style="color: #047857;">🔑 আপনার পাসওয়ার্ড পরিবর্তন করুন</h4>
                 <div style="display: flex; gap: 6px;">
@@ -1056,11 +1097,8 @@
                     <button class="btn btn-success btn-xs" onclick="saveNewSubAdminPassword()">পাসওয়ার্ড সেভ</button>
                 </div>
             </div>
-            <!-- MASTER ONLY SECTION -->
             <div id="masterOnlyAdminManagementBox" class="admin-box" style="background: #eef2ff; border: 2px solid #4f46e5; display: none;">
                 <h4 style="color: #4f46e5;">👑 মাস্টার অ্যাডমিন: ৪ জন অ্যাডমিন ও কাজ বণ্টন কন্ট্রোল</h4>
-                
-                <!-- নতুন বক্স: লটারি ও সিরিয়াল লক/আনলক কন্ট্রোল -->
                 <div style="background: #fff1f2; padding: 10px; border-radius: 8px; margin-bottom: 10px; border: 1.5px solid #f43f5e;">
                     <strong style="font-size: 12.5px; color: #9f1239; display: block; margin-bottom: 4px;">🎛️ লটারি ইন্টারফেস ও সিরিয়াল কন্ট্রোল (লক / আনলক):</strong>
                     <p style="font-size: 10.5px; color: #881337; margin-bottom: 8px; line-height: 1.35;">
@@ -1079,18 +1117,15 @@
                         <button class="btn btn-primary btn-xs" onclick="saveNewMasterPassword()">সেভ</button>
                     </div>
                 </div>
-                
                 <div style="background: #fffbeb; padding: 8px; border-radius: 8px; margin-bottom: 4px; border: 1px solid #fcd34d;">
                     <strong style="font-size: 12px; color: #b45309; display: block; margin-bottom: 4px;">👁️ ৪ জন অ্যাডমিন পাসওয়ার্ড ও কাজ নির্ধারণ তালিকা:</strong>
                     <p style="font-size: 10px; color: #78350f; margin-bottom: 6px;">কলম আইকন ✏️-এ টাচ করে ৪ জন অ্যাডমিনের মধ্যে কাজ ও ক্যাশিয়ার বক্স ভাগ করে দিন।</p>
                     <div id="masterSubAdminPasswordsViewerContainer"></div>
                 </div>
             </div>
-            <!-- SAMITY & CASHIER SECTIONS (সিরিয়াল ১ থেকে ১৩) -->
+
             <div class="admin-box" id="samityMasterWrapperBox" style="background: #fffbeb; border: 2.5px solid #f59e0b;">
                 <h4 style="color: #b45309;">🏆 চন্দ্রিমা বাইকার টান সমিতি ও ক্যাশিয়ার কন্ট্রোল</h4>
-                
-                <!-- 1. ড্র-এর সময় ও টাকার পরিমাণ নির্ধারণ (AM/PM সহ আপডেটেড) -->
                 <div class="admin-box" id="powerSec_schedule" style="background: #fef3c7; border: 1.5px solid #fcd34d; margin-bottom: 8px;">
                     <h4>
                         <span>1. ড্র-এর সময় ও টাকার পরিমাণ নির্ধারণ (AM/PM সহ)</span>
@@ -1140,10 +1175,8 @@
                             </div>
                             <button class="btn btn-warning btn-xs" style="height: 34px;" onclick="saveDailyQuota()">টাকা সেভ</button>
                         </div>
-                        <p style="font-size: 10px; color: #78350f; margin-top: 4px;">* সকাল ৯:০০ AM বা রাত ৯:০০ PM যেকোনো সময় নির্ধারণ করলে সে অনুযায়ী ঘড়িতে কাউন্টডাউন ও অংশগ্রহণের মোট মিনিট দেখাবে।</p>
                     </div>
                 </div>
-                <!-- 2. সদস্যদের Allow পারমিশন ও হুইল লক -->
                 <div class="admin-box" id="powerSec_wheel" style="background: #fef3c7; border: 1.5px solid #fcd34d; margin-bottom: 8px;">
                     <h4>
                         <span>2. সদস্যদের Allow পারমিশন ও হুইল লক</span>
@@ -1157,7 +1190,6 @@
                         <div id="adminIndividualWheelPermissionsList" style="max-height: 220px; overflow-y: auto; background: #fffbeb; padding: 6px; border-radius: 8px; border: 1px solid #fde68a;">লোড হচ্ছে...</div>
                     </div>
                 </div>
-                <!-- 3. অফিসিয়াল উইনার সেটআপ -->
                 <div class="admin-box" id="powerSec_winner" style="background: #fef3c7; border: 1.5px solid #fcd34d; margin-bottom: 8px;">
                     <h4>
                         <span>3. অফিসিয়াল উইনার সেটআপ</span>
@@ -1171,7 +1203,6 @@
                         </div>
                     </div>
                 </div>
-                <!-- 4. রেজিস্ট্রেশন অন/অফ কন্ট্রোল -->
                 <div class="admin-box" id="powerSec_quota" style="background: #fef3c7; border: 1.5px solid #fcd34d; margin-bottom: 8px;">
                     <h4>
                         <span>4. সমিতি রেজিস্ট্রেশন অন/অফ কন্ট্রোল</span>
@@ -1184,7 +1215,6 @@
                         </div>
                     </div>
                 </div>
-                <!-- 5. নতুন রেজিস্ট্রেশন আবেদন অনুমোদন -->
                 <div class="admin-box" id="powerSec_regapp" style="background: white; border: 1px solid #fde68a; margin-bottom: 8px;">
                     <h4>
                         <span>5. নতুন রেজিস্ট্রেশন আবেদন অনুমোদন</span>
@@ -1194,7 +1224,6 @@
                         <div id="adminSamityPendingRegList">লোড হচ্ছে...</div>
                     </div>
                 </div>
-                <!-- 6 থেকে 11. ৬ জন আলাদা ক্যাশিয়ার বক্স -->
                 <div class="admin-box" id="powerSec_cashier1" style="background: #f0fdf4; border: 1.5px solid #10b981; margin-bottom: 8px;">
                     <h4>
                         <span id="cashierBoxHeaderTitle_cashier1">6. ক্যাশিয়ার প্যানেল ১ (প্রধান ক্যাশিয়ার)</span>
@@ -1249,7 +1278,6 @@
                         <div id="cashierPanelBody_cashier6"></div>
                     </div>
                 </div>
-                <!-- 12. ক্যাশিয়ারদের সম্পূর্ণ লেনদেনের ইতিহাস -->
                 <div class="admin-box" id="powerSec_cashierhistory" style="background: #f0f9ff; border: 1.5px solid #0284c7; margin-bottom: 8px;">
                     <h4>
                         <span>12. ক্যাশিয়ারদের সম্পূর্ণ লেনদেন ইতিহাস (হিস্ট্রি)</span>
@@ -1276,7 +1304,6 @@
                         </div>
                     </div>
                 </div>
-                <!-- 13. মেম্বার ম্যানেজমেন্ট -->
                 <div class="admin-box" id="powerSec_members" style="background: white; border: 1px solid #fde68a; margin-bottom: 8px;">
                     <h4>
                         <span>13. মেম্বার ম্যানেজমেন্ট (টাকা জমা, নাম-ফোন ও ডিলিট)</span>
@@ -1290,7 +1317,7 @@
                     </div>
                 </div>
             </div>
-            <!-- 14. ৪ জন সাব-অ্যাডমিন প্রোফাইল ও মনিটর সেটআপ -->
+
             <div class="admin-box" id="powerSec_fouradmins" style="background: #fffbeb; border: 2px solid #d97706;">
                 <h4>
                     <span>14. ৪ জন সাব-অ্যাডমিন প্রোফাইল (লগইন ও মনিটর)</span>
@@ -1301,7 +1328,7 @@
                     <div id="adminFourRoleProfilesEditorContainer"></div>
                 </div>
             </div>
-            <!-- 15. সভাপতি প্যানেল -->
+
             <div class="admin-box" id="powerSec_leaders">
                 <h4><span>15. সভাপতি প্যানেল (৪ জন নেতৃবৃন্দ)</span><button class="btn btn-dark btn-xs" id="lockPower_leaders" onclick="togglePowerLock('_leaders')">🔒 লকড</button></h4>
                 <div id="containerPower_leaders" style="opacity: 0.5; pointer-events: none;">
@@ -1328,14 +1355,14 @@
                     <button class="btn btn-success btn-block" onclick="saveLeadersInfo()">💾 সভাপতি প্যানেল সেভ করুন</button>
                 </div>
             </div>
-            <!-- 16. নোটিশ বোর্ড -->
+
             <div class="admin-box" id="powerSec_notice">
                 <h4><span>16. নোটিশ বোর্ড</span><button class="btn btn-dark btn-xs" id="lockPower_notice" onclick="togglePowerLock('_notice')">🔒 লকড</button></h4>
                 <div id="containerPower_notice" style="opacity: 0.5; pointer-events: none;">
                     <div class="form-group"><textarea id="admNoticeText" rows="2" class="form-control" placeholder="জরুরি নোটিশ..." style="margin-bottom:4px;"></textarea><input type="file" id="admNoticePhoto" accept="image/*" class="form-control" style="padding:3px; margin-bottom:5px;"><button class="btn btn-warning btn-block" onclick="saveNoticeBoard()">📢 প্রকাশ</button></div>
                 </div>
             </div>
-            <!-- 17. স্ট্যান্ডের নাম ও GPS -->
+
             <div class="admin-box" id="powerSec_gps">
                 <h4><span>17. স্ট্যান্ডের নাম ও GPS</span><button class="btn btn-dark btn-xs" id="lockPower_gps" onclick="togglePowerLock('_gps')">🔒 লকড</button></h4>
                 <div id="containerPower_gps" style="opacity: 0.5; pointer-events: none;">
@@ -1345,7 +1372,7 @@
                     <p id="savedStandCoords" style="font-size: 11px; color: #475569; margin-top: 5px;"></p>
                 </div>
             </div>
-            <!-- 18. দূরবর্তী ম্যানুয়াল সিরিয়াল -->
+
             <div class="admin-box" id="powerSec_remote" style="background: #e0f2fe; border: 2px solid #0284c7;">
                 <h4><span>18. দূরবর্তী ম্যানুয়াল সিরিয়াল</span><button class="btn btn-dark btn-xs" id="lockPower_remote" onclick="togglePowerLock('_remote')">🔒 লকড</button></h4>
                 <div id="containerPower_remote" style="opacity: 0.5; pointer-events: none;">
@@ -1353,7 +1380,7 @@
                     <button class="btn btn-success btn-block" onclick="submitGlobalMasterManualEntry()">➕ দূরবর্তী ম্যানুয়াল সিরিয়াল</button>
                 </div>
             </div>
-            <!-- 19. রাইডার এক্সক্লুসিভ বিরতি সেটআপ -->
+
             <div class="admin-box" id="powerSec_break" style="background: #fffbeb; border-color: #f59e0b;">
                 <h4><span>19. রাইডার এক্সক্লুসিভ বিরতি সেটআপ</span><button class="btn btn-dark btn-xs" id="lockPower_break" onclick="togglePowerLock('_break')">🔒 লকড</button></h4>
                 <div id="containerPower_break" style="opacity: 0.5; pointer-events: none;">
@@ -1372,7 +1399,7 @@
                     </div>
                 </div>
             </div>
-            <!-- 20. রাইডার স্পেশাল পাওয়ার -->
+
             <div class="admin-box" id="powerSec_special" style="background: #f0fdf4; border-color: #10b981;">
                 <h4><span>20. রাইডার স্পেশাল পাওয়ার</span><button class="btn btn-dark btn-xs" id="lockPower_special" onclick="togglePowerLock('_special')">🔒 লকড</button></h4>
                 <div id="containerPower_special" style="opacity: 0.5; pointer-events: none;">
@@ -1388,21 +1415,22 @@
                     <button class="btn btn-success btn-block" style="margin-top:6px;" onclick="saveQuickDistancePower()">⚡ পাওয়ার সেভ করুন</button>
                 </div>
             </div>
-            <!-- 21. রাইডার নাম, ফোন নাম্বার ও ছবি এডিট -->
+
             <div class="admin-box" id="powerSec_rideredit">
                 <h4><span>21. রাইডার নাম, ফোন নাম্বার ও ছবি এডিট</span><button class="btn btn-dark btn-xs" id="lockPower_rideredit" onclick="togglePowerLock('_rideredit')">🔒 লকড</button></h4>
                 <div id="containerPower_rideredit" style="opacity: 0.5; pointer-events: none;">
                     <div id="adminRegisteredListCombinedEdit">লোড হচ্ছে...</div>
                 </div>
             </div>
-            <!-- 22. রাইডার সাসপেন্ড -->
+
             <div class="admin-box" id="powerSec_suspend">
                 <h4><span>22. রাইডার সাসপেন্ড</span><button class="btn btn-dark btn-xs" id="lockPower_suspend" onclick="togglePowerLock('_suspend')">🔒 লকড</button></h4>
                 <div id="containerPower_suspend" style="opacity: 0.5; pointer-events: none;"><div id="adminRegisteredListSuspend">লোড হচ্ছে...</div></div>
             </div>
         </div>
     </div>
-    <!-- MODALS FOR EDITING -->
+
+    <!-- EDIT MODALS -->
     <div class="modal-backdrop" id="samityAdjustModal" style="z-index: 6000;">
         <div class="modal-card" style="max-width: 380px;">
             <h4 style="color: #b45309; margin-bottom: 8px;">💰 টান সমিতি টাকা জমা / মাইনাস</h4>
@@ -1416,6 +1444,7 @@
             <button class="btn btn-dark btn-block" style="margin-top: 6px;" onclick="document.getElementById('samityAdjustModal').style.display='none'">বন্ধ</button>
         </div>
     </div>
+
     <div class="modal-backdrop" id="samityEditPhotoModal" style="z-index: 6500;">
         <div class="modal-card" style="max-width: 360px;">
             <h4 style="color: var(--primary); margin-bottom: 8px;">🖼️ সদস্যের ছবি পরিবর্তন</h4>
@@ -1427,6 +1456,7 @@
             </div>
         </div>
     </div>
+
     <div class="modal-backdrop" id="samityEditInfoModal" style="z-index: 6500;">
         <div class="modal-card" style="max-width: 380px;">
             <h4 style="color: var(--primary); margin-bottom: 8px;">✏️ নাম ও ফোন নম্বর পরিবর্তন</h4>
@@ -1439,6 +1469,7 @@
             </div>
         </div>
     </div>
+
     <div class="modal-backdrop" id="editRiderCombinedModal" style="z-index: 6500;">
         <div class="modal-card" style="max-width: 380px;">
             <h4 style="color: var(--primary); margin-bottom: 8px;">✏️ রাইডারের নাম, ফোন ও ছবি এডিট</h4>
@@ -1452,7 +1483,61 @@
             </div>
         </div>
     </div>
+
     <script>
+        // ১. Service Worker রেজিস্ট্রেশন (GitHub-এর serviceworker.js অনুযায়ী)
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./serviceworker.js').catch(() => {});
+            });
+        }
+
+        // PWA ইনস্টল ও APK ডাউনলোড কন্ট্রোল
+        let deferredPrompt = null;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            const installBtn = document.getElementById('btnPwaInstall');
+            if (installBtn) installBtn.style.display = 'inline-flex';
+        });
+
+        async function triggerPwaInstall() {
+            if (!deferredPrompt) {
+                showToast("📲 ব্রাউজারের উপরে ডানপাশের ৩-ডট (⋮) মেনু থেকে 'Add to Home screen' বা 'Install app'-এ টাচ করুন।", "info");
+                return;
+            }
+            deferredPrompt.prompt();
+            const { outcome } = await deferredPrompt.userChoice;
+            deferredPrompt = null;
+            if (outcome === 'accepted') {
+                document.getElementById('btnPwaInstall').style.display = 'none';
+                showToast("✅ অ্যাপটি ফোনে ইনস্টল হচ্ছে...", "success");
+            }
+        }
+
+        function handleApkDownloadClick(e) {
+            showToast("📥 APK ফাইল ডাউনলোড শুরু হচ্ছে... আপনার GitHub ফোল্ডারে 'app.apk' নামে ফাইলটি আপলোড রাখলে সরাসরি ডাউনলোড হবে।", "info");
+        }
+
+        // ২. নতুন WhatsApp গ্রুপ লিংক ও APK-কম্প্যাটিবল ওপেনার
+        const WHATSAPP_GROUP_LINK = "https://chat.whatsapp.com/GsNmqRKEp38Gf2qNr1wcQe?s=cl&p=a&iam=2";
+        function openWhatsAppGroupSafely() {
+            showToast("📞 WhatsApp গ্রুপে নিয়ে যাওয়া হচ্ছে... কল জয়েন করে Back বাটনে ফিরে আসুন।", "info");
+            const isAndroid = /Android/i.test(navigator.userAgent);
+            const isWebView = /(wv|WebView)/i.test(navigator.userAgent) || !window.chrome;
+            
+            if (isAndroid && isWebView) {
+                // APK WebView-এর ভেতরে থাকলে সরাসরি Android Intent দিয়ে WhatsApp অ্যাপ খুলবে
+                const intentUrl = "intent://chat.whatsapp.com/GsNmqRKEp38Gf2qNr1wcQe?s=cl&p=a&iam=2#Intent;scheme=https;package=com.whatsapp;S.browser_fallback_url=" + encodeURIComponent(WHATSAPP_GROUP_LINK) + ";end";
+                window.location.href = intentUrl;
+            } else {
+                const win = window.open(WHATSAPP_GROUP_LINK, "_blank");
+                if (!win) {
+                    window.location.href = WHATSAPP_GROUP_LINK;
+                }
+            }
+        }
+
         let toastTimeout = null;
         function showToast(msg, type = 'info') {
             const toast = document.getElementById("customToast");
@@ -1479,7 +1564,6 @@
         let userLat = null, userLng = null;
         let currentAdminSession = null;
         let masterPasswordStored = "692372";
-        // ৫. ৪ জন সাব-অ্যাডমিন ও ৬ জন ক্যাশিয়ার কনফিগ
         const ALL_ADMIN_ROLES = ["admin1", "admin2", "admin3", "admin4"];
         const ALL_CASHIER_IDS = ["cashier1", "cashier2", "cashier3", "cashier4", "cashier5", "cashier6"];
         const ALL_SYSTEM_POWERS = [
@@ -1562,6 +1646,7 @@
         let alarmInterval = null;
         let alarmTimeoutTimer = null;
         let acknowledgedAlarmKey = "";
+        let fallbackVoiceAudio = new Audio();
         const DAYS_LIST = ["শনি", "রবি", "সোম", "মঙ্গল", "বুধ", "বৃহঃ", "শুক্র"];
         
         function getRequiredDrawQuota() {
@@ -1590,6 +1675,7 @@
         function playRingtoneBeep() {
             try {
                 if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                if (audioCtx.state === 'suspended') audioCtx.resume();
                 const osc = audioCtx.createOscillator();
                 const gain = audioCtx.createGain();
                 osc.type = 'sawtooth';
@@ -1601,17 +1687,42 @@
                 osc.start(); osc.stop(audioCtx.currentTime + 0.4);
             } catch (e) {}
         }
+
+        // ৩. ওয়েবসাইট ও APK উভয়ের জন্য শক্তিশালী বাংলা ভয়েস ইঞ্জিন
         function playVoiceMessage(text, forceOfficialOnly = true) {
             try {
                 if (forceOfficialOnly && !isWithinScheduleTime()) return;
+                
+                // APK WebView-এর জন্য অনলাইন বাংলা TTS ব্যাকআপ
+                const playFallbackAudio = () => {
+                    try {
+                        const encoded = encodeURIComponent(text.substring(0, 180));
+                        fallbackVoiceAudio.src = `https://translate.google.com/translate_tts?ie=UTF-8&tl=bn&client=tw-ob&q=${encoded}`;
+                        fallbackVoiceAudio.play().catch(() => {});
+                    } catch (err) {}
+                };
+
                 if ('speechSynthesis' in window) {
                     window.speechSynthesis.cancel();
                     const utterance = new SpeechSynthesisUtterance(text);
                     utterance.lang = 'bn-BD';
+                    utterance.rate = 0.95;
+                    let spoken = false;
+                    utterance.onstart = () => { spoken = true; };
+                    utterance.onerror = () => { if (!spoken) playFallbackAudio(); };
                     window.speechSynthesis.speak(utterance);
+                    // ৭০০ মিলিসেকেন্ডের মধ্যে ডিভাইস ভয়েস শুরু না হলে APK-তে অনলাইন ভয়েস চলবে
+                    setTimeout(() => {
+                        if (!spoken && !window.speechSynthesis.speaking) {
+                            playFallbackAudio();
+                        }
+                    }, 700);
+                } else {
+                    playFallbackAudio();
                 }
             } catch(e){}
         }
+
         function startAlarmSound(title, desc, alarmKey) {
             if (acknowledgedAlarmKey === alarmKey) return;
             document.getElementById("alarmTitle").innerText = title;
@@ -1634,7 +1745,16 @@
             if (myIdx !== -1) acknowledgedAlarmKey = sorted[myIdx].id + "_pos_" + (myIdx + 1);
         }
         function enterMainApp() {
-            try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch(e){}
+            // ইউজারের টাচের সাথে সাথে অডিও ও ভয়েস পারমিশন আনলক (APK-এর জন্য জরুরি)
+            try { 
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)(); 
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+                if ('speechSynthesis' in window) {
+                    const silentUtter = new SpeechSynthesisUtterance("");
+                    window.speechSynthesis.speak(silentUtter);
+                }
+            } catch(e){}
+
             document.getElementById("gatekeeper").style.display = "none";
             document.getElementById("mainApp").style.display = "block";
             if (myLocalRiderName) document.getElementById("loginPhone").value = myLocalRiderName;
@@ -1710,9 +1830,8 @@
             container.innerHTML = cashierHtml;
             selectEl.innerHTML = selectOptionsHtml;
         }
-        // লটারি ও সিরিয়াল লক/আনলক কন্ট্রোল লজিক
         function applyLotteryAndSerialVisibility() {
-            const isLocked = samityConfig.isLotteryCardLocked !== false; // ডিফল্টভাবে লক থাকবে
+            const isLocked = samityConfig.isLotteryCardLocked !== false;
             const bodyContainer = document.getElementById("samityBodyContainer");
             const arrow = document.getElementById("samityToggleArrow");
             const serialWrapper = document.getElementById("rideSerialMainWrapper");
@@ -1732,13 +1851,11 @@
                 }
             }
             if (!isLocked) {
-                // আনলক থাকলে লটারি সবসময় ওপেন থাকবে এবং সিরিয়াল অপশন থাকবে না
                 bodyContainer.style.display = "block";
                 arrow.style.display = "none";
                 if (serialWrapper) serialWrapper.style.display = "none";
                 drawWheel(currentWheelAngle);
             } else {
-                // লক থাকলে ইউজার ক্লিক করে খুলতে পারবে
                 arrow.style.display = "inline-block";
                 const isSamityOpen = bodyContainer.style.display === "block";
                 arrow.innerText = isSamityOpen ? "▲ বন্ধ করুন" : "▼ খুলুন";
@@ -1759,7 +1876,6 @@
         }
         function toggleSamityCardCollapse() {
             const isLocked = samityConfig.isLotteryCardLocked !== false;
-            // আনলক করা থাকলে কার্ড বন্ধ হবে না, সবসময় ওপেন থাকবে
             if (!isLocked) return;
             const bodyContainer = document.getElementById("samityBodyContainer");
             const arrow = document.getElementById("samityToggleArrow");
@@ -1951,7 +2067,6 @@
             document.getElementById("adminDrawDay").value = samityConfig.drawDay || "Daily";
             document.getElementById("adminForcedWinnerPhone").value = samityConfig.forcedWinner || "";
             
-            // অ্যাডমিন টাইম ইনপুট পপুলেট (24h থেকে 12h AM/PM কনভার্ট)
             const { startH, startM, endH, endM } = parseScheduleRange();
             const s12 = to12HourObj(startH, startM);
             const e12 = to12HourObj(endH, endM);
@@ -2149,7 +2264,6 @@
             dot.style.boxShadow = isAllowed ? "0 0 8px #22c55e" : "0 0 8px #ef4444";
             evaluateWheelAndActionState();
         }
-        // 24h <-> 12h AM/PM হেল্পার ফাংশনসমূহ
         function to12HourObj(h24, m) {
             const ampm = h24 >= 12 ? "PM" : "AM";
             let h12 = h24 % 12;
@@ -2267,7 +2381,6 @@
             if (activeMembers.length === 0) return false;
             return activeMembers.every(m => samityAllowedStatus[m.phone] === true);
         }
-        // ৩. অফিসিয়াল টাইম ও ফ্রি স্পিন স্টেট + WhatsApp অডিও কল বক্স কন্ট্রোল
         function evaluateWheelAndActionState() {
             const infoBox = document.getElementById("wheelStatusInfo");
             const actionBtn = document.getElementById("btnMySamityMainAction");
@@ -2277,7 +2390,6 @@
             const allAllowed = areAllActiveMembersAllowed();
             const isAllowed = myLockedSamityPhone && samityAllowedStatus[myLockedSamityPhone] === true;
             
-            // অফিসিয়াল সময় শেষ হয়ে গেলে অটোমেটিক লক খুলে যাবে
             if (!inSchedule && samityConfig.isWheelLocked) {
                 db.ref('tanSamity/config/isWheelLocked').set(false);
                 db.ref('tanSamity/allowedStatus').remove();
@@ -2294,7 +2406,6 @@
                 }
                 return;
             }
-            // অফিসিয়াল টাইমের ভেতরে লক থাকলে
             if (samityConfig.isWheelLocked) {
                 if (waBox) waBox.style.display = "none";
                 infoBox.innerText = "🔒 নির্ধারিত অফিসিয়াল সময়ের ড্র সম্পন্ন হয়েছে। সময় শেষ হলে পুনরায় ফ্রি স্পিন চালু হবে।";
@@ -2328,13 +2439,11 @@
                 infoBox.innerText = `⏳ ড্র-এর জন্য সবাই Allow বাটনে টাচ করুন (${allowedCount}/${activeMembers.length} জন প্রস্তুত)`;
                 if (actionBtn) {
                     if (isAllowed) {
-                        // সবুজ বাটন হলেই কেবল WhatsApp অডিও কল বক্স দেখাবে
                         if (waBox) waBox.style.display = "flex";
                         actionBtn.disabled = true;
                         actionBtn.className = "btn btn-success btn-block";
                         actionBtn.innerText = "🟢 ধৈর্য ধরুন, সবাই Allow করলে স্পিন করার পারমিশন পাবেন...";
                     } else {
-                        // লাল বাটন অবস্থায় WhatsApp বক্স থাকবে না
                         if (waBox) waBox.style.display = "none";
                         actionBtn.disabled = false;
                         actionBtn.className = "btn btn-danger btn-block";
@@ -2345,7 +2454,6 @@
         }
         async function handleMainPermissionAndSpinButton() {
             const inSchedule = isWithinScheduleTime();
-            // অফিসিয়াল সময়ের বাইরে ফ্রি স্পিন
             if (!inSchedule) {
                 await triggerLiveWheelSpin();
                 return;
@@ -2368,7 +2476,6 @@
                 showToast("⏳ আপনি ইতিমধ্যে Allow দিয়েছেন। সবার জন্য ধৈর্য ধরে অপেক্ষা করুন।", "info");
                 return;
             }
-            // অফিসিয়াল সময়ে একবার Allow বাটনে টাচ করলে সবুজ হবে ও নিচে WhatsApp জয়েন বক্স আসবে
             await db.ref('tanSamity/allowedStatus/' + myLockedSamityPhone).set(true);
             playVoiceMessage("ধন্যবাদ। একটু ধৈর্য ধরুন, সবাই পারমিশন দিলে স্পিন করার জন্য সম্পূর্ণ হবে।", true);
             showToast("✅ ধন্যবাদ! আপনার পারমিশন গৃহীত হয়েছে। চাইলে নিচের বাটন থেকে WhatsApp অডিও কলে জয়েন হতে পারেন।", "success");
@@ -2493,7 +2600,6 @@
             }
             requestAnimationFrame(frame);
         }
-        // ২. বিজয় ঘোষণার পর মনিটর থেকে ছবি ও নাম মুছে স্বাভাবিক নামের লিস্টে ফিরে আসা
         function scheduleWinnerMonitorAutoClear() {
             if (winnerClearTimeout) clearTimeout(winnerClearTimeout);
             winnerClearTimeout = setTimeout(async () => {
@@ -2505,14 +2611,12 @@
         async function finalizeSpinWinner(spinData) {
             const winner = spinData.winner;
             const isOfficial = spinData.isOfficial === true && isWithinScheduleTime();
-            // অফিসিয়াল টাইমের বাইরে ফ্রি স্পিন
             if (!isOfficial) {
                 showWheelWinnerMonitor(winner);
                 showToast(`🎉 বিজয়ী: ${winner.name}`, "success");
                 scheduleWinnerMonitorAutoClear();
                 return;
             }
-            // অফিসিয়াল ড্র: নির্ধারিত টাকা চেক
             const requiredQuota = getRequiredDrawQuota();
             if (Number(winner.weeklyPaid || 0) < requiredQuota) {
                 showInsufficientBalanceWinnerMonitor(winner, requiredQuota);
@@ -3205,7 +3309,6 @@
                 timestamp: Date.now()
             });
         }
-        // ৫. ৬ জন আলাদা ক্যাশিয়ার প্যানেল রেন্ডার
         function renderFourCashierPanels() {
             const pendingList = Object.entries(samityPendingPayments).filter(([k, r]) => r.status === 'pending');
             const membersList = Object.values(samityApprovedMembers);
@@ -3705,101 +3808,111 @@
             const newName = document.getElementById("editRiderCombinedName").value.trim();
             const newPhone = document.getElementById("editRiderCombinedPhone").value.trim().replace(/[^0-9]/g, '');
             const photoFile = document.getElementById("editRiderCombinedPhoto").files[0];
-            if (!k || !newName || !newPhone) { showToast("⚠️ সঠিক তথ্য দিন।", "error"); return; }
+            if (!k || !newName || !newPhone || newPhone.length < 11) {
+                showToast("⚠️ সঠিক নাম ও ফোন নম্বর দিন।", "error"); return;
+            }
             const updates = { name: newName, phone: newPhone };
             if (photoFile) {
                 updates.photo = await compressImageToBase64(photoFile, 220);
             }
             await db.ref('registeredRiders/' + k).update(updates);
             document.getElementById("editRiderCombinedModal").style.display = "none";
-            showToast("✅ আপডেট সফল!", "success");
+            showToast("✅ রাইডারের তথ্য আপডেট হয়েছে!", "success");
         }
-        async function toggleSuspendRider(k, state) {
-            await db.ref('registeredRiders/' + k).update({ isSuspended: state });
-            showToast(state ? "⚠️ সাসপেন্ড করা হয়েছে।" : "✅ আনসাসপেন্ড সফল।", "info");
+        async function toggleSuspendRider(k, status) {
+            await db.ref('registeredRiders/' + k + '/isSuspended').set(status);
+            showToast(status ? "🚫 সাসপেন্ড করা হয়েছে!" : "✅ আনসাসপেন্ড করা হয়েছে!", status ? "error" : "success");
         }
         function populateSpecialRiderDropdowns() {
+            const list = Object.entries(registeredRiders);
+            const optionsHtml = `<option value="">-- রাইডার বেছে নিন --</option>` + list.map(([k, r]) => `<option value="${k}">${r.name}</option>`).join('');
             const sel15 = document.getElementById("specialRiderSelect15");
             const sel16 = document.getElementById("specialRiderSelect16");
-            const optionsHtml = `<option value="">-- রাইডার বেছে নিন --</option>` + Object.entries(registeredRiders).map(([k, r]) => `<option value="${k}">${r.name}</option>`).join('');
-            if (sel15) sel15.innerHTML = optionsHtml;
-            if (sel16) sel16.innerHTML = optionsHtml;
+            if (sel15) {
+                const cur15 = sel15.value;
+                sel15.innerHTML = optionsHtml;
+                if (cur15 && registeredRiders[cur15]) sel15.value = cur15;
+            }
+            if (sel16) {
+                const cur16 = sel16.value;
+                sel16.innerHTML = optionsHtml;
+                if (cur16 && registeredRiders[cur16]) sel16.value = cur16;
+            }
         }
         function loadSelectedRiderBreakValues() {
-            const r = registeredRiders[document.getElementById("specialRiderSelect15").value];
-            if (!r) return;
+            const key = document.getElementById("specialRiderSelect15").value;
+            if (!key || !registeredRiders[key]) return;
+            const r = registeredRiders[key];
             document.getElementById("quickSpBreakMin").value = r.customBreakMin || 30;
-            document.getElementById("quickSpBreakAllowed").checked = r.breakAllowed || false;
             document.getElementById("quickSpBreakDailyLimit").value = r.breakDailyLimit || 2;
+            document.getElementById("quickSpBreakAllowed").checked = r.breakAllowed || false;
+        }
+        async function saveQuickBreakPower() {
+            const key = document.getElementById("specialRiderSelect15").value;
+            if (!key) { showToast("⚠️ রাইডার সিলেক্ট করুন!", "error"); return; }
+            await db.ref('registeredRiders/' + key).update({
+                customBreakMin: Number(document.getElementById("quickSpBreakMin").value) || 30,
+                breakDailyLimit: Number(document.getElementById("quickSpBreakDailyLimit").value) || 2,
+                breakAllowed: document.getElementById("quickSpBreakAllowed").checked
+            });
+            showToast("✅ বিরতি পাওয়ার সেভ হয়েছে!", "success");
+        }
+        async function adminResetRiderBreakUsage15() {
+            const key = document.getElementById("specialRiderSelect15").value;
+            if (!key) { showToast("⚠️ রাইডার সিলেক্ট করুন!", "error"); return; }
+            await db.ref('registeredRiders/' + key + '/todayBreakCount').set(0);
+            showToast("🔄 বিরতি কাউন্ট জিরো হয়েছে!", "success");
         }
         function loadSelectedRiderDistanceValues() {
-            const r = registeredRiders[document.getElementById("specialRiderSelect16").value];
-            if (!r) return;
+            const key = document.getElementById("specialRiderSelect16").value;
+            if (!key || !registeredRiders[key]) return;
+            const r = registeredRiders[key];
             document.getElementById("quickSpCutMin").value = r.customCutMin || 10;
             document.getElementById("quickSpDist").value = r.customDistMeters || 200;
             document.getElementById("quickSpGlobalPower").checked = r.hasGlobalPower || false;
         }
-        async function saveQuickBreakPower() {
-            const k = document.getElementById("specialRiderSelect15").value;
-            if (!k) { showToast("রাইডার সিলেক্ট করুন।", "error"); return; }
-            await db.ref('registeredRiders/' + k).update({ 
-                customBreakMin: Number(document.getElementById("quickSpBreakMin").value) || 30, 
-                breakAllowed: document.getElementById("quickSpBreakAllowed").checked,
-                breakDailyLimit: Number(document.getElementById("quickSpBreakDailyLimit").value) || 2
-            });
-            showToast("✅ সেভ হয়েছে!", "success");
-        }
         async function saveQuickDistancePower() {
-            const k = document.getElementById("specialRiderSelect16").value;
-            if (!k) { showToast("রাইডার সিলেক্ট করুন।", "error"); return; }
-            await db.ref('registeredRiders/' + k).update({ 
-                customCutMin: Number(document.getElementById("quickSpCutMin").value) || 10, 
+            const key = document.getElementById("specialRiderSelect16").value;
+            if (!key) { showToast("⚠️ রাইডার সিলেক্ট করুন!", "error"); return; }
+            await db.ref('registeredRiders/' + key).update({
+                customCutMin: Number(document.getElementById("quickSpCutMin").value) || 10,
                 customDistMeters: Number(document.getElementById("quickSpDist").value) || 200,
                 hasGlobalPower: document.getElementById("quickSpGlobalPower").checked
             });
             showToast("⚡ পাওয়ার সেভ হয়েছে!", "success");
         }
-        async function adminResetRiderBreakUsage15() {
-            const k = document.getElementById("specialRiderSelect15").value;
-            if (!k) return;
-            await db.ref('registeredRiders/' + k).update({ todayBreakCount: 0 });
-            showToast("🔄 রিসেট হয়েছে!", "success");
-        }
-        async function saveStandName() { 
-            await db.ref('standConfig/name').set(document.getElementById("adminStandName").value); 
-            showToast("✅ সেভ!", "success"); 
-        }
-        function toggleGpsSetButton() { document.getElementById("btnSetStandGps").disabled = !document.getElementById("gpsUnlockSwitch").checked; }
-        function setStandCurrentLocation() {
-            navigator.geolocation.getCurrentPosition(async (pos) => {
-                await db.ref('standConfig').update({ lat: pos.coords.latitude, lng: pos.coords.longitude });
-                showToast("✅ লোকেশন সেট!", "success");
-            });
-        }
         async function saveLeadersInfo() {
-            const updates = {
-                chiefName: document.getElementById("admChiefName").value.trim() || standLeadersData.chiefName,
-                presName: document.getElementById("admPresName").value.trim() || standLeadersData.presName,
-                vpName: document.getElementById("admVpName").value.trim() || standLeadersData.vpName,
-                secName: document.getElementById("admSecName").value.trim() || standLeadersData.secName
-            };
-            const cf = document.getElementById("admChiefPhoto").files[0];
-            if (cf) updates.chiefPhoto = await compressImageToBase64(cf, 200);
-            const pf = document.getElementById("admPresPhoto").files[0];
-            if (pf) updates.presPhoto = await compressImageToBase64(pf, 200);
-            const vf = document.getElementById("admVpPhoto").files[0];
-            if (vf) updates.vpPhoto = await compressImageToBase64(vf, 200);
-            const sf = document.getElementById("admSecPhoto").files[0];
-            if (sf) updates.secPhoto = await compressImageToBase64(sf, 200);
-            await db.ref('standConfig/leaders').update(updates);
+            const chiefName = document.getElementById("admChiefName").value.trim() || standLeadersData.chiefName;
+            const presName = document.getElementById("admPresName").value.trim() || standLeadersData.presName;
+            const vpName = document.getElementById("admVpName").value.trim() || standLeadersData.vpName;
+            const secName = document.getElementById("admSecName").value.trim() || standLeadersData.secName;
+            
+            const chiefFile = document.getElementById("admChiefPhoto").files[0];
+            const presFile = document.getElementById("admPresPhoto").files[0];
+            const vpFile = document.getElementById("admVpPhoto").files[0];
+            const secFile = document.getElementById("admSecPhoto").files[0];
+            const chiefPhoto = chiefFile ? await compressImageToBase64(chiefFile, 200) : standLeadersData.chiefPhoto;
+            const presPhoto = presFile ? await compressImageToBase64(presFile, 200) : standLeadersData.presPhoto;
+            const vpPhoto = vpFile ? await compressImageToBase64(vpFile, 200) : standLeadersData.vpPhoto;
+            const secPhoto = secFile ? await compressImageToBase64(secFile, 200) : standLeadersData.secPhoto;
+            await db.ref('standConfig/leaders').set({ chiefName, chiefPhoto, presName, presPhoto, vpName, vpPhoto, secName, secPhoto });
             showToast("✅ সভাপতি প্যানেল সেভ হয়েছে!", "success");
         }
         async function saveNoticeBoard() {
-            const updates = { text: document.getElementById("admNoticeText").value };
-            const nf = document.getElementById("admNoticePhoto").files[0];
-            if (nf) updates.photo = await compressImageToBase64(nf, 350);
+            const text = document.getElementById("admNoticeText").value.trim();
+            const photoFile = document.getElementById("admNoticePhoto").files[0];
+            const updates = { text, updatedAt: Date.now() };
+            if (photoFile) updates.photo = await compressImageToBase64(photoFile, 300);
             await db.ref('standConfig/notice').update(updates);
-            showToast("📢 নোটিশ প্রকাশিত!", "success");
+            showToast("📢 নোটিশ প্রকাশিত হয়েছে!", "success");
+        }
+        function saveStandName() { db.ref('standConfig/name').set(document.getElementById("adminStandName").value.trim()); showToast("✅ নাম সেভ হয়েছে!", "success"); }
+        function toggleGpsSetButton() { document.getElementById("btnSetStandGps").disabled = !document.getElementById("gpsUnlockSwitch").checked; }
+        function setStandCurrentLocation() {
+            navigator.geolocation.getCurrentPosition((pos) => {
+                db.ref('standConfig').update({ lat: pos.coords.latitude, lng: pos.coords.longitude });
+                showToast("📍 লোকেশন সেভ হয়েছে!", "success");
+            }, () => showToast("❌ লোকেশন পাওয়া যায়নি!", "error"), { enableHighAccuracy: true });
         }
     </script>
 </body>
