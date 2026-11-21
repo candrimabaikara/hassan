@@ -1,16 +1,15 @@
 {
-  "name": "চন্দ্রিমা যুব উন্নয়ন সমিতি",
-  "short_name": "যুব উন্নয়ন",
+  "name": "চন্দ্রিমা যুব উন্নয়ন টান সমিতি",
+  "short_name": "যুব উন্নয়ন সমিতি",
   "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#ffffff",
+  "background_color": "#1e1b4b",
   "theme_color": "#4f46e5",
   "icons": [
     {
-      "src": "/app-icon.png",
-      "sizes": "192x192",
+      "src": "./app-icon.png",
+      "sizes": "512x512",
       "type": "image/png"
     }
   ]
 }
-
