@@ -2,9 +2,7 @@
 <html lang="bn">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="manifest" href="/manifest.json">
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>চন্দ্রিমা যুব উন্নয়ন টান সমিতি - বাইক রাইডার সিরিয়াল ও চ্যাট সিস্টেম</title>
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
     
@@ -3823,13 +3821,8 @@
         }
         window.addEventListener('resize', () => {
             if (!isSpinningWheel) drawWheel(currentWheelAngle);
-        })
-<script>
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/serviceworker.js');
-  }
-</script>
-
-
+        });
+    </script>
 </body>
 </html>
+
