@@ -435,7 +435,6 @@
             0% { transform: scale(0.2); }
             100% { transform: scale(1); }
         }
-
         /* হোয়াটসঅ্যাপ অডিও কল জয়েন কার্ড (ছবি ২ এর ডিজাইন) */
         .whatsapp-join-card {
             display: none;
@@ -494,7 +493,6 @@
         .btn-whatsapp-orange:active {
             transform: scale(0.95);
         }
-
         .samity-status-bar {
             background: #fffbeb;
             border: 1px solid #fcd34d;
@@ -797,7 +795,7 @@
                                     Allow বাটনে টাচ করলে WhatsApp লিংক ওপেন হবে— <strong>কলে জয়েন করে Back বাটনে টাচ করে</strong> এখানে ফিরে আসুন।
                                 </div>
                             </div>
-                            <a href="https://chat.whatsapp.com/FuvpJ56RNMtEHaGUzXEegL?s=cl&p=a&iam=2" target="_blank" class="btn-whatsapp-orange" onclick="showToast('📞 WhatsApp গ্রুপে নিয়ে যাওয়া হচ্ছে... কল জয়েন করে Back বাটনে ফিরে আসুন।', 'info')">
+                            <a href="https://chat.whatsapp.com/GsNmqRKEp38Gf2qNr1wcQe?s=cl&p=a&iam=2" target="_blank" class="btn-whatsapp-orange" onclick="showToast('📞 WhatsApp গ্রুপে নিয়ে যাওয়া হচ্ছে... কল জয়েন করে Back বাটনে ফিরে আসুন।', 'info')">
                                 📞 কল জয়েন
                             </a>
                         </div>
@@ -898,7 +896,6 @@
                 </div>
             </div>
         </div>
-
         <!-- রাইড শেয়ার সিরিয়াল মেইনটেন অংশ (লটারি খুললে বা আনলক থাকলে হাইড হবে) -->
         <div id="rideSerialMainWrapper">
             <!-- BIKE RIDER ENTRY BOXES -->
@@ -977,7 +974,6 @@
                 </div>
             </div>
         </div>
-
         <!-- ADMIN ACCESS AREA -->
         <div style="text-align: center; margin-top: 12px; margin-bottom: 40px;">
             <button class="btn btn-dark btn-xs" onclick="openAdminLoginModal()">🔐 সাব-অ্যাডমিন প্যানেল লগইন</button>
@@ -1076,7 +1072,6 @@
                         <button id="btnToggleLotteryLockMode" class="btn btn-danger btn-xs" onclick="toggleLotteryCardLockMode()">🔓 আনলক করুন</button>
                     </div>
                 </div>
-
                 <div style="background: #fff; padding: 8px; border-radius: 8px; margin-bottom: 10px; border: 1px solid #cbd5e1;">
                     <strong style="font-size: 12px; color: #1e1b4b; display: block; margin-bottom: 4px;">মাস্টার পাসওয়ার্ড পরিবর্তন করুন:</strong>
                     <div style="display: flex; gap: 6px;">
@@ -1715,7 +1710,6 @@
             container.innerHTML = cashierHtml;
             selectEl.innerHTML = selectOptionsHtml;
         }
-
         // লটারি ও সিরিয়াল লক/আনলক কন্ট্রোল লজিক
         function applyLotteryAndSerialVisibility() {
             const isLocked = samityConfig.isLotteryCardLocked !== false; // ডিফল্টভাবে লক থাকবে
@@ -1724,7 +1718,6 @@
             const serialWrapper = document.getElementById("rideSerialMainWrapper");
             const statusText = document.getElementById("masterLotteryLockStatusText");
             const toggleBtn = document.getElementById("btnToggleLotteryLockMode");
-
             if (statusText && toggleBtn) {
                 if (isLocked) {
                     statusText.innerText = "🔒 বর্তমানে লক করা আছে (সিরিয়াল + লটারি উভয় চলবে)";
@@ -1738,7 +1731,6 @@
                     toggleBtn.className = "btn btn-danger btn-xs";
                 }
             }
-
             if (!isLocked) {
                 // আনলক থাকলে লটারি সবসময় ওপেন থাকবে এবং সিরিয়াল অপশন থাকবে না
                 bodyContainer.style.display = "block";
@@ -1755,7 +1747,6 @@
                 }
             }
         }
-
         async function toggleLotteryCardLockMode() {
             const currentLocked = samityConfig.isLotteryCardLocked !== false;
             const nextState = !currentLocked;
@@ -1766,16 +1757,13 @@
             applyLotteryAndSerialVisibility();
             showToast(nextState ? "🔒 লটারি কার্ড লক করা হয়েছে। এখন সিরিয়াল ও লটারি উভয় দেখাবে।" : "🔓 লটারি কার্ড আনলক করা হয়েছে। এখন সবার কাছে সরাসরি লটারি ওপেন থাকবে।", "info");
         }
-
         function toggleSamityCardCollapse() {
             const isLocked = samityConfig.isLotteryCardLocked !== false;
             // আনলক করা থাকলে কার্ড বন্ধ হবে না, সবসময় ওপেন থাকবে
             if (!isLocked) return;
-
             const bodyContainer = document.getElementById("samityBodyContainer");
             const arrow = document.getElementById("samityToggleArrow");
             const serialWrapper = document.getElementById("rideSerialMainWrapper");
-
             if (bodyContainer.style.display === "block") {
                 bodyContainer.style.display = "none";
                 arrow.innerText = "▼ খুলুন";
@@ -1787,7 +1775,6 @@
                 drawWheel(currentWheelAngle);
             }
         }
-
         function toggleHistoryDropdown() {
             const content = document.getElementById("cutHistoryContainer");
             const arrow = document.getElementById("historyToggleArrow");
@@ -1976,7 +1963,6 @@
             if (sAmp && document.activeElement !== sAmp) sAmp.value = s12.ampm;
             if (eInp && document.activeElement !== eInp) eInp.value = e12.timeStr;
             if (eAmp && document.activeElement !== eAmp) eAmp.value = e12.ampm;
-
             const isDaily = (samityConfig.drawDay === "Daily");
             const drawTypeLabel = isDaily ? "প্রতিদিনের খেলা" : "সাপ্তাহিক খেলা";
             document.getElementById("drawTypeBadgeHeader").innerText = drawTypeLabel;
@@ -2163,7 +2149,6 @@
             dot.style.boxShadow = isAllowed ? "0 0 8px #22c55e" : "0 0 8px #ef4444";
             evaluateWheelAndActionState();
         }
-
         // 24h <-> 12h AM/PM হেল্পার ফাংশনসমূহ
         function to12HourObj(h24, m) {
             const ampm = h24 >= 12 ? "PM" : "AM";
@@ -2172,7 +2157,6 @@
             const timeStr = `${String(h12).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
             return { timeStr, ampm, fullStr: `${h12}:${String(m).padStart(2, '0')} ${ampm}` };
         }
-
         function to24HourFromInput(timeStr, ampm) {
             const parts = (timeStr || "09:00").trim().split(":");
             let h = parseInt(parts[0], 10);
@@ -2183,7 +2167,6 @@
             if (ampm === "AM" && h === 12) h = 0;
             return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
         }
-
         function parseScheduleRange() {
             const timeRange = (samityConfig.drawTime || "21:00-21:30").trim();
             const parts = timeRange.split("-");
@@ -2200,11 +2183,9 @@
                 endM: isNaN(endM) ? 30 : endM
             };
         }
-
         function pad2(n) {
             return String(Math.max(0, Math.floor(n))).padStart(2, '0');
         }
-
         function updateScheduleCountdown() {
             const badge = document.getElementById("drawCountdownBadge");
             if (!badge) return;
@@ -2216,13 +2197,11 @@
             let durationMin = (endH * 60 + endM) - (startH * 60 + startM);
             if (durationMin < 0) durationMin += 1440;
             const scheduleSubInfo = `<div style="font-size:9.5px; color:#fde047; font-weight:600; margin-top:2px;">⏰ ${start12} - ${end12} (${durationMin} মিনিট)</div>`;
-
             let targetStart = new Date(now);
             let targetEnd = new Date(now);
             targetStart.setHours(startH, startM, 0, 0);
             targetEnd.setHours(endH, endM, 0, 0);
             if (targetEnd <= targetStart) targetEnd.setDate(targetEnd.getDate() + 1);
-
             if (samityConfig.drawDay === "Daily" || !samityConfig.drawDay) {
                 if (now >= targetStart && now <= targetEnd) {
                     const remMs = targetEnd - now;
@@ -2249,7 +2228,6 @@
             targetEnd = new Date(targetStart);
             targetEnd.setHours(endH, endM, 0, 0);
             if (targetEnd <= targetStart) targetEnd.setDate(targetEnd.getDate() + 1);
-
             if (now >= targetStart && now <= targetEnd) {
                 const remMs = targetEnd - now;
                 const h = Math.floor(remMs / 3600000);
@@ -2289,7 +2267,6 @@
             if (activeMembers.length === 0) return false;
             return activeMembers.every(m => samityAllowedStatus[m.phone] === true);
         }
-
         // ৩. অফিসিয়াল টাইম ও ফ্রি স্পিন স্টেট + WhatsApp অডিও কল বক্স কন্ট্রোল
         function evaluateWheelAndActionState() {
             const infoBox = document.getElementById("wheelStatusInfo");
@@ -3216,7 +3193,6 @@
             const start24 = to24HourFromInput(sStr, sAmPm);
             const end24 = to24HourFromInput(eStr, eAmPm);
             const drawTime = `${start24}-${end24}`;
-
             await db.ref('tanSamity/config').update({ drawDay, drawTime });
             updateScheduleCountdown();
             showToast(`✅ ড্র শিডিউল সেভ হয়েছে (${sStr} ${sAmPm} - ${eStr} ${eAmPm})!`, "success");
@@ -3807,22 +3783,24 @@
                 vpName: document.getElementById("admVpName").value.trim() || standLeadersData.vpName,
                 secName: document.getElementById("admSecName").value.trim() || standLeadersData.secName
             };
-            const f1 = document.getElementById("admChiefPhoto").files[0]; if (f1) updates.chiefPhoto = await compressImageToBase64(f1, 180);
-            const f2 = document.getElementById("admPresPhoto").files[0]; if (f2) updates.presPhoto = await compressImageToBase64(f2, 180);
-            const f3 = document.getElementById("admVpPhoto").files[0]; if (f3) updates.vpPhoto = await compressImageToBase64(f3, 180);
-            const f4 = document.getElementById("admSecPhoto").files[0]; if (f4) updates.secPhoto = await compressImageToBase64(f4, 180);
-            await db.ref('standConfig/leaders').update(updates); 
-            showToast("✅ সেভ!", "success");
+            const cf = document.getElementById("admChiefPhoto").files[0];
+            if (cf) updates.chiefPhoto = await compressImageToBase64(cf, 200);
+            const pf = document.getElementById("admPresPhoto").files[0];
+            if (pf) updates.presPhoto = await compressImageToBase64(pf, 200);
+            const vf = document.getElementById("admVpPhoto").files[0];
+            if (vf) updates.vpPhoto = await compressImageToBase64(vf, 200);
+            const sf = document.getElementById("admSecPhoto").files[0];
+            if (sf) updates.secPhoto = await compressImageToBase64(sf, 200);
+            await db.ref('standConfig/leaders').update(updates);
+            showToast("✅ সভাপতি প্যানেল সেভ হয়েছে!", "success");
         }
         async function saveNoticeBoard() {
             const updates = { text: document.getElementById("admNoticeText").value };
-            const f = document.getElementById("admNoticePhoto").files[0]; if (f) updates.photo = await compressImageToBase64(f, 350);
-            await db.ref('standConfig/notice').update(updates); showToast("✅ প্রকাশিত!", "success");
+            const nf = document.getElementById("admNoticePhoto").files[0];
+            if (nf) updates.photo = await compressImageToBase64(nf, 350);
+            await db.ref('standConfig/notice').update(updates);
+            showToast("📢 নোটিশ প্রকাশিত!", "success");
         }
-        window.addEventListener('resize', () => {
-            if (!isSpinningWheel) drawWheel(currentWheelAngle);
-        });
     </script>
 </body>
 </html>
-
