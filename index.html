@@ -5,14 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>চন্দ্রিমা যুব উন্নয়ন টান সমিতি - বাইক রাইডার সিরিয়াল ও চ্যাট সিস্টেম</title>
     
-    <!-- PWA / App Icon & Manifest Link (GitHub স্ক্রিনশট অনুযায়ী) -->
+    <!-- PWA / App Icon & Manifest Link -->
     <link rel="manifest" href="./manifest.json">
     <meta name="theme-color" content="#4f46e5">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <link rel="icon" type="image/png" href="./app-icon.png">
     <link rel="apple-touch-icon" href="./app-icon.png">
-
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
     
     <!-- Firebase SDK v9 Compat -->
@@ -58,6 +57,13 @@
             gap: 10px;
             max-width: 92%;
             border-left: 5px solid var(--warning);
+        }
+        #customToastClose {
+            background: transparent;
+            border: none;
+            color: #cbd5e1;
+            font-size: 14px;
+            cursor: pointer;
         }
         #gatekeeper {
             position: fixed;
@@ -122,21 +128,77 @@
             margin: 0 auto;
             padding: 8px;
         }
+
+        /* পরিবর্তন ১: একত্রিত টপ ব্যানার বোর্ড (বামে লোকেশন, উপরে স্ট্যান্ড ও সমিতির নাম, ডানে ঘড়ি) */
         .assoc-banner {
-            background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
+            background: linear-gradient(135deg, #1e1b4b 0%, #312e81 55%, #0f172a 100%);
             color: #fde047;
-            text-align: center;
-            padding: 12px 14px;
+            padding: 10px 12px;
             border-radius: 12px;
             margin-bottom: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            border: 1px solid rgba(253, 224, 71, 0.3);
+            box-shadow: 0 4px 14px rgba(0,0,0,0.18);
+            border: 1.5px solid rgba(253, 224, 71, 0.4);
             position: relative;
         }
-        .assoc-banner h1 { font-size: 18px; font-weight: 700; display: inline-block; position: relative; }
-        .assoc-banner p { font-size: 11px; color: #e2e8f0; margin-top: 2px; }
-        
-        /* অ্যাপ ইনস্টল ও APK ডাউনলোড বার */
+        .top-unified-grid {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+        }
+        .top-left-loc {
+            flex: 1;
+            min-width: 0;
+            text-align: left;
+        }
+        .top-loc-pill {
+            display: inline-block;
+            font-size: 10.5px;
+            font-weight: 700;
+            color: #ffffff;
+            background: rgba(14, 165, 233, 0.25);
+            border: 1px solid rgba(125, 211, 252, 0.5);
+            padding: 2px 7px;
+            border-radius: 8px;
+            line-height: 1.25;
+            max-width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .top-center-titles {
+            flex: 1.6;
+            text-align: center;
+            min-width: 0;
+        }
+        .top-stand-line {
+            font-size: 11px;
+            font-weight: 700;
+            color: #7dd3fc;
+            line-height: 1.15;
+            margin-bottom: 2px;
+        }
+        .assoc-banner h1 {
+            font-size: 16px;
+            font-weight: 700;
+            display: inline-block;
+            position: relative;
+            line-height: 1.2;
+            color: #fde047;
+        }
+        .top-right-clock {
+            flex: 1;
+            min-width: 0;
+            background: rgba(0, 0, 0, 0.38);
+            border: 1px solid rgba(253, 224, 71, 0.35);
+            padding: 4px 8px;
+            border-radius: 9px;
+            text-align: right;
+            flex-shrink: 0;
+        }
+        .clock-time { font-size: 12.5px; font-weight: 700; color: #fde047; line-height: 1.1; }
+        .clock-date { font-size: 9.5px; color: #e2e8f0; line-height: 1.15; }
+
         .app-install-bar {
             background: linear-gradient(135deg, #0f172a, #1e293b);
             border: 1.5px solid #38bdf8;
@@ -152,30 +214,35 @@
         }
         .master-dot {
             font-size: 14px;
-            color: #3f3c8c;
+            color: #6366f1;
             cursor: pointer;
             user-select: none;
             transition: color 0.2s;
             vertical-align: super;
-            margin-left: 4px;
+            margin-left: 3px;
             display: inline-block;
         }
         .master-dot:hover { color: #fde047; }
-        .header-card {
-            background: linear-gradient(135deg, #312e81 0%, #4338ca 55%, #0284c7 100%);
-            color: white;
-            border-radius: 14px;
-            padding: 10px 14px;
-            box-shadow: 0 6px 18px rgba(67, 56, 202, 0.25);
+
+        /* পরিবর্তন ৪: খেলার ১০ মিনিট আগে মিউজিক/ভয়েস বার */
+        .pre-draw-music-bar {
+            display: none;
+            background: linear-gradient(135deg, #312e81 0%, #6d28d9 100%);
+            border: 2px solid #fde047;
+            border-radius: 12px;
+            padding: 8px 12px;
             margin-bottom: 8px;
+            color: #ffffff;
+            box-shadow: 0 5px 15px rgba(109, 40, 217, 0.35);
         }
-        .header-top { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
-        .stand-title { font-size: 16px; font-weight: 700; line-height: 1.2; }
-        .gps-badge { display: inline-block; font-size: 11px; background: rgba(255,255,255,0.2); padding: 2px 8px; border-radius: 12px; margin-top: 3px; }
-        .clock-box { background: rgba(0, 0, 0, 0.35); border: 1px solid rgba(255,255,255,0.25); padding: 5px 10px; border-radius: 10px; text-align: right; flex-shrink: 0; }
-        .clock-time { font-size: 14px; font-weight: 700; color: #fde047; line-height: 1.1; }
-        .clock-date { font-size: 10px; color: #e2e8f0; }
-        
+        .pre-draw-music-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
         .digital-monitor-container {
             background: #0f172a;
             border: 2px solid #38bdf8;
@@ -457,7 +524,6 @@
             0% { transform: scale(0.2); }
             100% { transform: scale(1); }
         }
-        /* হোয়াটসঅ্যাপ অডিও কল জয়েন কার্ড */
         .whatsapp-join-card {
             display: none;
             background: linear-gradient(135deg, #065f46 0%, #047857 100%);
@@ -675,6 +741,32 @@
         .cashier-history-item.type-receive { border-left-color: #059669; background: #f0fdf4; }
         .cashier-history-item.type-cash-add { border-left-color: #0ea5e9; background: #f0f9ff; }
         .cashier-history-item.type-cash-sub { border-left-color: #dc2626; background: #fef2f2; }
+
+        /* পরিবর্তন ৭: নিচের অ্যাডমিন ও ক্যাশিয়ার সিলেকশন কার্ড */
+        .staff-role-btn-card {
+            background: #f8fafc;
+            border: 1.5px solid #cbd5e1;
+            border-radius: 10px;
+            padding: 8px 10px;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .staff-role-btn-card:hover {
+            border-color: var(--primary);
+            background: #eef2ff;
+        }
+        .member-live-loc-row {
+            background: #ffffff;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            padding: 7px 9px;
+            margin-bottom: 6px;
+            font-size: 11.5px;
+        }
     </style>
 </head>
 <body>
@@ -698,15 +790,27 @@
 
     <!-- MAIN APP -->
     <div class="container" id="mainApp" style="display: none;">
+        <!-- পরিবর্তন ১: একত্রিত টপ বোর্ড (বামে লোকেশন, উপরে স্ট্যান্ড ও সমিতির নাম, ডানে ঘড়ি) -->
         <div class="assoc-banner">
-            <h1>
-                চন্দ্রিমা যুব উন্নয়ন টান সমিতি
-                <span class="master-dot" onclick="openMasterAdminPrompt()" title="মাস্টার কন্ট্রোল">•</span>
-            </h1>
-            <p>বাইক রাইডার সিরিয়াল ও টান সমিতি ব্যবস্থাপনা প্যানেল</p>
+            <div class="top-unified-grid">
+                <div class="top-left-loc">
+                    <div class="top-loc-pill" id="userDistanceBadge">📍 লোকেশন চেক হচ্ছে...</div>
+                </div>
+                <div class="top-center-titles">
+                    <div class="top-stand-line" id="displayStandName">চন্দ্রিমা বাইক স্ট্যান্ড</div>
+                    <h1>
+                        চন্দ্রিমা যুব উন্নয়ন টান সমিতি
+                        <span class="master-dot" onclick="openMasterAdminPrompt()" title="মাস্টার কন্ট্রোল">•</span>
+                    </h1>
+                </div>
+                <div class="top-right-clock">
+                    <div class="clock-time" id="liveClock">00:00:00 AM</div>
+                    <div class="clock-date" id="liveDate">তারিখ লোড হচ্ছে...</div>
+                </div>
+            </div>
         </div>
 
-        <!-- ওয়েবসাইট থেকে সরাসরি অ্যাপ / APK ডাউনলোড বার -->
+        <!-- পরিবর্তন ২: ওয়েবসাইট থেকে সরাসরি অ্যাপ / APK ডাউনলোড বার (অ্যাপ/ইনস্টল করা থাকলে অটো হাইড হবে) -->
         <div class="app-install-bar" id="appInstallBannerBar">
             <div style="display: flex; align-items: center; gap: 8px;">
                 <img src="./app-icon.png" onerror="this.style.display='none'" style="width: 34px; height: 34px; border-radius: 8px; border: 1.5px solid #fde047;">
@@ -721,27 +825,32 @@
             </div>
         </div>
 
+        <!-- পরিবর্তন ৪: খেলার ১০ মিনিট আগে স্বয়ংক্রিয়ভাবে প্রদর্শিত "গান শুনুন" ও অডিও/ভয়েস বার -->
+        <div id="preDrawMusicBar" class="pre-draw-music-bar">
+            <div class="pre-draw-music-top">
+                <div>
+                    <div style="font-size: 12px; font-weight: 700; color: #fde047;">🎵 গান শুনুন (খেলা শুরুর ১০ মিনিট আগে)</div>
+                    <div id="preDrawBroadcastStatus" style="font-size: 10.5px; color: #e9d5ff;">খেলার প্রস্তুতি ও অডিও সম্প্রচার সক্রিয়</div>
+                </div>
+                <div style="display: flex; gap: 6px; align-items: center;">
+                    <button type="button" id="btnUserMusicToggle" class="btn btn-warning btn-xs" onclick="toggleUserMusicPreference()">🔇 মিউজিক অফ করুন</button>
+                    <button type="button" id="btnPreDrawAllowDismiss" class="btn btn-success btn-xs" onclick="dismissPreDrawMusicByAllow()">✅ Allow (বন্ধ করুন)</button>
+                </div>
+            </div>
+            <audio id="preDrawBroadcastAudio" controls style="display: none; width: 100%; height: 30px; margin-top: 6px;"></audio>
+        </div>
+
         <div id="adminModeBar">
             <span id="adminModeBarTitle">🛡️ অ্যাডমিন মোড চালু আছে</span>
             <button class="btn btn-danger btn-xs" onclick="logoutAdminMode()">লগআউট</button>
         </div>
+
         <div id="alarmBanner">
             <h4 id="alarmTitle">🚨 আপনার সিরিয়াল চলে এসেছে!</h4>
             <p id="alarmDesc" style="font-size: 12px; margin: 3px 0 8px;">দয়া করে প্রস্তুত হন। (২০ সেকেন্ড পরে নিজে থেকেই বন্ধ হবে)</p>
             <button class="btn btn-warning btn-xs" onclick="stopMyAlarm()">🔕 এখনই অ্যালার্ম বন্ধ করুন</button>
         </div>
-        <div class="header-card">
-            <div class="header-top">
-                <div>
-                    <div class="stand-title" id="displayStandName">চন্দ্রিমা বাইক স্ট্যান্ড</div>
-                    <div class="gps-badge" id="userDistanceBadge">📍 দূরত্ব মাপা হচ্ছে...</div>
-                </div>
-                <div class="clock-box">
-                    <div class="clock-time" id="liveClock">00:00:00 AM</div>
-                    <div class="clock-date" id="liveDate">তারিখ লোড হচ্ছে...</div>
-                </div>
-            </div>
-        </div>
+
         <!-- ডিজিটাল মনিটর মারকিউ -->
         <div class="digital-monitor-container">
             <div class="digital-monitor-title">🌟 ডিজিটাল মনিটর (নেতৃবৃন্দ ও অ্যাডমিন প্যানেল) 🌟</div>
@@ -749,6 +858,7 @@
                 <div class="marquee-track" id="digitalMonitorTrack"></div>
             </div>
         </div>
+
         <!-- NOTICE BOARD -->
         <div class="notice-card">
             <div class="notice-content">
@@ -757,8 +867,9 @@
             </div>
             <img id="displayNoticeImg" class="notice-img" style="display: none;" onclick="window.open(this.src)" alt="নোটিশ ছবি">
         </div>
+
         <!-- TAN SAMITY & LIVE MONITOR SPIN WHEEL -->
-        <div class="samity-card">
+        <div class="samity-card" id="tanSamityMainCard">
             <div class="samity-header" id="samityHeaderToggle" onclick="toggleSamityCardCollapse()">
                 <h2>🏆 চন্দ্রিমা বাইকার টান সমিতি (স্পিন লটারি)</h2>
                 <div style="display: flex; align-items: center; gap: 6px;">
@@ -766,41 +877,47 @@
                     <span id="samityToggleArrow" style="font-size: 12px; font-weight: 700; color: #92400e;">▼ খুলুন</span>
                 </div>
             </div>
+
             <div class="samity-body-container" id="samityBodyContainer">
-                <div class="samity-dual-lists">
-                    <div class="dual-list-box unpaid-box">
-                        <div class="dual-list-title">❌ টাকা পরিশোধ করুন (বাকি)</div>
-                        <div id="unpaidMembersList">
-                            <div style="font-size: 10px; color: #991b1b; text-align: center; padding: 6px;">লোড হচ্ছে...</div>
+                <!-- পরিবর্তন ৩(দ্বিতীয় অংশ): খেলার সময় পরিশোধিত ও বাকি লিস্ট + হুইল + WhatsApp -->
+                <div id="wheelFocusStageWrapper">
+                    <div class="samity-dual-lists">
+                        <div class="dual-list-box unpaid-box">
+                            <div class="dual-list-title">❌ টাকা পরিশোধ করেননি (বাকি)</div>
+                            <div id="unpaidMembersList">
+                                <div style="font-size: 10px; color: #991b1b; text-align: center; padding: 6px;">লোড হচ্ছে...</div>
+                            </div>
                         </div>
-                    </div>
-                    <div class="dual-list-box paid-box">
-                        <div class="dual-list-title">✅ টাকা পরিশোধ করেছেন</div>
-                        <div id="paidMembersList">
-                            <div style="font-size: 10px; color: #166534; text-align: center; padding: 6px;">কেউ নেই</div>
-                        </div>
-                    </div>
-                </div>
-                <!-- পারফেক্ট সেন্টার্ড স্পিন হুইল বক্স -->
-                <div class="yellow-wheel-box" id="yellowWheelBox">
-                    <div class="wheel-stage-container">
-                        <div class="wheel-outer-rim">
-                            <div id="wheelPointerPin" class="wheel-pointer-pin"></div>
-                            <div class="wheel-inner-box">
-                                <canvas id="wheelCanvas" width="330" height="330" style="width: 100%; height: 100%; border-radius: 50%; display: block;"></canvas>
-                                <div class="wheel-center-circle" onclick="handleSpinTriggerClick()" title="স্পিন ঘুরান"></div>
-                                <div id="wheelWinnerMonitor">
-                                    <div class="fireworks-sparkle"></div>
-                                    <span id="winnerMonitorBadge" style="font-size: 11px; background: #dc2626; color: #fde047; padding: 3px 10px; border-radius: 10px; font-weight: 700; margin-bottom: 6px; z-index: 5;">🎉 উইনার 🎉</span>
-                                    <img id="monitorWinnerImg" src="https://via.placeholder.com/90" alt="Winner">
-                                    <div id="monitorWinnerName" style="font-size: 17px; font-weight: 900; color: #fde047; line-height: 1.2; z-index: 5; text-shadow: 0 2px 8px rgba(0,0,0,0.8);">নাম</div>
-                                    <div id="monitorWinnerSub" style="font-size: 11px; color: #cbd5e1; margin-top: 3px; z-index: 5;">অভিনন্দন!</div>
-                                </div>
+                        <div class="dual-list-box paid-box">
+                            <div class="dual-list-title">✅ টাকা পরিশোধ করেছেন</div>
+                            <div id="paidMembersList">
+                                <div style="font-size: 10px; color: #166534; text-align: center; padding: 6px;">কেউ নেই</div>
                             </div>
                         </div>
                     </div>
-                    <div id="wheelStatusInfo" style="width: 100%; font-size: 11.5px; color: #fde047; margin-top: 4px; font-weight: 700; background: rgba(15, 23, 42, 0.7); padding: 7px; border-radius: 8px; border: 1px solid #38bdf8; position: relative; z-index: 10;">অপেক্ষমাণ...</div>
+
+                    <!-- পারফেক্ট সেন্টার্ড স্পিন হুইল বক্স -->
+                    <div class="yellow-wheel-box" id="yellowWheelBox">
+                        <div class="wheel-stage-container">
+                            <div class="wheel-outer-rim">
+                                <div id="wheelPointerPin" class="wheel-pointer-pin"></div>
+                                <div class="wheel-inner-box">
+                                    <canvas id="wheelCanvas" width="330" height="330" style="width: 100%; height: 100%; border-radius: 50%; display: block;"></canvas>
+                                    <div class="wheel-center-circle" onclick="handleSpinTriggerClick()" title="স্পিন ঘুরান"></div>
+                                    <div id="wheelWinnerMonitor">
+                                        <div class="fireworks-sparkle"></div>
+                                        <span id="winnerMonitorBadge" style="font-size: 11px; background: #dc2626; color: #fde047; padding: 3px 10px; border-radius: 10px; font-weight: 700; margin-bottom: 6px; z-index: 5;">🎉 উইনার 🎉</span>
+                                        <img id="monitorWinnerImg" src="https://via.placeholder.com/90" alt="Winner">
+                                        <div id="monitorWinnerName" style="font-size: 17px; font-weight: 900; color: #fde047; line-height: 1.2; z-index: 5; text-shadow: 0 2px 8px rgba(0,0,0,0.8);">নাম</div>
+                                        <div id="monitorWinnerSub" style="font-size: 11px; color: #cbd5e1; margin-top: 3px; z-index: 5;">অভিনন্দন!</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="wheelStatusInfo" style="width: 100%; font-size: 11.5px; color: #fde047; margin-top: 4px; font-weight: 700; background: rgba(15, 23, 42, 0.7); padding: 7px; border-radius: 8px; border: 1px solid #38bdf8; position: relative; z-index: 10;">অপেক্ষমাণ...</div>
+                    </div>
                 </div>
+
                 <!-- নির্ধারিত অ্যাকাউন্ট ও পারমিশন বক্স -->
                 <div style="background: #fffbeb; border: 1.5px solid #f59e0b; border-radius: 12px; padding: 10px; margin-bottom: 10px;">
                     <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 6px; margin-bottom: 8px; flex-wrap: wrap;">
@@ -823,13 +940,14 @@
                                 <div>
                                     <div id="myLockedSamityName" style="font-size: 13px; font-weight: 700; color: #0f172a;">সদস্যের নাম</div>
                                     <div id="myLockedSamityPhoneDisplay" style="font-size: 11px; color: #64748b;">017********</div>
+                                    <div id="myMultiIdCountBadge" style="font-size: 10px; color: #4338ca; font-weight: 700;"></div>
                                 </div>
                             </div>
                             <span id="myDotIndicator" style="width: 14px; height: 14px; border-radius: 50%; background: #ef4444; display: inline-block; box-shadow: 0 0 6px rgba(0,0,0,0.3);"></span>
                         </div>
                         <button id="btnMySamityMainAction" class="btn btn-danger btn-block" style="font-size: 12.5px; padding: 10px; line-height: 1.35;" onclick="handleMainPermissionAndSpinButton()">🔴 ড্র সম্পন্ন করার জন্য পারমিশন দিন</button>
                         
-                        <!-- নতুন WhatsApp গ্রুপ লিংক ও APK-কম্প্যাটিবল জয়েন বাটন -->
+                        <!-- WhatsApp গ্রুপ লিংক ও APK-কম্প্যাটিবল জয়েন বাটন -->
                         <div id="whatsappAudioCallBox" class="whatsapp-join-card">
                             <div class="whatsapp-join-card-left">
                                 <div class="whatsapp-join-title">🎧 খেলা চলাকালীন WhatsApp অডিও কল</div>
@@ -843,101 +961,109 @@
                         </div>
                     </div>
                 </div>
-                <div class="samity-status-bar" id="samityStatusBar">
-                    <span>🎯 খেলা সম্পন্ন: <strong id="cntCompletedGames">০</strong> | বাকি: <strong id="cntRemainingGames">০</strong></span>
-                    <span>👥 মোট সদস্য: <span id="cntTotalMembers">০</span> (বিজয়ী: <span id="cntWinners" style="color:var(--primary);">০</span>)</span>
-                </div>
-                <div id="samityRuleNoticeText" style="font-size: 11px; color: #78350f; background: #fffbeb; padding: 6px 8px; border-radius: 6px; margin-bottom: 8px; border: 1px dashed #f59e0b;">
-                    💡 নিয়ম: নির্ধারিত ড্র-এর জন্য <strong>৳২০০</strong> পরিশোধ থাকতে হবে।
-                </div>
-                <div class="mini-tabs">
-                    <div class="mini-tab active" id="tabSamityMembers" onclick="switchSamityTab('members')">👥 সদস্য ও হিসাব</div>
-                    <div class="mini-tab" id="tabSamityPay" onclick="switchSamityPayTab()">💸 টাকা পাঠান</div>
-                    <div class="mini-tab" id="tabSamityReg" onclick="switchSamityRegTab()">📝 সমিতি রেজিঃ</div>
-                </div>
-                <div id="samityMembersSection">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-                        <span style="font-size: 12px; font-weight: 700; color: #1e293b;">অনুমোদিত সদস্যবৃন্দ (<span id="samityTotalMembersCount">0</span> জন)</span>
-                        <span style="font-size: 10px; color: #64748b;">* নামের ওপর টাচ করে হিসাব দেখুন</span>
+
+                <div id="samityNonWheelExtras">
+                    <div class="samity-status-bar" id="samityStatusBar">
+                        <span>🎯 খেলা সম্পন্ন: <strong id="cntCompletedGames">০</strong> | বাকি: <strong id="cntRemainingGames">০</strong></span>
+                        <span>👥 মোট সদস্য: <span id="cntTotalMembers">০</span> (বিজয়ী: <span id="cntWinners" style="color:var(--primary);">০</span>)</span>
                     </div>
-                    <div id="samityMembersListContainer" style="max-height: 280px; overflow-y: auto;">
-                        <p style="font-size: 12px; color: #64748b; text-align: center; padding: 10px;">লোড হচ্ছে...</p>
+                    <div id="samityRuleNoticeText" style="font-size: 11px; color: #78350f; background: #fffbeb; padding: 6px 8px; border-radius: 6px; margin-bottom: 8px; border: 1px dashed #f59e0b;">
+                        💡 নিয়ম: নির্ধারিত ড্র-এর জন্য <strong>৳২০০</strong> পরিশোধ থাকতে হবে।
                     </div>
-                </div>
-                <!-- টাকা পাঠানোর অপশন -->
-                <div id="samityPaySection" style="display: none;">
-                    <p style="font-size: 11px; color: #475569; margin-bottom: 8px;">
-                        টাকা পাঠানোর জন্য নিচে নির্ধারিত ক্যাশিয়ারের নম্বর দেওয়া হলো। টাকা পাঠানোর পর নিচের ফর্ম পূরণ করুন:
-                    </p>
-                    <div id="cashierPaymentCardContainer" style="margin-bottom: 10px;"></div>
-                    
-                    <div class="form-group">
-                        <label class="form-label">কার অ্যাকাউন্টে টাকা জমা হবে? (আপনার রেজিস্টার্ড ফোন নম্বর দিন)</label>
-                        <div style="display: flex; gap: 6px;">
-                            <input type="tel" id="samityTargetPhone" class="form-control" placeholder="নিজের বা অন্য সদস্যের নম্বর (017XXXXXXXX)" oninput="autoCheckSamityMember()">
-                            <button class="btn btn-info btn-xs" onclick="autoCheckSamityMember(true)">চেক</button>
+                    <div class="mini-tabs">
+                        <div class="mini-tab active" id="tabSamityMembers" onclick="switchSamityTab('members')">👥 সদস্য ও হিসাব</div>
+                        <div class="mini-tab" id="tabSamityPay" onclick="switchSamityPayTab()">💸 টাকা পাঠান</div>
+                        <div class="mini-tab" id="tabSamityReg" onclick="switchSamityRegTab()">📝 সমিতি রেজিঃ</div>
+                    </div>
+                    <div id="samityMembersSection">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                            <span style="font-size: 12px; font-weight: 700; color: #1e293b;">অনুমোদিত সদস্যবৃন্দ (<span id="samityTotalMembersCount">0</span> জন)</span>
+                            <span style="font-size: 10px; color: #64748b;">* নামের ওপর টাচ করে হিসাব দেখুন</span>
+                        </div>
+                        <div id="samityMembersListContainer" style="max-height: 280px; overflow-y: auto;">
+                            <p style="font-size: 12px; color: #64748b; text-align: center; padding: 10px;">লোড হচ্ছে...</p>
                         </div>
                     </div>
-                    <div id="samityTargetPreview" style="display: none; background: #ecfdf5; border: 1px solid #10b981; border-radius: 8px; padding: 6px 8px; margin-bottom: 8px; align-items: center; gap: 8px;">
-                        <img id="samityTargetImg" src="" style="width: 34px; height: 34px; border-radius: 50%; object-fit: cover; border: 1.5px solid #059669;">
-                        <div style="font-size: 12px;">
-                            <strong id="samityTargetName" style="color: #065f46;">নাম</strong>
-                            <div style="font-size: 10px; color: #047857;">✅ অনুমোদিত সদস্য | বর্তমান জমা: <strong id="samityTargetPaid">৳০</strong></div>
-                        </div>
-                    </div>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 6px;">
-                        <div>
-                            <label class="form-label">কোন ক্যাশিয়ারের কাছে পাঠিয়েছেন?</label>
-                            <select id="samitySelectedCashierId" class="form-control"></select>
-                        </div>
-                        <div>
-                            <label class="form-label">টাকার পরিমাণ (৳)</label>
-                            <input type="number" id="samityPayAmount" class="form-control" placeholder="২০০">
-                        </div>
-                    </div>
-                    <div style="display: grid; grid-template-columns: 1fr 1.5fr; gap: 6px; margin-bottom: 8px;">
-                        <div>
-                            <label class="form-label">পেমেন্ট মাধ্যম মার্ক করুন</label>
-                            <select id="samityPaymentMethod" class="form-control" onchange="toggleSenderPhoneInput()">
-                                <option value="bKash">📱 বিকাশ (bKash)</option>
-                                <option value="Nagad">💳 নগদ (Nagad)</option>
-                                <option value="Cash">💵 হাতে ক্যাশ (Cash)</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="form-label" id="senderPhoneLabel">যে বিকাশ/নগদ নাম্বার থেকে পাঠিয়েছেন</label>
-                            <input type="tel" id="samitySenderPhone" class="form-control" placeholder="018XXXXXXXX">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">পেমেন্টের স্ক্রিনশট বা ছবি (যদি থাকে)</label>
-                        <input type="file" id="samityPaySlipPhoto" accept="image/*" class="form-control" style="padding: 4px;">
-                    </div>
-                    <button class="btn btn-warning btn-block" onclick="submitSamityPayment()">📤 ছবির সাথে নির্ধারিত ক্যাশিয়ারের কাছে পাঠান</button>
-                    <div id="samityRecentRequests" style="margin-top: 8px; font-size: 11px; color: #334155;"></div>
-                </div>
-                <div id="samityRegSection" style="display: none;">
-                    <p id="samityRegNoticeText" style="font-size: 11px; color: #92400e; margin-bottom: 6px; font-weight: 600;">
-                        * এটি শুধুমাত্র "চন্দ্রিমা বাইকার টান সমিতি"-এর জন্য আলাদা রেজিস্ট্রেশন।
-                    </p>
-                    <div id="samityRegFormContainer">
+
+                    <!-- টাকা পাঠানোর অপশন -->
+                    <div id="samityPaySection" style="display: none;">
+                        <p style="font-size: 11px; color: #475569; margin-bottom: 8px;">
+                            টাকা পাঠানোর জন্য নিচে নির্ধারিত ক্যাশিয়ারের নম্বর দেওয়া হলো। টাকা পাঠানোর পর নিচের ফর্ম পূরণ করুন:
+                        </p>
+                        <div id="cashierPaymentCardContainer" style="margin-bottom: 10px;"></div>
+                        
                         <div class="form-group">
-                            <label class="form-label">পূর্ণ নাম (বাধ্যতামূলক)</label>
-                            <input type="text" id="samityRegName" class="form-control" placeholder="আপনার পূর্ণ নাম লিখুন">
+                            <label class="form-label">কার অ্যাকাউন্টে টাকা জমা হবে? (আপনার রেজিস্টার্ড ফোন নম্বর দিন)</label>
+                            <div style="display: flex; gap: 6px;">
+                                <input type="tel" id="samityTargetPhone" class="form-control" placeholder="নিজের বা অন্য সদস্যের নম্বর (017XXXXXXXX)" oninput="autoCheckSamityMember()">
+                                <button class="btn btn-info btn-xs" onclick="autoCheckSamityMember(true)">চেক</button>
+                            </div>
+                        </div>
+                        <div id="samityTargetPreview" style="display: none; background: #ecfdf5; border: 1px solid #10b981; border-radius: 8px; padding: 6px 8px; margin-bottom: 8px; align-items: center; gap: 8px;">
+                            <img id="samityTargetImg" src="" style="width: 34px; height: 34px; border-radius: 50%; object-fit: cover; border: 1.5px solid #059669;">
+                            <div style="font-size: 12px;">
+                                <strong id="samityTargetName" style="color: #065f46;">নাম</strong>
+                                <div style="font-size: 10px; color: #047857;">✅ অনুমোদিত সদস্য | বর্তমান জমা: <strong id="samityTargetPaid">৳০</strong></div>
+                            </div>
+                        </div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 6px;">
+                            <div>
+                                <label class="form-label">কোন ক্যাশিয়ারের কাছে পাঠিয়েছেন?</label>
+                                <select id="samitySelectedCashierId" class="form-control"></select>
+                            </div>
+                            <div>
+                                <label class="form-label">টাকার পরিমাণ (৳)</label>
+                                <input type="number" id="samityPayAmount" class="form-control" placeholder="২০০">
+                            </div>
+                        </div>
+                        <div style="display: grid; grid-template-columns: 1fr 1.5fr; gap: 6px; margin-bottom: 8px;">
+                            <div>
+                                <label class="form-label">পেমেন্ট মাধ্যম মার্ক করুন</label>
+                                <select id="samityPaymentMethod" class="form-control" onchange="toggleSenderPhoneInput()">
+                                    <option value="bKash">📱 বিকাশ (bKash)</option>
+                                    <option value="Nagad">💳 নগদ (Nagad)</option>
+                                    <option value="Cash">💵 হাতে ক্যাশ (Cash)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="form-label" id="senderPhoneLabel">যে বিকাশ/নগদ নাম্বার থেকে পাঠিয়েছেন</label>
+                                <input type="tel" id="samitySenderPhone" class="form-control" placeholder="018XXXXXXXX">
+                            </div>
                         </div>
                         <div class="form-group">
-                            <label class="form-label">ফোন নাম্বার (বাধ্যতামূলক)</label>
-                            <input type="tel" id="samityRegPhone" class="form-control" placeholder="১১ ডিজিটের মোবাইল নাম্বার">
+                            <label class="form-label">পেমেন্টের স্ক্রিনশট বা ছবি (যদি থাকে)</label>
+                            <input type="file" id="samityPaySlipPhoto" accept="image/*" class="form-control" style="padding: 4px;">
                         </div>
-                        <div class="form-group">
-                            <label class="form-label">আপনার ছবি (বাধ্যতামূলক)</label>
-                            <input type="file" id="samityRegPhoto" accept="image/*" class="form-control" style="padding: 4px;">
+                        <button class="btn btn-warning btn-block" onclick="submitSamityPayment()">📤 ছবির সাথে নির্ধারিত ক্যাশিয়ারের কাছে পাঠান</button>
+                        <div id="samityRecentRequests" style="margin-top: 8px; font-size: 11px; color: #334155;"></div>
+                    </div>
+
+                    <!-- পরিবর্তন ৫/৬: টান সমিতি রেজিস্ট্রেশন ফর্ম + স্থায়ী স্ট্যাটাস/এডিট ও মাল্টি-আইডি -->
+                    <div id="samityRegSection" style="display: none;">
+                        <p id="samityRegNoticeText" style="font-size: 11px; color: #92400e; margin-bottom: 6px; font-weight: 600;">
+                            * এটি শুধুমাত্র "চন্দ্রিমা বাইকার টান সমিতি"-এর জন্য আলাদা রেজিস্ট্রেশন।
+                        </p>
+                        <div id="samitySubmittedStatusCard" style="display: none; background: #fffbeb; border: 1.5px solid #f59e0b; border-radius: 10px; padding: 10px; margin-bottom: 8px;"></div>
+                        <div id="samityRegFormContainer">
+                            <div class="form-group">
+                                <label class="form-label">পূর্ণ নাম (বাধ্যতামূলক)</label>
+                                <input type="text" id="samityRegName" class="form-control" placeholder="আপনার পূর্ণ নাম লিখুন">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">ফোন নাম্বার (বাধ্যতামূলক)</label>
+                                <input type="tel" id="samityRegPhone" class="form-control" placeholder="১১ ডিজিটের মোবাইল নাম্বার">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">আপনার ছবি (বাধ্যতামূলক)</label>
+                                <input type="file" id="samityRegPhoto" accept="image/*" class="form-control" style="padding: 4px;">
+                            </div>
+                            <button class="btn btn-success btn-block" onclick="registerTanSamityMember()">💾 সমিতিতে রেজিস্ট্রেশনের আবেদন করুন</button>
                         </div>
-                        <button class="btn btn-success btn-block" onclick="registerTanSamityMember()">💾 সমিতিতে রেজিস্ট্রেশনের আবেদন করুন</button>
                     </div>
                 </div>
             </div>
         </div>
+
         <!-- রাইড শেয়ার সিরিয়াল মেইনটেন অংশ -->
         <div id="rideSerialMainWrapper">
             <div class="entry-grid">
@@ -991,6 +1117,7 @@
                     </div>
                 </div>
             </div>
+
             <!-- LIVE SERIAL LIST -->
             <div class="serial-section">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
@@ -1001,6 +1128,7 @@
                     <p style="text-align: center; color: #64748b; padding: 15px; font-size: 13px;">বর্তমানে কোনো রাইডার সিরিয়ালে নেই।</p>
                 </div>
             </div>
+
             <!-- CUT HISTORY BOX -->
             <div class="history-card-box">
                 <div class="history-card-header" onclick="toggleHistoryDropdown()">
@@ -1015,48 +1143,44 @@
                 </div>
             </div>
         </div>
-        <!-- ADMIN ACCESS AREA -->
-        <div style="text-align: center; margin-top: 12px; margin-bottom: 40px;">
-            <button class="btn btn-dark btn-xs" onclick="openAdminLoginModal()">🔐 সাব-অ্যাডমিন প্যানেল লগইন</button>
+
+        <!-- পরিবর্তন ৭: নিচে অ্যাডমিন ও ক্যাশিয়ার প্যানেল লিস্ট (সিরিয়াল নম্বর ছাড়া শুধু পদবী ও নাম) -->
+        <div id="bottomStaffAccessArea" style="margin-top: 12px; margin-bottom: 40px;">
+            <div style="background: #ffffff; border: 1.5px solid #cbd5e1; border-radius: 12px; padding: 10px; box-shadow: 0 3px 10px rgba(0,0,0,0.05);">
+                <div style="font-size: 12.5px; font-weight: 700; color: #1e1b4b; margin-bottom: 8px; text-align: center;">
+                    🔐 অ্যাডমিন ও ক্যাশিয়ার প্যানেল
+                </div>
+                <div id="bottomStaffRoleListContainer"></div>
+            </div>
         </div>
     </div>
 
     <!-- MODALS -->
     <div class="modal-backdrop" id="adminLoginModal">
         <div class="modal-card" style="max-width: 360px;">
-            <h3 style="color: var(--primary); font-size: 16px; margin-bottom: 8px;">🔐 সাব-অ্যাডমিন লগইন</h3>
-            <p style="font-size: 11px; color: #64748b; margin-bottom: 10px;">আপনার নির্ধারিত অ্যাডমিন অ্যাকাউন্ট ও পাসওয়ার্ড দিন:</p>
-            <div class="form-group">
-                <label class="form-label">অ্যাডমিন সিলেক্ট করুন (৪ জন)</label>
-                <select id="loginAdminRole" class="form-control">
-                    <option value="admin1" id="loginOptAdmin1">অ্যাডমিন ১</option>
-                    <option value="admin2" id="loginOptAdmin2">অ্যাডমিন ২</option>
-                    <option value="admin3" id="loginOptAdmin3">অ্যাডমিন ৩</option>
-                    <option value="admin4" id="loginOptAdmin4">অ্যাডমিন ৪</option>
-                </select>
-            </div>
+            <h3 id="adminLoginModalTitle" style="color: var(--primary); font-size: 16px; margin-bottom: 6px;">🔐 প্যানেল লগইন</h3>
+            <p id="adminLoginModalSubtitle" style="font-size: 11px; color: #64748b; margin-bottom: 10px;">সঠিক পাসওয়ার্ড লিখুন—সঠিক হলে স্বয়ংক্রিয়ভাবে ভেতরে নিয়ে যাবে:</p>
+            <input type="hidden" id="loginAdminRole" value="admin1">
             <div class="form-group">
                 <label class="form-label">পাসওয়ার্ড</label>
-                <input type="password" id="loginAdminPassword" class="form-control" placeholder="পাসওয়ার্ড দিন">
+                <input type="password" id="loginAdminPassword" class="form-control" placeholder="পাসওয়ার্ড দিন" oninput="handleAutoAdminPasswordCheck()">
             </div>
-            <div style="display: flex; gap: 6px; margin-top: 12px;">
-                <button class="btn btn-primary" style="flex:1;" onclick="submitAdminLogin()">লগইন</button>
-                <button class="btn btn-dark" onclick="document.getElementById('adminLoginModal').style.display='none'">বাতিল</button>
+            <div style="display: flex; justify-content: flex-end; margin-top: 10px;">
+                <button class="btn btn-dark btn-xs" onclick="document.getElementById('adminLoginModal').style.display='none'">বন্ধ করুন</button>
             </div>
         </div>
     </div>
 
     <div class="modal-backdrop" id="masterLoginModal" style="z-index: 5500;">
         <div class="modal-card" style="max-width: 360px;">
-            <h3 style="color: #1e1b4b; font-size: 16px; margin-bottom: 8px;">👑 মাস্টার অ্যাডমিন কন্ট্রোল</h3>
-            <p style="font-size: 11px; color: #64748b; margin-bottom: 10px;">মাস্টার পাসওয়ার্ড দিয়ে প্রবেশ করুন:</p>
+            <h3 style="color: #1e1b4b; font-size: 16px; margin-bottom: 6px;">👑 মাস্টার অ্যাডমিন কন্ট্রোল</h3>
+            <p style="font-size: 11px; color: #64748b; margin-bottom: 10px;">মাস্টার পাসওয়ার্ড লিখুন (সঠিক হলে স্বয়ংক্রিয়ভাবে প্রবেশ করবে):</p>
             <div class="form-group">
                 <label class="form-label">মাস্টার পাসওয়ার্ড</label>
-                <input type="password" id="inputMasterPassword" class="form-control" placeholder="মাস্টার পাসওয়ার্ড দিন">
+                <input type="password" id="inputMasterPassword" class="form-control" placeholder="মাস্টার পাসওয়ার্ড দিন" oninput="verifyMasterPassword(true)">
             </div>
-            <div style="display: flex; gap: 6px; margin-top: 12px;">
-                <button class="btn btn-primary" style="flex:1;" onclick="verifyMasterPassword()">প্রবেশ করুন</button>
-                <button class="btn btn-dark" onclick="document.getElementById('masterLoginModal').style.display='none'">বাতিল</button>
+            <div style="display: flex; justify-content: flex-end; margin-top: 10px;">
+                <button class="btn btn-dark btn-xs" onclick="document.getElementById('masterLoginModal').style.display='none'">বন্ধ করুন</button>
             </div>
         </div>
     </div>
@@ -1090,6 +1214,7 @@
                 <h3 id="adminModalMainTitle" style="color: var(--primary); font-size: 16px;">🛡️ অ্যাডমিন কন্ট্রোল প্যানেল</h3>
                 <button class="btn btn-danger btn-xs" onclick="closeAdminModal()">✖ বন্ধ করুন</button>
             </div>
+
             <div id="subAdminSelfPasswordBox" class="admin-box" style="background: #f0fdf4; border: 1.5px solid #10b981; display: none;">
                 <h4 style="color: #047857;">🔑 আপনার পাসওয়ার্ড পরিবর্তন করুন</h4>
                 <div style="display: flex; gap: 6px;">
@@ -1097,6 +1222,40 @@
                     <button class="btn btn-success btn-xs" onclick="saveNewSubAdminPassword()">পাসওয়ার্ড সেভ</button>
                 </div>
             </div>
+
+            <!-- পরিবর্তন ৩ ও ৫: লাইভ লোকেশন ট্র্যাকার ও সদস্যদের আইডি কোটা (১-৪) বক্স -->
+            <div id="liveLocationTrackerBox" class="admin-box" style="background: #ecfeff; border: 2px solid #06b6d4; display: none;">
+                <h4 style="color: #0e7490;">📍 সদস্যদের লাইভ লোকেশন ও দূরত্ব মনিটর</h4>
+                <div id="masterSubLocPermissionControl" style="display: none; background: #ffffff; border: 1px solid #a5f3fc; border-radius: 8px; padding: 8px; margin-bottom: 8px;">
+                    <strong style="font-size: 11.5px; color: #155e75; display: block; margin-bottom: 4px;">👑 মাস্টার অ্যাডমিন: কোন সাব-অ্যাডমিন লাইভ লোকেশন দেখতে পারবেন?</strong>
+                    <div id="masterSubLocCheckboxes" style="display: flex; flex-wrap: wrap; gap: 8px;"></div>
+                </div>
+                <div id="membersLiveLocationsList" style="max-height: 220px; overflow-y: auto;">লোড হচ্ছে...</div>
+            </div>
+
+            <div id="multiIdQuotaBox" class="admin-box" style="background: #fefce8; border: 2px solid #eab308; display: none;">
+                <h4 style="color: #854d0e;">🔢 সদস্যদের অনুমোদিত আইডি/নাম সংখ্যা (১ থেকে ৪টি)</h4>
+                <p style="font-size: 10.5px; color: #713f12; margin-bottom: 6px;">* এখানে নির্ধারিত সংখ্যা শুধু অ্যাডমিন ও সংশ্লিষ্ট ইউজার জানবেন।</p>
+                <div id="memberMultiIdQuotaList" style="max-height: 200px; overflow-y: auto;">লোড হচ্ছে...</div>
+            </div>
+
+            <!-- পরিবর্তন ৪: অ্যাডমিন মিউজিক ও ভয়েস রেকর্ড ব্রডকাস্ট কন্ট্রোল -->
+            <div id="adminAudioBroadcastBox" class="admin-box" style="background: #f5f3ff; border: 2px solid #7c3aed; display: none;">
+                <h4 style="color: #5b21b6;">🎵 খেলার ১০ মিনিট আগের অডিও/ভয়েস সম্প্রচার</h4>
+                <div class="form-group">
+                    <label class="form-label">মেমোরি থেকে অডিও ফাইল বা ভয়েস রেকর্ড সিলেক্ট করুন</label>
+                    <input type="file" id="adminAudioFileInput" accept="audio/*" class="form-control" style="padding: 4px;">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">অথবা ইউটিউব / সরাসরি অডিও লিংক দিন</label>
+                    <input type="text" id="adminAudioLinkInput" class="form-control" placeholder="https://... (MP3 বা YouTube লিংক)">
+                </div>
+                <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+                    <button class="btn btn-purple btn-xs" style="flex: 1;" onclick="publishAdminAudioBroadcast()">📡 সবাইকে চালু করুন</button>
+                    <button class="btn btn-danger btn-xs" onclick="stopAdminAudioBroadcast()">⏹️ বন্ধ করুন</button>
+                </div>
+            </div>
+
             <div id="masterOnlyAdminManagementBox" class="admin-box" style="background: #eef2ff; border: 2px solid #4f46e5; display: none;">
                 <h4 style="color: #4f46e5;">👑 মাস্টার অ্যাডমিন: ৪ জন অ্যাডমিন ও কাজ বণ্টন কন্ট্রোল</h4>
                 <div style="background: #fff1f2; padding: 10px; border-radius: 8px; margin-bottom: 10px; border: 1.5px solid #f43f5e;">
@@ -1177,6 +1336,7 @@
                         </div>
                     </div>
                 </div>
+
                 <div class="admin-box" id="powerSec_wheel" style="background: #fef3c7; border: 1.5px solid #fcd34d; margin-bottom: 8px;">
                     <h4>
                         <span>2. সদস্যদের Allow পারমিশন ও হুইল লক</span>
@@ -1190,6 +1350,7 @@
                         <div id="adminIndividualWheelPermissionsList" style="max-height: 220px; overflow-y: auto; background: #fffbeb; padding: 6px; border-radius: 8px; border: 1px solid #fde68a;">লোড হচ্ছে...</div>
                     </div>
                 </div>
+
                 <div class="admin-box" id="powerSec_winner" style="background: #fef3c7; border: 1.5px solid #fcd34d; margin-bottom: 8px;">
                     <h4>
                         <span>3. অফিসিয়াল উইনার সেটআপ</span>
@@ -1203,6 +1364,7 @@
                         </div>
                     </div>
                 </div>
+
                 <div class="admin-box" id="powerSec_quota" style="background: #fef3c7; border: 1.5px solid #fcd34d; margin-bottom: 8px;">
                     <h4>
                         <span>4. সমিতি রেজিস্ট্রেশন অন/অফ কন্ট্রোল</span>
@@ -1215,6 +1377,7 @@
                         </div>
                     </div>
                 </div>
+
                 <div class="admin-box" id="powerSec_regapp" style="background: white; border: 1px solid #fde68a; margin-bottom: 8px;">
                     <h4>
                         <span>5. নতুন রেজিস্ট্রেশন আবেদন অনুমোদন</span>
@@ -1224,6 +1387,7 @@
                         <div id="adminSamityPendingRegList">লোড হচ্ছে...</div>
                     </div>
                 </div>
+
                 <div class="admin-box" id="powerSec_cashier1" style="background: #f0fdf4; border: 1.5px solid #10b981; margin-bottom: 8px;">
                     <h4>
                         <span id="cashierBoxHeaderTitle_cashier1">6. ক্যাশিয়ার প্যানেল ১ (প্রধান ক্যাশিয়ার)</span>
@@ -1278,6 +1442,7 @@
                         <div id="cashierPanelBody_cashier6"></div>
                     </div>
                 </div>
+
                 <div class="admin-box" id="powerSec_cashierhistory" style="background: #f0f9ff; border: 1.5px solid #0284c7; margin-bottom: 8px;">
                     <h4>
                         <span>12. ক্যাশিয়ারদের সম্পূর্ণ লেনদেন ইতিহাস (হিস্ট্রি)</span>
@@ -1304,6 +1469,7 @@
                         </div>
                     </div>
                 </div>
+
                 <div class="admin-box" id="powerSec_members" style="background: white; border: 1px solid #fde68a; margin-bottom: 8px;">
                     <h4>
                         <span>13. মেম্বার ম্যানেজমেন্ট (টাকা জমা, নাম-ফোন ও ডিলিট)</span>
@@ -1483,22 +1649,42 @@
             </div>
         </div>
     </div>
-
     <script>
-        // ১. Service Worker রেজিস্ট্রেশন (GitHub-এর serviceworker.js অনুযায়ী)
+        // ১. Service Worker রেজিস্ট্রেশন ও ইনস্টল/অ্যাপ শনাক্তকরণ (পরিবর্তন ২)
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('./serviceworker.js').catch(() => {});
             });
         }
 
-        // PWA ইনস্টল ও APK ডাউনলোড কন্ট্রোল
+        function isAppOrInstalledUser() {
+            const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+            const isInstalledFlag = localStorage.getItem("pwaInstalledByUser") === "true";
+            const isAndroidWebView = /Android/i.test(navigator.userAgent) && /(wv|WebView)/i.test(navigator.userAgent);
+            return isStandalone || isInstalledFlag || isAndroidWebView;
+        }
+
+        function updateInstallBarVisibility() {
+            const bar = document.getElementById("appInstallBannerBar");
+            if (!bar) return;
+            if (isAppOrInstalledUser()) {
+                bar.style.display = "none";
+            } else {
+                bar.style.display = "flex";
+            }
+        }
+
         let deferredPrompt = null;
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             deferredPrompt = e;
             const installBtn = document.getElementById('btnPwaInstall');
-            if (installBtn) installBtn.style.display = 'inline-flex';
+            if (installBtn && !isAppOrInstalledUser()) installBtn.style.display = 'inline-flex';
+        });
+
+        window.addEventListener('appinstalled', () => {
+            localStorage.setItem("pwaInstalledByUser", "true");
+            updateInstallBarVisibility();
         });
 
         async function triggerPwaInstall() {
@@ -1510,12 +1696,17 @@
             const { outcome } = await deferredPrompt.userChoice;
             deferredPrompt = null;
             if (outcome === 'accepted') {
-                document.getElementById('btnPwaInstall').style.display = 'none';
+                localStorage.setItem("pwaInstalledByUser", "true");
+                updateInstallBarVisibility();
                 showToast("✅ অ্যাপটি ফোনে ইনস্টল হচ্ছে...", "success");
             }
         }
 
         function handleApkDownloadClick(e) {
+            localStorage.setItem("pwaInstalledByUser", "true");
+            setTimeout(() => {
+                updateInstallBarVisibility();
+            }, 800);
             showToast("📥 APK ফাইল ডাউনলোড শুরু হচ্ছে... আপনার GitHub ফোল্ডারে 'app.apk' নামে ফাইলটি আপলোড রাখলে সরাসরি ডাউনলোড হবে।", "info");
         }
 
@@ -1527,7 +1718,6 @@
             const isWebView = /(wv|WebView)/i.test(navigator.userAgent) || !window.chrome;
             
             if (isAndroid && isWebView) {
-                // APK WebView-এর ভেতরে থাকলে সরাসরি Android Intent দিয়ে WhatsApp অ্যাপ খুলবে
                 const intentUrl = "intent://chat.whatsapp.com/GsNmqRKEp38Gf2qNr1wcQe?s=cl&p=a&iam=2#Intent;scheme=https;package=com.whatsapp;S.browser_fallback_url=" + encodeURIComponent(WHATSAPP_GROUP_LINK) + ";end";
                 window.location.href = intentUrl;
             } else {
@@ -1549,7 +1739,7 @@
         }
         function hideToast() { document.getElementById("customToast").style.display = "none"; }
         
-        // ফায়ারবেস কনফিগ
+        // ফায়ারবেস কনফিগ[span_3](start_span)[span_3](end_span)
         const firebaseConfig = {
             apiKey: "AIzaSyB-ZGbRbYN_3ASW59cXQw4aKNvEOWzOodg",
             authDomain: "candrimabaikara-86815.firebaseapp.com",
@@ -1561,6 +1751,7 @@
         };
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
+
         let userLat = null, userLng = null;
         let currentAdminSession = null;
         let masterPasswordStored = "692372";
@@ -1590,6 +1781,8 @@
             { id: "_rideredit", label: "21. রাইডার এডিট" },
             { id: "_suspend", label: "22. রাইডার সাসপেন্ড" }
         ];
+
+        // বিদ্যমান পাসওয়ার্ড ও স্ট্রাকচার অপরিবর্তিত রাখা হয়েছে[span_4](start_span)[span_4](end_span)
         let subAdminCredentials = {
             admin1: { pass: "123456", assignedPowers: ["_schedule", "_wheel", "_winner", "_quota", "_regapp", "_cashier1", "_cashierhistory"] },
             admin2: { pass: "123456", assignedPowers: ["_cashier2", "_cashier3", "_cashierhistory", "_members"] },
@@ -1597,7 +1790,7 @@
             admin4: { pass: "123456", assignedPowers: ["_cashier6", "_cashierhistory", "_gps", "_leaders", "_notice", "_rideredit", "_suspend", "_remote"] }
         };
         let fourCashiersData = {
-            cashier1: { roleTitle: "প্রধান ক্যাশিয়ার", name: "ক্যাশিয়ার ১", phone: "01700000001", photo: "https://via.placeholder.com/80?text=Cashier1", active: true, balance: 0 },
+            cashier1: { roleTitle: "ক্যাশিয়ার", name: "ক্যাশিয়ার ১", phone: "01700000001", photo: "https://via.placeholder.com/80?text=Cashier1", active: true, balance: 0 },
             cashier2: { roleTitle: "ক্যাশিয়ার", name: "ক্যাশিয়ার ২", phone: "01700000002", photo: "https://via.placeholder.com/80?text=Cashier2", active: true, balance: 0 },
             cashier3: { roleTitle: "ক্যাশিয়ার", name: "ক্যাশিয়ার ৩", phone: "01700000003", photo: "https://via.placeholder.com/80?text=Cashier3", active: true, balance: 0 },
             cashier4: { roleTitle: "ক্যাশিয়ার", name: "ক্যাশিয়ার ৪", phone: "01700000004", photo: "https://via.placeholder.com/80?text=Cashier4", active: true, balance: 0 },
@@ -1631,9 +1824,14 @@
             forcedWinner: "", 
             isWheelLocked: false, 
             paidListClearTimestamp: 0,
-            isLotteryCardLocked: true 
+            isLotteryCardLocked: true,
+            lastOfficialWinnerTimestamp: 0,
+            subAdminLocationAccess: { admin1: false, admin2: false, admin3: false, admin4: false },
+            memberIdQuotas: {},
+            audioBroadcast: { active: false, audioData: "", audioUrl: "", updatedAt: 0 }
         };
         let samityAllowedStatus = {};
+        let liveUserLocations = {};
         let liveSpinState = null;
         let lastHandledSpinId = "";
         let expandedSamityMemberPhone = null;
@@ -1642,13 +1840,17 @@
         let myLocalRiderPhone = localStorage.getItem("myRiderPhone") || "";
         let myLocalRiderName = localStorage.getItem("myRiderName") || "";
         let myLockedSamityPhone = localStorage.getItem("lockedSamityPhone") || "";
+        let userMusicMuted = localStorage.getItem("userMusicMuted") === "true";
+        let preDrawDismissedForRound = "";
+        let editingPendingSamityPhone = null;
+
         let audioCtx = null;
         let alarmInterval = null;
         let alarmTimeoutTimer = null;
         let acknowledgedAlarmKey = "";
         let fallbackVoiceAudio = new Audio();
         const DAYS_LIST = ["শনি", "রবি", "সোম", "মঙ্গল", "বুধ", "বৃহঃ", "শুক্র"];
-        
+
         function getRequiredDrawQuota() {
             return Number(samityConfig.dailyQuota) || 200;
         }
@@ -1688,12 +1890,9 @@
             } catch (e) {}
         }
 
-        // ৩. ওয়েবসাইট ও APK উভয়ের জন্য শক্তিশালী বাংলা ভয়েস ইঞ্জিন
         function playVoiceMessage(text, forceOfficialOnly = true) {
             try {
                 if (forceOfficialOnly && !isWithinScheduleTime()) return;
-                
-                // APK WebView-এর জন্য অনলাইন বাংলা TTS ব্যাকআপ
                 const playFallbackAudio = () => {
                     try {
                         const encoded = encodeURIComponent(text.substring(0, 180));
@@ -1701,7 +1900,6 @@
                         fallbackVoiceAudio.play().catch(() => {});
                     } catch (err) {}
                 };
-
                 if ('speechSynthesis' in window) {
                     window.speechSynthesis.cancel();
                     const utterance = new SpeechSynthesisUtterance(text);
@@ -1711,7 +1909,6 @@
                     utterance.onstart = () => { spoken = true; };
                     utterance.onerror = () => { if (!spoken) playFallbackAudio(); };
                     window.speechSynthesis.speak(utterance);
-                    // ৭০০ মিলিসেকেন্ডের মধ্যে ডিভাইস ভয়েস শুরু না হলে APK-তে অনলাইন ভয়েস চলবে
                     setTimeout(() => {
                         if (!spoken && !window.speechSynthesis.speaking) {
                             playFallbackAudio();
@@ -1736,6 +1933,7 @@
             if (alarmTimeoutTimer) clearTimeout(alarmTimeoutTimer);
             alarmTimeoutTimer = setTimeout(() => { stopMyAlarm(); }, 20000);
         }
+
         function stopMyAlarm() {
             if (alarmInterval) { clearInterval(alarmInterval); alarmInterval = null; }
             if (alarmTimeoutTimer) { clearTimeout(alarmTimeoutTimer); alarmTimeoutTimer = null; }
@@ -1744,8 +1942,34 @@
             const myIdx = sorted.findIndex(item => normalizeName(item.name) === normalizeName(myLocalRiderName));
             if (myIdx !== -1) acknowledgedAlarmKey = sorted[myIdx].id + "_pos_" + (myIdx + 1);
         }
+
+        function startLiveLocationTracking() {
+            if (!navigator.geolocation) return;
+            const pushLoc = (pos) => {
+                userLat = pos.coords.latitude;
+                userLng = pos.coords.longitude;
+                updateDistanceDisplay();
+                const trackerId = myLockedSamityPhone || myLocalRiderPhone || (myLocalRiderName ? "guest_" + normalizeName(myLocalRiderName).replace(/[^a-z0-9]/g, "") : "");
+                if (trackerId) {
+                    const labelName = myLockedSamityPhone && samityApprovedMembers[myLockedSamityPhone]
+                        ? samityApprovedMembers[myLockedSamityPhone].name
+                        : (myLocalRiderName || trackerId);
+                    db.ref('liveUserLocations/' + trackerId).set({
+                        id: trackerId,
+                        name: labelName,
+                        phone: myLockedSamityPhone || "",
+                        lat: userLat,
+                        lng: userLng,
+                        updatedAt: Date.now()
+                    }).catch(() => {});
+                }
+                if (currentAdminSession) renderMembersLiveLocationsMonitor();
+            };
+            navigator.geolocation.getCurrentPosition(pushLoc, () => {}, { enableHighAccuracy: true, timeout: 10000 });
+            navigator.geolocation.watchPosition(pushLoc, () => {}, { enableHighAccuracy: true, maximumAge: 10000, timeout: 15000 });
+        }
+
         function enterMainApp() {
-            // ইউজারের টাচের সাথে সাথে অডিও ও ভয়েস পারমিশন আনলক (APK-এর জন্য জরুরি)
             try { 
                 audioCtx = new (window.AudioContext || window.webkitAudioContext)(); 
                 if (audioCtx.state === 'suspended') audioCtx.resume();
@@ -1754,23 +1978,20 @@
                     window.speechSynthesis.speak(silentUtter);
                 }
             } catch(e){}
-
             document.getElementById("gatekeeper").style.display = "none";
             document.getElementById("mainApp").style.display = "block";
+            updateInstallBarVisibility();
             if (myLocalRiderName) document.getElementById("loginPhone").value = myLocalRiderName;
             renderLockedSamityAccountUI();
             renderDigitalMonitorMarquee();
             renderCashierPaymentCard();
+            renderBottomStaffRoleList();
+            updateSamityRegistrationStatusUI();
             applyLotteryAndSerialVisibility();
             drawWheel(0);
-            
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(
-                    (pos) => { userLat = pos.coords.latitude; userLng = pos.coords.longitude; updateDistanceDisplay(); },
-                    () => {}, { enableHighAccuracy: true, timeout: 10000 }
-                );
-            }
+            startLiveLocationTracking();
         }
+
         function renderDigitalMonitorMarquee() {
             const track = document.getElementById("digitalMonitorTrack");
             if (!track) return;
@@ -1797,6 +2018,7 @@
                 </div>
             `).join('');
         }
+
         function renderCashierPaymentCard() {
             const container = document.getElementById("cashierPaymentCardContainer");
             const selectEl = document.getElementById("samitySelectedCashierId");
@@ -1830,6 +2052,92 @@
             container.innerHTML = cashierHtml;
             selectEl.innerHTML = selectOptionsHtml;
         }
+
+        // পরিবর্তন ৭: নিচে অ্যাডমিন ও ক্যাশিয়ার লিস্ট (সিরিয়াল নম্বর ছাড়া শুধু পদবী ও নাম)
+        function renderBottomStaffRoleList() {
+            const container = document.getElementById("bottomStaffRoleListContainer");
+            if (!container) return;
+            let html = "";
+
+            ALL_ADMIN_ROLES.forEach(role => {
+                const p = fourAdminProfiles[role] || {};
+                if (p.name && p.name.trim() !== "") {
+                    html += `
+                        <div class="staff-role-btn-card" onclick="openDirectRolePasswordModal('admin', '${role}', '${p.roleTitle || 'এডমিন'}', '${p.name}')">
+                            <div>
+                                <span style="font-size: 10px; font-weight: 700; color: #4338ca; background: #e0e7ff; padding: 1px 6px; border-radius: 5px;">${p.roleTitle || 'এডমিন'}</span>
+                                <strong style="font-size: 13px; color: #0f172a; margin-left: 6px;">${p.name}</strong>
+                            </div>
+                            <span style="font-size: 11px; font-weight: 700; color: #4f46e5;">🔑 পাসওয়ার্ড</span>
+                        </div>
+                    `;
+                }
+            });
+
+            ALL_CASHIER_IDS.forEach(cid => {
+                const c = fourCashiersData[cid] || {};
+                if (c.active !== false && c.name && c.name.trim() !== "") {
+                    html += `
+                        <div class="staff-role-btn-card" style="border-color: #86efac; background: #f0fdf4;" onclick="openDirectRolePasswordModal('cashier', '${cid}', '${c.roleTitle || 'ক্যাশিয়ার'}', '${c.name}')">
+                            <div>
+                                <span style="font-size: 10px; font-weight: 700; color: #065f46; background: #dcfce7; padding: 1px 6px; border-radius: 5px;">${c.roleTitle || 'ক্যাশিয়ার'}</span>
+                                <strong style="font-size: 13px; color: #0f172a; margin-left: 6px;">${c.name}</strong>
+                            </div>
+                            <span style="font-size: 11px; font-weight: 700; color: #059669;">🔑 পাসওয়ার্ড</span>
+                        </div>
+                    `;
+                }
+            });
+
+            if (!html) {
+                html = `<div style="font-size:11px; color:#64748b; text-align:center; padding:6px;">কোনো সক্রিয় অ্যাডমিন বা ক্যাশিয়ার প্রোফাইল নেই।</div>`;
+            }
+            container.innerHTML = html;
+        }
+
+        let activeSelectedStaffTarget = { kind: "admin", key: "admin1" };
+        function openDirectRolePasswordModal(kind, key, roleTitle, name) {
+            activeSelectedStaffTarget = { kind, key };
+            document.getElementById("loginAdminRole").value = kind === "admin" ? key : "admin1";
+            document.getElementById("adminLoginModalTitle").innerText = `🔐 ${roleTitle}: ${name}`;
+            document.getElementById("adminLoginModalSubtitle").innerText = "পাসওয়ার্ড লিখুন—সঠিক হলে স্বয়ংক্রিয়ভাবে ভেতরে নিয়ে যাবে:";
+            const passInput = document.getElementById("loginAdminPassword");
+            passInput.value = "";
+            document.getElementById("adminLoginModal").style.display = "block";
+            setTimeout(() => passInput.focus(), 100);
+        }
+
+        function handleAutoAdminPasswordCheck() {
+            const entered = document.getElementById("loginAdminPassword").value.trim();
+            if (!entered) return;
+
+            if (activeSelectedStaffTarget.kind === "admin") {
+                const role = activeSelectedStaffTarget.key;
+                if (subAdminCredentials[role] && subAdminCredentials[role].pass === entered) {
+                    document.getElementById("loginAdminPassword").value = "";
+                    document.getElementById("adminLoginModal").style.display = "none";
+                    currentAdminSession = role;
+                    document.getElementById("adminModeBar").style.display = "flex";
+                    document.getElementById("adminModeBarTitle").innerText = `🛡️ ${fourAdminProfiles[role]?.name || "অ্যাডমিন"} মোড চালু আছে`;
+                    openAdminPanelUI();
+                    showToast(`✅ পাসওয়ার্ড সঠিক! প্যানেলে প্রবেশ করা হয়েছে।`, "success");
+                }
+            } else {
+                const cid = activeSelectedStaffTarget.key;
+                const cObj = fourCashiersData[cid] || {};
+                const expectedPass = cObj.customPass || subAdminCredentials["admin1"]?.pass || "123456";
+                if (entered === expectedPass) {
+                    document.getElementById("loginAdminPassword").value = "";
+                    document.getElementById("adminLoginModal").style.display = "none";
+                    currentAdminSession = "admin1";
+                    document.getElementById("adminModeBar").style.display = "flex";
+                    document.getElementById("adminModeBarTitle").innerText = `💰 ${cObj.name || "ক্যাশিয়ার"} প্যানেল চালু আছে`;
+                    openAdminPanelUI();
+                    showToast(`✅ পাসওয়ার্ড সঠিক! ক্যাশিয়ার প্যানেলে প্রবেশ করা হয়েছে।`, "success");
+                }
+            }
+        }
+
         function applyLotteryAndSerialVisibility() {
             const isLocked = samityConfig.isLotteryCardLocked !== false;
             const bodyContainer = document.getElementById("samityBodyContainer");
@@ -1863,7 +2171,32 @@
                     serialWrapper.style.display = isSamityOpen ? "none" : "block";
                 }
             }
+            applyGameTimeWheelFocusMode();
         }
+
+        // পরিবর্তন ৩(দ্বিতীয় অংশ): খেলার সময় হুইল ফোকাস ভিউ এবং ড্র শেষ হওয়ার ৫ মিনিট পর স্বাভাবিক অবস্থায় ফেরা
+        function applyGameTimeWheelFocusMode() {
+            const inSchedule = isWithinScheduleTime();
+            const isLocked = samityConfig.isLotteryCardLocked !== false;
+            const bodyContainer = document.getElementById("samityBodyContainer");
+            const serialWrapper = document.getElementById("rideSerialMainWrapper");
+            const nonWheelExtras = document.getElementById("samityNonWheelExtras");
+            const postWinHold = samityConfig.lastOfficialWinnerTimestamp && (Date.now() - samityConfig.lastOfficialWinnerTimestamp < 300000);
+
+            if (inSchedule || postWinHold) {
+                if (bodyContainer) bodyContainer.style.display = "block";
+                if (serialWrapper) serialWrapper.style.display = "none";
+                if (nonWheelExtras) nonWheelExtras.style.display = "none";
+            } else {
+                if (nonWheelExtras) nonWheelExtras.style.display = "block";
+                if (isLocked && bodyContainer && bodyContainer.style.display === "block") {
+                    if (serialWrapper) serialWrapper.style.display = "none";
+                } else if (isLocked && serialWrapper) {
+                    serialWrapper.style.display = "block";
+                }
+            }
+        }
+
         async function toggleLotteryCardLockMode() {
             const currentLocked = samityConfig.isLotteryCardLocked !== false;
             const nextState = !currentLocked;
@@ -1874,6 +2207,7 @@
             applyLotteryAndSerialVisibility();
             showToast(nextState ? "🔒 লটারি কার্ড লক করা হয়েছে। এখন সিরিয়াল ও লটারি উভয় দেখাবে।" : "🔓 লটারি কার্ড আনলক করা হয়েছে। এখন সবার কাছে সরাসরি লটারি ওপেন থাকবে।", "info");
         }
+
         function toggleSamityCardCollapse() {
             const isLocked = samityConfig.isLotteryCardLocked !== false;
             if (!isLocked) return;
@@ -1891,6 +2225,7 @@
                 drawWheel(currentWheelAngle);
             }
         }
+
         function toggleHistoryDropdown() {
             const content = document.getElementById("cutHistoryContainer");
             const arrow = document.getElementById("historyToggleArrow");
@@ -1902,6 +2237,7 @@
                 arrow.innerText = "▲ বন্ধ করুন";
             }
         }
+
         function togglePowerLock(powerKey) {
             const container = document.getElementById(`containerPower${powerKey}`);
             const btn = document.getElementById(`lockPower${powerKey}`);
@@ -1918,6 +2254,7 @@
                 btn.className = "btn btn-success btn-xs";
             }
         }
+
         function updateLiveClock() {
             const now = new Date();
             document.getElementById("liveClock").innerText = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
@@ -1926,24 +2263,160 @@
             checkPaidListAutoClear();
             updateScheduleCountdown();
             evaluateWheelAndActionState();
+            updatePreDrawMusicBarVisibility();
+            applyGameTimeWheelFocusMode();
         }
         setInterval(updateLiveClock, 1000); updateLiveClock();
+
+        // পরিবর্তন ৪: খেলা শুরুর ঠিক ১০ মিনিট আগে "গান শুনুন" বাটন ও অডিও নিয়ন্ত্রণ
+        function getMinutesUntilNextScheduleStart() {
+            const now = new Date();
+            const { startH, startM } = parseScheduleRange();
+            const target = new Date(now);
+            target.setHours(startH, startM, 0, 0);
+            if (samityConfig.drawDay && samityConfig.drawDay !== "Daily") {
+                const daysMap = { "Sunday": 0, "Monday": 1, "Tuesday": 2, "Wednesday": 3, "Thursday": 4, "Friday": 5, "Saturday": 6 };
+                const targetDay = daysMap[samityConfig.drawDay];
+                if (targetDay !== undefined) {
+                    let diffDays = (targetDay - now.getDay() + 7) % 7;
+                    if (diffDays === 0 && target < now) diffDays = 7;
+                    target.setDate(now.getDate() + diffDays);
+                }
+            } else if (target < now) {
+                target.setDate(target.getDate() + 1);
+            }
+            return (target.getTime() - now.getTime()) / 60000;
+        }
+
+        function updatePreDrawMusicBarVisibility() {
+            const bar = document.getElementById("preDrawMusicBar");
+            if (!bar) return;
+            const minsLeft = getMinutesUntilNextScheduleStart();
+            const inWindow = minsLeft > 0 && minsLeft <= 10 && !isWithinScheduleTime();
+            const roundKey = `${new Date().toDateString()}_${samityConfig.drawTime}`;
+            const dismissedByAllow = preDrawDismissedForRound === roundKey;
+
+            if (inWindow && !dismissedByAllow) {
+                bar.style.display = "block";
+                syncUserMusicToggleButton();
+                const broadcast = samityConfig.audioBroadcast || {};
+                const audioEl = document.getElementById("preDrawBroadcastAudio");
+                const statusEl = document.getElementById("preDrawBroadcastStatus");
+                if (broadcast.active && !userMusicMuted) {
+                    const src = broadcast.audioData || broadcast.audioUrl || "";
+                    if (src && audioEl) {
+                        if (audioEl.src !== src) audioEl.src = src;
+                        audioEl.style.display = "block";
+                        audioEl.play().catch(() => {});
+                    }
+                    if (statusEl) statusEl.innerText = "🔊 অ্যাডমিন অডিও/ভয়েস সম্প্রচার চলছে";
+                } else if (audioEl) {
+                    audioEl.pause();
+                    if (userMusicMuted && statusEl) statusEl.innerText = "🔇 আপনি মিউজিক অফ করে রেখেছেন";
+                }
+            } else {
+                bar.style.display = "none";
+                const audioEl = document.getElementById("preDrawBroadcastAudio");
+                if (audioEl) {
+                    audioEl.pause();
+                    audioEl.style.display = "none";
+                }
+            }
+        }
+
+        function syncUserMusicToggleButton() {
+            const btn = document.getElementById("btnUserMusicToggle");
+            if (!btn) return;
+            if (userMusicMuted) {
+                btn.innerText = "🔊 মিউজিক অন করুন";
+                btn.className = "btn btn-success btn-xs";
+            } else {
+                btn.innerText = "🔇 মিউজিক অফ করুন";
+                btn.className = "btn btn-warning btn-xs";
+            }
+        }
+
+        function toggleUserMusicPreference() {
+            userMusicMuted = !userMusicMuted;
+            localStorage.setItem("userMusicMuted", userMusicMuted ? "true" : "false");
+            syncUserMusicToggleButton();
+            const audioEl = document.getElementById("preDrawBroadcastAudio");
+            if (userMusicMuted) {
+                if (audioEl) audioEl.pause();
+                showToast("🔇 মিউজিক অফ করা হয়েছে।", "info");
+            } else {
+                updatePreDrawMusicBarVisibility();
+                showToast("🔊 মিউজিক অন করা হয়েছে।", "success");
+            }
+        }
+
+        function dismissPreDrawMusicByAllow() {
+            const roundKey = `${new Date().toDateString()}_${samityConfig.drawTime}`;
+            preDrawDismissedForRound = roundKey;
+            const audioEl = document.getElementById("preDrawBroadcastAudio");
+            if (audioEl) audioEl.pause();
+            document.getElementById("preDrawMusicBar").style.display = "none";
+            showToast("✅ Allow সম্পন্ন! মিউজিক বন্ধ করা হয়েছে।", "success");
+        }
+
+        async function publishAdminAudioBroadcast() {
+            const file = document.getElementById("adminAudioFileInput").files[0];
+            const url = document.getElementById("adminAudioLinkInput").value.trim();
+            let audioData = samityConfig.audioBroadcast?.audioData || "";
+            if (file) {
+                audioData = await new Promise((resolve) => {
+                    const reader = new FileReader();
+                    reader.onload = (e) => resolve(e.target.result);
+                    reader.readAsDataURL(file);
+                });
+            }
+            if (!audioData && !url) {
+                showToast("⚠️ অডিও ফাইল/ভয়েস রেকর্ড সিলেক্ট করুন বা লিংক দিন।", "error");
+                return;
+            }
+            await db.ref('tanSamity/config/audioBroadcast').set({
+                active: true,
+                audioData: file ? audioData : "",
+                audioUrl: url || "",
+                updatedAt: Date.now()
+            });
+            showToast("📡 অডিও/ভয়েস সম্প্রচার চালু করা হয়েছে!", "success");
+        }
+
+        async function stopAdminAudioBroadcast() {
+            await db.ref('tanSamity/config/audioBroadcast/active').set(false);
+            const audioEl = document.getElementById("preDrawBroadcastAudio");
+            if (audioEl) audioEl.pause();
+            showToast("⏹️ অডিও সম্প্রচার বন্ধ করা হয়েছে।", "info");
+        }
+
         function checkPaidListAutoClear() {
             if (samityConfig.paidListClearTimestamp && Date.now() >= samityConfig.paidListClearTimestamp) {
                 db.ref('tanSamity/config/paidListClearTimestamp').set(0);
             }
         }
+
         function getDistanceMeters(lat1, lon1, lat2, lon2) {
             const R = 6371000;
             const dLat = (lat2 - lat1) * Math.PI / 180, dLon = (lon2 - lon1) * Math.PI / 180;
             const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
             return Math.round(R * (2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))));
         }
+
         function updateDistanceDisplay() {
             const badge = document.getElementById("userDistanceBadge");
-            if (!standSettings.lat || !standSettings.lng) { badge.innerText = "📍 স্ট্যান্ড লোকেশন সেট করা হয়নি"; return; }
-            if (userLat && userLng) badge.innerText = `📍 দূরত্ব: ${getDistanceMeters(userLat, userLng, standSettings.lat, standSettings.lng)} মিটার`;
+            if (!badge) return;
+            if (!standSettings.lat || !standSettings.lng) {
+                badge.innerText = userLat && userLng ? `📍 ${userLat.toFixed(4)}, ${userLng.toFixed(4)}` : "📍 কেন্দ্র সেট নেই";
+                return;
+            }
+            if (userLat && userLng) {
+                badge.innerText = `📍 দূরত্ব: ${getDistanceMeters(userLat, userLng, standSettings.lat, standSettings.lng)} মিটার`;
+            } else {
+                badge.innerText = "📍 লোকেশন খুঁজছে...";
+            }
         }
+
         function getRiderSecretConfig(riderName, phone) {
             let rider = phone ? registeredRiders[phone] : Object.values(registeredRiders).find(r => normalizeName(r.name) === normalizeName(riderName));
             if (!rider) {
@@ -1958,6 +2431,7 @@
                 breakDailyLimit: rider?.breakDailyLimit || 2
             };
         }
+
         function checkWithinStandBoundary(customMaxMeters = 200) {
             if (!standSettings.lat || !standSettings.lng) return true;
             if (!userLat || !userLng) return true;
@@ -1966,6 +2440,7 @@
             }
             return true;
         }
+
         function compressImageToBase64(file, maxWidth = 250) {
             return new Promise((resolve) => {
                 if (!file) return resolve(null);
@@ -1984,6 +2459,7 @@
                 reader.readAsDataURL(file);
             });
         }
+
         function normalizeName(name) { return (name || "").trim().toLowerCase().replace(/\s+/g, ' '); }
         
         db.ref('standConfig').on('value', (snap) => {
@@ -2033,9 +2509,10 @@
             renderFourCashierPanels();
             renderCashierTransactionsHistory();
             renderAdminFourRoleProfilesEditor();
-            updateAdminRoleUIElements();
+            renderBottomStaffRoleList();
             renderDigitalMonitorMarquee();
         });
+
         db.ref('subAdminConfig').on('value', (snap) => {
             if (snap.exists()) { 
                 const val = snap.val();
@@ -2047,9 +2524,16 @@
                 }
             }
         });
+
         db.ref('masterPasswordConfig').on('value', (snap) => {
             if (snap.exists()) { masterPasswordStored = snap.val(); }
         });
+
+        db.ref('liveUserLocations').on('value', (snap) => {
+            liveUserLocations = snap.val() || {};
+            if (currentAdminSession) renderMembersLiveLocationsMonitor();
+        });
+
         db.ref('tanSamity/config').on('value', (snap) => {
             samityConfig = { 
                 registrationOpen: true, 
@@ -2060,6 +2544,10 @@
                 isWheelLocked: false, 
                 paidListClearTimestamp: 0,
                 isLotteryCardLocked: true,
+                lastOfficialWinnerTimestamp: 0,
+                subAdminLocationAccess: { admin1: false, admin2: false, admin3: false, admin4: false },
+                memberIdQuotas: {},
+                audioBroadcast: { active: false, audioData: "", audioUrl: "", updatedAt: 0 },
                 ...(snap.val() || {})
             };
             document.getElementById("samityRegToggleSwitch").checked = samityConfig.registrationOpen !== false;
@@ -2078,6 +2566,7 @@
             if (sAmp && document.activeElement !== sAmp) sAmp.value = s12.ampm;
             if (eInp && document.activeElement !== eInp) eInp.value = e12.timeStr;
             if (eAmp && document.activeElement !== eAmp) eAmp.value = e12.ampm;
+
             const isDaily = (samityConfig.drawDay === "Daily");
             const drawTypeLabel = isDaily ? "প্রতিদিনের খেলা" : "সাপ্তাহিক খেলা";
             document.getElementById("drawTypeBadgeHeader").innerText = drawTypeLabel;
@@ -2088,8 +2577,14 @@
             renderSamityMembersList();
             renderDualPaymentLists();
             evaluateWheelAndActionState();
+            updatePreDrawMusicBarVisibility();
+            if (currentAdminSession) {
+                renderMembersLiveLocationsMonitor();
+                renderMemberMultiIdQuotaList();
+            }
             if (!isSpinningWheel) drawWheel(currentWheelAngle);
         });
+
         db.ref('tanSamity/approvedMembers').on('value', (snap) => {
             samityApprovedMembers = snap.val() || {};
             renderSamityMembersList();
@@ -2100,9 +2595,15 @@
             updateSamityStatusBar();
             autoCheckSamityMember(false);
             renderLockedSamityAccountUI();
+            updateSamityRegistrationStatusUI();
+            if (currentAdminSession) {
+                renderMembersLiveLocationsMonitor();
+                renderMemberMultiIdQuotaList();
+            }
             if (!isSpinningWheel) drawWheel(currentWheelAngle);
             evaluateWheelAndActionState();
         });
+
         db.ref('tanSamity/allowedStatus').on('value', (snap) => {
             samityAllowedStatus = snap.val() || {};
             renderLockedSamityAccountUI();
@@ -2110,6 +2611,7 @@
             if (!isSpinningWheel) drawWheel(currentWheelAngle);
             evaluateWheelAndActionState();
         });
+
         db.ref('tanSamity/liveSpin').on('value', (snap) => {
             liveSpinState = snap.val();
             if (!liveSpinState) {
@@ -2133,30 +2635,37 @@
                 }
             }
         });
+
         db.ref('tanSamity/pendingMembers').on('value', (snap) => {
             samityPendingMembers = snap.val() || {};
             renderAdminSamityPendingReg();
+            updateSamityRegistrationStatusUI();
         });
+
         db.ref('tanSamity/pendingPayments').on('value', (snap) => {
             samityPendingPayments = snap.val() || {};
             renderFourCashierPanels();
             renderSamityRecentRequests();
         });
+
         db.ref('tanSamity/cashierHistory').on('value', (snap) => {
             cashierTransactionsList = snap.val() || {};
             renderCashierTransactionsHistory();
         });
+
         db.ref('registeredRiders').on('value', (snap) => {
             registeredRiders = snap.val() || {};
             renderAdminRegisteredListsCombined();
             populateSpecialRiderDropdowns();
         });
+
         db.ref('activeSerials').on('value', (snap) => {
             activeSerials = snap.val() || {};
             renderSerialList();
             checkCutCountdowns();
             checkBreakCountdowns();
         });
+
         db.ref('cutHistory').on('value', (snap) => {
             const history = snap.val() || {};
             const container = document.getElementById("cutHistoryContainer");
@@ -2178,15 +2687,112 @@
                 </div>
             `).join('');
         });
-        function updateAdminRoleUIElements() {
-            ALL_ADMIN_ROLES.forEach(role => {
-                const p = fourAdminProfiles[role] || { name: "অ্যাডমিন", roleTitle: "অ্যাডমিন", phone: "" };
-                const capRole = role.charAt(0).toUpperCase() + role.slice(1);
-                const loginOpt = document.getElementById(`loginOpt${capRole}`);
-                if (loginOpt) loginOpt.innerText = `${p.roleTitle || 'অ্যাডমিন'}: ${p.name}`;
-            });
+
+        // পরিবর্তন ৩ ও ৫: লাইভ লোকেশন + দূরত্ব মনিটর এবং ১-৪টি আইডি কোটা কন্ট্রোল
+        function canSessionViewLiveLocations() {
+            if (!currentAdminSession) return false;
+            if (currentAdminSession === "master") return true;
+            return Boolean(samityConfig.subAdminLocationAccess && samityConfig.subAdminLocationAccess[currentAdminSession]);
         }
-        
+
+        function renderMembersLiveLocationsMonitor() {
+            const box = document.getElementById("liveLocationTrackerBox");
+            const masterCtrl = document.getElementById("masterSubLocPermissionControl");
+            const chkContainer = document.getElementById("masterSubLocCheckboxes");
+            const listEl = document.getElementById("membersLiveLocationsList");
+            if (!box || !listEl) return;
+
+            const isMaster = currentAdminSession === "master";
+            const allowed = canSessionViewLiveLocations();
+            if (!isMaster && !allowed) {
+                box.style.display = "none";
+                return;
+            }
+            box.style.display = "block";
+
+            if (masterCtrl && chkContainer) {
+                masterCtrl.style.display = isMaster ? "block" : "none";
+                if (isMaster) {
+                    const accessObj = samityConfig.subAdminLocationAccess || {};
+                    chkContainer.innerHTML = ALL_ADMIN_ROLES.map(role => {
+                        const prof = fourAdminProfiles[role] || { name: role };
+                        const checked = accessObj[role] ? "checked" : "";
+                        return `
+                            <label style="display:flex; align-items:center; gap:5px; font-size:11px; font-weight:700; color:#0e7490; cursor:pointer; background:#ecfeff; padding:4px 8px; border-radius:6px;">
+                                <input type="checkbox" ${checked} onchange="toggleSubAdminLocationPermission('${role}', this.checked)">
+                                <span>${prof.name}</span>
+                            </label>
+                        `;
+                    }).join('');
+                }
+            }
+
+            const members = Object.values(samityApprovedMembers);
+            if (members.length === 0) {
+                listEl.innerHTML = `<div style="font-size:11px; color:#64748b; text-align:center; padding:8px;">কোনো সদস্য নেই।</div>`;
+                return;
+            }
+
+            listEl.innerHTML = members.map(m => {
+                const loc = liveUserLocations[m.phone] || Object.values(liveUserLocations).find(x => x.phone === m.phone || normalizeName(x.name) === normalizeName(m.name));
+                let locText = "লোকেশন অফলাইন / অনুমতি দেওয়া হয়নি";
+                let distText = "";
+                if (loc && typeof loc.lat === "number" && typeof loc.lng === "number") {
+                    locText = `🌐 ${loc.lat.toFixed(5)}, ${loc.lng.toFixed(5)}`;
+                    if (typeof userLat === "number" && typeof userLng === "number") {
+                        distText = ` | আপনার অবস্থান থেকে দূরত্ব: <strong style="color:#0369a1;">${getDistanceMeters(userLat, userLng, loc.lat, loc.lng)} মিটার</strong>`;
+                    }
+                }
+                return `
+                    <div class="member-live-loc-row">
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <strong style="color:#0f172a;">${m.name} (${m.phone})</strong>
+                            <span style="font-size:10px; color:#0e7490; font-weight:700;">লাইভ</span>
+                        </div>
+                        <div style="font-size:10.5px; color:#334155; margin-top:2px;">${locText}${distText}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        async function toggleSubAdminLocationPermission(role, allow) {
+            await db.ref(`tanSamity/config/subAdminLocationAccess/${role}`).set(Boolean(allow));
+            showToast(allow ? `✅ ${fourAdminProfiles[role]?.name || role}-কে লাইভ লোকেশন দেখার দায়িত্ব দেওয়া হয়েছে।` : `🔒 লাইভ লোকেশন দায়িত্ব বাতিল করা হয়েছে।`, "info");
+        }
+
+        function renderMemberMultiIdQuotaList() {
+            const box = document.getElementById("multiIdQuotaBox");
+            const listEl = document.getElementById("memberMultiIdQuotaList");
+            if (!box || !listEl || !currentAdminSession) return;
+            box.style.display = "block";
+            const members = Object.values(samityApprovedMembers);
+            const quotas = samityConfig.memberIdQuotas || {};
+            if (members.length === 0) {
+                listEl.innerHTML = `<div style="font-size:11px; color:#64748b; text-align:center; padding:6px;">কোনো সদস্য নেই।</div>`;
+                return;
+            }
+            listEl.innerHTML = members.map(m => {
+                const curQuota = Number(quotas[m.phone] || 1);
+                return `
+                    <div style="display:flex; justify-content:space-between; align-items:center; background:#fff; padding:6px 8px; border-radius:7px; margin-bottom:5px; border:1px solid #fde047; gap:6px;">
+                        <div style="font-size:11.5px; font-weight:700; color:#0f172a;">${m.name} (${m.phone})</div>
+                        <select class="form-control" style="width:95px; padding:4px 6px; font-size:11px;" onchange="setMemberAllowedIdQuota('${m.phone}', this.value)">
+                            <option value="1" ${curQuota === 1 ? 'selected' : ''}>১টি নাম</option>
+                            <option value="2" ${curQuota === 2 ? 'selected' : ''}>২টি নাম</option>
+                            <option value="3" ${curQuota === 3 ? 'selected' : ''}>৩টি নাম</option>
+                            <option value="4" ${curQuota === 4 ? 'selected' : ''}>৪টি নাম</option>
+                        </select>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        async function setMemberAllowedIdQuota(phone, countVal) {
+            const count = Math.min(4, Math.max(1, Number(countVal) || 1));
+            await db.ref(`tanSamity/config/memberIdQuotas/${phone}`).set(count);
+            showToast(`✅ ${count}টি নাম/আইডি নির্ধারণ করা হয়েছে।`, "success");
+        }
+
         function renderDualPaymentLists() {
             const unpaidContainer = document.getElementById("unpaidMembersList");
             const paidContainer = document.getElementById("paidMembersList");
@@ -2241,11 +2847,14 @@
             myLockedSamityPhone = phone;
             localStorage.setItem("lockedSamityPhone", phone);
             renderLockedSamityAccountUI();
+            updateSamityRegistrationStatusUI();
             showToast("✅ আপনার অ্যাকাউন্ট নির্ধারিত ও লক করা হয়েছে!", "success");
         }
+
         function renderLockedSamityAccountUI() {
             const linkBox = document.getElementById("samityAccountLinkBox");
             const lockedCard = document.getElementById("samityLockedAccountCard");
+            const quotaBadge = document.getElementById("myMultiIdCountBadge");
             
             if (!myLockedSamityPhone || !samityApprovedMembers[myLockedSamityPhone]) {
                 linkBox.style.display = "block";
@@ -2258,12 +2867,17 @@
             document.getElementById("myLockedSamityImg").src = member.photo || 'https://via.placeholder.com/40';
             document.getElementById("myLockedSamityName").innerText = member.name;
             document.getElementById("myLockedSamityPhoneDisplay").innerText = maskPhoneNumber(member.phone);
+            const allowedIds = Number((samityConfig.memberIdQuotas && samityConfig.memberIdQuotas[myLockedSamityPhone]) || 1);
+            if (quotaBadge) {
+                quotaBadge.innerText = `অনুমোদিত আইডি/নাম: ${allowedIds}টি`;
+            }
             const isAllowed = samityAllowedStatus[myLockedSamityPhone] === true;
             const dot = document.getElementById("myDotIndicator");
             dot.style.background = isAllowed ? "#22c55e" : "#ef4444";
             dot.style.boxShadow = isAllowed ? "0 0 8px #22c55e" : "0 0 8px #ef4444";
             evaluateWheelAndActionState();
         }
+
         function to12HourObj(h24, m) {
             const ampm = h24 >= 12 ? "PM" : "AM";
             let h12 = h24 % 12;
@@ -2300,6 +2914,7 @@
         function pad2(n) {
             return String(Math.max(0, Math.floor(n))).padStart(2, '0');
         }
+
         function updateScheduleCountdown() {
             const badge = document.getElementById("drawCountdownBadge");
             if (!badge) return;
@@ -2360,6 +2975,7 @@
                 badge.style.background = "#1e1b4b";
             }
         }
+
         function isWithinScheduleTime() {
             const now = new Date();
             if (samityConfig.drawDay && samityConfig.drawDay !== "Daily") {
@@ -2376,11 +2992,13 @@
                 return currentTotalMin >= startTotalMin || currentTotalMin <= endTotalMin;
             }
         }
+
         function areAllActiveMembersAllowed() {
             const activeMembers = Object.values(samityApprovedMembers).filter(m => !m.isWinner);
             if (activeMembers.length === 0) return false;
             return activeMembers.every(m => samityAllowedStatus[m.phone] === true);
         }
+
         function evaluateWheelAndActionState() {
             const infoBox = document.getElementById("wheelStatusInfo");
             const actionBtn = document.getElementById("btnMySamityMainAction");
@@ -2452,6 +3070,7 @@
                 }
             }
         }
+
         async function handleMainPermissionAndSpinButton() {
             const inSchedule = isWithinScheduleTime();
             if (!inSchedule) {
@@ -2476,10 +3095,12 @@
                 showToast("⏳ আপনি ইতিমধ্যে Allow দিয়েছেন। সবার জন্য ধৈর্য ধরে অপেক্ষা করুন।", "info");
                 return;
             }
+            const allowedCountForUser = Number((samityConfig.memberIdQuotas && samityConfig.memberIdQuotas[myLockedSamityPhone]) || 1);
             await db.ref('tanSamity/allowedStatus/' + myLockedSamityPhone).set(true);
             playVoiceMessage("ধন্যবাদ। একটু ধৈর্য ধরুন, সবাই পারমিশন দিলে স্পিন করার জন্য সম্পূর্ণ হবে।", true);
-            showToast("✅ ধন্যবাদ! আপনার পারমিশন গৃহীত হয়েছে। চাইলে নিচের বাটন থেকে WhatsApp অডিও কলে জয়েন হতে পারেন।", "success");
+            showToast(`✅ ধন্যবাদ! আপনার ফোনের ${allowedCountForUser}টি আইডি/নাম Allow হয়েছে।`, "success");
         }
+
         function handleSpinTriggerClick() {
             triggerLiveWheelSpin();
         }
@@ -2566,6 +3187,7 @@
                 winner: { name: winnerMember.name, phone: winnerMember.phone, photo: winnerMember.photo || 'https://via.placeholder.com/90', weeklyPaid: Number(winnerMember.weeklyPaid || 0) }
             });
         }
+
         function runSynchronizedWheelAnimation(spinData) {
             isSpinningWheel = true;
             if (winnerClearTimeout) clearTimeout(winnerClearTimeout);
@@ -2600,6 +3222,7 @@
             }
             requestAnimationFrame(frame);
         }
+
         function scheduleWinnerMonitorAutoClear() {
             if (winnerClearTimeout) clearTimeout(winnerClearTimeout);
             winnerClearTimeout = setTimeout(async () => {
@@ -2608,6 +3231,7 @@
                 await db.ref('tanSamity/liveSpin').remove();
             }, 12000);
         }
+
         async function finalizeSpinWinner(spinData) {
             const winner = spinData.winner;
             const isOfficial = spinData.isOfficial === true && isWithinScheduleTime();
@@ -2639,12 +3263,16 @@
                 await db.ref('tanSamity/allowedStatus/' + winner.phone).set(false);
             }
             if (samityConfig.forcedWinner) await db.ref('tanSamity/config/forcedWinner').set("");
-            await db.ref('tanSamity/config/paidListClearTimestamp').set(Date.now() + 300000); 
+            await db.ref('tanSamity/config').update({
+                paidListClearTimestamp: Date.now() + 300000,
+                lastOfficialWinnerTimestamp: Date.now()
+            });
             updateSamityStatusBar();
             renderSamityMembersList();
             renderDualPaymentLists();
             scheduleWinnerMonitorAutoClear();
         }
+
         function showWheelWinnerMonitor(winner) {
             const monitor = document.getElementById("wheelWinnerMonitor");
             document.getElementById("winnerMonitorBadge").innerText = "🎉 বিজয়ী 🎉";
@@ -2654,6 +3282,7 @@
             document.getElementById("monitorWinnerSub").innerText = "আসসালামু আলাইকুম! ভাইজান আপনি বিজয়ী হয়েছেন। কংগ্রাচুলেশন!";
             monitor.style.display = "flex";
         }
+
         function showInsufficientBalanceWinnerMonitor(winner, requiredQuota) {
             const monitor = document.getElementById("wheelWinnerMonitor");
             document.getElementById("winnerMonitorBadge").innerText = "⚠️ সতর্কতা ⚠️";
@@ -2663,6 +3292,7 @@
             document.getElementById("monitorWinnerSub").innerText = `নির্ধারিত ৳${requiredQuota} বাকি থাকায় পুনরায় স্পিন হবে!`;
             monitor.style.display = "flex";
         }
+
         function renderAdminIndividualWheelPermissions() {
             const container = document.getElementById("adminIndividualWheelPermissionsList");
             if (!container) return;
@@ -2691,21 +3321,24 @@
             });
             container.innerHTML = html;
         }
+
         async function toggleSingleMemberWheelAllow(phone) {
             const current = samityAllowedStatus[phone] === true;
             await db.ref('tanSamity/allowedStatus/' + phone).set(!current);
             showToast(!current ? "✅ গ্রীন বাতি (Allow) দেওয়া হয়েছে!" : "🔴 লাল বাতি করা হয়েছে।", "info");
         }
+
         async function adminResetRoundPermissions() {
             await db.ref('tanSamity/allowedStatus').remove();
             await db.ref('tanSamity/liveSpin').remove();
-            await db.ref('tanSamity/config').update({ isWheelLocked: false, paidListClearTimestamp: 0 });
+            await db.ref('tanSamity/config').update({ isWheelLocked: false, paidListClearTimestamp: 0, lastOfficialWinnerTimestamp: 0 });
             lastHandledSpinId = "";
             lastOfficialAnnounced = false;
             document.getElementById("wheelWinnerMonitor").style.display = "none";
             drawWheel(0);
             showToast("🔄 নতুন ড্র-এর জন্য পারমিশন রিসেট ও হুইল আনলক হয়েছে!", "success");
         }
+
         function switchSamityTab(tab) {
             document.getElementById("tabSamityMembers").classList.toggle("active", tab === 'members');
             document.getElementById("tabSamityPay").classList.toggle("active", tab === 'pay');
@@ -2713,12 +3346,44 @@
             document.getElementById("samityMembersSection").style.display = tab === 'members' ? 'block' : 'none';
             document.getElementById("samityPaySection").style.display = tab === 'pay' ? 'block' : 'none';
             document.getElementById("samityRegSection").style.display = tab === 'reg' ? 'block' : 'none';
+            if (tab === 'reg') updateSamityRegistrationStatusUI();
         }
         function switchSamityPayTab() { switchSamityTab('pay'); }
         function switchSamityRegTab() { switchSamityTab('reg'); }
+
         function updateSamityRegSectionUI() {
             const formContainer = document.getElementById("samityRegFormContainer");
             const noticeText = document.getElementById("samityRegNoticeText");
+            const statusCard = document.getElementById("samitySubmittedStatusCard");
+            const trackedPhone = myLockedSamityPhone || localStorage.getItem("lastSamityRegPhone") || "";
+
+            if (trackedPhone && samityApprovedMembers[trackedPhone]) {
+                if (formContainer) formContainer.style.display = "none";
+                if (statusCard) {
+                    statusCard.style.display = "block";
+                    statusCard.innerHTML = `<strong style="color:#065f46; font-size:12px;">✅ আপনার আবেদন অ্যাপ্রুভ হয়েছে!</strong><p style="font-size:11px; color:#047857; margin-top:3px;">অনুমোদিত হওয়ার পর এই ফর্ম থেকে আর পুনরায় আবেদন বা এডিট করা যাবে না (অ্যাডমিন ডিলিট না করা পর্যন্ত)।</p>`;
+                }
+                return;
+            }
+
+            if (trackedPhone && samityPendingMembers[trackedPhone]) {
+                const pend = samityPendingMembers[trackedPhone];
+                if (formContainer) formContainer.style.display = "none";
+                if (statusCard) {
+                    statusCard.style.display = "block";
+                    statusCard.innerHTML = `
+                        <strong style="color:#b45309; font-size:12px;">⏳ আপনি আবেদন করেছেন, একটু ধৈর্য ধরুন!</strong>
+                        <p style="font-size:11px; color:#78350f; margin:3px 0 6px;">অ্যাডমিন প্যানেল থেকে অ্যাপ্রুভ করলে আপনি পারমিশন পাবেন। প্রয়োজন হলে নাম, ফোন নম্বর বা ছবি এডিট করতে পারেন:</p>
+                        <div style="font-size:11px; background:#fff; padding:6px; border-radius:6px; border:1px solid #fcd34d; margin-bottom:6px;">
+                            নাম: <strong>${pend.name}</strong> | ফোন: <strong>${pend.phone}</strong>
+                        </div>
+                        <button class="btn btn-warning btn-xs" onclick="openPendingSamityEdit('${trackedPhone}')">✏️ আবেদন এডিট করুন</button>
+                    `;
+                }
+                return;
+            }
+
+            if (statusCard) statusCard.style.display = "none";
             if (samityConfig.registrationOpen === false) {
                 formContainer.style.display = "none";
                 noticeText.innerHTML = `⚠️ বর্তমানে টান সমিতির খেলা রানিং চলায় নতুন রেজিস্ট্রেশন বন্ধ রয়েছে।`;
@@ -2729,6 +3394,21 @@
                 noticeText.style.color = "#92400e";
             }
         }
+
+        function updateSamityRegistrationStatusUI() {
+            updateSamityRegSectionUI();
+        }
+
+        function openPendingSamityEdit(phone) {
+            const pend = samityPendingMembers[phone];
+            if (!pend) return;
+            editingPendingSamityPhone = phone;
+            document.getElementById("samityRegName").value = pend.name || "";
+            document.getElementById("samityRegPhone").value = pend.phone || "";
+            document.getElementById("samityRegFormContainer").style.display = "block";
+            showToast("✏️ নাম, ফোন নম্বর বা ছবি পরিবর্তন করে পুনরায় সাবমিট করুন।", "info");
+        }
+
         function updateSamityStatusBar() {
             const members = Object.values(samityApprovedMembers);
             let winners = 0;
@@ -2738,6 +3418,7 @@
             document.getElementById("cntCompletedGames").innerText = winners;
             document.getElementById("cntRemainingGames").innerText = Math.max(0, members.length - winners);
         }
+
         function calculateSevenDaysQuota(weeklyPaid) {
             let remaining = Number(weeklyPaid) || 0; 
             const daily = getRequiredDrawQuota();
@@ -2749,6 +3430,7 @@
             }
             return days;
         }
+
         function renderSevenDaysGridHTML(weeklyPaid) {
             const quotas = calculateSevenDaysQuota(weeklyPaid);
             const daily = getRequiredDrawQuota();
@@ -2762,6 +3444,7 @@
                 </div>
             `;
         }
+
         function toggleMemberQuotaView(phone) {
             expandedSamityMemberPhone = (expandedSamityMemberPhone === phone) ? null : phone;
             renderSamityMembersList();
@@ -2804,23 +3487,48 @@
         }
         
         async function registerTanSamityMember() {
-            if (samityConfig.registrationOpen === false) { showToast("🚫 রেজিস্ট্রেশন বন্ধ রয়েছে!", "error"); return; }
             const name = document.getElementById("samityRegName").value.trim();
             const phone = document.getElementById("samityRegPhone").value.trim().replace(/[^0-9]/g, '');
             const photoFile = document.getElementById("samityRegPhoto").files[0];
-            if (!name || !phone || !photoFile || phone.length < 11) { showToast("⚠️ সঠিক তথ্য এবং ছবি দিন।", "error"); return; }
-            if (samityApprovedMembers[phone] || samityPendingMembers[phone]) { showToast("⏳ এই নম্বরটি ইতিমধ্যে রেজিস্টার্ড বা পেন্ডিং আছে।", "info"); return; }
-            const base64Img = await compressImageToBase64(photoFile, 220);
-            await db.ref('tanSamity/pendingMembers/' + phone).set({ name, phone, photo: base64Img, appliedAt: Date.now() });
-            
+
+            if (samityApprovedMembers[phone] || (editingPendingSamityPhone && samityApprovedMembers[editingPendingSamityPhone])) {
+                showToast("🚫 এই আবেদনটি ইতিমধ্যে অ্যাপ্রুভ হয়ে গেছে, আর আবেদন বা এডিট করা যাবে না!", "error");
+                updateSamityRegSectionUI();
+                return;
+            }
+
+            if (samityConfig.registrationOpen === false && !editingPendingSamityPhone) {
+                showToast("🚫 রেজিস্ট্রেশন বন্ধ রয়েছে!", "error");
+                return;
+            }
+
+            const existingPending = editingPendingSamityPhone ? samityPendingMembers[editingPendingSamityPhone] : samityPendingMembers[phone];
+            if (!name || !phone || phone.length < 11 || (!photoFile && !existingPending?.photo)) {
+                showToast("⚠️ সঠিক তথ্য এবং ছবি দিন।", "error");
+                return;
+            }
+
+            if (samityPendingMembers[phone] && !editingPendingSamityPhone) {
+                showToast("⏳ এই নম্বরটির আবেদন ইতিমধ্যে জমা আছে। ধৈর্য ধরুন।", "info");
+                localStorage.setItem("lastSamityRegPhone", phone);
+                updateSamityRegSectionUI();
+                return;
+            }
+
+            const base64Img = photoFile ? await compressImageToBase64(photoFile, 220) : existingPending.photo;
+            if (editingPendingSamityPhone && editingPendingSamityPhone !== phone) {
+                await db.ref('tanSamity/pendingMembers/' + editingPendingSamityPhone).remove();
+            }
+            await db.ref('tanSamity/pendingMembers/' + phone).set({ name, phone, photo: base64Img, appliedAt: existingPending?.appliedAt || Date.now(), updatedAt: Date.now() });
+            editingPendingSamityPhone = null;
+            localStorage.setItem("lastSamityRegPhone", phone);
             myLockedSamityPhone = phone;
             localStorage.setItem("lockedSamityPhone", phone);
-            document.getElementById("samityRegName").value = "";
-            document.getElementById("samityRegPhone").value = "";
             document.getElementById("samityRegPhoto").value = "";
-            showToast("✅ আবেদন সফলভাবে জমা হয়েছে!", "success");
-            switchSamityTab('members');
+            showToast("✅ আবেদন সংরক্ষিত হয়েছে! অ্যাডমিন অনুমোদনের অপেক্ষায় থাকুন।", "success");
+            updateSamityRegSectionUI();
         }
+
         function autoCheckSamityMember(showErrorToast = false) {
             const phone = document.getElementById("samityTargetPhone").value.trim().replace(/[^0-9]/g, '');
             const preview = document.getElementById("samityTargetPreview");
@@ -2836,6 +3544,7 @@
                 if (showErrorToast) showToast("❌ এই নম্বরটি সমিতিতে অনুমোদিত নয়!", "error");
             }
         }
+
         function toggleSenderPhoneInput() {
             const method = document.getElementById("samityPaymentMethod").value;
             const input = document.getElementById("samitySenderPhone");
@@ -2851,6 +3560,7 @@
                 input.placeholder = "018XXXXXXXX (নগদ নম্বর)";
             }
         }
+
         async function submitSamityPayment() {
             const targetPhone = document.getElementById("samityTargetPhone").value.trim().replace(/[^0-9]/g, '');
             const selectedCashierId = document.getElementById("samitySelectedCashierId").value;
@@ -2884,6 +3594,7 @@
             document.getElementById("samityPaySlipPhoto").value = "";
             showToast(`📤 পেমেন্ট তথ্য ক্যাশিয়ারের অনুমোদনের জন্য পাঠানো হয়েছে!`, "success");
         }
+
         function renderSamityRecentRequests() {
             const container = document.getElementById("samityRecentRequests");
             const list = Object.values(samityPendingPayments).slice(-4).reverse();
@@ -2892,6 +3603,7 @@
                 return `• <strong>${r.targetName}</strong> - ৳${r.amount} (${r.paymentMethod || 'bKash'}: ${maskPhoneNumber(r.senderPhone)}) [ক্যাশিয়ার: ${cName} - ${r.status}]`;
             }).join('<br>');
         }
+
         function switchOnlineTab(tab) {
             document.getElementById("tabOnlineEntry").classList.toggle("active", tab === 'entry');
             document.getElementById("tabOnlineReg").classList.toggle("active", tab === 'reg');
@@ -2900,6 +3612,7 @@
             document.getElementById("btnOnlineSubmit").style.display = tab === 'entry' ? 'inline-flex' : 'none';
             document.getElementById("btnRegSubmit").style.display = tab === 'reg' ? 'inline-flex' : 'none';
         }
+
         async function registerNewRider() {
             const name = document.getElementById("regName").value.trim();
             const phone = document.getElementById("regPhone").value.trim().replace(/[^0-9]/g, '');
@@ -2928,6 +3641,7 @@
             showToast("✅ রাইডার রেজিস্ট্রেশন সফল!", "success");
             switchOnlineTab('entry');
         }
+
         function submitOnlineEntry() {
             const inputVal = document.getElementById("loginPhone").value.trim();
             if (!inputVal) { showToast("⚠️ নাম বা নম্বর দিন।", "error"); return; }
@@ -2951,6 +3665,7 @@
             });
             showToast("✅ স্ট্যান্ডে এসে অনলাইন সিরিয়াল যুক্ত হয়েছে!", "success");
         }
+
         function submitManualEntry() {
             const name = document.getElementById("manualRiderName").value.trim();
             if (!name) { showToast("⚠️ নাম লিখুন।", "error"); return; }
@@ -2970,6 +3685,7 @@
             document.getElementById("manualRiderName").value = "";
             showToast("✅ ম্যানুয়াল সিরিয়াল যুক্ত হয়েছে!", "success");
         }
+
         async function submitGlobalMasterManualEntry() {
             const name = document.getElementById("globalMasterManualName").value.trim();
             if (!name) { showToast("⚠️ রাইডারের নাম লিখুন।", "error"); return; }
@@ -2984,6 +3700,7 @@
             document.getElementById("globalMasterManualName").value = "";
             showToast("✅ দূরবর্তী স্থান থেকে সফলভাবে ম্যানুয়াল সিরিয়াল যুক্ত করা হয়েছে!", "success");
         }
+
         async function cutSerial(serialId) {
             const item = activeSerials[serialId];
             if (!item) return;
@@ -3000,12 +3717,14 @@
             await db.ref('cutHistory').push({ targetName: item.name, cutterName, reason: `স্ট্যান্ডে নেই (${cutMinutes} মিনিট কাউন্টডাউন)`, timestamp: Date.now() });
             showToast(`✂️ স্ট্যান্ডে না থাকায় ${cutMinutes} মিনিটের কাউন্টডাউন শুরু হয়েছে!`, "error");
         }
+
         async function restoreSerial(serialId) {
             const item = activeSerials[serialId];
             if (!item) return;
             await db.ref('activeSerials/' + serialId).update({ cutUntil: null, cutBy: null, reason: null });
             showToast("✅ সফলভাবে সিরিয়াল ফিরিয়ে আনা হয়েছে!", "success");
         }
+
         async function toggleRiderBreak(serialId) {
             const item = activeSerials[serialId];
             if (!item) return;
@@ -3033,10 +3752,12 @@
             }
             showToast(`☕ সফলভাবে ${breakMinutes} মিনিটের ব্যক্তিগত বিরতি চালু হয়েছে! সিরিয়াল সুরক্ষিত থাকবে।`, "success");
         }
+
         async function endRiderBreak(serialId) {
             await db.ref('activeSerials/' + serialId).update({ breakUntil: null });
             showToast("✅ বিরতি শেষ করে সিরিয়ালে ফিরে এসেছেন!", "success");
         }
+
         function checkCutCountdowns() {
             const now = Date.now();
             Object.entries(activeSerials).forEach(([id, item]) => {
@@ -3045,6 +3766,7 @@
                 }
             });
         }
+
         function checkBreakCountdowns() {
             const now = Date.now();
             Object.entries(activeSerials).forEach(([id, item]) => {
@@ -3054,14 +3776,17 @@
             });
         }
         setInterval(() => { checkCutCountdowns(); checkBreakCountdowns(); }, 2000);
+
         function getSortedSerials() {
             return Object.entries(activeSerials).map(([id, val]) => ({ id, ...val })).sort((a, b) => a.joinedAt - b.joinedAt);
         }
+
         function formatDuration(ms) {
             if (ms < 0) ms = 0;
             const sec = Math.floor(ms / 1000);
             return `${Math.floor(sec / 3600)}ঘঃ ${Math.floor((sec % 3600) / 60)}মিঃ ${sec % 60}সেঃ`;
         }
+
         function renderSerialList() {
             const container = document.getElementById("serialListContainer");
             const sorted = getSortedSerials();
@@ -3114,27 +3839,37 @@
             }).join('');
         }
         setInterval(() => { if (Object.keys(activeSerials).length > 0) renderSerialList(); }, 1000);
+
         function openAdminLoginModal() {
             if (currentAdminSession) { openAdminPanelUI(); return; }
+            activeSelectedStaffTarget = { kind: "admin", key: "admin1" };
+            document.getElementById("adminLoginModalTitle").innerText = "🔐 সাব-অ্যাডমিন লগইন";
+            document.getElementById("loginAdminPassword").value = "";
             document.getElementById("adminLoginModal").style.display = "block";
         }
+
         function openMasterAdminPrompt() {
-            document.getElementById("inputMasterPassword").value = "";
+            const inp = document.getElementById("inputMasterPassword");
+            inp.value = "";
             document.getElementById("masterLoginModal").style.display = "block";
+            setTimeout(() => inp.focus(), 100);
         }
-        function verifyMasterPassword() {
+
+        function verifyMasterPassword(isAuto = false) {
             const pass = document.getElementById("inputMasterPassword").value.trim();
             if (pass === masterPasswordStored) {
                 currentAdminSession = "master";
+                document.getElementById("inputMasterPassword").value = "";
                 document.getElementById("masterLoginModal").style.display = "none";
                 document.getElementById("adminModeBar").style.display = "flex";
                 document.getElementById("adminModeBarTitle").innerText = "👑 মাস্টার অ্যাডমিন মোড (ফুল কন্ট্রোল)";
                 openAdminPanelUI();
                 showToast("✅ মাস্টার অ্যাডমিন হিসেবে প্রবেশ সফল হয়েছে!", "success");
-            } else {
+            } else if (!isAuto) {
                 showToast("❌ ভুল মাস্টার পাসওয়ার্ড!", "error");
             }
         }
+
         async function saveNewMasterPassword() {
             const newPass = document.getElementById("newMasterPasswordInput").value.trim();
             if (!newPass) { showToast("নতুন পাসওয়ার্ড খালি রাখা যাবে না।", "error"); return; }
@@ -3143,20 +3878,14 @@
             document.getElementById("newMasterPasswordInput").value = "";
             showToast("✅ মাস্টার পাসওয়ার্ড সফলভাবে পরিবর্তিত হয়েছে!", "success");
         }
+
         function submitAdminLogin() {
-            const role = document.getElementById("loginAdminRole").value;
-            const pass = document.getElementById("loginAdminPassword").value.trim();
-            if (subAdminCredentials[role] && subAdminCredentials[role].pass === pass) {
-                currentAdminSession = role;
-                document.getElementById("adminModeBar").style.display = "flex";
-                document.getElementById("adminModeBarTitle").innerText = `🛡️ ${fourAdminProfiles[role]?.name || "অ্যাডমিন"} মোড চালু আছে`;
-                document.getElementById("adminLoginModal").style.display = "none";
-                openAdminPanelUI();
-                showToast(`✅ সফলভাবে লগইন হয়েছে!`, "success");
-            } else {
+            handleAutoAdminPasswordCheck();
+            if (!currentAdminSession) {
                 showToast("❌ ভুল পাসওয়ার্ড!", "error");
             }
         }
+
         async function saveNewSubAdminPassword() {
             const newPass = document.getElementById("newSubAdminPassInput").value.trim();
             if (!newPass || currentAdminSession === "master" || !currentAdminSession) return;
@@ -3165,20 +3894,24 @@
             document.getElementById("newSubAdminPassInput").value = "";
             showToast("✅ আপনার পাসওয়ার্ড সফলভাবে পরিবর্তিত হয়েছে!", "success");
         }
+
         function logoutAdminMode() {
             currentAdminSession = null;
             document.getElementById("adminModeBar").style.display = "none";
             document.getElementById("adminModal").style.display = "none";
             showToast("অ্যাডমিন প্যানেল থেকে লগআউট করা হয়েছে।", "info");
         }
+
         function openAdminPanelUI() {
             if (!currentAdminSession) return;
             document.getElementById("adminModal").style.display = "block";
             const isMaster = (currentAdminSession === "master");
             const masterBox = document.getElementById("masterOnlyAdminManagementBox");
             const subPassBox = document.getElementById("subAdminSelfPasswordBox");
+            const audioBox = document.getElementById("adminAudioBroadcastBox");
             masterBox.style.display = isMaster ? "block" : "none";
             subPassBox.style.display = isMaster ? "none" : "block";
+            if (audioBox) audioBox.style.display = "block";
             if (isMaster) { 
                 renderMasterAdminSubPasswordsViewer();
                 applyLotteryAndSerialVisibility();
@@ -3200,6 +3933,8 @@
                 }
             });
             document.getElementById("samityMasterWrapperBox").style.display = anySamityPower ? "block" : "none";
+            renderMembersLiveLocationsMonitor();
+            renderMemberMultiIdQuotaList();
             renderAdminSamityPendingReg();
             renderFourCashierPanels();
             renderCashierTransactionsHistory();
@@ -3209,6 +3944,7 @@
             renderAdminFourRoleProfilesEditor();
             populateSpecialRiderDropdowns();
         }
+
         function renderMasterAdminSubPasswordsViewer() {
             const container = document.getElementById("masterSubAdminPasswordsViewerContainer");
             if (!container) return;
@@ -3232,6 +3968,7 @@
             });
             container.innerHTML = html;
         }
+
         function openSubAdminPowerModal(role) {
             const cred = subAdminCredentials[role] || { pass: "", assignedPowers: [] };
             const assigned = cred.assignedPowers || [];
@@ -3252,9 +3989,11 @@
             document.getElementById("modalPowerCheckboxesList").innerHTML = checkboxesHtml;
             document.getElementById("subAdminPowerModal").style.display = "block";
         }
+
         function toggleAllPowerCheckboxes(state) {
             document.querySelectorAll(".modal-power-chk").forEach(cb => cb.checked = state);
         }
+
         async function saveModalSubAdminPowers() {
             const role = document.getElementById("editingSubAdminRole").value;
             const newPass = document.getElementById("modalSubAdminPassInput").value.trim();
@@ -3270,6 +4009,7 @@
             renderMasterAdminSubPasswordsViewer();
             showToast(`✅ কাজের সীমানা ও পাসওয়ার্ড সফলভাবে সেভ হয়েছে!`, "success");
         }
+
         function masterLoginAsSubAdmin(role, pass) {
             currentAdminSession = role;
             document.getElementById("adminModeBar").style.display = "flex";
@@ -3277,16 +4017,20 @@
             openAdminPanelUI();
             showToast(`✅ সফলভাবে প্যানেলে প্রবেশ করা হয়েছে!`, "success");
         }
+
         function closeAdminModal() { document.getElementById("adminModal").style.display = "none"; }
+
         async function saveDailyQuota() {
             const val = Number(document.getElementById("adminDailyQuotaInput").value);
             if (val > 0) { await db.ref('tanSamity/config/dailyQuota').set(val); showToast("✅ নির্ধারিত ড্র এমাউন্ট সেভ হয়েছে!", "success"); }
         }
+
         async function saveAdminForcedWinner() {
             const phone = document.getElementById("adminForcedWinnerPhone").value.trim().replace(/[^0-9]/g, '');
             await db.ref('tanSamity/config/forcedWinner').set(phone);
             showToast(phone ? `✅ উইনার সেট হয়েছে: ${phone}` : "✅ র‍্যান্ডম ড্র সেট হয়েছে!", "success");
         }
+
         async function saveAdminDrawSchedule() {
             const drawDay = document.getElementById("adminDrawDay").value;
             const sStr = document.getElementById("adminStartTimeInput").value;
@@ -3301,6 +4045,7 @@
             updateScheduleCountdown();
             showToast(`✅ ড্র শিডিউল সেভ হয়েছে (${sStr} ${sAmPm} - ${eStr} ${eAmPm})!`, "success");
         }
+
         async function toggleSamityRegStatus(cb) { await db.ref('tanSamity/config/registrationOpen').set(cb.checked); }
         
         async function recordCashierHistoryLog(logObj) {
@@ -3309,11 +4054,12 @@
                 timestamp: Date.now()
             });
         }
+
         function renderFourCashierPanels() {
             const pendingList = Object.entries(samityPendingPayments).filter(([k, r]) => r.status === 'pending');
             const membersList = Object.values(samityApprovedMembers);
             ALL_CASHIER_IDS.forEach((cid, idx) => {
-                const cData = fourCashiersData[cid] || { roleTitle: idx === 0 ? "প্রধান ক্যাশিয়ার" : "ক্যাশিয়ার", name: "", phone: "", photo: "", active: true, balance: 0 };
+                const cData = fourCashiersData[cid] || { roleTitle: "ক্যাশিয়ার", name: "", phone: "", photo: "", active: true, balance: 0 };
                 const currentBalance = Number(cData.balance || 0);
                 const headerEl = document.getElementById(`cashierBoxHeaderTitle_${cid}`);
                 if (headerEl) {
@@ -3405,6 +4151,7 @@
                 `;
             });
         }
+
         async function transferMoneyBetweenCashiers(fromCid) {
             const toCid = document.getElementById(`transferTargetCashier_${fromCid}`).value;
             const amount = Number(document.getElementById(`transferCashierAmount_${fromCid}`).value);
@@ -3426,6 +4173,7 @@
             document.getElementById(`transferCashierNote_${fromCid}`).value = "";
             showToast(`✅ রিকোয়েস্ট পাঠানো হয়েছে।`, "success");
         }
+
         function renderCashierTransactionsHistory() {
             const container = document.getElementById("cashierTransactionsHistoryList");
             const summaryBar = document.getElementById("cashierTotalSummaryBar");
@@ -3479,29 +4227,34 @@
                 `;
             }).join('');
         }
+
         async function clearAllCashierHistory() {
             if (confirm("ইতিহাস মুছে ফেলতে চান?")) {
                 await db.ref('tanSamity/cashierHistory').remove();
                 showToast("🗑️ ইতিহাস মুছে ফেলা হয়েছে।", "info");
             }
         }
+
         async function saveSingleCashierConfig(cid) {
-            const roleTitle = document.getElementById(`cashierRole_${cid}`).value.trim();
+            const roleTitle = document.getElementById(`cashierRole_${cid}`).value.trim() || "ক্যাশিয়ার";
             const name = document.getElementById(`cashierName_${cid}`).value.trim();
             const phone = document.getElementById(`cashierPhone_${cid}`).value.trim();
             const active = document.getElementById(`cashierActive_${cid}`).checked;
             const photoFile = document.getElementById(`cashierPhotoFile_${cid}`).files[0];
             let photoBase64 = fourCashiersData[cid]?.photo || '';
             const existingBalance = Number(fourCashiersData[cid]?.balance || 0);
+            const existingPass = fourCashiersData[cid]?.customPass || "";
             if (photoFile) {
                 photoBase64 = await compressImageToBase64(photoFile, 200);
             }
-            fourCashiersData[cid] = { roleTitle, name, phone, photo: photoBase64, active, balance: existingBalance };
+            fourCashiersData[cid] = { roleTitle, name, phone, photo: photoBase64, active, balance: existingBalance, customPass: existingPass };
             await db.ref('standConfig/fourCashiers').set(fourCashiersData);
             renderCashierPaymentCard();
             renderFourCashierPanels();
+            renderBottomStaffRoleList();
             showToast(`✅ ক্যাশিয়ারের তথ্য সেভ হয়েছে!`, "success");
         }
+
         async function processCashierDirectCash(cid, mode) {
             const memberPhone = document.getElementById(`cashDirectMember_${cid}`).value;
             const amt = Number(document.getElementById(`cashDirectAmount_${cid}`).value);
@@ -3531,6 +4284,7 @@
             document.getElementById(`cashDirectAmount_${cid}`).value = "";
             showToast("✅ সফলভাবে আপডেট হয়েছে!", "success");
         }
+
         function renderAdminFourRoleProfilesEditor() {
             const container = document.getElementById("adminFourRoleProfilesEditorContainer");
             if (!container) return;
@@ -3563,8 +4317,9 @@
             });
             container.innerHTML = html;
         }
+
         async function saveSingleRoleAdminProfile(role) {
-            const roleTitle = document.getElementById(`editAdminRoleTitle_${role}`).value.trim();
+            const roleTitle = document.getElementById(`editAdminRoleTitle_${role}`).value.trim() || "এডমিন";
             const name = document.getElementById(`editAdminName_${role}`).value.trim();
             const phone = document.getElementById(`editAdminPhone_${role}`).value.trim();
             const photoFile = document.getElementById(`editAdminPhotoFile_${role}`).files[0];
@@ -3575,10 +4330,11 @@
             }
             fourAdminProfiles[role] = { name, roleTitle, phone, photo: photoBase64 };
             await db.ref('standConfig/fourAdminProfiles').set(fourAdminProfiles);
-            updateAdminRoleUIElements();
+            renderBottomStaffRoleList();
             renderDigitalMonitorMarquee();
             showToast(`✅ সেভ হয়েছে!`, "success");
         }
+
         function renderAdminSamityPendingReg() {
             const list = Object.entries(samityPendingMembers);
             document.getElementById("adminSamityPendingRegList").innerHTML = list.length === 0 ? "কোনো পেন্ডিং আবেদন নেই।" : list.map(([phone, m]) => `
@@ -3591,6 +4347,7 @@
                 </div>
             `).join('');
         }
+
         async function approveSamityMember(phone) {
             const m = samityPendingMembers[phone];
             if (!m) return;
@@ -3598,12 +4355,14 @@
             await db.ref('tanSamity/pendingMembers/' + phone).remove();
             showToast("✅ অনুমোদন দেওয়া হয়েছে!", "success");
         }
+
         async function rejectSamityMember(phone) {
             if (confirm("ডিলিট করতে চান?")) {
                 await db.ref('tanSamity/pendingMembers/' + phone).remove();
                 showToast("বাতিল করা হয়েছে।", "info");
             }
         }
+
         async function approveSamityPayment(key) {
             const r = samityPendingPayments[key];
             if (!r) return;
@@ -3656,10 +4415,12 @@
                 showToast("✅ পেমেন্ট রিসিভড ও অ্যাপ্রুভড!", "success");
             }
         }
+
         async function rejectSamityPayment(key) {
             await db.ref('tanSamity/pendingPayments/' + key).update({ status: 'rejected' });
             showToast("বাতিল করা হয়েছে।", "info");
         }
+
         function renderAdminSamityApprovedListSingleBox() {
             const list = Object.values(samityApprovedMembers);
             const container = document.getElementById("adminSingleBoxMemberManagement");
@@ -3683,6 +4444,7 @@
                 </div>
             `).join('');
         }
+
         async function deleteSamityMember(phone) {
             if (confirm("ডিলিট করতে চান?")) {
                 await db.ref('tanSamity/approvedMembers/' + phone).remove();
@@ -3690,11 +4452,13 @@
                 showToast("✅ ডিলিট সফল!", "success");
             }
         }
+
         function openSamityEditPhotoModal(phone) {
             document.getElementById("editPhotoSamityPhone").value = phone;
             document.getElementById("samityNewPhotoOnly").value = "";
             document.getElementById("samityEditPhotoModal").style.display = "block";
         }
+
         async function saveSamityPhotoOnly() {
             const phone = document.getElementById("editPhotoSamityPhone").value;
             const photoFile = document.getElementById("samityNewPhotoOnly").files[0];
@@ -3704,6 +4468,7 @@
             document.getElementById("samityEditPhotoModal").style.display = "none";
             showToast("✅ ছবি আপডেট হয়েছে!", "success");
         }
+
         function openSamityEditInfoModal(phone) {
             const m = samityApprovedMembers[phone];
             if (!m) return;
@@ -3712,6 +4477,7 @@
             document.getElementById("samityEditPhoneInput").value = m.phone;
             document.getElementById("samityEditInfoModal").style.display = "block";
         }
+
         async function saveSamityInfoChanges() {
             const oldPhone = document.getElementById("editInfoOldPhone").value;
             const newName = document.getElementById("samityEditNameInput").value.trim();
@@ -3730,12 +4496,14 @@
             document.getElementById("samityEditInfoModal").style.display = "none";
             showToast("✅ আপডেট সফল!", "success");
         }
+
         function openSamityAdjustModal(phone) {
             const m = samityApprovedMembers[phone];
             document.getElementById("samityAdjPhone").value = phone;
             document.getElementById("samityAdjInfo").innerHTML = `<strong>${m ? m.name : phone}</strong> | বর্তমান জমা: <strong>৳${m ? (m.weeklyPaid || 0) : 0}</strong>`;
             document.getElementById("samityAdjustModal").style.display = "block";
         }
+
         async function applySamityMoneyChange(type) {
             const phone = document.getElementById("samityAdjPhone").value;
             const amt = Number(document.getElementById("samityAdjAmount").value);
@@ -3746,12 +4514,13 @@
             document.getElementById("samityAdjustModal").style.display = "none";
             showToast("✅ সফল!", "success");
         }
+
         async function resetAllMembersNewWeek() {
             if (confirm("সব সদস্যের জমার টাকা ও বিজয়ী স্ট্যাটাস রিসেট করতে চান?")) {
                 const updates = {};
                 Object.keys(samityApprovedMembers).forEach(phone => { updates[phone + '/weeklyPaid'] = 0; updates[phone + '/isWinner'] = false; });
                 await db.ref('tanSamity/approvedMembers').update(updates);
-                await db.ref('tanSamity/config').update({ isWheelLocked: false, paidListClearTimestamp: 0 });
+                await db.ref('tanSamity/config').update({ isWheelLocked: false, paidListClearTimestamp: 0, lastOfficialWinnerTimestamp: 0 });
                 await db.ref('tanSamity/allowedStatus').remove();
                 await db.ref('tanSamity/liveSpin').remove();
                 lastHandledSpinId = "";
@@ -3760,6 +4529,7 @@
                 showToast("🔄 রিসেট সম্পন্ন!", "success");
             }
         }
+
         function renderAdminRegisteredListsCombined() {
             const list = Object.entries(registeredRiders);
             const combinedContainer = document.getElementById("adminRegisteredListCombinedEdit");
@@ -3794,6 +4564,7 @@
                 `).join('');
             }
         }
+
         function openEditRiderCombinedModal(k) {
             const r = registeredRiders[k];
             if (!r) return;
@@ -3803,6 +4574,7 @@
             document.getElementById("editRiderCombinedPhoto").value = "";
             document.getElementById("editRiderCombinedModal").style.display = "block";
         }
+
         async function saveRiderCombinedChanges() {
             const k = document.getElementById("editRiderCombinedKey").value;
             const newName = document.getElementById("editRiderCombinedName").value.trim();
@@ -3819,10 +4591,12 @@
             document.getElementById("editRiderCombinedModal").style.display = "none";
             showToast("✅ রাইডারের তথ্য আপডেট হয়েছে!", "success");
         }
+
         async function toggleSuspendRider(k, status) {
             await db.ref('registeredRiders/' + k + '/isSuspended').set(status);
             showToast(status ? "🚫 সাসপেন্ড করা হয়েছে!" : "✅ আনসাসপেন্ড করা হয়েছে!", status ? "error" : "success");
         }
+
         function populateSpecialRiderDropdowns() {
             const list = Object.entries(registeredRiders);
             const optionsHtml = `<option value="">-- রাইডার বেছে নিন --</option>` + list.map(([k, r]) => `<option value="${k}">${r.name}</option>`).join('');
@@ -3839,6 +4613,7 @@
                 if (cur16 && registeredRiders[cur16]) sel16.value = cur16;
             }
         }
+
         function loadSelectedRiderBreakValues() {
             const key = document.getElementById("specialRiderSelect15").value;
             if (!key || !registeredRiders[key]) return;
@@ -3847,6 +4622,7 @@
             document.getElementById("quickSpBreakDailyLimit").value = r.breakDailyLimit || 2;
             document.getElementById("quickSpBreakAllowed").checked = r.breakAllowed || false;
         }
+
         async function saveQuickBreakPower() {
             const key = document.getElementById("specialRiderSelect15").value;
             if (!key) { showToast("⚠️ রাইডার সিলেক্ট করুন!", "error"); return; }
@@ -3857,12 +4633,14 @@
             });
             showToast("✅ বিরতি পাওয়ার সেভ হয়েছে!", "success");
         }
+
         async function adminResetRiderBreakUsage15() {
             const key = document.getElementById("specialRiderSelect15").value;
             if (!key) { showToast("⚠️ রাইডার সিলেক্ট করুন!", "error"); return; }
             await db.ref('registeredRiders/' + key + '/todayBreakCount').set(0);
             showToast("🔄 বিরতি কাউন্ট জিরো হয়েছে!", "success");
         }
+
         function loadSelectedRiderDistanceValues() {
             const key = document.getElementById("specialRiderSelect16").value;
             if (!key || !registeredRiders[key]) return;
@@ -3871,6 +4649,7 @@
             document.getElementById("quickSpDist").value = r.customDistMeters || 200;
             document.getElementById("quickSpGlobalPower").checked = r.hasGlobalPower || false;
         }
+
         async function saveQuickDistancePower() {
             const key = document.getElementById("specialRiderSelect16").value;
             if (!key) { showToast("⚠️ রাইডার সিলেক্ট করুন!", "error"); return; }
@@ -3881,6 +4660,7 @@
             });
             showToast("⚡ পাওয়ার সেভ হয়েছে!", "success");
         }
+
         async function saveLeadersInfo() {
             const chiefName = document.getElementById("admChiefName").value.trim() || standLeadersData.chiefName;
             const presName = document.getElementById("admPresName").value.trim() || standLeadersData.presName;
@@ -3898,6 +4678,7 @@
             await db.ref('standConfig/leaders').set({ chiefName, chiefPhoto, presName, presPhoto, vpName, vpPhoto, secName, secPhoto });
             showToast("✅ সভাপতি প্যানেল সেভ হয়েছে!", "success");
         }
+
         async function saveNoticeBoard() {
             const text = document.getElementById("admNoticeText").value.trim();
             const photoFile = document.getElementById("admNoticePhoto").files[0];
@@ -3906,6 +4687,7 @@
             await db.ref('standConfig/notice').update(updates);
             showToast("📢 নোটিশ প্রকাশিত হয়েছে!", "success");
         }
+
         function saveStandName() { db.ref('standConfig/name').set(document.getElementById("adminStandName").value.trim()); showToast("✅ নাম সেভ হয়েছে!", "success"); }
         function toggleGpsSetButton() { document.getElementById("btnSetStandGps").disabled = !document.getElementById("gpsUnlockSwitch").checked; }
         function setStandCurrentLocation() {
