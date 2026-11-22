@@ -538,6 +538,34 @@
             line-height: 1.25;
             text-align: center;
         }
+        /* ইউজারের জন্য ক্যাশিয়ার মাইনাস অ্যাপ্রুভাল কার্ড */
+        .user-minus-approval-box {
+            flex: 1;
+            background: #fff1f2;
+            border: 1.5px solid #ef4444;
+            border-radius: 8px;
+            padding: 5px 6px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 4px;
+        }
+        .user-minus-approval-title {
+            font-size: 10px;
+            font-weight: 700;
+            color: #991b1b;
+            line-height: 1.2;
+            text-align: center;
+        }
+        .user-minus-approval-btns {
+            display: flex;
+            gap: 4px;
+        }
+        .user-minus-approval-btns .btn {
+            padding: 4px 5px;
+            font-size: 10.5px;
+            flex: 1;
+        }
         .btn-whatsapp-inline {
             background: linear-gradient(135deg, #059669, #16a34a);
             color: #ffffff;
@@ -641,32 +669,6 @@
         .reg-rider-row { display: flex; align-items: center; justify-content: space-between; background: white; padding: 8px; border-radius: 8px; border: 1px solid #e2e8f0; margin-bottom: 6px; gap: 6px; flex-wrap: wrap; }
         .special-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; margin: 8px 0; }
         
-        .admin-horiz-nav-grid {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 5px;
-            background: #eef2ff;
-            border: 1.5px solid #c7d2fe;
-            padding: 8px;
-            border-radius: 10px;
-            margin-bottom: 10px;
-        }
-        .admin-horiz-nav-btn {
-            background: #ffffff;
-            border: 1px solid #a5b4fc;
-            color: #1e1b4b;
-            padding: 5px 8px;
-            border-radius: 7px;
-            font-size: 11px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.15s;
-        }
-        .admin-horiz-nav-btn.active {
-            background: #4f46e5;
-            color: #ffffff;
-            border-color: #312e81;
-        }
         .admin-pay-card {
             background: #fff;
             border: 1px solid #cbd5e1;
@@ -769,6 +771,47 @@
             border-radius: 8px;
             padding: 8px;
             margin-bottom: 8px;
+        }
+        /* ক্যাশিয়ার সদস্য সিলেক্টর বাটন ও ড্রপডাউন তালিকা */
+        .cashier-member-picker-btn {
+            width: 100%;
+            background: #ffffff;
+            border: 1.5px solid #94a3b8;
+            border-radius: 8px;
+            padding: 6px 8px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            cursor: pointer;
+            text-align: left;
+            margin-bottom: 6px;
+        }
+        .cashier-member-picker-list {
+            display: none;
+            max-height: 190px;
+            overflow-y: auto;
+            background: #ffffff;
+            border: 1.5px solid #cbd5e1;
+            border-radius: 8px;
+            padding: 5px;
+            margin-bottom: 6px;
+        }
+        .cashier-member-option-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            padding: 6px 8px;
+            border-radius: 7px;
+            border: 1px solid #e2e8f0;
+            margin-bottom: 4px;
+            cursor: pointer;
+            background: #f8fafc;
+        }
+        .cashier-member-option-row.selected {
+            background: #dcfce7;
+            border-color: #16a34a;
         }
     </style>
 </head>
@@ -926,6 +969,8 @@
                     </div>
                     <div class="unified-action-row" id="unifiedActionButtonsRow">
                         <button type="button" id="btnMySamityMainAction" class="btn btn-success" style="flex: 1;" onclick="handleMainPermissionAndSpinButton()">🎡 ফ্রি স্পিন করুন</button>
+                        <!-- পরিবর্তন ৪: ক্যাশিয়ার মাইনাস রিকোয়েস্ট থাকলে বাটনটি অর্ধেক হয়ে এখানে অ্যাপ্রুভ ও ডিলিট বাটন আসবে -->
+                        <div id="userMinusApprovalSlot" class="user-minus-approval-box" style="display: none;"></div>
                         <button type="button" id="btnInlineMusicAction" class="btn btn-purple" style="display: none; flex: 1;" onclick="toggleUserMusicPreference()">🎵 মিউজিক শুনুন</button>
                         <button type="button" id="btnInlineWhatsappAction" class="btn btn-whatsapp-inline" style="display: none; flex: 1;" onclick="openWhatsAppGroupSafely()">📞 WhatsApp</button>
                     </div>
@@ -1200,7 +1245,7 @@
                 <h3 id="adminModalMainTitle" style="color: var(--primary); font-size: 16px;">🛡️ অ্যাডমিন কন্ট্রোল প্যানেল</h3>
                 <button class="btn btn-danger btn-xs" onclick="closeAdminModal()">✖ বন্ধ করুন</button>
             </div>
-            <div id="adminHorizontalNavButtons" class="admin-horiz-nav-grid"></div>
+            <!-- পরিবর্তন ১: উপরের সিরিয়াল বাটন তালিকা সম্পূর্ণ বাতিল করা হয়েছে -->
             <div id="subAdminSelfPasswordBox" class="admin-box" style="background: #f0fdf4; border: 1.5px solid #10b981; display: none;">
                 <h4 style="color: #047857;">🔑 পাসওয়ার্ড পরিবর্তন</h4>
                 <div style="display: flex; gap: 6px;">
@@ -1351,7 +1396,7 @@
                 </div>
                 <div class="admin-box" id="powerSec_cashier1" style="background: #f0fdf4; border: 1.5px solid #10b981; margin-bottom: 8px;">
                     <h4>
-                        <span id="cashierBoxHeaderTitle_cashier1">6. ক্যাশিয়ার প্যানেল ১ (প্রধান)</span>
+                        <span id="cashierBoxHeaderTitle_cashier1">6. ক্যাশিয়ার প্যানেল ১</span>
                         <button class="btn btn-dark btn-xs" id="lockPower_cashier1" onclick="togglePowerLock('_cashier1')">🔒 লকড</button>
                     </h4>
                     <div id="containerPower_cashier1" style="opacity: 0.5; pointer-events: none;">
@@ -1580,7 +1625,6 @@
     </div>
     <script>
         const FIVE_MINUTES_MS = 5 * 60 * 1000;
-
         function safeStorageGet(key, fallback = "") {
             try { return localStorage.getItem(key) ?? fallback; } catch (e) { return fallback; }
         }
@@ -1658,7 +1702,6 @@
             toastTimeout = setTimeout(() => { toast.style.display = "none"; }, 4500);
         }
         function hideToast() { document.getElementById("customToast").style.display = "none"; }
-
         const firebaseConfig = {
             apiKey: "AIzaSyB-ZGbRbYN_3ASW59cXQw4aKNvEOWzOodg",
             authDomain: "candrimabaikara-86815.firebaseapp.com",
@@ -1683,7 +1726,7 @@
             { id: "_winner", label: "3. অফিসিয়াল উইনার সেটআপ" },
             { id: "_quota", label: "4. সমিতি রেজিস্ট্রেশন অন/অফ কন্ট্রোল" },
             { id: "_regapp", label: "5. নতুন রেজিস্ট্রেশন আবেদন অনুমোদন" },
-            { id: "_cashier1", label: "6. ক্যাশিয়ার প্যানেল ১ (প্রধান)" },
+            { id: "_cashier1", label: "6. ক্যাশিয়ার প্যানেল ১" },
             { id: "_cashier2", label: "7. ক্যাশিয়ার প্যানেল ২" },
             { id: "_cashier3", label: "8. ক্যাশিয়ার প্যানেল ৩" },
             { id: "_cashier4", label: "9. ক্যাশিয়ার প্যানেল ৪" },
@@ -1715,6 +1758,9 @@
             cashier6: { roleTitle: "ক্যাশিয়ার", name: "ক্যাশিয়ার ৬", phone: "01700000006", photo: "https://via.placeholder.com/80?text=Cashier6", active: false, balance: 0 }
         };
         let cashierTransactionsList = {};
+        let pendingCashierTransfers = {}; // পরিবর্তন ৩: ক্যাশিয়ার টু ক্যাশিয়ার পেন্ডিং ট্রান্সফার
+        let pendingMemberMinusRequests = {}; // পরিবর্তন ৪: ক্যাশিয়ার থেকে ইউজার মাইনাস পেন্ডিং রিকোয়েস্ট
+        let selectedCashierMemberForAdj = {}; // পরিবর্তন ২: প্রতিটি ক্যাশিয়ার প্যানেলে মার্ক করা সদস্যের keyPhone
         let fourAdminProfiles = {
             admin1: { name: "রায়হান", roleTitle: "এডমিন", phone: "01835-016892", photo: "https://via.placeholder.com/80?text=Admin1" },
             admin2: { name: "সুজন", roleTitle: "এডমিন", phone: "00000000000", photo: "https://via.placeholder.com/80?text=Admin2" },
@@ -1758,7 +1804,6 @@
         let autoFallbackSpinTriggeredForRound = "";
         let unlockedMemberDeleteRows = {};
         let unlockedRiderDeleteRows = {};
-        let unlockedCashierMinus = {};
         let myLocalRiderPhone = safeStorageGet("myRiderPhone", "");
         let myLocalRiderName = safeStorageGet("myRiderName", "");
         let myLockedSamityPhone = safeStorageGet("lockedSamityPhone", "");
@@ -1771,12 +1816,12 @@
         let fallbackVoiceAudio = new Audio();
         const DAYS_LIST = ["শনি", "রবি", "সোম", "মঙ্গল", "বুধ", "বৃহঃ", "শুক্র"];
 
-        // অফিসিয়াল ড্র ৫ মিনিটের জন্য লক/হোল্ড আছে কি না চেক করার হেল্পার
+        // পরিবর্তন ৫: ফাইনাল বিজয়ী ঘোষিত হওয়ার ঠিক পর থেকে ৫ মিনিটের টাইমার লক চেক
         function isOfficialDrawLockedForFiveMin() {
             const now = Date.now();
             const byCooldown = samityConfig.officialDrawCooldownUntil && now < Number(samityConfig.officialDrawCooldownUntil);
             const byWinnerHold = samityConfig.lastOfficialWinnerTimestamp && (now - Number(samityConfig.lastOfficialWinnerTimestamp)) < FIVE_MINUTES_MS;
-            const byActiveOfficialSpin = liveSpinState && liveSpinState.isOfficial === true && (now - Number(liveSpinState.startedAt || 0)) < (Number(liveSpinState.duration || 25000) + FIVE_MINUTES_MS);
+            const byActiveOfficialSpin = liveSpinState && liveSpinState.isOfficial === true && (now - Number(liveSpinState.startedAt || 0)) < Number(liveSpinState.duration || 25000);
             return Boolean(byCooldown || byWinnerHold || byActiveOfficialSpin || samityConfig.isWheelLocked);
         }
 
@@ -1928,8 +1973,6 @@
             const myIdx = sorted.findIndex(item => normalizeName(item.name) === normalizeName(myLocalRiderName));
             if (myIdx !== -1) acknowledgedAlarmKey = sorted[myIdx].id + "_pos_" + (myIdx + 1);
         }
-
-        // ইউজার অ্যাপে বা ব্যাকগ্রাউন্ডে যতক্ষণ নেট ও GPS চালু থাকবে ততক্ষণ লাইভ লোকেশন আপডেট
         function pushCurrentUserLocationToFirebase() {
             if (typeof userLat !== "number" || typeof userLng !== "number") return;
             if (navigator.onLine === false) return;
@@ -1948,7 +1991,6 @@
                 updatedAt: Date.now()
             }).catch(() => {});
         }
-
         function startLiveLocationTracking() {
             if (!navigator.geolocation) return;
             const pushLoc = (pos) => {
@@ -1961,13 +2003,11 @@
             const geoOpts = { enableHighAccuracy: true, maximumAge: 5000, timeout: 12000 };
             navigator.geolocation.getCurrentPosition(pushLoc, () => {}, geoOpts);
             navigator.geolocation.watchPosition(pushLoc, () => {}, geoOpts);
-
             setInterval(() => {
                 if (navigator.geolocation && navigator.onLine !== false) {
                     navigator.geolocation.getCurrentPosition(pushLoc, () => {}, { enableHighAccuracy: true, maximumAge: 10000, timeout: 10000 });
                 }
             }, 25000);
-
             document.addEventListener("visibilitychange", () => {
                 if (navigator.geolocation && navigator.onLine !== false) {
                     navigator.geolocation.getCurrentPosition(pushLoc, () => {}, { enableHighAccuracy: true, maximumAge: 5000, timeout: 10000 });
@@ -1977,7 +2017,6 @@
                 pushCurrentUserLocationToFirebase();
             });
         }
-
         function enterMainApp() {
             try { 
                 if (window.AudioContext || window.webkitAudioContext) {
@@ -2461,7 +2500,6 @@
                 reader.readAsDataURL(file);
             });
         }
-
         // ফায়ারবেস লিসেনারসমূহ
         db.ref('standConfig').on('value', (snap) => {
             const data = snap.val() || {};
@@ -2645,6 +2683,17 @@
             renderSamityRecentRequests();
             runAutoDatabaseCleanup();
         });
+        // পরিবর্তন ৩: ক্যাশিয়ার টু ক্যাশিয়ার পেন্ডিং ট্রান্সফার লিসেনার
+        db.ref('tanSamity/pendingCashierTransfers').on('value', (snap) => {
+            pendingCashierTransfers = snap.val() || {};
+            renderFourCashierPanels();
+        });
+        // পরিবর্তন ৪: ক্যাশিয়ার থেকে ইউজার মাইনাস পেন্ডিং রিকোয়েস্ট লিসেনার
+        db.ref('tanSamity/pendingMemberMinus').on('value', (snap) => {
+            pendingMemberMinusRequests = snap.val() || {};
+            renderFourCashierPanels();
+            evaluateWheelAndActionState();
+        });
         db.ref('tanSamity/cashierHistory').on('value', (snap) => {
             cashierTransactionsList = snap.val() || {};
             renderCashierTransactionsHistory();
@@ -2682,7 +2731,6 @@
                 </div>
             `).join('');
         });
-
         // লাইভ লোকেশন + ম্যাপ মডাল
         function openUserLocationMapModal(name, phone, lat, lng) {
             document.getElementById("mapModalUserTitle").innerText = `🗺️ ${name} - এর লাইভ লোকেশন`;
@@ -2997,8 +3045,78 @@
             return eligible.every(item => item.isAllowed === true);
         }
 
-        // অফিসিয়াল ড্র ৫ মিনিট পর্যন্ত লক ও ফ্রি-স্পিন বন্ধ রাখার নিয়ন্ত্রণ
+        // পরিবর্তন ৪: বর্তমান ইউজারের নামে ক্যাশিয়ার থেকে পাঠানো মাইনাস অ্যাপ্রুভাল আছে কি না তা রেন্ডার করা
+        function renderUserMinusApprovalSlot() {
+            const slot = document.getElementById("userMinusApprovalSlot");
+            if (!slot) return;
+            if (!myLockedSamityPhone) {
+                slot.style.display = "none";
+                slot.innerHTML = "";
+                return;
+            }
+            const ownedKeys = getAllOwnedMemberEntries(myLockedSamityPhone).map(o => o.keyPhone);
+            if (!ownedKeys.includes(myLockedSamityPhone)) ownedKeys.push(myLockedSamityPhone);
+
+            const myPendingList = Object.entries(pendingMemberMinusRequests).filter(([_, req]) =>
+                req && req.status === "pending" && ownedKeys.includes(req.memberPhone)
+            );
+
+            if (myPendingList.length === 0) {
+                slot.style.display = "none";
+                slot.innerHTML = "";
+                return;
+            }
+            const [reqId, req] = myPendingList[0];
+            slot.style.display = "flex";
+            slot.innerHTML = `
+                <div class="user-minus-approval-title">
+                    ⚠️ ক্যাশিয়ার <strong>${req.cashierName}</strong> আপনার অ্যাকাউন্ট থেকে <strong>৳${req.amount}</strong> মাইনাস করেছে
+                </div>
+                <div class="user-minus-approval-btns">
+                    <button type="button" class="btn btn-success" onclick="userRespondMemberMinus('${reqId}', 'approve')">✅ অ্যাপ্রুভ</button>
+                    <button type="button" class="btn btn-danger" onclick="userRespondMemberMinus('${reqId}', 'delete')">🗑️ ডিলিট</button>
+                </div>
+            `;
+        }
+
+        async function userRespondMemberMinus(reqId, decision) {
+            const req = pendingMemberMinusRequests[reqId];
+            if (!req) return;
+            if (decision === "delete") {
+                await db.ref(`tanSamity/pendingMemberMinus/${reqId}`).remove();
+                showToast("🗑️ মাইনাস রিকোয়েস্ট ডিলিট করা হয়েছে, কোনো টাকা কাটা হয়নি।", "info");
+                return;
+            }
+            const mPhone = req.memberPhone;
+            const cid = req.cashierId;
+            const amt = Number(req.amount) || 0;
+            if (samityApprovedMembers[mPhone] && amt > 0) {
+                const curPaid = Number(samityApprovedMembers[mPhone].weeklyPaid || 0);
+                const nextPaid = Math.max(0, curPaid - amt);
+                await db.ref(`tanSamity/approvedMembers/${mPhone}/weeklyPaid`).set(nextPaid);
+            }
+            if (fourCashiersData[cid] && amt > 0) {
+                const curBal = Number(fourCashiersData[cid].balance || 0);
+                const nextBal = Math.max(0, curBal - amt);
+                await db.ref(`standConfig/fourCashiers/${cid}/balance`).set(nextBal);
+            }
+            await db.ref('tanSamity/cashierHistory').push({
+                cashierId: cid,
+                cashierName: req.cashierName || cid,
+                memberName: req.memberName,
+                memberPhone: mPhone,
+                amount: amt,
+                type: 'sub',
+                note: `ক্যাশিয়ার মাইনাস (ইউজার অ্যাপ্রুভড)`,
+                timestamp: Date.now()
+            });
+            await db.ref(`tanSamity/pendingMemberMinus/${reqId}`).remove();
+            showToast(`✅ ৳${amt} মাইনাস অ্যাপ্রুভ করা হয়েছে এবং ব্যালেন্স সমন্বয় হয়েছে।`, "success");
+        }
+
+        // পরিবর্তন ৫: ফাইনাল বিজয়ী ঘোষিত হওয়ার পর থেকে ৫ মিনিটের টাইমার ও বাটন কন্ট্রোল
         function evaluateWheelAndActionState() {
+            renderUserMinusApprovalSlot();
             const actionBtn = document.getElementById("btnMySamityMainAction");
             const musicBtn = document.getElementById("btnInlineMusicAction");
             const waInlineBtn = document.getElementById("btnInlineWhatsappAction");
@@ -3010,21 +3128,23 @@
             const isAllowed = myLockedSamityPhone && (samityAllowedStatus[myLockedSamityPhone] === true);
             const minsUntilStart = getMinutesUntilNextScheduleStart();
 
-            // অফিসিয়াল ড্র হয়ে গেলে ৫ মিনিট পর্যন্ত ফ্রি স্পিন বা নতুন ড্র বন্ধ থাকবে
             if (officialFiveMinLocked) {
                 if (musicBtn) musicBtn.style.display = "none";
                 if (waInlineBtn) waInlineBtn.style.display = "none";
                 if (miniWaStrip) miniWaStrip.style.display = "block";
-                const refTs = Number(samityConfig.lastOfficialWinnerTimestamp || samityConfig.officialDrawCooldownUntil || Date.now());
-                const remSec = Math.max(0, Math.ceil((FIVE_MINUTES_MS - (Date.now() - refTs)) / 1000));
+                const cooldownTarget = Number(samityConfig.officialDrawCooldownUntil || 0);
+                const winnerTs = Number(samityConfig.lastOfficialWinnerTimestamp || 0);
+                const endTarget = cooldownTarget > Date.now() ? cooldownTarget : (winnerTs ? winnerTs + FIVE_MINUTES_MS : 0);
+                const remSec = endTarget > Date.now() ? Math.ceil((endTarget - Date.now()) / 1000) : 0;
+                const mm = String(Math.floor(remSec / 60)).padStart(2, '0');
+                const ss = String(remSec % 60).padStart(2, '0');
                 if (actionBtn) {
                     actionBtn.disabled = true;
                     actionBtn.className = "btn btn-dark";
-                    actionBtn.innerText = remSec > 0 ? `🔒 ৫ মিনিট লক (${remSec}s) — স্পিন বন্ধ` : "🔒 অফিসিয়াল ড্র সম্পন্ন";
+                    actionBtn.innerText = remSec > 0 ? `🔒 বিজয়ী ঘোষিত (${mm}:${ss})` : "🔒 হুইল ঘুরছে...";
                 }
                 return;
             }
-
             if (!inSchedule) {
                 if (samityConfig.isWheelLocked) {
                     db.ref('tanSamity/config/isWheelLocked').set(false).catch(() => {});
@@ -3063,7 +3183,6 @@
                 }
                 return;
             }
-
             if (musicBtn) musicBtn.style.display = "none";
             if (waInlineBtn) waInlineBtn.style.display = "none";
             if (userMusicPlaying) {
@@ -3071,7 +3190,6 @@
                 if (audioEl) audioEl.pause();
                 userMusicPlaying = false;
             }
-
             if (actionBtn) actionBtn.disabled = false;
             if (eligible.length === 0) {
                 if (miniWaStrip) miniWaStrip.style.display = "none";
@@ -3105,7 +3223,6 @@
                 }
             }
         }
-
         async function checkAutoFallbackOfficialDraw() {
             if (!isWithinScheduleTime()) return;
             if (isOfficialDrawLockedForFiveMin() || isSpinningWheel) return;
@@ -3127,10 +3244,9 @@
                 }, 1500);
             }
         }
-
         async function handleMainPermissionAndSpinButton() {
             if (isOfficialDrawLockedForFiveMin()) {
-                showToast("🔒 অফিসিয়াল ড্র সম্পন্ন হয়েছে। ৫ মিনিট পর্যন্ত স্পিন বন্ধ থাকবে!", "error");
+                showToast("🔒 ফাইনাল বিজয়ী ঘোষিত হয়েছে। ৫ মিনিট শেষ না হওয়া পর্যন্ত স্পিন বন্ধ থাকবে!", "error");
                 return;
             }
             const inSchedule = isWithinScheduleTime();
@@ -3200,17 +3316,13 @@
                 ctx.restore();
             });
         }
-
         async function triggerLiveWheelSpin() {
             if (isSpinningWheel) return;
             const inSchedule = isWithinScheduleTime();
-
-            // অফিসিয়াল সময়ে একবার ড্র হলে ৫ মিনিট পর্যন্ত আর স্পিন/ফ্রি-স্পিন করা যাবে না
             if (isOfficialDrawLockedForFiveMin()) {
-                showToast("🔒 অফিসিয়াল ড্র সম্পন্ন হয়েছে। ৫ মিনিট পর্যন্ত কোনো স্পিন ঘোরানো যাবে না!", "error");
+                showToast("🔒 ফাইনাল বিজয়ী ঘোষিত হয়েছে। ৫ মিনিট শেষ না হওয়া পর্যন্ত স্পিন ঘোরানো যাবে না!", "error");
                 return;
             }
-
             if (inSchedule) {
                 if (!areAllActiveMembersAllowed()) { 
                     showToast("🔒 অফিসিয়াল ড্র-এর জন্য ১০০% পারমিশন লাগবে!", "error"); 
@@ -3219,8 +3331,8 @@
             }
             const activeEntries = getWheelEligibleEntries();
             if (activeEntries.length === 0) { showToast("⚠️ খেলার যোগ্য কোনো সক্রিয় সদস্য নেই।", "error"); return; }
-
             if (inSchedule) {
+                // স্পিন চলাকালীন সাময়িক লক; ৫ মিনিটের টাইমার কেবল ফাইনাল বৈধ বিজয়ী ঘোষণার পর শুরু হবে
                 const lockTxn = await db.ref('tanSamity/config').transaction((cur) => {
                     const base = cur || {};
                     const nowTs = Date.now();
@@ -3229,16 +3341,14 @@
                     }
                     return {
                         ...base,
-                        isWheelLocked: true,
-                        officialDrawCooldownUntil: nowTs + FIVE_MINUTES_MS
+                        isWheelLocked: true
                     };
                 });
                 if (!lockTxn.committed) {
-                    showToast("🔒 অফিসিয়াল ড্র ইতিমধ্যে শুরু/সম্পন্ন হয়েছে (৫ মিনিট লক)!", "info");
+                    showToast("🔒 অফিসিয়াল ড্র ইতিমধ্যে শুরু হয়েছে!", "info");
                     return;
                 }
             }
-
             const requiredQuota = getRequiredDrawQuota();
             let winnerMember = null;
             if (inSchedule && samityConfig.forcedWinner && samityApprovedMembers[samityConfig.forcedWinner] && !samityApprovedMembers[samityConfig.forcedWinner].isWinner) {
@@ -3263,7 +3373,6 @@
                 winner: { name: winnerMember.name, phone: winnerMember.keyPhone, photo: winnerMember.photo, weeklyPaid: Number(winnerMember.weeklyPaid || 0) }
             });
         }
-
         function runSynchronizedWheelAnimation(spinData) {
             isSpinningWheel = true;
             if (winnerClearTimeout) clearTimeout(winnerClearTimeout);
@@ -3298,11 +3407,10 @@
             }
             requestAnimationFrame(frame);
         }
-
-        function scheduleWinnerMonitorAutoClear() {
+        function scheduleWinnerMonitorAutoClear(customHoldMs = null) {
             if (winnerClearTimeout) clearTimeout(winnerClearTimeout);
             const isOff = Boolean(liveSpinState && liveSpinState.isOfficial);
-            const holdMs = isOff ? FIVE_MINUTES_MS : 12000;
+            const holdMs = customHoldMs !== null ? customHoldMs : (isOff ? FIVE_MINUTES_MS : 12000);
             winnerClearTimeout = setTimeout(async () => {
                 document.getElementById("wheelWinnerMonitor").style.display = "none";
                 drawWheel(currentWheelAngle);
@@ -3322,17 +3430,37 @@
             }, holdMs);
         }
 
+        // পরিবর্তন ৫: টাকা পরিশোধ না থাকলে ৫ মিনিটের টাইমার চলবে না; ফাইনাল বৈধ বিজয়ী ঘোষণা হলেই ঠিক তখন থেকে ৫ মিনিটের টাইমার শুরু হবে
         async function finalizeSpinWinner(spinData) {
             const winner = spinData.winner;
             const isOfficial = spinData.isOfficial === true;
             if (!isOfficial) {
                 showWheelWinnerMonitor(winner);
                 showToast(`🎉 বিজয়ী: ${winner.name}`, "success");
-                scheduleWinnerMonitorAutoClear();
+                scheduleWinnerMonitorAutoClear(12000);
+                return;
+            }
+            const requiredQuota = getRequiredDrawQuota();
+            const liveMember = samityApprovedMembers[winner.phone];
+            const currentPaid = Number(liveMember ? liveMember.weeklyPaid : (winner.weeklyPaid || 0));
+
+            if (currentPaid < requiredQuota) {
+                // টাকা পরিশোধ নেই — তাই ৫ মিনিটের টাইমার চলবে না, পরবর্তী বিজয়ীর জন্য হুইল আনলক থাকবে
+                await db.ref('tanSamity/config').update({
+                    isWheelLocked: false,
+                    officialDrawCooldownUntil: 0,
+                    lastOfficialWinnerTimestamp: 0
+                });
+                showInsufficientBalanceWinnerMonitor(winner, requiredQuota);
+                playVoiceMessage(`সতর্কবার্তা! ${winner.name}, আপনার নির্ধারিত ${requiredQuota} টাকা পরিপূর্ণ না থাকার কারণে বাতিল হলো। পরবর্তী বিজয়ীর জন্য আবার হুইল চালান!`, true);
+                showToast(`⚠️ ${winner.name}-এর টাকা বাকি! ৫ মিনিট টাইমার চলেনি, পরবর্তী বিজয়ীর জন্য আবার স্পিন করুন।`, "error");
+                evaluateWheelAndActionState();
+                applyGameTimeWheelFocusMode();
+                scheduleWinnerMonitorAutoClear(8000);
                 return;
             }
 
-            // অফিসিয়াল ড্র সম্পন্ন: ৫ মিনিট পর্যন্ত বিজয়ী ডিসপ্লে ও স্পিন লক বজায় থাকবে
+            // ফাইনাল বৈধ বিজয়ী ঘোষিত: ঠিক এখান থেকে ৫ মিনিটের টাইমার শুরু হবে এবং ৫ মিনিট কেউ স্পিন করতে পারবে না
             const nowTs = Date.now();
             await db.ref('tanSamity/config').update({
                 isWheelLocked: true,
@@ -3340,20 +3468,9 @@
                 lastOfficialWinnerTimestamp: nowTs,
                 paidListClearTimestamp: nowTs + FIVE_MINUTES_MS
             });
-
-            const requiredQuota = getRequiredDrawQuota();
-            if (Number(winner.weeklyPaid || 0) < requiredQuota) {
-                showInsufficientBalanceWinnerMonitor(winner, requiredQuota);
-                playVoiceMessage(`সতর্কবার্তা! ${winner.name}, আপনার নির্ধারিত ${requiredQuota} টাকা পরিপূর্ণ না থাকার কারণে পরবর্তী রাউন্ডে দেখা হবে!`, true);
-                showToast(`⚠️ ${winner.name}-এর নির্ধারিত টাকা বাকি! ৫ মিনিট পর পরবর্তী রাউন্ড শুরু হবে।`, "error");
-                evaluateWheelAndActionState();
-                applyGameTimeWheelFocusMode();
-                scheduleWinnerMonitorAutoClear();
-                return;
-            }
             showWheelWinnerMonitor(winner);
-            playVoiceMessage(`আসসালামু আলাইকুম। ভাইজান ${winner.name}, আপনি আজকের চন্দ্রিমা বাইকার টান সমিতির লটারি বিজয়ী হয়েছেন। আপনাকে অনেক কংগ্রাচুলেশন!`, true);
-            showToast(`🏆 আজকের উইনার: ${winner.name}! ৫ মিনিট পর্যন্ত স্পিন বন্ধ থাকবে।`, "success");
+            playVoiceMessage(`আসসালামু আলাইকুম। ভাইজান ${winner.name}, আপনি আজকের চন্দ্রিমা বাইকার টান সমিতির ফাইনাল লটারি বিজয়ী হয়েছেন। আপনাকে অনেক কংগ্রাচুলেশন!`, true);
+            showToast(`🏆 ফাইনাল বিজয়ী: ${winner.name}! এখন থেকে ৫ মিনিট স্পিন বন্ধ থাকবে।`, "success");
             if (samityApprovedMembers[winner.phone] && !samityApprovedMembers[winner.phone].isWinner) {
                 await db.ref('tanSamity/approvedMembers/' + winner.phone).update({ isWinner: true });
                 await db.ref('tanSamity/allowedStatus/' + winner.phone).set(false);
@@ -3364,12 +3481,11 @@
             renderDualPaymentLists();
             evaluateWheelAndActionState();
             applyGameTimeWheelFocusMode();
-            scheduleWinnerMonitorAutoClear();
+            scheduleWinnerMonitorAutoClear(FIVE_MINUTES_MS);
         }
-
         function showWheelWinnerMonitor(winner) {
             const monitor = document.getElementById("wheelWinnerMonitor");
-            document.getElementById("winnerMonitorBadge").innerText = "🎉 বিজয়ী 🎉";
+            document.getElementById("winnerMonitorBadge").innerText = "🎉 ফাইনাল বিজয়ী 🎉";
             document.getElementById("winnerMonitorBadge").style.background = "#dc2626";
             document.getElementById("monitorWinnerImg").src = winner.photo || 'https://via.placeholder.com/90';
             document.getElementById("monitorWinnerName").innerText = winner.name;
@@ -3378,11 +3494,11 @@
         }
         function showInsufficientBalanceWinnerMonitor(winner, requiredQuota) {
             const monitor = document.getElementById("wheelWinnerMonitor");
-            document.getElementById("winnerMonitorBadge").innerText = "⚠️ সতর্কতা ⚠️";
+            document.getElementById("winnerMonitorBadge").innerText = "⚠️ টাকা বাকি — পুনরায় স্পিন করুন ⚠️";
             document.getElementById("winnerMonitorBadge").style.background = "#b45309";
             document.getElementById("monitorWinnerImg").src = winner.photo || 'https://via.placeholder.com/90';
             document.getElementById("monitorWinnerName").innerText = winner.name;
-            document.getElementById("monitorWinnerSub").innerText = `নির্ধারিত ৳${requiredQuota} বাকি! ৫ মিনিট পর স্পিন চালু হবে।`;
+            document.getElementById("monitorWinnerSub").innerText = `নির্ধারিত ৳${requiredQuota} পরিশোধ না থাকায় পরবর্তী বিজয়ীর জন্য আবার হুইল ঘোরান।`;
             monitor.style.display = "flex";
         }
         function renderAdminIndividualWheelPermissions() {
@@ -3445,7 +3561,6 @@
             applyGameTimeWheelFocusMode();
             showToast("🔄 নতুন ড্র-এর জন্য পারমিশন রিসেট ও হুইল আনলক হয়েছে!", "success");
         }
-
         function switchSamityTab(tab) {
             document.getElementById("tabSamityMembers").classList.toggle("active", tab === 'members');
             document.getElementById("tabSamityPay").classList.toggle("active", tab === 'pay');
@@ -3458,7 +3573,6 @@
         }
         function switchSamityPayTab() { switchSamityTab('pay'); }
         function switchSamityRegTab() { switchSamityTab('reg'); }
-
         function updateSamityRegSectionUI() {
             const formContainer = document.getElementById("samityRegFormContainer");
             const noticeText = document.getElementById("samityRegNoticeText");
@@ -3793,7 +3907,6 @@
                 return `• <strong>${r.targetName}</strong> - ৳${r.amount} (${r.paymentMethod || 'bKash'}: ${maskPhoneNumber(r.senderPhone)}) [ক্যাশিয়ার: ${cName} - ${r.status}]`;
             }).join('<br>');
         }
-
         // রাইড শেয়ার সিরিয়াল ফাংশনসমূহ
         function switchOnlineTab(tab) {
             document.getElementById("tabOnlineEntry").classList.toggle("active", tab === 'entry');
@@ -3879,792 +3992,874 @@
             if (!name) { showToast("⚠️ রাইডারের নাম লিখুন।", "error"); return; }
             const matchedRider = Object.values(registeredRiders).find(r => normalizeName(r.name) === normalizeName(name));
             if (Object.values(activeSerials).some(s => normalizeName(s.name) === normalizeName(name))) {
-                showToast("🚫 ইতিমধ্যে রাইডার সিরিয়ালে আছেন!", "error"); return;
+                showToast("🚫 এই রাইডার ইতিমধ্যে সিরিয়ালে আছেন!", "error"); return;
             }
-            const adminSource = currentAdminSession && currentAdminSession !== "master" ? (fourAdminProfiles[currentAdminSession]?.name || "অ্যাডমিন") : 'মাস্টার অ্যাডমিন';
             await db.ref('activeSerials').push({
-                name, phone: matchedRider ? matchedRider.phone : null, photo: matchedRider ? matchedRider.photo : null, type: 'manual-global', enteredBy: `অ্যাডমিন (${adminSource})`, joinedAt: Date.now()
+                name, phone: matchedRider ? matchedRider.phone : null, photo: matchedRider ? matchedRider.photo : null, type: 'manual', enteredBy: 'অ্যাডমিন প্যানেল', joinedAt: Date.now()
             });
             document.getElementById("globalMasterManualName").value = "";
-            showToast("✅ দূরবর্তী স্থান থেকে সফলভাবে ম্যানুয়াল সিরিয়াল যুক্ত করা হয়েছে!", "success");
+            showToast(`✅ '${name}'-এর দূরবর্তী ম্যানুয়াল সিরিয়াল যুক্ত হয়েছে!`, "success");
         }
-        async function cutSerial(serialId) {
-            const item = activeSerials[serialId];
-            if (!item) return;
-            const cutterName = myLocalRiderName || "অ্যাডমিন/রাইডার";
+        function getSortedSerials() {
+            const list = Object.entries(activeSerials).map(([id, val]) => ({ id, ...val }));
+            list.sort((a, b) => a.joinedAt - b.joinedAt);
+            return list;
+        }
+        function getRiderBreakRemaining(item) {
             const cfg = getRiderSecretConfig(item.name, item.phone);
-            const cutMinutes = cfg.cutMin || 10;
-            const cutEnd = Date.now() + (cutMinutes * 60000);
-            await db.ref('activeSerials/' + serialId).update({
-                cutUntil: cutEnd, breakUntil: null, cutBy: cutterName, reason: 'স্ট্যান্ডে নেই'
-            });
-            await db.ref('cutHistory').push({ targetName: item.name, cutterName, reason: `স্ট্যান্ডে নেই (${cutMinutes} মিনিট কাউন্টডাউন)`, timestamp: Date.now() });
-            showToast(`✂️ স্ট্যান্ডে না থাকায় ${cutMinutes} মিনিটের কাউন্টডাউন শুরু হয়েছে!`, "error");
+            const limit = cfg.breakDailyLimit || 2;
+            const todayStr = new Date().toDateString();
+            const riderObj = Object.values(registeredRiders).find(r => normalizeName(r.name) === normalizeName(item.name));
+            const usedToday = (riderObj && riderObj.lastBreakDate === todayStr) ? (riderObj.todayBreakCount || 0) : 0;
+            return { allowed: cfg.breakAllowed, limit, usedToday, remaining: Math.max(0, limit - usedToday), breakMin: cfg.breakMin };
         }
-        async function restoreSerial(serialId) {
-            const item = activeSerials[serialId];
-            if (!item) return;
-            await db.ref('activeSerials/' + serialId).update({ cutUntil: null, cutBy: null, reason: null });
-            showToast("✅ সফলভাবে সিরিয়াল ফিরিয়ে আনা হয়েছে!", "success");
-        }
-        async function toggleRiderBreak(serialId) {
-            const item = activeSerials[serialId];
-            if (!item) return;
-            const matchedRiderKey = Object.keys(registeredRiders).find(k => normalizeName(registeredRiders[k].name) === normalizeName(item.name));
-            const riderObj = matchedRiderKey ? registeredRiders[matchedRiderKey] : null;
-            if (!riderObj || !riderObj.breakAllowed) {
-                showToast("🚫 আপনার জন্য অ্যাডমিন থেকে বিরতির অনুমতি দেওয়া হয়নি!", "error"); return;
+        function renderSerialList() {
+            const container = document.getElementById("serialListContainer");
+            const list = getSortedSerials();
+            document.getElementById("totalSerialCount").innerText = list.length;
+            if (list.length === 0) {
+                container.innerHTML = `<p style="text-align: center; color: #64748b; padding: 15px; font-size: 13px;">বর্তমানে কোনো রাইডার সিরিয়ালে নেই।</p>`;
+                stopMyAlarm(); return;
             }
-            const dailyLimit = riderObj.breakDailyLimit || 2;
-            const todayCount = riderObj.todayBreakCount || 0;
-            if (todayCount >= dailyLimit) {
-                showToast(`⚠️ আপনার আজকের বিরতি নেওয়ার কোটা (${dailyLimit} বার) শেষ হয়ে গেছে!`, "error"); return;
+            if (myLocalRiderName) {
+                const myIndex = list.findIndex(item => normalizeName(item.name) === normalizeName(myLocalRiderName));
+                if (myIndex !== -1) {
+                    const myItem = list[myIndex];
+                    if (myItem.cutStatus) startAlarmSound("🚨 আপনার সিরিয়াল কাটা হচ্ছে!", "দ্রুত স্ট্যান্ডে ফিরে আসুন!", myItem.id + "_cut");
+                    else if (myIndex === 0) startAlarmSound("🚨 ১ম সিরিয়াল (আপনার পালা)!", "আপনি এখন ১ম সিরিয়ালে আছেন।", myItem.id + "_pos_1");
+                    else if (myIndex === 1) startAlarmSound("⚠️ ২য় সিরিয়াল (প্রস্তুত হন)!", "আপনি ২য় সিরিয়ালে আছেন।", myItem.id + "_pos_2");
+                }
             }
-            const breakMinutes = riderObj.customBreakMin || 30;
-            const breakEnd = Date.now() + (breakMinutes * 60000);
-            await db.ref('activeSerials/' + serialId).update({ breakUntil: breakEnd, cutUntil: null, cutBy: null });
-            if (matchedRiderKey) {
-                await db.ref('registeredRiders/' + matchedRiderKey).update({ todayBreakCount: todayCount + 1 });
-            }
-            showToast(`☕ সফলভাবে ${breakMinutes} মিনিটের ব্যক্তিগত বিরতি চালু হয়েছে!`, "success");
+            container.innerHTML = list.map((item, idx) => {
+                const pos = idx + 1;
+                let topClass = pos === 1 ? "top-1" : (pos === 2 ? "top-2" : (pos === 3 ? "top-3" : ""));
+                if (item.cutStatus) topClass = "is-cut";
+                if (item.breakStatus) topClass = "is-on-break";
+                const isSelf = myLocalRiderName && normalizeName(item.name) === normalizeName(myLocalRiderName);
+                const breakInfo = getRiderBreakRemaining(item);
+                let actionBtns = "";
+                if (item.breakStatus) {
+                    actionBtns += `<span style="font-size:11px; color:#b45309; font-weight:700;" id="breakTimer_${item.id}">☕ বিরতি...</span>`;
+                    if (isSelf || currentAdminSession) actionBtns += `<button class="btn btn-success btn-xs" onclick="endRiderBreak('${item.id}')">🔙 বিরতি শেষ</button>`;
+                } else if (item.cutStatus) {
+                    actionBtns += `<span style="font-size:11px; color:#dc2626; font-weight:700;" id="cutTimer_${item.id}">⏳ কাটা হচ্ছে...</span>`;
+                    if (isSelf || currentAdminSession) actionBtns += `<button class="btn btn-success btn-xs" onclick="cancelCutRequest('${item.id}')">🔙 ফিরে এসেছি</button>`;
+                } else {
+                    if (pos === 1) {
+                        actionBtns += `<button class="btn btn-success btn-xs" onclick="completeFirstSerial('${item.id}', '${item.name}')">✅ সিরিয়াল ওকে</button>`;
+                        if (isSelf || currentAdminSession) actionBtns += `<button class="btn btn-danger btn-xs" onclick="leaveSelfSerial('${item.id}', '${item.name}')">🚪 চলে যাচ্ছি</button>`;
+                        if ((isSelf || currentAdminSession) && breakInfo.allowed && breakInfo.remaining > 0) {
+                            actionBtns += `<button class="btn btn-info btn-xs" onclick="startRiderBreak('${item.id}', '${item.name}', '${item.phone || ''}')">☕ বিরতি (${breakInfo.remaining}/${breakInfo.limit})</button>`;
+                        }
+                    } else {
+                        if (isSelf) actionBtns += `<button class="btn btn-danger btn-xs" onclick="leaveSelfSerial('${item.id}', '${item.name}')">🚪 চলে যাচ্ছি</button>`;
+                        if ((isSelf || currentAdminSession) && breakInfo.allowed && breakInfo.remaining > 0) {
+                            actionBtns += `<button class="btn btn-info btn-xs" onclick="startRiderBreak('${item.id}', '${item.name}', '${item.phone || ''}')">☕ বিরতি (${breakInfo.remaining}/${breakInfo.limit})</button>`;
+                        }
+                    }
+                    if (!isSelf) {
+                        actionBtns += `<button class="btn btn-warning btn-xs" onclick="initiateCutSerial('${item.id}', '${item.name}', '${item.phone || ''}')">✂️ সিরিয়াল কাটুন</button>`;
+                    }
+                }
+                const avatarHtml = item.photo ? `<img src="${item.photo}" class="rider-avatar">` : `<div class="rider-avatar" style="background:#e2e8f0; display:flex; align-items:center; justify-content:center; font-size:18px;">🏍️</div>`;
+                const typeBadge = item.type === 'online' ? `<span class="badge-type badge-online">অনলাইন</span>` : `<span class="badge-type badge-manual">ম্যানুয়াল</span>`;
+                return `
+                    <div class="serial-item ${topClass}">
+                        <div class="rider-left">
+                            <div class="serial-num">${pos}</div>
+                            ${avatarHtml}
+                            <div class="rider-info">
+                                <h4>${item.name} ${isSelf ? '<span style="color:#4f46e5; font-size:11px;">(আপনি)</span>' : ''}</h4>
+                                <div style="display:flex; gap:5px; align-items:center; flex-wrap:wrap; margin-top:2px;">
+                                    ${typeBadge}
+                                    <span class="live-timer" data-joined="${item.joinedAt}">⏱️ ০ মিঃ</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="rider-actions">${actionBtns}</div>
+                    </div>
+                `;
+            }).join('');
+            updateLiveWaitTimers();
         }
-        async function endRiderBreak(serialId) {
-            await db.ref('activeSerials/' + serialId).update({ breakUntil: null });
-            showToast("✅ বিরতি শেষ করে সিরিয়ালে ফিরে এসেছেন!", "success");
-        }
-        function checkCutCountdowns() {
+        function updateLiveWaitTimers() {
             const now = Date.now();
-            Object.entries(activeSerials).forEach(([id, item]) => {
-                if (item.cutUntil && now >= item.cutUntil) db.ref('activeSerials/' + id).remove();
+            document.querySelectorAll('.live-timer').forEach(el => {
+                const diffMins = Math.floor((now - Number(el.getAttribute('data-joined'))) / 60000);
+                el.innerText = `⏱️ ${diffMins < 60 ? diffMins + ' মিঃ' : Math.floor(diffMins/60) + ' ঘণ্টা ' + (diffMins%60) + ' মিঃ'}`;
             });
+        }
+        setInterval(updateLiveWaitTimers, 10000);
+        async function startRiderBreak(serialId, riderName, phone) {
+            const item = activeSerials[serialId];
+            if (!item) return;
+            const cfg = getRiderSecretConfig(riderName, phone);
+            if (!cfg.breakAllowed && !currentAdminSession) {
+                showToast("🚫 আপনার বিরতির অনুমতি নেই!", "error"); return;
+            }
+            const todayStr = new Date().toDateString();
+            const riderEntry = Object.entries(registeredRiders).find(([k, r]) => normalizeName(r.name) === normalizeName(riderName));
+            if (riderEntry) {
+                const [rKey, rVal] = riderEntry;
+                const usedCount = (rVal.lastBreakDate === todayStr) ? (rVal.todayBreakCount || 0) : 0;
+                const limit = cfg.breakDailyLimit || 2;
+                if (usedCount >= limit && !currentAdminSession) {
+                    showToast(`🚫 আজকের সর্বোচ্চ ${limit} বার বিরতি শেষ হয়ে গেছে!`, "error"); return;
+                }
+                await db.ref('registeredRiders/' + rKey).update({ todayBreakCount: usedCount + 1, lastBreakDate: todayStr });
+            }
+            await db.ref('activeSerials/' + serialId + '/breakStatus').set({
+                startedAt: Date.now(), endTime: Date.now() + ((cfg.breakMin || 30) * 60000), durationMin: cfg.breakMin || 30
+            });
+            showToast(`☕ ${riderName}-এর ${cfg.breakMin || 30} মিনিটের বিরতি শুরু হয়েছে!`, "info");
+        }
+        function endRiderBreak(serialId) {
+            db.ref('activeSerials/' + serialId + '/breakStatus').remove();
+            showToast("🔙 বিরতি শেষ করে সিরিয়ালে ফিরে এসেছেন!", "success");
         }
         function checkBreakCountdowns() {
             const now = Date.now();
             Object.entries(activeSerials).forEach(([id, item]) => {
-                if (item.breakUntil && now >= item.breakUntil) db.ref('activeSerials/' + id).update({ breakUntil: null });
+                if (item.breakStatus) {
+                    const remMs = item.breakStatus.endTime - now;
+                    const el = document.getElementById(`breakTimer_${id}`);
+                    if (remMs <= 0) db.ref('activeSerials/' + id + '/breakStatus').remove();
+                    else if (el) el.innerText = `☕ বিরতি (${Math.floor(remMs / 60000)}:${String(Math.floor((remMs % 60000) / 1000)).padStart(2, '0')})`;
+                }
             });
         }
-        setInterval(() => { checkCutCountdowns(); checkBreakCountdowns(); }, 2000);
-        function getSortedSerials() {
-            return Object.entries(activeSerials).map(([id, val]) => ({ id, ...val })).sort((a, b) => a.joinedAt - b.joinedAt);
+        setInterval(checkBreakCountdowns, 1000);
+        function completeFirstSerial(serialId, riderName) {
+            const cfg = getRiderSecretConfig(riderName, null);
+            if (!checkWithinStandBoundary(cfg.distMeters || 200)) return;
+            db.ref('activeSerials/' + serialId).remove();
+            showToast(`✅ ${riderName}-এর সিরিয়াল সম্পন্ন হয়েছে!`, "success");
         }
-        function formatDuration(ms) {
-            if (ms < 0) ms = 0;
-            const sec = Math.floor(ms / 1000);
-            return `${String(Math.floor(sec / 60)).padStart(2, '0')}:${String(sec % 60).padStart(2, '0')}`;
+        function leaveSelfSerial(serialId, riderName) {
+            db.ref('activeSerials/' + serialId).remove();
+            showToast(`🚪 ${riderName} সিরিয়াল ছেড়ে চলে গেছেন।`, "info");
         }
-        function renderSerialList() {
-            const container = document.getElementById("serialListContainer");
-            const sorted = getSortedSerials();
-            document.getElementById("totalSerialCount").innerText = sorted.length;
-            if (sorted.length === 0) {
-                container.innerHTML = `<p style="text-align: center; color: #64748b; padding: 15px; font-size: 13px;">বর্তমানে কোনো রাইডার সিরিয়ালে নেই।</p>`;
-                return;
-            }
+        function initiateCutSerial(serialId, targetName, targetPhone) {
+            const cfg = getRiderSecretConfig(targetName, targetPhone);
+            if (!checkWithinStandBoundary(cfg.distMeters || 200)) return;
+            const cutterName = currentAdminSession ? "অ্যাডমিন" : (myLocalRiderName || "অন্য রাইডার");
+            db.ref('activeSerials/' + serialId + '/cutStatus').set({
+                cutterName, endTime: Date.now() + ((cfg.cutMin || 10) * 60000), durationMin: cfg.cutMin || 10
+            });
+            showToast(`⏳ ${targetName}-এর সিরিয়াল কাটার কাউন্টডাউন শুরু হয়েছে।`, "info");
+        }
+        function cancelCutRequest(serialId) {
+            const item = activeSerials[serialId];
+            if (!item) return;
+            const cfg = getRiderSecretConfig(item.name, item.phone);
+            if (!checkWithinStandBoundary(cfg.distMeters || 200)) return;
+            db.ref('activeSerials/' + serialId + '/cutStatus').remove();
+            stopMyAlarm();
+            showToast("🔙 সিরিয়াল কাটা বাতিল হয়েছে!", "success");
+        }
+        function checkCutCountdowns() {
             const now = Date.now();
-            container.innerHTML = sorted.map((item, index) => {
-                const pos = index + 1;
-                const isCut = item.cutUntil && now < item.cutUntil;
-                const isOnBreak = item.breakUntil && now < item.breakUntil;
-                let rowClass = "serial-item";
-                if (isCut) rowClass += " is-cut";
-                else if (isOnBreak) rowClass += " is-on-break";
-                else if (pos === 1) rowClass += " top-1";
-                else if (pos === 2) rowClass += " top-2";
-                else if (pos === 3) rowClass += " top-3";
-                const matchedRider = Object.values(registeredRiders).find(r => normalizeName(r.name) === normalizeName(item.name));
-                const avatarSrc = item.photo || matchedRider?.photo || "https://via.placeholder.com/40?text=Rider";
-                const badgeClass = item.type === 'online' ? 'badge-online' : 'badge-manual';
-                const badgeText = item.type === 'online' ? 'অনলাইন' : (item.type === 'manual-global' ? 'রিমোট ম্যানুয়াল' : 'ম্যানুয়াল');
-                let statusHtml = isCut
-                    ? `<span style="color:#dc2626; font-weight:700; font-size:11px;">✂️ সিরিয়াল কাটা (${formatDuration(item.cutUntil - now)})</span>`
-                    : (isOnBreak
-                        ? `<span style="color:#b45309; font-weight:700; font-size:11px;">☕ বিরতি (${formatDuration(item.breakUntil - now)})</span>`
-                        : `<span class="live-timer">⏱️ অপেক্ষা: ${formatDuration(now - item.joinedAt)}</span>`);
-                let buttonsHtml = "";
-                if (isCut) {
-                    buttonsHtml += `<button class="btn btn-success btn-xs" onclick="restoreSerial('${item.id}')">↩️ ফিরিয়ে আনুন</button>`;
-                } else if (isOnBreak) {
-                    buttonsHtml += `<button class="btn btn-info btn-xs" onclick="endRiderBreak('${item.id}')">▶️ সিরিয়ালে ফিরুন</button>`;
-                } else {
-                    buttonsHtml += `<button class="btn btn-warning btn-xs" onclick="toggleRiderBreak('${item.id}')">☕ বিরতি</button>`;
-                    buttonsHtml += `<button class="btn btn-danger btn-xs" onclick="cutSerial('${item.id}')">✂️ সিরিয়াল কাটুন</button>`;
+            Object.entries(activeSerials).forEach(([id, item]) => {
+                if (item.cutStatus) {
+                    const remMs = item.cutStatus.endTime - now;
+                    const el = document.getElementById(`cutTimer_${id}`);
+                    if (remMs <= 0) {
+                        db.ref('cutHistory').push({ targetName: item.name, cutterName: item.cutStatus.cutterName, reason: "সময় শেষ", timestamp: now });
+                        db.ref('activeSerials/' + id).remove();
+                    } else if (el) {
+                        el.innerText = `⏳ কাটছে (${Math.floor(remMs / 60000)}:${String(Math.floor((remMs % 60000) / 1000)).padStart(2, '0')})`;
+                    }
                 }
-                if (currentAdminSession) {
-                    buttonsHtml += `<button class="btn btn-dark btn-xs" onclick="adminDeleteSerial('${item.id}')">🗑️</button>`;
-                }
-                return `
-                    <div class="${rowClass}">
-                        <div class="rider-left">
-                            <div class="serial-num">${pos}</div>
-                            <img src="${avatarSrc}" class="rider-avatar" alt="${item.name}">
-                            <div class="rider-info">
-                                <h4>${item.name} <span class="badge-type ${badgeClass}">${badgeText}</span></h4>
-                                <div style="font-size:10px; color:#64748b;">এন্ট্রি: ${item.enteredBy || 'রাইডার'} | ${statusHtml}</div>
-                            </div>
-                        </div>
-                        <div class="rider-actions">${buttonsHtml}</div>
-                    </div>
-                `;
-            }).join('');
+            });
         }
-        setInterval(() => {
-            if (document.getElementById("mainApp").style.display === "block") renderSerialList();
-        }, 1000);
-        function adminDeleteSerial(id) { db.ref('activeSerials/' + id).remove(); showToast("🗑️ সিরিয়াল মুছে ফেলা হয়েছে।", "info"); }
-
-        // অ্যাডমিন ও মাস্টার প্যানেল ফাংশনসমূহ
+        setInterval(checkCutCountdowns, 1000);
+        // অ্যাডমিন প্যানেল লগইন ও মাস্টার লগইন ফাংশনসমূহ
         function openMasterAdminPrompt() {
-            document.getElementById("inputMasterPassword").value = "";
+            const inp = document.getElementById("inputMasterPassword");
+            inp.value = "";
             document.getElementById("masterLoginModal").style.display = "block";
-            setTimeout(() => document.getElementById("inputMasterPassword").focus(), 100);
+            setTimeout(() => inp.focus(), 100);
         }
         function verifyMasterPassword(isAuto = false) {
-            const entered = document.getElementById("inputMasterPassword").value.trim();
-            if (entered === masterPasswordStored) {
+            const pass = document.getElementById("inputMasterPassword").value.trim();
+            if (pass === masterPasswordStored) {
                 document.getElementById("inputMasterPassword").value = "";
                 document.getElementById("masterLoginModal").style.display = "none";
                 currentAdminSession = "master";
                 document.getElementById("adminModeBar").style.display = "flex";
                 document.getElementById("adminModeBarTitle").innerText = "👑 মাস্টার অ্যাডমিন মোড চালু আছে";
                 openAdminPanelUI();
-                showToast("👑 মাস্টার অ্যাডমিন প্যানেলে প্রবেশ করা হয়েছে!", "success");
+                showToast("👑 মাস্টার অ্যাডমিন কন্ট্রোল আনলক হয়েছে!", "success");
             } else if (!isAuto) {
                 showToast("❌ ভুল মাস্টার পাসওয়ার্ড!", "error");
             }
         }
-        async function saveNewMasterPassword() {
-            const newPass = document.getElementById("newMasterPasswordInput").value.trim();
-            if (!newPass || newPass.length < 4) { showToast("⚠️ কমপক্ষে ৪ অক্ষরের নতুন মাস্টার পাসওয়ার্ড দিন।", "error"); return; }
-            masterPasswordStored = newPass;
-            await db.ref('masterPasswordConfig').set(newPass);
-            document.getElementById("newMasterPasswordInput").value = "";
-            showToast("✅ নতুন মাস্টার পাসওয়ার্ড সফলভাবে সেভ হয়েছে!", "success");
+        function openAdminPanelUI() {
+            if (!currentAdminSession) return;
+            document.getElementById("adminModal").style.display = "block";
+            applyAdminSessionPermissions();
         }
+        function closeAdminModal() { document.getElementById("adminModal").style.display = "none"; }
         function logoutAdminMode() {
             currentAdminSession = null;
             document.getElementById("adminModeBar").style.display = "none";
             document.getElementById("adminModal").style.display = "none";
-            renderSerialList();
-            showToast("লগআউট সম্পন্ন হয়েছে।", "info");
+            renderSamityMembersList(); renderDualPaymentLists();
+            showToast("লগআউট হয়েছে।", "info");
         }
-        function closeAdminModal() {
-            document.getElementById("adminModal").style.display = "none";
-            renderSerialList();
-        }
-        function getAllPowerIds() {
-            return ALL_SYSTEM_POWERS.map(p => p.id);
-        }
-        function getSessionAllowedPowers() {
-            if (currentAdminSession === "master") return getAllPowerIds();
-            if (ALL_ADMIN_ROLES.includes(currentAdminSession)) {
-                const creds = subAdminCredentials[currentAdminSession] || {};
-                const assigned = Array.isArray(creds.assignedPowers) ? creds.assignedPowers : [];
-                return assigned.map(p => p.startsWith("_") ? p : "_" + p);
-            }
-            if (ALL_CASHIER_IDS.includes(currentAdminSession)) {
-                const idx = ALL_CASHIER_IDS.indexOf(currentAdminSession) + 1;
-                return [`_cashier${idx}`, "_cashierhistory"];
-            }
-            return [];
-        }
-        function renderAdminHorizontalNavButtons(allowedPowers) {
-            const navWrap = document.getElementById("adminHorizontalNavButtons");
-            if (!navWrap) return;
-            const visibleItems = ALL_SYSTEM_POWERS.filter(item => allowedPowers.includes(item.id));
-            if (visibleItems.length === 0) {
-                navWrap.innerHTML = "";
-                return;
-            }
-            navWrap.innerHTML = `
-                <button type="button" class="admin-horiz-nav-btn active" onclick="scrollToAdminPowerSection('all', this)">সব দেখুন</button>
-                ${visibleItems.map(item => `
-                    <button type="button" class="admin-horiz-nav-btn" onclick="scrollToAdminPowerSection('powerSec${item.id}', this)">${item.label}</button>
-                `).join('')}
-            `;
-        }
-        function scrollToAdminPowerSection(secId, btnEl) {
-            document.querySelectorAll(".admin-horiz-nav-btn").forEach(b => b.classList.remove("active"));
-            if (btnEl) btnEl.classList.add("active");
-            const allSecs = document.querySelectorAll("#adminModal .admin-box[id^='powerSec_']");
-            if (secId === "all") {
-                allSecs.forEach(s => { s.style.display = "block"; });
-                return;
-            }
-            allSecs.forEach(s => { s.style.display = (s.id === secId) ? "block" : "none"; });
-            const target = document.getElementById(secId);
-            if (target) target.scrollIntoView({ behavior: "smooth", block: "start" });
-        }
-        function openAdminPanelUI() {
+        function applyAdminSessionPermissions() {
             const isMaster = currentAdminSession === "master";
-            const isSubAdmin = ALL_ADMIN_ROLES.includes(currentAdminSession);
             const isCashierSession = ALL_CASHIER_IDS.includes(currentAdminSession);
             document.getElementById("masterOnlyAdminManagementBox").style.display = isMaster ? "block" : "none";
-            document.getElementById("subAdminSelfPasswordBox").style.display = isSubAdmin ? "block" : "none";
-            document.getElementById("adminAudioBroadcastBox").style.display = (isMaster || isSubAdmin) ? "block" : "none";
-            document.getElementById("multiIdQuotaBox").style.display = (isMaster || isSubAdmin) ? "block" : "none";
-            document.getElementById("liveLocationTrackerBox").style.display = (isMaster || (isSubAdmin && canSessionViewLiveLocations())) ? "block" : "none";
-            if (isMaster) {
-                document.getElementById("adminModalMainTitle").innerText = "👑 মাস্টার অ্যাডমিন কন্ট্রোল প্যানেল";
-                renderMasterAdminSubPasswordsViewer();
-            } else if (isSubAdmin) {
-                const prof = fourAdminProfiles[currentAdminSession] || { name: currentAdminSession };
-                document.getElementById("adminModalMainTitle").innerText = `🛡️ ${prof.name} - অ্যাডমিন কন্ট্রোল প্যানেল`;
-            } else if (isCashierSession) {
-                const cObj = fourCashiersData[currentAdminSession] || { name: currentAdminSession };
-                document.getElementById("adminModalMainTitle").innerText = `💰 ${cObj.name} - ক্যাশিয়ার প্যানেল`;
-            }
-            const allowedPowers = getSessionAllowedPowers();
-            renderAdminHorizontalNavButtons(allowedPowers);
-            document.querySelectorAll("#adminModal .admin-box[id^='powerSec_']").forEach(s => { s.style.display = "block"; });
-            const allPowerIds = getAllPowerIds();
-            allPowerIds.forEach(pId => {
-                const secEl = document.getElementById(`powerSec${pId}`);
-                const contEl = document.getElementById(`containerPower${pId}`);
-                const lockBtn = document.getElementById(`lockPower${pId}`);
-                if (!secEl) return;
-                if (allowedPowers.includes(pId)) {
-                    secEl.style.display = "block";
-                    if (contEl && lockBtn) {
-                        if (isCashierSession || (isSubAdmin && allowedPowers.length <= 2)) {
-                            contEl.style.opacity = "1";
-                            contEl.style.pointerEvents = "auto";
-                            lockBtn.innerText = "🔓 আনলকড";
-                            lockBtn.className = "btn btn-success btn-xs";
-                        } else {
-                            contEl.style.opacity = "0.5";
-                            contEl.style.pointerEvents = "none";
-                            lockBtn.innerText = "🔒 লকড";
-                            lockBtn.className = "btn btn-dark btn-xs";
-                        }
-                    }
-                } else {
-                    secEl.style.display = "none";
-                }
-            });
-            const samityWrap = document.getElementById("samityMasterWrapperBox");
-            if (samityWrap) {
-                const anySamityPower = allowedPowers.some(p => ["_schedule", "_wheel", "_winner", "_quota", "_regapp", "_cashier1", "_cashier2", "_cashier3", "_cashier4", "_cashier5", "_cashier6", "_cashierhistory", "_members"].includes(p));
-                samityWrap.style.display = anySamityPower ? "block" : "none";
-            }
-            document.getElementById("admChiefName").value = standLeadersData.chiefName !== "সেট করা নেই" ? standLeadersData.chiefName : "";
-            document.getElementById("admPresName").value = standLeadersData.presName !== "সেট করা নেই" ? standLeadersData.presName : "";
-            document.getElementById("admVpName").value = standLeadersData.vpName !== "সেট করা নেই" ? standLeadersData.vpName : "";
-            document.getElementById("admSecName").value = standLeadersData.secName !== "সেট করা নেই" ? standLeadersData.secName : "";
-            renderAdminSamityPendingReg();
-            renderFourCashierPanels();
-            renderCashierTransactionsHistory();
-            renderAdminSamityApprovedListSingleBox();
-            renderAdminIndividualWheelPermissions();
-            renderAdminFourRoleProfilesEditor();
-            renderAdminRegisteredListsCombined();
-            populateSpecialRiderDropdowns();
+            document.getElementById("adminAudioBroadcastBox").style.display = isMaster ? "block" : "none";
+            const selfPassBox = document.getElementById("subAdminSelfPasswordBox");
+            if (selfPassBox) selfPassBox.style.display = (!isMaster && ALL_ADMIN_ROLES.includes(currentAdminSession)) ? "block" : "none";
             renderMembersLiveLocationsMonitor();
             renderMemberMultiIdQuotaList();
-            document.getElementById("adminModal").style.display = "block";
+            const titleEl = document.getElementById("adminModalMainTitle");
+            if (isMaster) {
+                titleEl.innerText = "👑 মাস্টার অ্যাডমিন কন্ট্রোল প্যানেল (সব ক্ষমতা সক্রিয়)";
+                renderMasterAdminSubPasswordsViewer();
+            } else if (isCashierSession) {
+                const cObj = fourCashiersData[currentAdminSession] || {};
+                titleEl.innerText = `💰 ${cObj.name || "ক্যাশিয়ার"} প্যানেল`;
+            } else {
+                const prof = fourAdminProfiles[currentAdminSession] || { name: "সাব-অ্যাডমিন" };
+                titleEl.innerText = `🛡️ ${prof.name} প্যানেল`;
+            }
+            const allowedPowers = isMaster
+                ? ALL_SYSTEM_POWERS.map(p => p.id)
+                : (isCashierSession ? ["_" + currentAdminSession, "_cashierhistory"] : (subAdminCredentials[currentAdminSession]?.assignedPowers || []));
+            ALL_SYSTEM_POWERS.forEach(p => {
+                const box = document.getElementById("powerSec" + p.id);
+                if (box) box.style.display = allowedPowers.includes(p.id) ? "block" : "none";
+            });
+            renderAdminFourRoleProfilesEditor();
+            renderFourCashierPanels();
+            renderCashierTransactionsHistory();
+        }
+        async function saveNewMasterPassword() {
+            const newPass = document.getElementById("newMasterPasswordInput").value.trim();
+            if (!newPass || newPass.length < 4) { showToast("⚠️ অন্তত ৪ সংখ্যার পাসওয়ার্ড দিন।", "error"); return; }
+            await db.ref('masterPasswordConfig').set(newPass);
+            document.getElementById("newMasterPasswordInput").value = "";
+            showToast("✅ মাস্টার পাসওয়ার্ড পরিবর্তন হয়েছে!", "success");
         }
         async function saveNewSubAdminPassword() {
-            if (!ALL_ADMIN_ROLES.includes(currentAdminSession)) return;
+            if (!currentAdminSession || !ALL_ADMIN_ROLES.includes(currentAdminSession)) return;
             const newPass = document.getElementById("newSubAdminPassInput").value.trim();
-            if (!newPass || newPass.length < 4) { showToast("⚠️ কমপক্ষে ৪ অক্ষরের নতুন পাসওয়ার্ড দিন।", "error"); return; }
-            subAdminCredentials[currentAdminSession].pass = newPass;
+            if (!newPass || newPass.length < 4) { showToast("⚠️ অন্তত ৪ সংখ্যার পাসওয়ার্ড দিন।", "error"); return; }
             await db.ref(`subAdminConfig/${currentAdminSession}/pass`).set(newPass);
             document.getElementById("newSubAdminPassInput").value = "";
-            showToast("✅ আপনার প্যানেলের নতুন পাসওয়ার্ড সফলভাবে সেভ হয়েছে!", "success");
+            showToast("✅ আপনার পাসওয়ার্ড সফলভাবে পরিবর্তন হয়েছে!", "success");
         }
         function renderMasterAdminSubPasswordsViewer() {
             const container = document.getElementById("masterSubAdminPasswordsViewerContainer");
             if (!container) return;
-            let html = "";
-            ALL_ADMIN_ROLES.forEach((role, idx) => {
-                const creds = subAdminCredentials[role] || { pass: "123456", assignedPowers: [] };
-                const prof = fourAdminProfiles[role] || {};
-                const displayName = prof.name && prof.name.trim() !== "" ? prof.name : `অ্যাডমিন ${idx + 1}`;
-                const roleTitle = prof.roleTitle || "এডমিন";
-                const powerCount = (creds.assignedPowers || []).length;
-                html += `
+            container.innerHTML = ALL_ADMIN_ROLES.map(role => {
+                const cred = subAdminCredentials[role] || { pass: "123456", assignedPowers: [] };
+                const prof = fourAdminProfiles[role] || { name: role, roleTitle: "এডমিন" };
+                const pCount = (cred.assignedPowers || []).length;
+                return `
                     <div class="sub-admin-compact-row">
                         <div>
-                            <strong style="font-size:12px; color:#1e1b4b;">${roleTitle}: ${displayName}</strong>
-                            <div style="font-size:10px; color:#059669; font-weight:700;">নির্ধারিত কাজ: ${powerCount}টি</div>
+                            <span style="font-size:10px; background:#e0e7ff; color:#3730a3; padding:1px 5px; border-radius:4px; font-weight:700;">${prof.roleTitle || 'এডমিন'}</span>
+                            <strong style="font-size:13px; color:#1e293b; margin-left:4px;">${prof.name}</strong>
+                            <span class="pass-pill-box" style="margin-left:6px;">${cred.pass}</span>
+                            <div style="font-size:10px; color:#059669; margin-top:2px;">কাজ: ${pCount}টি নির্ধারিত</div>
                         </div>
-                        <div style="display:flex; align-items:center; gap:6px;">
-                            <span class="pass-pill-box">${creds.pass}</span>
-                            <button class="btn btn-primary btn-xs" onclick="openSubAdminPowerModal('${role}')">✏️ এডিট</button>
-                        </div>
+                        <button class="btn btn-primary btn-xs" onclick="openSubAdminPowerModal('${role}')">✏️ কাজ নির্ধারণ</button>
                     </div>
                 `;
-            });
-            container.innerHTML = html;
+            }).join('');
         }
         function openSubAdminPowerModal(role) {
-            const creds = subAdminCredentials[role] || { pass: "123456", assignedPowers: [] };
-            const prof = fourAdminProfiles[role] || {};
             document.getElementById("editingSubAdminRole").value = role;
-            document.getElementById("powerModalTitle").innerText = `✏️ ${prof.name || role} - পাসওয়ার্ড ও কাজ নির্ধারণ`;
-            document.getElementById("modalSubAdminPassInput").value = creds.pass || "";
-            const currentAssigned = (creds.assignedPowers || []).map(p => p.startsWith("_") ? p : "_" + p);
-            const listContainer = document.getElementById("modalPowerCheckboxesList");
-            listContainer.innerHTML = ALL_SYSTEM_POWERS.map(p => {
-                const checked = currentAssigned.includes(p.id) ? "checked" : "";
-                return `
-                    <label style="display:flex; align-items:center; gap:6px; font-size:11.5px; font-weight:600; color:#1e293b; cursor:pointer; background:#fff; padding:5px 7px; border-radius:6px; border:1px solid #e2e8f0;">
-                        <input type="checkbox" class="subadmin-power-chk" value="${p.id}" ${checked}>
-                        <span>${p.label}</span>
-                    </label>
-                `;
-            }).join('');
+            const cred = subAdminCredentials[role] || { pass: "123456", assignedPowers: [] };
+            const prof = fourAdminProfiles[role] || { name: role };
+            document.getElementById("powerModalTitle").innerText = `✏️ ${prof.name} - কাজ নির্ধারণ`;
+            document.getElementById("modalSubAdminPassInput").value = cred.pass || "123456";
+            const assigned = cred.assignedPowers || [];
+            document.getElementById("modalPowerCheckboxesList").innerHTML = ALL_SYSTEM_POWERS.map(p => `
+                <label style="display:flex; align-items:center; gap:8px; font-size:12px; background:white; padding:6px 8px; border-radius:6px; border:1px solid #e2e8f0; cursor:pointer;">
+                    <input type="checkbox" class="modal-power-chk" value="${p.id}" ${assigned.includes(p.id) ? 'checked' : ''} style="width:16px; height:16px;">
+                    <span>${p.label}</span>
+                </label>
+            `).join('');
             document.getElementById("subAdminPowerModal").style.display = "block";
         }
-        function toggleAllPowerCheckboxes(state) {
-            document.querySelectorAll(".subadmin-power-chk").forEach(chk => { chk.checked = state; });
+        function toggleAllPowerCheckboxes(checkState) {
+            document.querySelectorAll(".modal-power-chk").forEach(chk => { chk.checked = checkState; });
         }
         async function saveModalSubAdminPowers() {
             const role = document.getElementById("editingSubAdminRole").value;
-            const newPass = document.getElementById("modalSubAdminPassInput").value.trim();
-            if (!newPass || newPass.length < 4) {
-                showToast("⚠️ কমপক্ষে ৪ অক্ষরের পাসওয়ার্ড দিন।", "error");
-                return;
-            }
+            const newPass = document.getElementById("modalSubAdminPassInput").value.trim() || "123456";
             const selectedPowers = [];
-            document.querySelectorAll(".subadmin-power-chk:checked").forEach(chk => {
-                selectedPowers.push(chk.value);
-            });
-            subAdminCredentials[role] = { pass: newPass, assignedPowers: selectedPowers };
-            await db.ref(`subAdminConfig/${role}`).set(subAdminCredentials[role]);
+            document.querySelectorAll(".modal-power-chk:checked").forEach(chk => selectedPowers.push(chk.value));
+            await db.ref(`subAdminConfig/${role}`).set({ pass: newPass, assignedPowers: selectedPowers });
             document.getElementById("subAdminPowerModal").style.display = "none";
             renderMasterAdminSubPasswordsViewer();
-            showToast(`✅ ${fourAdminProfiles[role]?.name || role}-এর পাসওয়ার্ড ও ${selectedPowers.length}টি কাজ সেভ হয়েছে!`, "success");
+            showToast("✅ অ্যাডমিনের পাসওয়ার্ড ও কাজের তালিকা সেভ হয়েছে!", "success");
+        }
+
+        // পরিবর্তন ২ ও ৩: ৬ জন ক্যাশিয়ারের সমান অধিকার (প্রোফাইল ছবি ও নাম মার্ক করে জমা/মাইনাস) + ক্যাশিয়ার টু ক্যাশিয়ার ট্রান্সফার অ্যাপ্রুভাল
+        function toggleCashierMemberPicker(cid) {
+            const listEl = document.getElementById(`cashierMemberPickerList_${cid}`);
+            if (!listEl) return;
+            listEl.style.display = listEl.style.display === "block" ? "none" : "block";
+        }
+
+        function selectCashierMemberForAdj(cid, memberKeyPhone) {
+            selectedCashierMemberForAdj[cid] = memberKeyPhone;
+            const listEl = document.getElementById(`cashierMemberPickerList_${cid}`);
+            if (listEl) listEl.style.display = "none";
+            renderFourCashierPanels();
+        }
+
+        function renderFourCashierPanels() {
+            const isMaster = currentAdminSession === "master";
+            const membersEntries = Object.entries(samityApprovedMembers);
+
+            ALL_CASHIER_IDS.forEach((cid, index) => {
+                const c = fourCashiersData[cid] || { roleTitle: "ক্যাশিয়ার", name: `ক্যাশিয়ার ${index + 1}`, phone: "", photo: "https://via.placeholder.com/80", active: false, balance: 0 };
+                const headerTitleEl = document.getElementById(`cashierBoxHeaderTitle_${cid}`);
+                if (headerTitleEl) {
+                    headerTitleEl.innerText = `${index + 6}. ${c.roleTitle || 'ক্যাশিয়ার'} প্যানেল (${c.name || 'নাম নেই'})`;
+                }
+                const bodyEl = document.getElementById(`cashierPanelBody_${cid}`);
+                if (!bodyEl) return;
+
+                const myRequests = Object.entries(samityPendingPayments).filter(([_, r]) => r.status === 'pending' && (r.cashierId === cid || (!r.cashierId && cid === 'cashier1')));
+                const myIncomingTransfers = Object.entries(pendingCashierTransfers).filter(([_, t]) => t && t.status === 'pending' && t.toCashierId === cid);
+                const myOutgoingTransfers = Object.entries(pendingCashierTransfers).filter(([_, t]) => t && t.status === 'pending' && t.fromCashierId === cid);
+                const myPendingMinusReqs = Object.entries(pendingMemberMinusRequests).filter(([_, mReq]) => mReq && mReq.status === 'pending' && mReq.cashierId === cid);
+
+                const otherCashiersOptions = ALL_CASHIER_IDS
+                    .filter(otherId => otherId !== cid && fourCashiersData[otherId]?.active)
+                    .map(otherId => `<option value="${otherId}">${fourCashiersData[otherId].name} (${fourCashiersData[otherId].roleTitle || 'ক্যাশিয়ার'})</option>`)
+                    .join('');
+
+                const selMemberKey = selectedCashierMemberForAdj[cid];
+                const selMemberObj = selMemberKey ? samityApprovedMembers[selMemberKey] : null;
+
+                let pickerTriggerHtml = `
+                    <button type="button" class="cashier-member-picker-btn" onclick="toggleCashierMemberPicker('${cid}')">
+                        ${selMemberObj ? `
+                            <div style="display:flex; align-items:center; gap:8px; min-width:0;">
+                                <img src="${selMemberObj.photo || 'https://via.placeholder.com/34'}" style="width:32px; height:32px; border-radius:50%; object-fit:cover; border:1.5px solid #16a34a; flex-shrink:0;">
+                                <div style="min-width:0;">
+                                    <strong style="font-size:12px; color:#0f172a; display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">✅ ${selMemberObj.name}</strong>
+                                    <span style="font-size:10px; color:#047857; font-weight:700;">বর্তমান জমা: ৳${Number(selMemberObj.weeklyPaid || 0)}</span>
+                                </div>
+                            </div>
+                        ` : `
+                            <span style="font-size:11.5px; color:#475569; font-weight:600;">👤 সদস্যের নাম ও ছবি মার্ক করতে এখানে টাচ করুন</span>
+                        `}
+                        <span style="font-size:11px; color:#0284c7; font-weight:700; flex-shrink:0;">▼ তালিকা</span>
+                    </button>
+                `;
+
+                let pickerListHtml = `
+                    <div id="cashierMemberPickerList_${cid}" class="cashier-member-picker-list">
+                        ${membersEntries.length === 0 ? `<div style="font-size:11px; color:#64748b; text-align:center; padding:6px;">কোনো অনুমোদিত সদস্য নেই</div>` : membersEntries.map(([kPhone, m]) => `
+                            <div class="cashier-member-option-row ${selMemberKey === kPhone ? 'selected' : ''}" onclick="selectCashierMemberForAdj('${cid}', '${kPhone}')">
+                                <div style="display:flex; align-items:center; gap:8px; min-width:0;">
+                                    <img src="${m.photo || 'https://via.placeholder.com/34'}" style="width:32px; height:32px; border-radius:50%; object-fit:cover; border:1px solid #cbd5e1; flex-shrink:0;">
+                                    <div style="min-width:0;">
+                                        <strong style="font-size:12px; color:#0f172a; display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${m.name}</strong>
+                                        <span style="font-size:10px; color:#64748b;">জমা: ৳${Number(m.weeklyPaid || 0)}</span>
+                                    </div>
+                                </div>
+                                <span style="font-size:11px; font-weight:700; color:${selMemberKey === kPhone ? '#15803d' : '#4f46e5'};">${selMemberKey === kPhone ? '✔️ মার্কড' : 'মার্ক করুন'}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+
+                let html = `
+                    <div style="background:#dcfce7; border:1px solid #86efac; padding:6px 10px; border-radius:8px; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center;">
+                        <span style="font-size:12px; font-weight:700; color:#166534;">💰 বর্তমান ক্যাশ ব্যালেন্স:</span>
+                        <strong style="font-size:15px; color:#15803d;">৳${Number(c.balance || 0)}</strong>
+                    </div>
+                `;
+
+                if (isMaster) {
+                    html += `
+                        <div class="sub-panel-card" style="background:#fffbeb; border-color:#fcd34d;">
+                            <div style="font-size:11px; font-weight:700; color:#92400e; margin-bottom:5px;">👑 মাস্টার সেটআপ: ক্যাশিয়ার তথ্য ও পাসওয়ার্ড</div>
+                            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:5px; margin-bottom:5px;">
+                                <input type="text" id="cashierRoleTitle_${cid}" class="form-control" value="${c.roleTitle || 'ক্যাশিয়ার'}" placeholder="পদবি (যেমন: ক্যাশিয়ার)">
+                                <input type="text" id="cashierName_${cid}" class="form-control" value="${c.name || ''}" placeholder="ক্যাশিয়ারের নাম">
+                            </div>
+                            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:5px; margin-bottom:5px;">
+                                <input type="tel" id="cashierPhone_${cid}" class="form-control" value="${c.phone || ''}" placeholder="বিকাশ/নগদ নম্বর">
+                                <input type="text" id="cashierCustomPass_${cid}" class="form-control" value="${c.customPass || ''}" placeholder="লগইন পাসওয়ার্ড">
+                            </div>
+                            <div style="margin-bottom:5px;">
+                                <input type="file" id="cashierPhoto_${cid}" accept="image/*" class="form-control" style="padding:3px;">
+                            </div>
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                                <label style="font-size:11px; font-weight:700; color:#065f46; display:flex; align-items:center; gap:5px; cursor:pointer;">
+                                    <input type="checkbox" id="cashierActive_${cid}" ${c.active ? 'checked' : ''} style="width:16px; height:16px;">
+                                    <span>পেমেন্ট প্যানেলে চালু রাখুন</span>
+                                </label>
+                                <button class="btn btn-success btn-xs" onclick="saveSingleCashierProfile('${cid}')">💾 প্রোফাইল সেভ</button>
+                            </div>
+                        </div>
+                    `;
+                }
+
+                // পরিবর্তন ৩: অন্য ক্যাশিয়ার থেকে আগত পেন্ডিং ট্রান্সফার অ্যাপ্রুভাল বক্স
+                html += `
+                    <div class="sub-panel-card" style="background:#fefce8; border-color:#facc15;">
+                        <div style="font-size:11.5px; font-weight:700; color:#854d0e; margin-bottom:5px;">📥 অন্য ক্যাশিয়ার থেকে আগত ট্রান্সফার (${myIncomingTransfers.length}টি):</div>
+                        ${myIncomingTransfers.length === 0 ? `<div style="font-size:11px; color:#64748b;">কোনো পেন্ডিং ট্রান্সফার রিকোয়েস্ট নেই।</div>` : myIncomingTransfers.map(([tId, t]) => `
+                            <div style="background:#fff; border:1px solid #fde047; border-radius:7px; padding:7px; margin-bottom:5px; font-size:11px;">
+                                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+                                    <strong>📤 ${t.fromCashierName} → আপনাকে ৳${t.amount} পাঠিয়েছেন</strong>
+                                    <span style="color:#b45309; font-weight:700;">পেন্ডিং</span>
+                                </div>
+                                <div style="display:flex; gap:6px;">
+                                    <button class="btn btn-success btn-xs" style="flex:1;" onclick="respondCashierTransfer('${tId}', 'approve')">✅ রিসিভ (অ্যাপ্রুভ)</button>
+                                    <button class="btn btn-danger btn-xs" style="flex:1;" onclick="respondCashierTransfer('${tId}', 'reject')">❌ বাতিল</button>
+                                </div>
+                            </div>
+                        `).join('')}
+                        ${myOutgoingTransfers.length > 0 ? `
+                            <div style="margin-top:6px; padding-top:5px; border-top:1px dashed #fde047; font-size:10.5px; color:#92400e;">
+                                <strong>⏳ আপনার পাঠানো অপেক্ষমাণ ট্রান্সফার:</strong><br>
+                                ${myOutgoingTransfers.map(([_, ot]) => `• ${ot.toCashierName}-কে ৳${ot.amount} (রিসিভের অপেক্ষায়)`).join('<br>')}
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+
+                // পরিবর্তন ২ ও ৪: প্রোফাইল ছবি ও নাম মার্ক করে ৬ জন ক্যাশিয়ারের জমা (+) ও মাইনাস (-) অপশন
+                html += `
+                    <div class="sub-panel-card">
+                        <div style="font-size:11.5px; font-weight:700; color:#047857; margin-bottom:5px;">➕/➖ সদস্যের টাকা জমা ও মাইনাস (ছবি ও নাম মার্ক করে):</div>
+                        ${pickerTriggerHtml}
+                        ${pickerListHtml}
+                        <div style="display:flex; gap:5px; margin-bottom:5px;">
+                            <input type="number" id="cashierDirectAmt_${cid}" class="form-control" placeholder="টাকার পরিমাণ (৳)">
+                        </div>
+                        <div style="display:flex; gap:6px; margin-bottom:5px;">
+                            <button class="btn btn-success btn-xs" style="flex:1;" onclick="cashierDirectMemberAdjust('${cid}', 'add')">➕ টাকা জমা দিন</button>
+                            <button class="btn btn-danger btn-xs" style="flex:1;" onclick="cashierDirectMemberAdjust('${cid}', 'sub')">➖ টাকা মাইনাস পাঠান</button>
+                        </div>
+                        ${myPendingMinusReqs.length > 0 ? `
+                            <div style="background:#fff1f2; border:1px dashed #ef4444; border-radius:6px; padding:5px; font-size:10.5px; color:#991b1b;">
+                                <strong>⏳ ইউজারের অ্যাপ্রুভালের অপেক্ষায় মাইনাস:</strong><br>
+                                ${myPendingMinusReqs.map(([_, mr]) => `• ${mr.memberName}: -৳${mr.amount}`).join('<br>')}
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+
+                // পরিবর্তন ৩: ক্যাশিয়ার টু ক্যাশিয়ার ট্রান্সফার রিকোয়েস্ট পাঠানো
+                html += `
+                    <div class="sub-panel-card" style="background:#f0f9ff; border-color:#7dd3fc;">
+                        <div style="font-size:11.5px; font-weight:700; color:#0369a1; margin-bottom:5px;">🔄 অন্য ক্যাশিয়ারকে টাকা ট্রান্সফার পাঠান (রিসিভ সাপেক্ষে):</div>
+                        <div style="display:grid; grid-template-columns: 1.2fr 1fr auto; gap:5px;">
+                            <select id="transferToCashier_${cid}" class="form-control">${otherCashiersOptions || '<option value="">অন্য ক্যাশিয়ার নেই</option>'}</select>
+                            <input type="number" id="transferCashierAmt_${cid}" class="form-control" placeholder="৳ পরিমাণ">
+                            <button class="btn btn-info btn-xs" onclick="transferBetweenCashiers('${cid}')">📤 পাঠান</button>
+                        </div>
+                    </div>
+                `;
+
+                html += `
+                    <div style="font-size:11.5px; font-weight:700; color:#1e293b; margin:6px 0 4px;">📩 সদস্যদের পাঠানো পেমেন্ট রিকোয়েস্ট (${myRequests.length}টি):</div>
+                `;
+
+                if (myRequests.length === 0) {
+                    html += `<div style="font-size:11px; color:#64748b; background:#fff; padding:8px; border-radius:6px; text-align:center;">কোনো নতুন পেমেন্ট রিকোয়েস্ট নেই।</div>`;
+                } else {
+                    html += myRequests.map(([key, req]) => `
+                        <div style="background:white; padding:8px; border-radius:8px; border:1px solid #cbd5e1; margin-bottom:6px; font-size:11px;">
+                            <div style="display:flex; justify-content:space-between; align-items:center;">
+                                <div style="display:flex; align-items:center; gap:6px;">
+                                    <img src="${req.targetPhoto || 'https://via.placeholder.com/30'}" style="width:28px; height:28px; border-radius:50%; object-fit:cover;">
+                                    <div>
+                                        <strong>${req.targetName} (${req.targetPhone})</strong>
+                                        <div style="color:#0369a1; font-weight:700;">মাধ্যম: ${req.paymentMethod || 'bKash'} (${req.senderPhone})</div>
+                                    </div>
+                                </div>
+                                <strong style="color:#16a34a; font-size:14px;">৳${req.amount}</strong>
+                            </div>
+                            ${req.slipPhoto ? `<div style="margin:5px 0;"><img src="${req.slipPhoto}" onclick="window.open(this.src)" style="max-height:70px; border-radius:6px; border:1px solid #94a3b8; cursor:pointer;" title="বড় করে দেখতে ক্লিক করুন"></div>` : ''}
+                            <div style="display:flex; gap:6px; margin-top:6px;">
+                                <button class="btn btn-success btn-xs" style="flex:1;" onclick="approveSamityPayment('${key}', '${cid}')">✅ অ্যাপ্রুভ করুন</button>
+                                <button class="btn btn-danger btn-xs" onclick="rejectSamityPayment('${key}')">❌ বাতিল</button>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+                bodyEl.innerHTML = html;
+            });
+        }
+
+        async function saveSingleCashierProfile(cid) {
+            const roleTitle = document.getElementById(`cashierRoleTitle_${cid}`).value.trim() || "ক্যাশিয়ার";
+            const name = document.getElementById(`cashierName_${cid}`).value.trim();
+            const phone = document.getElementById(`cashierPhone_${cid}`).value.trim();
+            const customPass = document.getElementById(`cashierCustomPass_${cid}`).value.trim();
+            const active = document.getElementById(`cashierActive_${cid}`).checked;
+            const file = document.getElementById(`cashierPhoto_${cid}`).files[0];
+            let photo = fourCashiersData[cid]?.photo || "https://via.placeholder.com/80";
+            if (file) photo = await compressImageToBase64(file, 200);
+            await db.ref(`standConfig/fourCashiers/${cid}`).update({
+                roleTitle, name, phone, customPass, active, photo
+            });
+            showToast(`✅ ${name || cid}-এর তথ্য সেভ হয়েছে!`, "success");
+        }
+
+        // পরিবর্তন ২ ও ৪: মার্ক করা সদস্যের টাকা জমা (+) সরাসরি হবে; মাইনাস (-) করলে ইউজারের স্পিন বাটনের পাশে অ্যাপ্রুভ/ডিলিট বাটন যাবে
+        async function cashierDirectMemberAdjust(cid, mode) {
+            const targetKey = selectedCashierMemberForAdj[cid];
+            const amt = Number(document.getElementById(`cashierDirectAmt_${cid}`).value);
+            if (!targetKey || !samityApprovedMembers[targetKey]) {
+                showToast("⚠️ আগে তালিকা থেকে সদস্যের নাম ও ছবি মার্ক করুন।", "error");
+                return;
+            }
+            if (!amt || amt <= 0) {
+                showToast("⚠️ সঠিক টাকার পরিমাণ দিন।", "error");
+                return;
+            }
+            const member = samityApprovedMembers[targetKey];
+            const cObj = fourCashiersData[cid] || { name: cid, balance: 0 };
+
+            if (mode === "add") {
+                const curPaid = Number(member.weeklyPaid || 0);
+                const nextPaid = curPaid + amt;
+                await db.ref(`tanSamity/approvedMembers/${targetKey}/weeklyPaid`).set(nextPaid);
+                const curBal = Number(cObj.balance || 0);
+                await db.ref(`standConfig/fourCashiers/${cid}/balance`).set(curBal + amt);
+                await db.ref('tanSamity/cashierHistory').push({
+                    cashierId: cid,
+                    cashierName: cObj.name,
+                    memberName: member.name,
+                    memberPhone: targetKey,
+                    amount: amt,
+                    type: 'add',
+                    note: `ক্যাশিয়ার সরাসরি জমা (${cObj.name})`,
+                    timestamp: Date.now()
+                });
+                document.getElementById(`cashierDirectAmt_${cid}`).value = "";
+                showToast(`✅ ${member.name}-এর অ্যাকাউন্টে ৳${amt} জমা করা হয়েছে!`, "success");
+            } else {
+                // পরিবর্তন ৪: ক্যাশিয়ার মাইনাস করলে ইউজারের অনুমোদনের জন্য পেন্ডিং রিকোয়েস্ট পাঠানো হবে
+                const reqRef = db.ref('tanSamity/pendingMemberMinus').push();
+                await reqRef.set({
+                    id: reqRef.key,
+                    cashierId: cid,
+                    cashierName: cObj.name,
+                    memberPhone: targetKey,
+                    memberName: member.name,
+                    amount: amt,
+                    status: 'pending',
+                    timestamp: Date.now()
+                });
+                document.getElementById(`cashierDirectAmt_${cid}`).value = "";
+                showToast(`📤 ${member.name}-এর কাছে ৳${amt} মাইনাসের অ্যাপ্রুভাল রিকোয়েস্ট পাঠানো হয়েছে! ইউজার অ্যাপ্রুভ করলে কার্যকর হবে।`, "info");
+            }
+        }
+
+        // পরিবর্তন ৩: একজন ক্যাশিয়ার আরেকজন ক্যাশিয়ারকে টাকা পাঠালে রিসিভার ক্যাশিয়ার অ্যাপ্রুভ না করা পর্যন্ত ব্যালেন্স মাইনাস/প্লাস হবে না
+        async function transferBetweenCashiers(fromCid) {
+            const toCid = document.getElementById(`transferToCashier_${fromCid}`).value;
+            const amt = Number(document.getElementById(`transferCashierAmt_${fromCid}`).value);
+            if (!toCid || !amt || amt <= 0) {
+                showToast("⚠️ প্রাপক ক্যাশিয়ার ও সঠিক টাকার পরিমাণ দিন।", "error");
+                return;
+            }
+            const fromObj = fourCashiersData[fromCid] || { name: fromCid, balance: 0 };
+            const toObj = fourCashiersData[toCid] || { name: toCid, balance: 0 };
+            if (Number(fromObj.balance || 0) < amt) {
+                showToast("❌ আপনার ব্যালেন্সে পর্যাপ্ত টাকা নেই!", "error");
+                return;
+            }
+            const tRef = db.ref('tanSamity/pendingCashierTransfers').push();
+            await tRef.set({
+                id: tRef.key,
+                fromCashierId: fromCid,
+                fromCashierName: fromObj.name,
+                toCashierId: toCid,
+                toCashierName: toObj.name,
+                amount: amt,
+                status: 'pending',
+                timestamp: Date.now()
+            });
+            document.getElementById(`transferCashierAmt_${fromCid}`).value = "";
+            showToast(`📤 ${toObj.name}-এর কাছে ৳${amt} ট্রান্সফার রিকোয়েস্ট পাঠানো হয়েছে! তিনি রিসিভ করলে ব্যালেন্স আপডেট হবে।`, "success");
+        }
+
+        async function respondCashierTransfer(transferId, decision) {
+            const t = pendingCashierTransfers[transferId];
+            if (!t) return;
+            if (decision === 'reject') {
+                await db.ref(`tanSamity/pendingCashierTransfers/${transferId}`).remove();
+                showToast("❌ ট্রান্সফার রিকোয়েস্ট বাতিল করা হয়েছে।", "info");
+                return;
+            }
+            const fromCid = t.fromCashierId;
+            const toCid = t.toCashierId;
+            const amt = Number(t.amount) || 0;
+            const fromObj = fourCashiersData[fromCid] || { name: t.fromCashierName, balance: 0 };
+            const toObj = fourCashiersData[toCid] || { name: t.toCashierName, balance: 0 };
+            if (Number(fromObj.balance || 0) < amt) {
+                showToast("❌ প্রেরক ক্যাশিয়ারের ব্যালেন্সে বর্তমানে পর্যাপ্ত টাকা নেই!", "error");
+                return;
+            }
+            await db.ref(`standConfig/fourCashiers/${fromCid}/balance`).set(Number(fromObj.balance || 0) - amt);
+            await db.ref(`standConfig/fourCashiers/${toCid}/balance`).set(Number(toObj.balance || 0) + amt);
+            await db.ref('tanSamity/cashierHistory').push({
+                cashierId: toCid,
+                cashierName: `${fromObj.name} ➔ ${toObj.name}`,
+                memberName: `ক্যাশিয়ার ট্রান্সফার (রিসিভড)`,
+                memberPhone: toObj.phone || toCid,
+                amount: amt,
+                type: 'transfer',
+                note: `${fromObj.name} থেকে ${toObj.name} রিসিভ করেছেন`,
+                timestamp: Date.now()
+            });
+            await db.ref(`tanSamity/pendingCashierTransfers/${transferId}`).remove();
+            showToast(`✅ ${fromObj.name} থেকে পাঠানো ৳${amt} রিসিভ (অ্যাপ্রুভ) সম্পন্ন হয়েছে!`, "success");
+        }
+
+        async function approveSamityPayment(reqId, cashierId) {
+            const req = samityPendingPayments[reqId];
+            if (!req) return;
+            const targetKey = req.targetPhone;
+            const member = samityApprovedMembers[targetKey];
+            if (!member) { showToast("❌ সদস্য পাওয়া যায়নি!", "error"); return; }
+            const cid = cashierId || req.cashierId || "cashier1";
+            const cObj = fourCashiersData[cid] || { name: "ক্যাশিয়ার", balance: 0 };
+            const amt = Number(req.amount) || 0;
+            await db.ref('tanSamity/approvedMembers/' + targetKey + '/weeklyPaid').set(Number(member.weeklyPaid || 0) + amt);
+            await db.ref(`standConfig/fourCashiers/${cid}/balance`).set(Number(cObj.balance || 0) + amt);
+            await db.ref('tanSamity/pendingPayments/' + reqId + '/status').set('approved');
+            await db.ref('tanSamity/cashierHistory').push({
+                cashierId: cid,
+                cashierName: cObj.name,
+                memberName: member.name,
+                memberPhone: targetKey,
+                amount: amt,
+                type: 'add',
+                paymentMethod: req.paymentMethod || 'bKash',
+                senderPhone: req.senderPhone || '',
+                note: `অ্যাপ্রুভড পেমেন্ট (${req.paymentMethod || 'bKash'})`,
+                timestamp: Date.now()
+            });
+            showToast(`✅ ${member.name}-এর ৳${amt} অ্যাপ্রুভ এবং ${cObj.name}-এর ব্যালেন্সে যুক্ত হয়েছে!`, "success");
+        }
+        async function rejectSamityPayment(reqId) {
+            await db.ref('tanSamity/pendingPayments/' + reqId + '/status').set('rejected');
+            showToast("❌ পেমেন্ট আবেদন বাতিল হয়েছে।", "info");
+        }
+        function renderCashierTransactionsHistory() {
+            const summaryBar = document.getElementById("cashierTotalSummaryBar");
+            const listEl = document.getElementById("cashierTransactionsHistoryList");
+            if (!summaryBar || !listEl) return;
+            const allTx = Object.values(cashierTransactionsList).sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+            let activeCashiersTotal = 0;
+            let perCashierBadges = [];
+            ALL_CASHIER_IDS.forEach(cid => {
+                const c = fourCashiersData[cid];
+                if (c && c.active) {
+                    const bal = Number(c.balance || 0);
+                    activeCashiersTotal += bal;
+                    perCashierBadges.push(`${c.name}: ৳${bal}`);
+                }
+            });
+            let allMembersTotalPaid = 0;
+            Object.values(samityApprovedMembers).forEach(m => {
+                allMembersTotalPaid += Number(m.weeklyPaid || 0);
+            });
+            summaryBar.innerHTML = `
+                <div>💰 ক্যাশিয়ারদের হাতে মোট ক্যাশ ব্যালেন্স: ৳${activeCashiersTotal} | 👥 সদস্যদের মোট জমা: ৳${allMembersTotalPaid}</div>
+                <div style="font-size:10.5px; color:#0f172a; margin-top:2px;">${perCashierBadges.join(' | ') || 'কোনো ক্যাশিয়ার নেই'}</div>
+            `;
+            if (allTx.length === 0) {
+                listEl.innerHTML = `<div style="font-size:11px; color:#64748b; text-align:center; padding:8px;">কোনো লেনদেনের হিসাব নেই।</div>`;
+                return;
+            }
+            listEl.innerHTML = allTx.map(tx => {
+                const isSub = tx.type === 'sub';
+                const isTransfer = tx.type === 'transfer';
+                const badgeColor = isSub ? '#dc2626' : (isTransfer ? '#0284c7' : '#16a34a');
+                const sign = isSub ? '-' : (isTransfer ? '⇄' : '+');
+                return `
+                    <div style="background:#fff; border:1px solid #e2e8f0; border-left:4px solid ${badgeColor}; border-radius:6px; padding:6px 8px; margin-bottom:5px; font-size:11px;">
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <strong>${tx.memberName} (${tx.memberPhone})</strong>
+                            <strong style="color:${badgeColor};">${sign}৳${tx.amount}</strong>
+                        </div>
+                        <div style="color:#475569; font-size:10px; margin-top:2px;">
+                            ক্যাশিয়ার: <strong>${tx.cashierName}</strong> | ${tx.note || ''} | ${new Date(tx.timestamp).toLocaleString('bn-BD', { hour: '2-digit', minute: '2-digit', day: 'numeric', month: 'short' })}
+                        </div>
+                    </div>
+                `;
+            }).join('');
         }
         function renderAdminFourRoleProfilesEditor() {
             const container = document.getElementById("adminFourRoleProfilesEditorContainer");
             if (!container) return;
             container.innerHTML = ALL_ADMIN_ROLES.map((role, idx) => {
-                const p = fourAdminProfiles[role] || {};
-                const curTitle = p.roleTitle || "এডমিন";
+                const p = fourAdminProfiles[role] || { name: "", roleTitle: "এডমিন", phone: "", photo: "" };
                 return `
-                    <div class="sub-panel-card" style="background:#fffbeb; border-color:#fcd34d;">
-                        <div style="font-size:12px; font-weight:700; color:#92400e; margin-bottom:5px;">সাব-অ্যাডমিন #${idx + 1} (${p.name || role})</div>
-                        <div class="form-group">
-                            <label class="form-label">পদবী সিলেক্ট করুন</label>
-                            <select id="admRoleTitle_${role}" class="form-control">
-                                <option value="এডমিন" ${curTitle === "এডমিন" ? "selected" : ""}>এডমিন</option>
-                                <option value="উপদেষ্টা" ${curTitle === "উপদেষ্টা" ? "selected" : ""}>উপদেষ্টা</option>
-                                <option value="সভাপতি" ${curTitle === "সভাপতি" ? "selected" : ""}>সভাপতি</option>
-                                <option value="সহ-সভাপতি" ${curTitle === "সহ-সভাপতি" ? "selected" : ""}>সহ-সভাপতি</option>
-                                <option value="সাংগঠনিক সম্পাদক" ${curTitle === "সাংগঠনিক সম্পাদক" ? "selected" : ""}>সাংগঠনিক সম্পাদক</option>
-                                <option value="ক্যাশিয়ার" ${curTitle === "ক্যাশিয়ার" ? "selected" : ""}>ক্যাশিয়ার</option>
-                            </select>
+                    <div class="sub-panel-card">
+                        <div style="font-size:11.5px; font-weight:700; color:#92400e; margin-bottom:4px;">সাব-অ্যাডমিন #${idx + 1} (${role})</div>
+                        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:5px; margin-bottom:5px;">
+                            <input type="text" id="profRoleTitle_${role}" class="form-control" value="${p.roleTitle || 'এডমিন'}" placeholder="পদবি">
+                            <input type="text" id="profName_${role}" class="form-control" value="${p.name || ''}" placeholder="নাম">
                         </div>
-                        <div class="form-group">
-                            <label class="form-label">নাম</label>
-                            <input type="text" id="admRoleName_${role}" class="form-control" value="${p.name || ''}" placeholder="নাম লিখুন">
+                        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:5px;">
+                            <input type="tel" id="profPhone_${role}" class="form-control" value="${p.phone || ''}" placeholder="ফোন নম্বর">
+                            <input type="file" id="profPhoto_${role}" accept="image/*" class="form-control" style="padding:3px;">
                         </div>
-                        <div class="form-group">
-                            <label class="form-label">ফোন নম্বর</label>
-                            <input type="text" id="admRolePhone_${role}" class="form-control" value="${p.phone || ''}" placeholder="ফোন নম্বর">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">ছবি</label>
-                            <input type="file" id="admRolePhoto_${role}" accept="image/*" class="form-control" style="padding:3px;">
-                        </div>
-                        <button class="btn btn-success btn-xs btn-block" onclick="saveSingleFourAdminProfile('${role}')">💾 সেভ করুন</button>
                     </div>
                 `;
-            }).join('');
+            }).join('') + `<button class="btn btn-success btn-block" onclick="saveFourAdminProfiles()">💾 ৪ জন অ্যাডমিন প্রোফাইল সেভ করুন</button>`;
         }
-        async function saveSingleFourAdminProfile(role) {
-            const roleTitle = document.getElementById(`admRoleTitle_${role}`).value;
-            const name = document.getElementById(`admRoleName_${role}`).value.trim();
-            const phone = document.getElementById(`admRolePhone_${role}`).value.trim();
-            const photoFile = document.getElementById(`admRolePhoto_${role}`).files[0];
-            if (!name) { showToast("⚠️ নাম লিখুন।", "error"); return; }
-            const existing = fourAdminProfiles[role] || {};
-            const photo = photoFile ? await compressImageToBase64(photoFile, 200) : (existing.photo || "https://via.placeholder.com/80");
-            const updatedObj = { roleTitle, name, phone: phone || existing.phone || "00000000000", photo };
-            fourAdminProfiles[role] = updatedObj;
-            await db.ref(`standConfig/fourAdminProfiles/${role}`).set(updatedObj);
-            renderDigitalMonitorMarquee();
-            renderBottomStaffRoleList();
-            if (currentAdminSession === "master") renderMasterAdminSubPasswordsViewer();
-            showToast(`✅ ${roleTitle}: ${name} - এর প্রোফাইল সেভ হয়েছে!`, "success");
-        }
-
-        // প্রথম ছবি অনুযায়ী ক্যাশিয়ার ১ (প্রধান) অপরিবর্তিত; দ্বিতীয় ছবি অনুযায়ী সহকারী ক্যাশিয়ার (cashier2-6) থেকে মাইনাস বাটন অপসারণ
-        function renderFourCashierPanels() {
-            ALL_CASHIER_IDS.forEach((cid, idx) => {
-                const bodyEl = document.getElementById(`cashierPanelBody_${cid}`);
-                const headerTitleEl = document.getElementById(`cashierBoxHeaderTitle_${cid}`);
-                if (!bodyEl) return;
-                const c = fourCashiersData[cid] || { roleTitle: "ক্যাশিয়ার", name: `ক্যাশিয়ার ${idx + 1}`, phone: "", photo: "", active: idx === 0, balance: 0 };
-                const isMainCashier = (cid === "cashier1");
-                if (headerTitleEl) {
-                    headerTitleEl.innerText = isMainCashier
-                        ? `6. ক্যাশিয়ার প্যানেল ১ (প্রধান - ${c.name || 'ক্যাশিয়ার ১'})`
-                        : `${idx + 6}. সহকারী ক্যাশিয়ার প্যানেল ${idx + 1} (${c.name || `ক্যাশিয়ার ${idx + 1}`})`;
-                }
-                const myPendingPays = Object.entries(samityPendingPayments).filter(([_, p]) => p.status === 'pending' && p.cashierId === cid);
-                let pendingHtml = `<div style="font-size:11px; font-weight:700; color:#047857; margin:6px 0 4px;">📥 অপেক্ষমাণ পেমেন্ট (${myPendingPays.length}):</div>`;
-                if (myPendingPays.length === 0) {
-                    pendingHtml += `<div style="font-size:11px; color:#64748b; background:#fff; padding:6px; border-radius:6px; border:1px dashed #cbd5e1;">কোনো নতুন পেমেন্ট রিকোয়েস্ট নেই।</div>`;
-                } else {
-                    pendingHtml += myPendingPays.map(([pid, p]) => `
-                        <div class="admin-pay-card">
-                            <img src="${p.targetPhoto || 'https://via.placeholder.com/45'}" class="admin-pay-avatar" alt="${p.targetName}">
-                            <div style="flex:1; font-size:11px;">
-                                <strong>${p.targetName}</strong> (${p.targetPhone})<br>
-                                টাকা: <strong style="color:#059669;">৳${p.amount}</strong> | মাধ্যম: <strong>${p.paymentMethod || 'bKash'}</strong><br>
-                                প্রেরক: <strong>${p.senderPhone}</strong>
-                                ${p.slipPhoto ? `<br><a href="${p.slipPhoto}" target="_blank" style="color:#2563eb; font-weight:700;">🖼️ স্লিপ দেখুন</a>` : ''}
-                            </div>
-                            <div style="display:flex; flex-direction:column; gap:4px;">
-                                <button class="btn btn-success btn-xs" onclick="approveCashierPayment('${pid}', '${cid}')">✅ অ্যাপ্রুভ</button>
-                                <button class="btn btn-danger btn-xs" onclick="rejectCashierPayment('${pid}')">❌ বাতিল</button>
-                            </div>
-                        </div>
-                    `).join('');
-                }
-
-                // সদস্যের নামে সরাসরি টাকা জমা (সব ক্যাশিয়ার) এবং মাইনাস (শুধু প্রধান ক্যাশিয়ার cashier1)
-                const memberAdjustHtml = isMainCashier
-                    ? `
-                        <div style="background:#fffbeb; border:1px solid #fcd34d; border-radius:8px; padding:7px; margin-top:8px;">
-                            <div style="font-size:11px; font-weight:700; color:#92400e; margin-bottom:4px;">💵 সদস্যের নামে টাকা জমা / মাইনাস</div>
-                            <div style="display:flex; gap:5px; margin-bottom:5px;">
-                                <input type="tel" id="cashierAdjPhone_${cid}" class="form-control" placeholder="সদস্যের ফোন নম্বর" style="padding:5px;">
-                                <input type="number" id="cashierAdjAmt_${cid}" class="form-control" placeholder="টাকা" style="width:82px; padding:5px;">
-                            </div>
-                            <div style="display:flex; gap:5px;">
-                                <button class="btn btn-success btn-xs" style="flex:1;" onclick="cashierManualAdjustMember('${cid}', 'add')">➕ জমা করুন</button>
-                                <button class="btn btn-danger btn-xs" style="flex:1;" onclick="cashierManualAdjustMember('${cid}', 'sub')">➖ মাইনাস করুন</button>
-                            </div>
-                        </div>
-                    `
-                    : `
-                        <div style="background:#f0fdf4; border:1px solid #86efac; border-radius:8px; padding:7px; margin-top:8px;">
-                            <div style="font-size:11px; font-weight:700; color:#065f46; margin-bottom:4px;">💵 সদস্যের নামে টাকা জমা নিন</div>
-                            <div style="display:flex; gap:5px;">
-                                <input type="tel" id="cashierAdjPhone_${cid}" class="form-control" placeholder="সদস্যের ফোন নম্বর" style="padding:5px;">
-                                <input type="number" id="cashierAdjAmt_${cid}" class="form-control" placeholder="টাকা" style="width:82px; padding:5px;">
-                                <button class="btn btn-success btn-xs" onclick="cashierManualAdjustMember('${cid}', 'add')">➕ জমা</button>
-                            </div>
-                        </div>
-                    `;
-
-                const otherCashierOptions = ALL_CASHIER_IDS
-                    .filter(otherId => otherId !== cid && fourCashiersData[otherId]?.active)
-                    .map(otherId => `<option value="${otherId}">${fourCashiersData[otherId]?.name || otherId}</option>`)
-                    .join('');
-
-                const transferHtml = otherCashierOptions
-                    ? `
-                        <div style="background:#eff6ff; border:1px solid #93c5fd; border-radius:8px; padding:7px; margin-top:8px;">
-                            <div style="font-size:11px; font-weight:700; color:#1e40af; margin-bottom:4px;">🔄 অন্য ক্যাশিয়ারকে লেনদেন পাঠান</div>
-                            <div style="display:flex; gap:5px;">
-                                <select id="cashierTransferTarget_${cid}" class="form-control" style="padding:5px; font-size:11px;">${otherCashierOptions}</select>
-                                <input type="number" id="cashierTransferAmt_${cid}" class="form-control" placeholder="টাকা" style="width:76px; padding:5px;">
-                                <button class="btn btn-primary btn-xs" onclick="sendMoneyBetweenCashiers('${cid}')">পাঠান</button>
-                            </div>
-                        </div>
-                    `
-                    : "";
-
-                bodyEl.innerHTML = `
-                    <div style="background:#ffffff; border:1px solid #a7f3d0; border-radius:8px; padding:7px; margin-bottom:6px; display:flex; justify-content:space-between; align-items:center;">
-                        <div>
-                            <div style="font-size:11px; color:#065f46; font-weight:700;">বর্তমান জমা ব্যালেন্স</div>
-                            <div style="font-size:15px; font-weight:900; color:#047857;">৳${Number(c.balance || 0)}</div>
-                        </div>
-                        <label style="display:flex; align-items:center; gap:4px; font-size:11px; font-weight:700; color:#1e293b; cursor:pointer;">
-                            <input type="checkbox" ${c.active ? 'checked' : ''} onchange="toggleSingleCashierActive('${cid}', this.checked)">
-                            <span>সক্রিয়</span>
-                        </label>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">পদবী / টাইটেল</label>
-                        <input type="text" id="cashierRoleTitle_${cid}" class="form-control" value="${c.roleTitle || (isMainCashier ? 'প্রধান ক্যাশিয়ার' : 'সহকারী ক্যাশিয়ার')}">
-                    </div>
-                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px;">
-                        <div class="form-group">
-                            <label class="form-label">ক্যাশিয়ারের নাম</label>
-                            <input type="text" id="cashierName_${cid}" class="form-control" value="${c.name || ''}">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">বিকাশ/নগদ নম্বর</label>
-                            <input type="text" id="cashierPhone_${cid}" class="form-control" value="${c.phone || ''}">
-                        </div>
-                    </div>
-                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px;">
-                        <div class="form-group">
-                            <label class="form-label">প্যানেল পাসওয়ার্ড</label>
-                            <input type="text" id="cashierPass_${cid}" class="form-control" value="${c.customPass || '123456'}" placeholder="পাসওয়ার্ড">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">ছবি</label>
-                            <input type="file" id="cashierPhoto_${cid}" accept="image/*" class="form-control" style="padding:3px;">
-                        </div>
-                    </div>
-                    <button class="btn btn-success btn-xs btn-block" onclick="saveSingleCashierInfo('${cid}')">💾 ক্যাশিয়ার তথ্য সেভ করুন</button>
-                    ${pendingHtml}
-                    ${memberAdjustHtml}
-                    ${transferHtml}
-                `;
-            });
-        }
-        async function toggleSingleCashierActive(cid, isActive) {
-            await db.ref(`standConfig/fourCashiers/${cid}/active`).set(Boolean(isActive));
-            showToast(isActive ? "✅ ক্যাশিয়ার সক্রিয় করা হয়েছে।" : "🔒 ক্যাশিয়ার নিষ্ক্রিয় করা হয়েছে।", "info");
-        }
-        async function saveSingleCashierInfo(cid) {
-            const roleTitle = document.getElementById(`cashierRoleTitle_${cid}`).value.trim() || (cid === "cashier1" ? "প্রধান ক্যাশিয়ার" : "সহকারী ক্যাশিয়ার");
-            const name = document.getElementById(`cashierName_${cid}`).value.trim();
-            const phone = document.getElementById(`cashierPhone_${cid}`).value.trim();
-            const customPass = document.getElementById(`cashierPass_${cid}`).value.trim() || "123456";
-            const photoFile = document.getElementById(`cashierPhoto_${cid}`).files[0];
-            if (!name || !phone) { showToast("⚠️ ক্যাশিয়ারের নাম ও নম্বর দিন।", "error"); return; }
-            const existing = fourCashiersData[cid] || {};
-            const photo = photoFile ? await compressImageToBase64(photoFile, 200) : (existing.photo || "https://via.placeholder.com/80");
-            const updatedObj = { ...existing, roleTitle, name, phone, customPass, photo };
-            fourCashiersData[cid] = updatedObj;
-            await db.ref(`standConfig/fourCashiers/${cid}`).set(updatedObj);
-            renderCashierPaymentCard();
-            renderBottomStaffRoleList();
-            showToast(`✅ ${name} - এর তথ্য সেভ হয়েছে!`, "success");
-        }
-        async function approveCashierPayment(paymentId, cid) {
-            const p = samityPendingPayments[paymentId];
-            if (!p) return;
-            const targetPhone = p.targetPhone;
-            const amount = Number(p.amount) || 0;
-            if (samityApprovedMembers[targetPhone] && amount > 0) {
-                const curPaid = Number(samityApprovedMembers[targetPhone].weeklyPaid || 0);
-                await db.ref(`tanSamity/approvedMembers/${targetPhone}/weeklyPaid`).set(curPaid + amount);
+        async function saveFourAdminProfiles() {
+            const updates = {};
+            for (const role of ALL_ADMIN_ROLES) {
+                const roleTitle = document.getElementById(`profRoleTitle_${role}`).value.trim() || "এডমিন";
+                const name = document.getElementById(`profName_${role}`).value.trim();
+                const phone = document.getElementById(`profPhone_${role}`).value.trim();
+                const file = document.getElementById(`profPhoto_${role}`).files[0];
+                let photo = fourAdminProfiles[role]?.photo || "https://via.placeholder.com/80";
+                if (file) photo = await compressImageToBase64(file, 200);
+                updates[role] = { roleTitle, name, phone, photo };
             }
-            const curBal = Number(fourCashiersData[cid]?.balance || 0);
-            await db.ref(`standConfig/fourCashiers/${cid}/balance`).set(curBal + amount);
-            await db.ref('tanSamity/cashierHistory').push({
-                cashierId: cid,
-                cashierName: fourCashiersData[cid]?.name || cid,
-                memberName: p.targetName,
-                memberPhone: targetPhone,
-                amount: amount,
-                type: 'add',
-                note: `পেমেন্ট অ্যাপ্রুভ (${p.paymentMethod || 'bKash'})`,
-                timestamp: Date.now()
+            await db.ref('standConfig/fourAdminProfiles').set(updates);
+            showToast("✅ ৪ জন অ্যাডমিন প্রোফাইল সেভ হয়েছে!", "success");
+        }
+        async function saveAdminDrawSchedule() {
+            const drawDay = document.getElementById("adminDrawDay").value;
+            const startStr = document.getElementById("adminStartTimeInput").value.trim();
+            const startAmPm = document.getElementById("adminStartAmPm").value;
+            const endStr = document.getElementById("adminEndTimeInput").value.trim();
+            const endAmPm = document.getElementById("adminEndAmPm").value;
+            const s24 = to24HourFromInput(startStr, startAmPm);
+            const e24 = to24HourFromInput(endStr, endAmPm);
+            await db.ref('tanSamity/config').update({
+                drawDay: drawDay,
+                drawTime: `${s24}-${e24}`
             });
-            await db.ref(`tanSamity/pendingPayments/${paymentId}`).remove();
-            showToast(`✅ ${p.targetName}-এর ৳${amount} অ্যাপ্রুভ ও জমা হয়েছে!`, "success");
+            showToast("⏰ ড্র-এর দিন ও সময় সেভ হয়েছে!", "success");
         }
-        async function rejectCashierPayment(paymentId) {
-            await db.ref(`tanSamity/pendingPayments/${paymentId}`).remove();
-            showToast("❌ পেমেন্ট রিকোয়েস্ট বাতিল করা হয়েছে।", "info");
+        async function saveDailyQuota() {
+            const q = Number(document.getElementById("adminDailyQuotaInput").value) || 200;
+            await db.ref('tanSamity/config/dailyQuota').set(q);
+            showToast(`✅ নির্ধারিত টাকা ৳${q} সেভ হয়েছে!`, "success");
         }
-
-        // শুধু প্রধান ক্যাশিয়ার (cashier1) বা মাস্টার অ্যাডমিন মাইনাস করতে পারবেন; সহকারী ক্যাশিয়াররা শুধু জমা নিতে পারবেন
-        async function cashierManualAdjustMember(cid, mode) {
-            const phone = document.getElementById(`cashierAdjPhone_${cid}`)?.value.trim().replace(/[^0-9]/g, '');
-            const amt = Number(document.getElementById(`cashierAdjAmt_${cid}`)?.value);
-            if (!phone || !samityApprovedMembers[phone] || !amt || amt <= 0) {
-                showToast("⚠️ সঠিক সদস্যের ফোন নম্বর ও টাকার পরিমাণ দিন।", "error");
-                return;
-            }
-            if (mode === 'sub') {
-                const canMinus = (cid === 'cashier1') || (currentAdminSession === 'master');
-                if (!canMinus) {
-                    showToast("🚫 শুধুমাত্র প্রধান ক্যাশিয়ার ইউজারদের টাকা মাইনাস করতে পারবেন!", "error");
-                    return;
-                }
-            }
-            const curPaid = Number(samityApprovedMembers[phone].weeklyPaid || 0);
-            const nextPaid = mode === 'add' ? curPaid + amt : Math.max(0, curPaid - amt);
-            await db.ref(`tanSamity/approvedMembers/${phone}/weeklyPaid`).set(nextPaid);
-            const curBal = Number(fourCashiersData[cid]?.balance || 0);
-            const nextBal = mode === 'add' ? curBal + amt : Math.max(0, curBal - amt);
-            await db.ref(`standConfig/fourCashiers/${cid}/balance`).set(nextBal);
-            await db.ref('tanSamity/cashierHistory').push({
-                cashierId: cid,
-                cashierName: fourCashiersData[cid]?.name || cid,
-                memberName: samityApprovedMembers[phone].name,
-                memberPhone: phone,
-                amount: amt,
-                type: mode,
-                note: mode === 'add' ? 'সরাসরি জমা' : 'প্রধান ক্যাশিয়ার মাইনাস',
-                timestamp: Date.now()
-            });
-            document.getElementById(`cashierAdjPhone_${cid}`).value = "";
-            document.getElementById(`cashierAdjAmt_${cid}`).value = "";
-            showToast(mode === 'add' ? `✅ ৳${amt} জমা হয়েছে!` : `➖ ৳${amt} মাইনাস হয়েছে!`, "success");
+        async function saveAdminForcedWinner() {
+            const phone = document.getElementById("adminForcedWinnerPhone").value.trim();
+            await db.ref('tanSamity/config/forcedWinner').set(phone);
+            showToast(phone ? `🏆 অফিসিয়াল উইনার সেট হয়েছে (${phone})` : "অফিসিয়াল উইনার ক্লিয়ার হয়েছে।", "info");
         }
-
-        async function sendMoneyBetweenCashiers(fromCid) {
-            const toCid = document.getElementById(`cashierTransferTarget_${fromCid}`)?.value;
-            const amt = Number(document.getElementById(`cashierTransferAmt_${fromCid}`)?.value);
-            if (!toCid || !amt || amt <= 0) {
-                showToast("⚠️ প্রাপক ক্যাশিয়ার ও টাকার পরিমাণ দিন।", "error");
-                return;
-            }
-            const fromBal = Number(fourCashiersData[fromCid]?.balance || 0);
-            const toBal = Number(fourCashiersData[toCid]?.balance || 0);
-            await db.ref(`standConfig/fourCashiers/${fromCid}/balance`).set(Math.max(0, fromBal - amt));
-            await db.ref(`standConfig/fourCashiers/${toCid}/balance`).set(toBal + amt);
-            await db.ref('tanSamity/cashierHistory').push({
-                cashierId: fromCid,
-                cashierName: fourCashiersData[fromCid]?.name || fromCid,
-                memberName: fourCashiersData[toCid]?.name || toCid,
-                memberPhone: fourCashiersData[toCid]?.phone || "",
-                amount: amt,
-                type: 'transfer',
-                note: `ক্যাশিয়ার লেনদেন (${fourCashiersData[fromCid]?.name || fromCid} ➔ ${fourCashiersData[toCid]?.name || toCid})`,
-                timestamp: Date.now()
-            });
-            document.getElementById(`cashierTransferAmt_${fromCid}`).value = "";
-            showToast(`🔄 ৳${amt} লেনদেন পাঠানো হয়েছে!`, "success");
+        async function toggleSamityRegStatus(chk) {
+            await db.ref('tanSamity/config/registrationOpen').set(chk.checked);
+            showToast(chk.checked ? "✅ রেজিস্ট্রেশন চালু হয়েছে!" : "🔒 রেজিস্ট্রেশন বন্ধ করা হয়েছে।", "info");
         }
-
-        function renderCashierTransactionsHistory() {
-            const summaryBar = document.getElementById("cashierTotalSummaryBar");
-            const listEl = document.getElementById("cashierTransactionsHistoryList");
-            if (!summaryBar || !listEl) return;
-            let totalCashierBal = 0;
-            let parts = [];
-            ALL_CASHIER_IDS.forEach((cid, idx) => {
-                const c = fourCashiersData[cid] || {};
-                const b = Number(c.balance || 0);
-                totalCashierBal += b;
-                if (c.active || b > 0) {
-                    parts.push(`${c.name || `ক্যাশিয়ার ${idx + 1}`}: ৳${b}`);
-                }
-            });
-            summaryBar.innerHTML = `মোট জমা: ৳${totalCashierBal} | ${parts.join(" • ") || "কোনো ক্যাশিয়ার ব্যালেন্স নেই"}`;
-            const txItems = Object.values(cashierTransactionsList).sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0)).slice(0, 30);
-            if (txItems.length === 0) {
-                listEl.innerHTML = `<div style="font-size:11px; color:#64748b; text-align:center; padding:8px;">কোনো লেনদেনের হিসাব নেই।</div>`;
-                return;
-            }
-            listEl.innerHTML = txItems.map(t => {
-                const sign = t.type === 'sub' ? '-' : '+';
-                const col = t.type === 'sub' ? '#dc2626' : (t.type === 'transfer' ? '#2563eb' : '#059669');
-                return `
-                    <div class="cashier-open-row">
-                        <div>
-                            <strong>${t.cashierName || t.cashierId}</strong> ➔ <span>${t.memberName || t.memberPhone}</span>
-                            <div style="font-size:10px; color:#64748b;">${t.note || ''} • ${t.timestamp ? new Date(t.timestamp).toLocaleTimeString('bn-BD', { hour: '2-digit', minute: '2-digit' }) : ''}</div>
-                        </div>
-                        <strong style="color:${col}; font-size:13px;">${sign}৳${Number(t.amount || 0)}</strong>
-                    </div>
-                `;
-            }).join('');
-        }
-
         function renderAdminSamityPendingReg() {
             const container = document.getElementById("adminSamityPendingRegList");
             if (!container) return;
-            const entries = Object.entries(samityPendingMembers);
-            if (entries.length === 0) {
-                container.innerHTML = `<p style="font-size:11px; color:#64748b;">কোনো নতুন রেজিস্ট্রেশন আবেদন নেই।</p>`;
+            const list = Object.entries(samityPendingMembers);
+            if (list.length === 0) {
+                container.innerHTML = `<div style="font-size:11px; color:#64748b; text-align:center; padding:6px;">কোনো নতুন আবেদন নেই।</div>`;
                 return;
             }
-            container.innerHTML = entries.map(([kPhone, m]) => `
+            container.innerHTML = list.map(([key, m]) => `
                 <div class="reg-rider-row">
                     <div style="display:flex; align-items:center; gap:8px;">
-                        <img src="${m.photo || 'https://via.placeholder.com/36'}" style="width:36px; height:36px; border-radius:50%; object-fit:cover;">
-                        <div style="font-size:11.5px;">
-                            <strong>${m.name}</strong> (${m.phone}) ${m.ownerPhone ? `<span style="color:#0284c7; font-size:10px;">[অতিরিক্ত আইডি]</span>` : ''}
+                        <img src="${m.photo || 'https://via.placeholder.com/40'}" style="width:36px; height:36px; border-radius:50%; object-fit:cover;">
+                        <div>
+                            <strong style="font-size:12.5px;">${m.name}</strong>
+                            <div style="font-size:11px; color:#475569;">📞 ${m.phone}</div>
                         </div>
                     </div>
-                    <div style="display:flex; gap:4px;">
-                        <button class="btn btn-success btn-xs" onclick="approveSamityMember('${kPhone}')">✅ অনুমোদন</button>
-                        <button class="btn btn-danger btn-xs" onclick="rejectSamityMember('${kPhone}')">❌ বাতিল</button>
+                    <div style="display:flex; gap:5px;">
+                        <button class="btn btn-success btn-xs" onclick="approveSamityPendingMember('${key}')">✅ অ্যাপ্রুভ</button>
+                        <button class="btn btn-danger btn-xs" onclick="rejectSamityPendingMember('${key}')">❌ বাতিল</button>
                     </div>
                 </div>
             `).join('');
         }
-        async function approveSamityMember(keyPhone) {
-            const pend = samityPendingMembers[keyPhone];
-            if (!pend) return;
-            await db.ref('tanSamity/approvedMembers/' + keyPhone).set({
-                name: pend.name,
-                phone: pend.phone,
-                ownerPhone: pend.ownerPhone || null,
-                photo: pend.photo || 'https://via.placeholder.com/80',
+        async function approveSamityPendingMember(key) {
+            const m = samityPendingMembers[key];
+            if (!m) return;
+            await db.ref('tanSamity/approvedMembers/' + key).set({
+                name: m.name,
+                phone: m.phone,
+                ownerPhone: m.ownerPhone || null,
+                photo: m.photo || '',
                 weeklyPaid: 0,
                 isWinner: false,
                 approvedAt: Date.now()
             });
-            await db.ref('tanSamity/pendingMembers/' + keyPhone).remove();
-            showToast(`✅ ${pend.name} সমিতির সদস্য হিসেবে অনুমোদিত হলেন!`, "success");
+            await db.ref('tanSamity/pendingMembers/' + key).remove();
+            showToast(`✅ ${m.name}-কে সমিতিতে অনুমোদন দেওয়া হয়েছে!`, "success");
         }
-        async function rejectSamityMember(keyPhone) {
-            await db.ref('tanSamity/pendingMembers/' + keyPhone).remove();
-            showToast("❌ আবেদন বাতিল করা হয়েছে।", "info");
+        async function rejectSamityPendingMember(key) {
+            await db.ref('tanSamity/pendingMembers/' + key).remove();
+            showToast("❌ আবেদন বাতিল করা হয়েছে।", "info");
         }
-
+        function toggleMemberDeleteUnlock(kPhone) {
+            unlockedMemberDeleteRows[kPhone] = !unlockedMemberDeleteRows[kPhone];
+            renderAdminSamityApprovedListSingleBox();
+        }
         function renderAdminSamityApprovedListSingleBox() {
             const container = document.getElementById("adminSingleBoxMemberManagement");
             if (!container) return;
-            const entries = Object.entries(samityApprovedMembers);
-            if (entries.length === 0) {
-                container.innerHTML = `<p style="font-size:11px; color:#64748b;">কোনো সদস্য নেই।</p>`;
+            const list = Object.entries(samityApprovedMembers);
+            if (list.length === 0) {
+                container.innerHTML = `<div style="font-size:11px; color:#64748b; text-align:center; padding:8px;">কোনো অনুমোদিত সদস্য নেই।</div>`;
                 return;
             }
-            container.innerHTML = entries.map(([kPhone, m]) => {
-                const isDelUnlocked = unlockedMemberDeleteRows[kPhone] === true;
+            container.innerHTML = list.map(([kPhone, m]) => {
+                const isDelUnlocked = Boolean(unlockedMemberDeleteRows[kPhone]);
                 return `
                     <div class="reg-rider-row">
-                        <div style="display:flex; align-items:center; gap:6px; min-width:0;">
-                            <img src="${m.photo || 'https://via.placeholder.com/32'}" style="width:32px; height:32px; border-radius:50%; object-fit:cover; flex-shrink:0;">
-                            <div style="font-size:11px; min-width:0;">
-                                <strong style="display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${m.name} ${m.isWinner ? '🏆' : ''}</strong>
-                                <span style="color:#475569;">${kPhone} | জমা: ৳${Number(m.weeklyPaid || 0)}</span>
+                        <div style="display:flex; align-items:center; gap:7px;">
+                            <img src="${m.photo || 'https://via.placeholder.com/34'}" style="width:32px; height:32px; border-radius:50%; object-fit:cover;">
+                            <div>
+                                <strong style="font-size:12px;">${m.name} ${m.isWinner ? '<span class="winner-badge" style="font-size:9px;">বিজয়ী</span>' : ''}</strong>
+                                <div style="font-size:10px; color:#475569;">${kPhone} | জমা: ৳${Number(m.weeklyPaid || 0)}</div>
                             </div>
                         </div>
                         <div style="display:flex; gap:4px; flex-wrap:wrap;">
-                            <button class="btn btn-warning btn-xs" onclick="openSamityAdjustModal('${kPhone}')">💰</button>
+                            <button class="btn btn-warning btn-xs" onclick="openSamityMoneyAdjustModal('${kPhone}')">💰 জমা/মাইনাস</button>
                             <button class="btn btn-info btn-xs" onclick="openSamityEditInfoModal('${kPhone}')">✏️</button>
                             <button class="btn btn-primary btn-xs" onclick="openSamityEditPhotoModal('${kPhone}')">🖼️</button>
-                            <button class="btn btn-secondary btn-xs" style="background:#e2e8f0; color:#0f172a;" onclick="toggleMemberWinnerFlag('${kPhone}')">${m.isWinner ? '↩️' : '🏆'}</button>
-                            <button class="btn ${isDelUnlocked ? 'btn-danger' : 'btn-dark'} btn-xs" onclick="toggleUnlockMemberDelete('${kPhone}')">${isDelUnlocked ? '🔓' : '🔒'}</button>
-                            ${isDelUnlocked ? `<button class="btn btn-danger btn-xs" onclick="deleteSamityMember('${kPhone}')">🗑️</button>` : ''}
+                            <button class="btn btn-dark btn-xs" onclick="toggleMemberWinnerStatus('${kPhone}')">${m.isWinner ? '🔄 খেলোয়াড়' : '🏆 বিজয়ী'}</button>
+                            <button class="btn btn-xs" style="background:#e2e8f0; color:#0f172a;" onclick="toggleMemberDeleteUnlock('${kPhone}')">${isDelUnlocked ? '🔓' : '🔒'}</button>
+                            ${isDelUnlocked ? `<button class="btn btn-danger btn-xs" onclick="deleteSamityApprovedMember('${kPhone}')">🗑️</button>` : ''}
                         </div>
                     </div>
                 `;
             }).join('');
         }
-        function toggleUnlockMemberDelete(kPhone) {
-            unlockedMemberDeleteRows[kPhone] = !unlockedMemberDeleteRows[kPhone];
-            renderAdminSamityApprovedListSingleBox();
-        }
-        async function deleteSamityMember(kPhone) {
-            await db.ref('tanSamity/approvedMembers/' + kPhone).remove();
-            await db.ref('tanSamity/allowedStatus/' + kPhone).remove();
-            delete unlockedMemberDeleteRows[kPhone];
-            showToast("🗑️ সদস্য ডিলিট করা হয়েছে।", "info");
-        }
-        async function toggleMemberWinnerFlag(kPhone) {
-            const m = samityApprovedMembers[kPhone];
-            if (!m) return;
-            await db.ref(`tanSamity/approvedMembers/${kPhone}/isWinner`).set(!m.isWinner);
-        }
-        function openSamityAdjustModal(kPhone) {
+        function openSamityMoneyAdjustModal(kPhone) {
             const m = samityApprovedMembers[kPhone];
             if (!m) return;
             document.getElementById("samityAdjPhone").value = kPhone;
-            document.getElementById("samityAdjInfo").innerHTML = `<strong>${m.name}</strong> (${kPhone})<br>বর্তমান জমা: <strong>৳${Number(m.weeklyPaid || 0)}</strong>`;
+            document.getElementById("samityAdjInfo").innerHTML = `সদস্য: <strong>${m.name}</strong> (${kPhone})<br>বর্তমান জমা: <strong>৳${Number(m.weeklyPaid || 0)}</strong>`;
             document.getElementById("samityAdjAmount").value = "";
             document.getElementById("samityAdjustModal").style.display = "block";
         }
         async function applySamityMoneyChange(mode) {
             const kPhone = document.getElementById("samityAdjPhone").value;
             const amt = Number(document.getElementById("samityAdjAmount").value);
-            if (!kPhone || !samityApprovedMembers[kPhone] || !amt || amt <= 0) {
-                showToast("⚠️ সঠিক টাকার পরিমাণ দিন।", "error");
-                return;
-            }
-            const cur = Number(samityApprovedMembers[kPhone].weeklyPaid || 0);
-            const next = mode === 'add' ? cur + amt : Math.max(0, cur - amt);
-            await db.ref(`tanSamity/approvedMembers/${kPhone}/weeklyPaid`).set(next);
+            const m = samityApprovedMembers[kPhone];
+            if (!m || !amt || amt <= 0) { showToast("⚠️ সঠিক টাকার পরিমাণ দিন।", "error"); return; }
+            const cur = Number(m.weeklyPaid || 0);
+            const nextVal = mode === 'add' ? cur + amt : Math.max(0, cur - amt);
+            await db.ref(`tanSamity/approvedMembers/${kPhone}/weeklyPaid`).set(nextVal);
             document.getElementById("samityAdjustModal").style.display = "none";
-            showToast(mode === 'add' ? `✅ ৳${amt} জমা হয়েছে!` : `➖ ৳${amt} মাইনাস হয়েছে!`, "success");
+            showToast(`✅ ${m.name}-এর ব্যালেন্স আপডেট (৳${nextVal}) হয়েছে!`, "success");
         }
         function openSamityEditPhotoModal(kPhone) {
             document.getElementById("editPhotoSamityPhone").value = kPhone;
@@ -4674,11 +4869,11 @@
         async function saveSamityPhotoOnly() {
             const kPhone = document.getElementById("editPhotoSamityPhone").value;
             const file = document.getElementById("samityNewPhotoOnly").files[0];
-            if (!kPhone || !file) { showToast("⚠️ নতুন ছবি সিলেক্ট করুন।", "error"); return; }
-            const b64 = await compressImageToBase64(file, 200);
-            await db.ref(`tanSamity/approvedMembers/${kPhone}/photo`).set(b64);
+            if (!file) { showToast("⚠️ নতুন ছবি সিলেক্ট করুন।", "error"); return; }
+            const photo = await compressImageToBase64(file, 220);
+            await db.ref(`tanSamity/approvedMembers/${kPhone}/photo`).set(photo);
             document.getElementById("samityEditPhotoModal").style.display = "none";
-            showToast("✅ ছবি পরিবর্তন হয়েছে!", "success");
+            showToast("✅ ছবি পরিবর্তন হয়েছে!", "success");
         }
         function openSamityEditInfoModal(kPhone) {
             const m = samityApprovedMembers[kPhone];
@@ -4691,224 +4886,199 @@
         async function saveSamityInfoChanges() {
             const oldKey = document.getElementById("editInfoOldPhone").value;
             const newName = document.getElementById("samityEditNameInput").value.trim();
-            const newPhone = document.getElementById("samityEditPhoneInput").value.trim().replace(/[^0-9]/g, '');
-            const existing = samityApprovedMembers[oldKey];
-            if (!existing || !newName || !newPhone) { showToast("⚠️ নাম ও ফোন নম্বর দিন।", "error"); return; }
-            const updated = { ...existing, name: newName, phone: newPhone };
-            if (newPhone !== oldKey) {
-                await db.ref('tanSamity/approvedMembers/' + newPhone).set(updated);
-                await db.ref('tanSamity/approvedMembers/' + oldKey).remove();
-            } else {
-                await db.ref('tanSamity/approvedMembers/' + oldKey).set(updated);
-            }
+            const newPhone = document.getElementById("samityEditPhoneInput").value.trim();
+            if (!newName || !newPhone) { showToast("⚠️ নাম ও ফোন দিন।", "error"); return; }
+            await db.ref(`tanSamity/approvedMembers/${oldKey}`).update({ name: newName, phone: newPhone });
             document.getElementById("samityEditInfoModal").style.display = "none";
-            showToast("✅ তথ্য আপডেট হয়েছে!", "success");
+            showToast("✅ সদস্যের তথ্য আপডেট হয়েছে!", "success");
+        }
+        async function toggleMemberWinnerStatus(kPhone) {
+            const m = samityApprovedMembers[kPhone];
+            if (!m) return;
+            await db.ref(`tanSamity/approvedMembers/${kPhone}/isWinner`).set(!m.isWinner);
+            showToast("✅ স্ট্যাটাস পরিবর্তন হয়েছে!", "info");
+        }
+        async function deleteSamityApprovedMember(kPhone) {
+            await db.ref(`tanSamity/approvedMembers/${kPhone}`).remove();
+            await db.ref(`tanSamity/allowedStatus/${kPhone}`).remove();
+            showToast("🗑️ সদস্য ডিলিট করা হয়েছে।", "info");
         }
         async function resetAllMembersNewWeek() {
             const updates = {};
             Object.keys(samityApprovedMembers).forEach(kPhone => {
-                updates[`tanSamity/approvedMembers/${kPhone}/weeklyPaid`] = 0;
-                updates[`tanSamity/approvedMembers/${kPhone}/isWinner`] = false;
+                updates[`${kPhone}/weeklyPaid`] = 0;
             });
-            updates['tanSamity/allowedStatus'] = null;
-            updates['tanSamity/liveSpin'] = null;
-            updates['tanSamity/config/isWheelLocked'] = false;
-            updates['tanSamity/config/officialDrawCooldownUntil'] = 0;
-            updates['tanSamity/config/lastOfficialWinnerTimestamp'] = 0;
-            await db.ref().update(updates);
-            showToast("🔄 নতুন রাউন্ড/সপ্তাহ রিসেট সম্পন্ন হয়েছে!", "success");
+            if (Object.keys(updates).length > 0) {
+                await db.ref('tanSamity/approvedMembers').update(updates);
+            }
+            await db.ref('tanSamity/allowedStatus').remove();
+            await db.ref('tanSamity/config').update({
+                isWheelLocked: false,
+                officialDrawCooldownUntil: 0,
+                lastOfficialWinnerTimestamp: 0,
+                paidListClearTimestamp: 0
+            });
+            showToast("🔄 নতুন রাউন্ডের জন্য সবার জমা ৳০ রিসেট হয়েছে!", "success");
         }
-
-        async function saveAdminDrawSchedule() {
-            const drawDay = document.getElementById("adminDrawDay").value;
-            const sTime = document.getElementById("adminStartTimeInput").value.trim();
-            const sAmPm = document.getElementById("adminStartAmPm").value;
-            const eTime = document.getElementById("adminEndTimeInput").value.trim();
-            const eAmPm = document.getElementById("adminEndAmPm").value;
-            const drawTime = `${to24HourFromInput(sTime, sAmPm)}-${to24HourFromInput(eTime, eAmPm)}`;
-            await db.ref('tanSamity/config').update({ drawDay, drawTime });
-            showToast("⏰ ড্র-এর সময়সূচি সেভ হয়েছে!", "success");
-        }
-        async function saveDailyQuota() {
-            const dailyQuota = Math.max(1, Number(document.getElementById("adminDailyQuotaInput").value) || 200);
-            await db.ref('tanSamity/config/dailyQuota').set(dailyQuota);
-            showToast(`💰 নির্ধারিত কোটা ৳${dailyQuota} সেভ হয়েছে!`, "success");
-        }
-        async function saveAdminForcedWinner() {
-            const forcedWinner = document.getElementById("adminForcedWinnerPhone").value.trim().replace(/[^0-9]/g, '');
-            await db.ref('tanSamity/config/forcedWinner').set(forcedWinner);
-            showToast("🏆 অফিসিয়াল উইনার সেটআপ সেভ হয়েছে!", "success");
-        }
-        async function toggleSamityRegStatus(chk) {
-            await db.ref('tanSamity/config/registrationOpen').set(Boolean(chk.checked));
-            showToast(chk.checked ? "✅ সমিতি রেজিস্ট্রেশন চালু হয়েছে।" : "🔒 সমিতি রেজিস্ট্রেশন বন্ধ করা হয়েছে।", "info");
-        }
-
         async function saveLeadersInfo() {
-            const chiefName = document.getElementById("admChiefName").value.trim() || "সেট করা নেই";
-            const presName = document.getElementById("admPresName").value.trim() || "সেট করা নেই";
-            const vpName = document.getElementById("admVpName").value.trim() || "সেট করা নেই";
-            const secName = document.getElementById("admSecName").value.trim() || "সেট করা নেই";
-            const chiefFile = document.getElementById("admChiefPhoto").files[0];
-            const presFile = document.getElementById("admPresPhoto").files[0];
-            const vpFile = document.getElementById("admVpPhoto").files[0];
-            const secFile = document.getElementById("admSecPhoto").files[0];
-            const leadersPayload = {
-                chiefName,
-                chiefPhoto: chiefFile ? await compressImageToBase64(chiefFile, 200) : standLeadersData.chiefPhoto,
-                presName,
-                presPhoto: presFile ? await compressImageToBase64(presFile, 200) : standLeadersData.presPhoto,
-                vpName,
-                vpPhoto: vpFile ? await compressImageToBase64(vpFile, 200) : standLeadersData.vpPhoto,
-                secName,
-                secPhoto: secFile ? await compressImageToBase64(secFile, 200) : standLeadersData.secPhoto
-            };
-            await db.ref('standConfig/leaders').set(leadersPayload);
-            showToast("✅ সভাপতি প্যানেলের তথ্য সেভ হয়েছে!", "success");
+            const updates = { ...standLeadersData };
+            const cName = document.getElementById("admChiefName").value.trim();
+            const pName = document.getElementById("admPresName").value.trim();
+            const vName = document.getElementById("admVpName").value.trim();
+            const sName = document.getElementById("admSecName").value.trim();
+            if (cName) updates.chiefName = cName;
+            if (pName) updates.presName = pName;
+            if (vName) updates.vpName = vName;
+            if (sName) updates.secName = sName;
+            const f1 = document.getElementById("admChiefPhoto").files[0];
+            const f2 = document.getElementById("admPresPhoto").files[0];
+            const f3 = document.getElementById("admVpPhoto").files[0];
+            const f4 = document.getElementById("admSecPhoto").files[0];
+            if (f1) updates.chiefPhoto = await compressImageToBase64(f1, 200);
+            if (f2) updates.presPhoto = await compressImageToBase64(f2, 200);
+            if (f3) updates.vpPhoto = await compressImageToBase64(f3, 200);
+            if (f4) updates.secPhoto = await compressImageToBase64(f4, 200);
+            await db.ref('standConfig/leaders').set(updates);
+            showToast("✅ নেতৃবৃন্দের তথ্য সেভ হয়েছে!", "success");
         }
         async function saveNoticeBoard() {
             const text = document.getElementById("admNoticeText").value.trim();
             const file = document.getElementById("admNoticePhoto").files[0];
-            const photo = file ? await compressImageToBase64(file, 300) : "";
+            let photo = "";
+            if (file) photo = await compressImageToBase64(file, 300);
             await db.ref('standConfig/notice').set({ text, photo, updatedAt: Date.now() });
-            showToast("📢 নোটিশ প্রকাশ করা হয়েছে!", "success");
+            showToast("📢 নোটিশ প্রকাশিত হয়েছে!", "success");
         }
         async function saveStandName() {
             const name = document.getElementById("adminStandName").value.trim();
             if (!name) return;
             await db.ref('standConfig/name').set(name);
-            showToast("✅ স্ট্যান্ডের নাম সেভ হয়েছে!", "success");
+            showToast("✅ স্ট্যান্ডের নাম সেভ হয়েছে!", "success");
         }
         function toggleGpsSetButton() {
-            const unlocked = document.getElementById("gpsUnlockSwitch").checked;
+            const sw = document.getElementById("gpsUnlockSwitch");
             const btn = document.getElementById("btnSetStandGps");
-            btn.disabled = !unlocked;
-            btn.className = unlocked ? "btn btn-success btn-block" : "btn btn-danger btn-block";
-            btn.innerText = unlocked ? "🔓 বর্তমান অবস্থানকে কেন্দ্র করুন" : "🔒 বর্তমান অবস্থানকে কেন্দ্র করুন";
+            btn.disabled = !sw.checked;
+            btn.innerText = sw.checked ? "📍 বর্তমান অবস্থানকে কেন্দ্র করুন" : "🔒 বর্তমান অবস্থানকে কেন্দ্র করুন";
         }
-        function setStandCurrentLocation() {
-            if (!navigator.geolocation) { showToast("❌ GPS সাপোর্ট করছে না।", "error"); return; }
-            navigator.geolocation.getCurrentPosition(async (pos) => {
-                await db.ref('standConfig').update({ lat: pos.coords.latitude, lng: pos.coords.longitude });
-                showToast("✅ স্ট্যান্ডের কেন্দ্র লোকেশন সেট হয়েছে!", "success");
-            }, () => { showToast("❌ লোকেশন পাওয়া যায়নি।", "error"); }, { enableHighAccuracy: true });
+        async function setStandCurrentLocation() {
+            if (!userLat || !userLng) { showToast("⚠️ আপনার বর্তমান GPS লোকেশন পাওয়া যাচ্ছে না।", "error"); return; }
+            await db.ref('standConfig').update({ lat: userLat, lng: userLng });
+            showToast("📍 স্ট্যান্ডের কেন্দ্র লোকেশন সেট হয়েছে!", "success");
         }
-
         function populateSpecialRiderDropdowns() {
-            const sel15 = document.getElementById("specialRiderSelect15");
-            const sel16 = document.getElementById("specialRiderSelect16");
-            const optionsHtml = `<option value="">-- রাইডার বেছে নিন --</option>` + Object.entries(registeredRiders).map(([k, r]) => `<option value="${k}">${r.name} (${r.phone || ''})</option>`).join('');
-            if (sel15) sel15.innerHTML = optionsHtml;
-            if (sel16) sel16.innerHTML = optionsHtml;
+            const s15 = document.getElementById("specialRiderSelect15");
+            const s16 = document.getElementById("specialRiderSelect16");
+            if (!s15 || !s16) return;
+            const opts = `<option value="">-- রাইডার বেছে নিন --</option>` + Object.entries(registeredRiders).map(([k, r]) => `<option value="${k}">${r.name} (${r.phone})</option>`).join('');
+            s15.innerHTML = opts;
+            s16.innerHTML = opts;
         }
         function loadSelectedRiderBreakValues() {
-            const k = document.getElementById("specialRiderSelect15").value;
-            const r = registeredRiders[k];
+            const key = document.getElementById("specialRiderSelect15").value;
+            const r = registeredRiders[key];
             if (!r) return;
             document.getElementById("quickSpBreakMin").value = r.customBreakMin || 30;
             document.getElementById("quickSpBreakDailyLimit").value = r.breakDailyLimit || 2;
             document.getElementById("quickSpBreakAllowed").checked = Boolean(r.breakAllowed);
         }
         async function saveQuickBreakPower() {
-            const k = document.getElementById("specialRiderSelect15").value;
-            if (!k) { showToast("⚠️ রাইডার বেছে নিন।", "error"); return; }
-            await db.ref('registeredRiders/' + k).update({
+            const key = document.getElementById("specialRiderSelect15").value;
+            if (!key) { showToast("⚠️ রাইডার সিলেক্ট করুন।", "error"); return; }
+            await db.ref(`registeredRiders/${key}`).update({
                 customBreakMin: Number(document.getElementById("quickSpBreakMin").value) || 30,
                 breakDailyLimit: Number(document.getElementById("quickSpBreakDailyLimit").value) || 2,
                 breakAllowed: document.getElementById("quickSpBreakAllowed").checked
             });
-            showToast("☕ রাইডার বিরতি সেটিংস সেভ হয়েছে!", "success");
+            showToast("✅ রাইডার বিরতি সেটআপ সেভ হয়েছে!", "success");
         }
         async function adminResetRiderBreakUsage15() {
-            const k = document.getElementById("specialRiderSelect15").value;
-            if (!k) return;
-            await db.ref('registeredRiders/' + k).update({ todayBreakCount: 0 });
-            showToast("🔄 বিরতি কাউন্ট জিরো করা হয়েছে!", "success");
+            const key = document.getElementById("specialRiderSelect15").value;
+            if (!key) return;
+            await db.ref(`registeredRiders/${key}/todayBreakCount`).set(0);
+            showToast("🔄 আজকের বিরতি কাউন্ট জিরো করা হয়েছে!", "success");
         }
         function loadSelectedRiderDistanceValues() {
-            const k = document.getElementById("specialRiderSelect16").value;
-            const r = registeredRiders[k];
+            const key = document.getElementById("specialRiderSelect16").value;
+            const r = registeredRiders[key];
             if (!r) return;
             document.getElementById("quickSpCutMin").value = r.customCutMin || 10;
             document.getElementById("quickSpDist").value = r.customDistMeters || 200;
             document.getElementById("quickSpGlobalPower").checked = Boolean(r.hasGlobalPower);
         }
         async function saveQuickDistancePower() {
-            const k = document.getElementById("specialRiderSelect16").value;
-            if (!k) { showToast("⚠️ রাইডার বেছে নিন।", "error"); return; }
-            await db.ref('registeredRiders/' + k).update({
+            const key = document.getElementById("specialRiderSelect16").value;
+            if (!key) { showToast("⚠️ রাইডার সিলেক্ট করুন।", "error"); return; }
+            await db.ref(`registeredRiders/${key}`).update({
                 customCutMin: Number(document.getElementById("quickSpCutMin").value) || 10,
                 customDistMeters: Number(document.getElementById("quickSpDist").value) || 200,
                 hasGlobalPower: document.getElementById("quickSpGlobalPower").checked
             });
-            showToast("⚡ রাইডার স্পেশাল পাওয়ার সেভ হয়েছে!", "success");
+            showToast("⚡ রাইডার স্পেশাল পাওয়ার সেভ হয়েছে!", "success");
         }
-
+        function toggleRiderDeleteUnlock(key) {
+            unlockedRiderDeleteRows[key] = !unlockedRiderDeleteRows[key];
+            renderAdminRegisteredListsCombined();
+        }
         function renderAdminRegisteredListsCombined() {
             const container = document.getElementById("adminRegisteredListCombinedEdit");
             if (!container) return;
-            const entries = Object.entries(registeredRiders);
-            if (entries.length === 0) {
-                container.innerHTML = `<p style="font-size:11px; color:#64748b;">কোনো রেজিস্টার্ড রাইডার নেই।</p>`;
+            const list = Object.entries(registeredRiders);
+            if (list.length === 0) {
+                container.innerHTML = `<div style="font-size:11px; color:#64748b;">কোনো রেজিস্টার্ড রাইডার নেই।</div>`;
                 return;
             }
-            container.innerHTML = entries.map(([k, r]) => {
-                const isDelUnlocked = unlockedRiderDeleteRows[k] === true;
+            container.innerHTML = list.map(([key, r]) => {
+                const isDel = Boolean(unlockedRiderDeleteRows[key]);
                 return `
                     <div class="reg-rider-row">
-                        <div style="display:flex; align-items:center; gap:6px; min-width:0;">
-                            <img src="${r.photo || 'https://via.placeholder.com/32'}" style="width:32px; height:32px; border-radius:50%; object-fit:cover; flex-shrink:0;">
-                            <div style="font-size:11px; min-width:0;">
-                                <strong>${r.name}</strong> ${r.isSuspended ? '<span style="color:#dc2626; font-weight:700;">[সাসপেন্ড]</span>' : ''}
-                                <div style="color:#64748b;">${r.phone || ''}</div>
+                        <div style="display:flex; align-items:center; gap:7px;">
+                            <img src="${r.photo || 'https://via.placeholder.com/34'}" style="width:32px; height:32px; border-radius:50%; object-fit:cover;">
+                            <div>
+                                <strong style="font-size:12px;">${r.name} ${r.isSuspended ? '<span style="color:#dc2626;">(সাসপেন্ড)</span>' : ''}</strong>
+                                <div style="font-size:10px; color:#475569;">📞 ${r.phone}</div>
                             </div>
                         </div>
-                        <div style="display:flex; gap:4px; flex-wrap:wrap;">
-                            <button class="btn btn-info btn-xs" onclick="openEditRiderCombinedModal('${k}')">✏️</button>
-                            <button class="btn btn-warning btn-xs" onclick="toggleSuspendRider('${k}')">${r.isSuspended ? 'আনসাসপেন্ড' : 'সাসপেন্ড'}</button>
-                            <button class="btn ${isDelUnlocked ? 'btn-danger' : 'btn-dark'} btn-xs" onclick="toggleUnlockRiderDelete('${k}')">${isDelUnlocked ? '🔓' : '🔒'}</button>
-                            ${isDelUnlocked ? `<button class="btn btn-danger btn-xs" onclick="deleteRegisteredRider('${k}')">🗑️</button>` : ''}
+                        <div style="display:flex; gap:4px;">
+                            <button class="btn btn-info btn-xs" onclick="openEditRiderCombinedModal('${key}')">✏️</button>
+                            <button class="btn ${r.isSuspended ? 'btn-success' : 'btn-warning'} btn-xs" onclick="toggleRiderSuspend('${key}')">${r.isSuspended ? 'চালু' : 'সাসপেন্ড'}</button>
+                            <button class="btn btn-xs" style="background:#e2e8f0; color:#0f172a;" onclick="toggleRiderDeleteUnlock('${key}')">${isDel ? '🔓' : '🔒'}</button>
+                            ${isDel ? `<button class="btn btn-danger btn-xs" onclick="deleteRegisteredRider('${key}')">🗑️</button>` : ''}
                         </div>
                     </div>
                 `;
             }).join('');
         }
-        function openEditRiderCombinedModal(k) {
-            const r = registeredRiders[k];
+        function openEditRiderCombinedModal(key) {
+            const r = registeredRiders[key];
             if (!r) return;
-            document.getElementById("editRiderCombinedKey").value = k;
+            document.getElementById("editRiderCombinedKey").value = key;
             document.getElementById("editRiderCombinedName").value = r.name || "";
             document.getElementById("editRiderCombinedPhone").value = r.phone || "";
             document.getElementById("editRiderCombinedPhoto").value = "";
             document.getElementById("editRiderCombinedModal").style.display = "block";
         }
         async function saveRiderCombinedChanges() {
-            const k = document.getElementById("editRiderCombinedKey").value;
-            const r = registeredRiders[k];
-            if (!r) return;
+            const key = document.getElementById("editRiderCombinedKey").value;
             const name = document.getElementById("editRiderCombinedName").value.trim();
             const phone = document.getElementById("editRiderCombinedPhone").value.trim();
-            const photoFile = document.getElementById("editRiderCombinedPhoto").files[0];
-            if (!name || !phone) { showToast("⚠️ নাম ও ফোন নম্বর দিন।", "error"); return; }
-            const photo = photoFile ? await compressImageToBase64(photoFile, 200) : r.photo;
-            await db.ref('registeredRiders/' + k).update({ name, phone, photo });
+            const file = document.getElementById("editRiderCombinedPhoto").files[0];
+            if (!name || !phone) return;
+            const updates = { name, phone };
+            if (file) updates.photo = await compressImageToBase64(file, 220);
+            await db.ref(`registeredRiders/${key}`).update(updates);
             document.getElementById("editRiderCombinedModal").style.display = "none";
-            showToast("✅ রাইডারের তথ্য সেভ হয়েছে!", "success");
+            showToast("✅ রাইডারের তথ্য সেভ হয়েছে!", "success");
         }
-        async function toggleSuspendRider(k) {
-            const r = registeredRiders[k];
+        async function toggleRiderSuspend(key) {
+            const r = registeredRiders[key];
             if (!r) return;
-            await db.ref(`registeredRiders/${k}/isSuspended`).set(!r.isSuspended);
-            showToast(r.isSuspended ? "✅ রাইডার আনসাসপেন্ড করা হয়েছে।" : "🚫 রাইডার সাসপেন্ড করা হয়েছে।", "info");
+            await db.ref(`registeredRiders/${key}/isSuspended`).set(!r.isSuspended);
+            showToast(r.isSuspended ? "✅ রাইডার আইডি চালু হয়েছে!" : "🚫 রাইডার আইডি সাসপেন্ড করা হয়েছে।", "info");
         }
-        function toggleUnlockRiderDelete(k) {
-            unlockedRiderDeleteRows[k] = !unlockedRiderDeleteRows[k];
-            renderAdminRegisteredListsCombined();
-        }
-        async function deleteRegisteredRider(k) {
-            await db.ref('registeredRiders/' + k).remove();
-            delete unlockedRiderDeleteRows[k];
-            showToast("🗑️ রাইডার ডিলিট করা হয়েছে।", "info");
+        async function deleteRegisteredRider(key) {
+            await db.ref(`registeredRiders/${key}`).remove();
+            showToast("🗑️ রাইডার ডিলিট করা হয়েছে।", "info");
         }
     </script>
 </body>
